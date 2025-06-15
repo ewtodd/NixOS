@@ -1,12 +1,13 @@
 { config, pkgs, inputs, system, ... }: {
 
-  imports = [ ../../nixvim/nixvim.nix ];
+  imports = [ ../../modules/nixvim/nixvim.nix ];
 
   environment.variables.EDITOR = "nvim";
   environment.shellAliases = { vim = "nvim"; };
   environment.systemPackages = with pkgs; [
     git
     gh
+    wget
     firefox-wayland
     libreoffice
     geary
@@ -16,6 +17,10 @@
     htop
     nix-prefetch-github
     nixfmt-classic
+    tree
+    usbutils
+    unzip
+    paprefs
   ];
 
   fonts.packages = with pkgs; [
