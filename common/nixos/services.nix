@@ -15,6 +15,7 @@
     '';
   };
   services.printing.enable = true;
+  services.printing.drivers = [ pkgs.brlaser ];
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -22,5 +23,6 @@
     pulse.enable = true;
     jack.enable = true;
   };
-
+  services.gnome.gnome-keyring.enable = true;
+  security.rtkit.enable = true;
 }

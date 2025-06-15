@@ -4,23 +4,20 @@
     ../../common/nixos/base.nix
     ../../common/nixos/packages.nix
     ../../common/nixos/services.nix
-    ../../modules/nvidia.nix
-    ../../modules/openrgb.nix
+    ../../modules/nixos/nvidia-graphics.nix
+    ../../modules/nixos/openrgb.nix
+    ../../modules/nixos/cosmic-de.nix
+    ../../modules/nixos/obs.nix
   ];
   programs.steam.enable = true;
   users.users.v-play = {
     isNormalUser = true;
     description = "v-play";
-    extraGroups = [ "networkmanager" "wheel" "i2c"  ];
-    packages = with pkgs; [ ];
+    extraGroups = [ "networkmanager" "wheel" "i2c" ];
   };
   users.users.v-work = {
     isNormalUser = true;
     description = "v-work";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ ];
   };
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
-
 }
