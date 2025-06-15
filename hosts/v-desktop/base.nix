@@ -7,6 +7,7 @@
     ../../modules/nvidia.nix
     ../../modules/openrgb.nix
   ];
+  programs.steam.enable = true;
   users.users.v-play = {
     isNormalUser = true;
     description = "v-play";
