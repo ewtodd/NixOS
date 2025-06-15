@@ -1,9 +1,11 @@
-{ config, pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ i2c-tools ];
+{ config, pkgs, inputs, ... }:
+let unstable = inputs.unstable.legacyPackages.${pkgs.system};
+in {
+  environment.systemPackages = with unstable; [ i2c-tools ];
   services.hardware.openrgb = {
     enable = true;
     motherboard = "intel";
-    package = pkgs.openrgb-with-all-plugins;
+    package = unstable.openrgb-with-all-plugins;
   };
   services.udev = {
     extraRules = ''

@@ -1,4 +1,6 @@
-{ pkgs, unstable, ... }: {
+{ pkgs, inputs, ... }:
+let unstable = inputs.unstable.legacyPackages.${pkgs.system};
+in {
   hardware.graphics = {
     enable = true;
     package = unstable.mesa;

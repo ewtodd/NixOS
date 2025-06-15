@@ -5,7 +5,7 @@
     ../../common/nixos/packages.nix
     ../../common/nixos/services.nix
     ../../modules/nixos/obs.nix
-    ../../modules/nixos/sway.nix
+    ../../modules/nixos/sway-de.nix
   ];
 
   users.users.e-play = {
