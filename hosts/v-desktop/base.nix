@@ -8,8 +8,8 @@
     ../../modules/nixos/openrgb.nix
     ../../modules/nixos/cosmic-de.nix
     ../../modules/nixos/obs.nix
+    ../../modules/nixos/steam.nix
   ];
-  programs.steam.enable = true;
   users.users.v-play = {
     isNormalUser = true;
     description = "v-play";
