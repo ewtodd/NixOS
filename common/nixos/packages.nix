@@ -21,6 +21,7 @@
     usbutils
     unzip
     paprefs
+    bottles
   ];
 
   fonts.packages = with pkgs; [
