@@ -7,6 +7,7 @@
       ../../common/home-manager/play-user.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/swaync/swaync.nix
+      ../../modules/home-manager/kitty/kitty.nix
     ];
   };
 
@@ -18,6 +19,7 @@
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/swaync/swaync.nix
+      ../../modules/home-manager/kitty/kitty.nix
     ];
   };
 }
