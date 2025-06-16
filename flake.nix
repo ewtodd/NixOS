@@ -32,7 +32,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = { inherit inputs; };
-
+              users = import ./hosts/v-desktop/home.nix;
             };
           }
           ./hosts/v-desktop/configuration.nix
@@ -53,10 +53,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = { inherit inputs; };
-              users = {
-                "e-play" = import ./home/e-play.nix;
-                "e-work" = import ./home/e-work.nix;
-              };
+              users = import ./hosts/e-desktop/home.nix;
             };
           }
           ./hosts/e-desktop/configuration.nix
@@ -77,6 +74,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = { inherit inputs; };
+              users = import ./hosts/e-laptop/home.nix;
             };
           }
           ./hosts/e-laptop/configuration.nix

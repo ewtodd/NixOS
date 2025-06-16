@@ -1,4 +1,5 @@
 { pkgs, inputs, system, ...}: {
+  nixpkgs.config.allowUnfree = true;
   programs.steam = {
     enable = true;
     extraCompatPackages = [
