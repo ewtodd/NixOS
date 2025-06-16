@@ -14,7 +14,8 @@ in {
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
-    package = unstable.linuxPackages.nvidiaPackages.beta;
+    powerManagement.enable = true;
+    package = pkgs.linuxPackages.nvidiaPackages.production;
     nvidiaSettings = true;
     open = true;
   };
