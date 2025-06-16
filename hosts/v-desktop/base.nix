@@ -6,7 +6,7 @@
     ../../common/nixos/services.nix
     ../../modules/nixos/nvidia-graphics.nix
     ../../modules/nixos/openrgb.nix
-    ../../modules/nixos/cosmic-de.nix
+    ../../modules/nixos/cinnamon-de.nix
     ../../modules/nixos/obs.nix
     ../../modules/nixos/steam.nix
   ];

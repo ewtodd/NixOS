@@ -6,21 +6,16 @@
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
-
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-cosmic = {
-      url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
   };
 
-  outputs = inputs@{ self, nixpkgs, unstable, ... }: {
+  outputs = inputs@{ self, nixpkgs, ... }: {
     nixosConfigurations = {
       v-desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -31,6 +26,7 @@
         modules = [
           inputs.nixvim.nixosModules.nixvim
           inputs.home-manager.nixosModules.home-manager
+          inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -39,7 +35,6 @@
 
             };
           }
-          inputs.nixos-cosmic.nixosModules.default
           ./hosts/v-desktop/configuration.nix
         ];
       };

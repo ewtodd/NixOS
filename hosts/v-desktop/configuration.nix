@@ -6,5 +6,4 @@
   time.timeZone = "America/Chicago";
   networking.hostName = "v-desktop";
   system.stateVersion = "25.05";
-
 }

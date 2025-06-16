@@ -1,7 +1,10 @@
 { config, pkgs, inputs, ... }:
-let unstable = inputs.unstable.legacyPackages.${pkgs.system};
+let
+  unstable = import inputs.unstable {
+    system = "x86_64-linux";
+    config.allowUnfree = true;
+  };
 in {
-
   nixpkgs.config.allowUnfree = true;
   hardware.graphics = {
     enable = true;
@@ -11,7 +14,7 @@ in {
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = unstable.linuxPackages.nvidiaPackages.beta;
     nvidiaSettings = true;
     open = true;
   };

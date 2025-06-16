@@ -6,6 +6,7 @@
     ../../common/nixos/services.nix
     ../../modules/nixos/obs.nix
     ../../modules/nixos/sway-de.nix
+    ../../modules/nixos/steam.nix
   ];
 
   users.users.e-play = {
