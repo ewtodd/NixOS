@@ -12,7 +12,6 @@ in {
     wget
     firefox-wayland
     libreoffice
-    geary
     tree
     fastfetch
     texliveSmall

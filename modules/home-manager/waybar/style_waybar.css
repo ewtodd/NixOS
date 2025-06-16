@@ -3,164 +3,185 @@
 	border-radius: 0;
 	min-height: 0;
 	font-family: "JetBrainsMono Nerd Font", monospace;
-	font-size: 0.9rem; /* 13px; */
+	font-size: 0.9rem;
 }
 
 window#waybar {
-	background-color: rgba(24, 24, 37, 0.75);
-	transition-property: background-color;
-	transition-duration: 0.5s;
+	background: none;
+	border: none;
+	box-shadow: none;
 }
 
-window#waybar.hidden {
-	opacity: 0.1;
+/* Group 1: Logo + Workspaces */
+#custom-logo {
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 2px;
+	padding-right: 5px;
+	margin-left: 0px;
+	margin-right: 0px;
+	font-size: 22px;
+	border-radius: 8px 0 0 8px; /* Left rounded corners */
+	color: #1793d1;
+	min-width: 30px;
+	background-color: #cba6f7;
+	margin: 6px 0 6px 3px;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
+	border-left: none;
 }
 
-#mode,
 #workspaces {
-	background-color: transparent;
+	background: transparent;
+	margin: 6px 0;
+}
+
+#workspaces button {
+	all: initial;
+	min-width: 24px;
+	padding: 8px 12px;
+	margin: 0;
+	border-radius: 0;
+	background-color: #cba6f7;
+	color: #181825;
+	transition: background 0.2s, color 0.2s;
+	border-left: none;
+}
+
+#workspaces button:not(:last-child) {
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
+}
+
+#workspaces button:last-child {
+	border-radius: 0 8px 8px 0; /* Right rounded corners */
+	border-right: none;
+}
+
+#workspaces button.active,
+#workspaces button:hover {
+	color: #cba6f7;
+	background-color: #181825;
+}
+
+#workspaces button.urgent {
+	background-color: #f38ba8;
+	color: #181825;
 }
 
 #mode {
 	all: initial;
 	min-width: 0;
-	box-shadow: inset 0 -3px transparent;
-	padding: 8px 18px; /* Increased vertical padding for better centering */
+	box-shadow: none;
+	padding: 8px 18px;
 	margin: 6px 3px;
-	border-radius: 4px;
+	border-radius: 8px;
 	background-color: #1e1e2e;
 	color: #be257e;
+	border: none;
 }
 
-#workspaces button {
-	all: initial;
-	min-width: 24px; /* Ensures consistent width for icons */
-	box-shadow: inset 0 -3px transparent;
-	padding: 8px 12px; /* Balanced padding for centering */
-	margin: 6px 3px;
-	border-radius: 4px;
-	background-color: #1e1e2e;
-	color: #cdd6f4;
+/* Group 2: Individual modules grouped together */
+#cpu {
+	background-color: #cba6f7;
+	color: #181825;
+	padding: 8px 12px;
+	border-radius: 8px 0 0 8px; /* Left rounded corners */
+	margin: 6px 0 6px 3px;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
+	border-left: none;
 }
 
-#workspaces button.active {
-	color: #1e1e2e;
-	background-color: #cdd6f4;
-}
-
-#workspaces button:hover {
-	box-shadow: inherit;
-	text-shadow: inherit;
-	color: #1e1e2e;
-	background-color: #cdd6f4;
-}
-
-#workspaces button.urgent {
-	background-color: #f38ba8;
-}
-
-#cpu,
+/* Middle modules with consistent right borders only */
 #memory,
-#custom-power,
 #battery,
 #backlight,
-#pulseaudio,
-#network,
-#tray,
-#clock {
-	border-radius: 4px;
-	margin: 6px 3px;
-	padding: 8px 12px; /* Increased vertical padding for better centering */
-	background-color: #1e1e2e;
+#pulseaudio {
+	background-color: #cba6f7;
 	color: #181825;
+	padding: 8px 12px;
+	border-radius: 0;
+	margin: 6px 0;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
+	border-left: none;
+}
+#network {
+	background-color: #cba6f7;
+	color: #181825;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 8px;
+	padding-right: 12px;
+	border-radius: 0;
+	margin: 6px 0;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
+	border-left: none;
 }
 
+/* Last module in the group - no borders */
 #custom-power {
-	margin-right: 6px;
+	background-color: #cba6f7;
+	color: #181825;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 8px;
+	padding-right: 10px;
+	border-radius: 0 8px 8px 0; /* Right rounded corners */
+	margin: 6px 3px 6px 0;
+	border-left: none;
+	border-right: none;
 }
 
-#custom-logo {
-	padding: 8px 2px; /* Increased vertical padding */
-	margin-left: 0px;
-	margin-right: 0px;
-	font-size: 22px;
-	border-radius: 8px 0px 0px 8px;
-	color: #1793d1;
-	min-width: 30px; /* Ensures consistent width */
-}
-
-#cpu {
-	background-color: #ff8fab;
-}
-
-#memory {
-	background-color: #fab387;
-}
-
-#battery {
-	background-color: #f38ba8;
-}
-
+/* Special states for battery */
 #battery.warning,
 #battery.critical,
 #battery.urgent {
 	background-color: #ff0000;
 	color: #ffff00;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
 }
 
 #battery.charging {
 	background-color: #a6e3a1;
 	color: #181825;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
 }
 
-#backlight {
-	background-color: #fab387;
-}
-
-#pulseaudio {
-	background-color: #f9e2af;
-}
-
-#network {
-	background-color: #94e2d5;
-	padding: 8px 17px 8px 12px; /* Maintained right padding, increased vertical */
-}
-
+/* Group 3: Clock + Notification + Tray */
 #clock {
 	background-color: #cba6f7;
 	color: #181825;
-	padding: 8px 12px; /* Increased vertical padding */
+	padding: 8px 12px;
 	border-radius: 8px 0 0 8px;
 	margin: 6px 0 6px 3px;
+	border-right: 1px solid rgba(24, 24, 37, 0.2);
+	border-left: none;
 }
 
 #custom-notification {
 	background-color: #cba6f7;
 	font-size: 15px;
 	color: #181825;
-	padding-top: 8px; /* Increased vertical padding, equal horizontal */
+	padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 8px;
 	padding-right: 10px;
 	border-radius: 0;
 	margin: 6px 0;
-	border-left: 1px solid rgba(24, 24, 37, 0.2);
 	border-right: 1px solid rgba(24, 24, 37, 0.2);
-	min-width: 24px; /* Increased for better icon centering */
+	border-left: none;
+	min-width: 24px;
 }
 
 #tray {
 	background-color: #cba6f7;
 	color: #181825;
-	padding: 8px 12px; /* Increased vertical padding */
+	padding: 8px 12px;
 	border-radius: 0 8px 8px 0;
 	margin: 6px 3px 6px 0;
+	border-left: none;
+	border-right: none;
 }
 
-#custom-power {
-	background-color: #f2cdcd;
-}
-
+/* Tooltips */
 tooltip {
 	border-radius: 8px;
 	padding: 15px;

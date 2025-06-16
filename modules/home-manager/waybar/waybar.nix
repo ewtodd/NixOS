@@ -76,7 +76,8 @@ in {
           none = "";
           dnd-notification = "<span foreground='red'><sup></sup></span>";
           dnd-none = "";
-          inhibited-notification = "<span foreground='red'><sup></sup></span>";
+          inhibited-notification =
+            "<span foreground='red'><sup></sup></span>";
           inhibited-none = "";
           dnd-inhibited-notification =
             "<span foreground='red'><sup></sup></span>";
@@ -147,8 +148,7 @@ in {
       "custom/power" = {
         format = "󰤆";
         tooltip = false;
-        "on-click" =
-          "swaylock -f --screenshots --effect-blur 7x7 --indicator --clock --timestr '%-I:%M %p' --datestr '%a, %b %d'";
+        "on-click" = "swaylock";
       };
     }];
 
