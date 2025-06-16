@@ -20,9 +20,7 @@
       ll = "ls -l";
     };
   };
-  # Environment variables for gaming
   home.sessionVariables = {
-    MANGOHUD = "1";
     VKD3D_CONFIG = "no_upload_hvv";
   };
 }
