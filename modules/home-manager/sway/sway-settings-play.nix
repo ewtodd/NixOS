@@ -30,7 +30,7 @@
     };
 
     extraConfig = ''
-      exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/play.png
+      exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/play.jpg
     '';
   };
 }
