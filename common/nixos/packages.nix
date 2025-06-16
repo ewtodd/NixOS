@@ -1,4 +1,6 @@
-{ config, pkgs, inputs, system, ... }: {
+{ config, pkgs, inputs, system, ... }:
+let bottles = pkgs.bottles.override { removeWarningPopup = true; };
+in {
 
   imports = [ ../../modules/nixvim/nixvim.nix ];
 
