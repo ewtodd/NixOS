@@ -24,7 +24,6 @@
     '';
     extraOptions = [ "--verbose" "--debug" ];
     extraPackages = with pkgs; [
-      kitty
       birdtray
       wl-clipboard
       swayidle
