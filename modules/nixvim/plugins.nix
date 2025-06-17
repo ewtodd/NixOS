@@ -26,7 +26,7 @@
           run_and_move = "x";
           split_cell = "s";
         };
-        repl_provider = "molten";
+        repl_provider = "toggleterm";
         syntax_highlight = true;
       };
     };
