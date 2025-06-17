@@ -1,10 +1,18 @@
 { config, pkgs, ... }: {
-  boot.kernelPackages = pkgs.linuxPackages_6_13;
+  boot.kernelPackages = pkgs.linuxPackages_cachyos;
+  services.scx.enable = true;
 
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/nvme0n1";
-  boot.loader.grub.splashMode = "stretch";
-  boot.loader.timeout = 3;
+  boot.loader.grub = {
+    enable = true;
+    device = "/dev/nvme0n1";
+    splashImage = null; # Disable splash image for text mode
+    font = null; # Force console mode
+    extraConfig = ''
+      GRUB_TERMINAL_OUTPUT="console"
+      GRUB_GFXMODE=1920x1080x32
+      GRUB_GFXPAYLOAD_LINUX=keep
+    '';
+  };
 
   boot.initrd.luks.devices."luks-ae8141ce-edf4-4fea-b6b0-d8b4840de6c5".device =
     "/dev/disk/by-uuid/ae8141ce-edf4-4fea-b6b0-d8b4840de6c5";

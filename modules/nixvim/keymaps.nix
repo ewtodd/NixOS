@@ -84,5 +84,5 @@
       mode = [ "n" "i" "v" ];
       options = { nowait = true; };
     }
-  ];
+      ];
 }
