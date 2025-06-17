@@ -19,7 +19,7 @@
       pulseaudio
       gthumb
       nautilus
-      thunderbird
+      thunderbird-latest
       zathura
       udiskie
       gnome-themes-extra
