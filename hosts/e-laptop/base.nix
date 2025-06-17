@@ -4,6 +4,8 @@
     ../../common/nixos/base.nix
     ../../common/nixos/packages.nix
     ../../common/nixos/services.nix
+    ../../modules/nixos/suspend-then-hibernate.nix
+    ../../modules/nixos/laptop-power.nix
     ../../modules/nixos/obs.nix
     ../../modules/nixos/sway-de.nix
     ../../modules/nixos/steam.nix

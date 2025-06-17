@@ -5,7 +5,7 @@
 
       assigns = {
         "2" = [{ app_id = "thunderbird"; }];
-        "3" = [{ app_id = "slack"; }];
+        "3" = [{ app_id = "Slack"; }];
       };
 
       # Work-specific keybindings

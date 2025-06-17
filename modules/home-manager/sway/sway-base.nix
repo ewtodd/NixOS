@@ -4,11 +4,28 @@
 
   services.swayidle = {
     enable = true;
-    timeouts = [{
-      timeout = 600;
-      command = ''
-        ${pkgs.swaylock-effects}/bin/swaylock -f --screenshots --effect-blur 7x7 --indicator --clock --timestr "%-I:%M %p" --datestr "%a, %b %d"'';
-    }];
+    package = pkgs.swayidle;
+    extraArgs = [ "-w" ];
+    timeouts = [
+      {
+        timeout = 600;
+        command = "${pkgs.swaylock-effects}/bin/swaylock";
+      }
+      {
+        timeout = 660;
+        command = "${pkgs.systemd}/bin/systemctl suspend";
+      }
+    ];
+    events = [
+      {
+        event = "before-sleep";
+        command = "${pkgs.swaylock-effects}/bin/swaylock";
+      }
+      {
+        event = "after-resume";
+        command = "swaymsg output * power on";
+      }
+    ];
   };
 
   programs.fuzzel = {
@@ -29,7 +46,6 @@
     };
   };
 
-  # Swaylock configuration
   programs.swaylock = {
     enable = true;
     package = pkgs.swaylock-effects;
@@ -40,12 +56,13 @@
       clock = true;
       timestr = "%-I:%M %p";
       datestr = "%a, %b %d";
-      color = "808080";
+      color = "cba6f7";
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
       line-color = "ffffff";
       show-failed-attempts = true;
+      daemonize = true;
     };
   };
 
@@ -129,8 +146,7 @@
         "Mod4+p" =
           "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options?";
         # Enhanced idle/lock for work (with suspend)
-        "Mod4+k+l" = ''
-          exec swayidle -w timeout 600 'swaylock' timeout 660 'swaymsg "output * power off"' timeout 661 'systemctl suspend' resume 'swaymsg "output * power on"' before-sleep 'swaylock'';
+        "Mod4+k+l" = "exec loginctl lock-session";
         "Mod4+h" = "focus left";
         "Mod4+j" = "focus down";
         "Mod4+k" = "focus up";

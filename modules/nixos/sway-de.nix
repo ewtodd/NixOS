@@ -26,7 +26,7 @@
     ];
   };
 
-  security.pam.services.swaylock = {};
+  security.pam.services.swaylock-effects = { };
   services.udisks2.enable = true;
   services.gvfs.enable = true;
 
