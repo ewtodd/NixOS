@@ -10,6 +10,8 @@
       ../../modules/home-manager/kitty/kitty.nix
       ../../modules/home-manager/sway/sway-base.nix
       ../../modules/home-manager/sway/sway-settings-play.nix
+      # TO DO:
+      #../../modules/home-manager/sway/sway-laptop-settings.nix
     ];
   };
 
@@ -24,6 +26,12 @@
       ../../modules/home-manager/kitty/kitty.nix
       ../../modules/home-manager/sway/sway-base.nix
       ../../modules/home-manager/sway/sway-settings-work.nix
+      # TO DO:
+      #../../modules/home-manager/sway/sway-laptop-settings.nix
     ];
+    programs.bash.shellAliases = {
+      phone-home = "ssh e-work@ssh.ethanwtodd.com";
+      files-home = "sftp e-work@ssh.ethanwtodd.com";
+    };
   };
 }
