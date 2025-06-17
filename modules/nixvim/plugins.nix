@@ -9,23 +9,30 @@
       extensions.file-browser.enable = true;
     };
 
-    dap = { enable = true; };
-    dap-virtual-text.enable = true;
-    dap-python.enable = true;
-    dap-ui = { enable = true; };
-
-    molten = { enable = true; };
-
-    image = { enable = true; };
-
-    vim-slime = {
+    notebook-navigator = {
       enable = true;
+      autoLoad = true;
       settings = {
-        slime_target = "kitty";
-        slime_paste_file = "$HOME/.slime_paste";
-        slime_cell_delimiter = "# %%"; # Python cell support like Spyder};
+        activate_hydra_keys = "<leader>h";
+        cell_highlight_group = "Folded";
+        cell_markers = { python = "# %%"; };
+        hydra_keys = {
+          add_cell_after = "b";
+          add_cell_before = "a";
+          comment = "c";
+          move_down = "j";
+          move_up = "k";
+          run = "X";
+          run_and_move = "x";
+          split_cell = "s";
+        };
+        repl_provider = "molten";
+        syntax_highlight = true;
       };
     };
+
+    molten.enable = true;
+    hydra.enable = true;
 
     barbar = {
       enable = true;
