@@ -140,11 +140,16 @@
         "Mod4+Return" =
           "exec ${config.wayland.windowManager.sway.config.terminal}";
         "Mod4+Shift+q" = "kill";
+        "Mod4+Tab" = "exec swayr switch-window";
+        "Mod4+grave" =
+          "exec swayr switch-to-urgent-or-lru-window"; # backtick key
+        "Mod4+Shift+Tab" = "exec swayr switch-workspace";
+        "Mod4+Delete" = "exec swayr quit-window";
         "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
         "Mod4+f" = "exec firefox";
         "Mod4+Shift+p" = "exec firefox --private-window";
         "Mod4+p" =
-          "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options?";
+          "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
         # Enhanced idle/lock for work (with suspend)
         "Mod4+k+l" = "exec loginctl lock-session";
         "Mod4+h" = "focus left";
@@ -295,6 +300,7 @@
       exec swaymsg "layer_effects 'swaync-control-center' 'blur enable'"
       exec swaync 
       exec udiskie --tray
+      exec swayrd
     '';
   };
 }

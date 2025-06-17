@@ -58,6 +58,7 @@
       repaint_delay = 2;
       input_delay = 1;
       sync_to_monitor = "yes";
+      confirm_os_window_close = "-1";
     };
     extraConfig = ''
       # Key bindings

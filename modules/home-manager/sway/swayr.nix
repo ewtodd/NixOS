@@ -5,14 +5,23 @@
       menu = {
         executable = "${pkgs.fuzzel}/bin/fuzzel";
         args = [
-          "--show=dmenu"
-          "--allow-markup"
-          "--allow-images"
-          "--insensitive"
-          "--cache-file=/dev/null"
-          "--parse-search"
-          "--height=40%"
-          "--prompt={prompt}"
+          "--dmenu" # Enable dmenu mode for swayr integration
+          "--prompt={prompt}" # Use the prompt provided by swayr
+          "--lines=15" # Show up to 15 results
+          "--width=60" # Window width in characters
+          "--horizontal-pad=20" # Horizontal padding in pixels
+          "--vertical-pad=10" # Vertical padding in pixels
+          "--inner-pad=5" # Padding between prompt and list
+          "--border-radius=12" # Match your waybar styling
+          "--border-width=1" # Thin border
+          "--font=JetBrains Mono NF:size=14" # Match your system font
+          "--background-color=1e1e2eff" # Match your theme
+          "--text-color=cdd6f4ff" # Light text
+          "--selection-color=cba6f7ff" # Purple selection
+          "--selection-text-color=181825ff" # Dark text on selection
+          "--border-color=6272a4ff" # Border color
+          "--match-color=f9e2afff" # Highlight matched text
+          "--prompt-color=be257eff"
         ];
       };
 
@@ -30,30 +39,14 @@
         html_escape = true;
       };
 
-      layout = {
-        auto_tile = false;
-        auto_tile_min_window_width_per_output_width = [
-          [ 800 400 ]
-          [ 1024 500 ]
-          [ 1280 600 ]
-          [ 1400 680 ]
-          [ 1440 700 ]
-          [ 1600 780 ]
-          [ 1680 780 ]
-          [ 1920 920 ]
-          [ 2048 980 ]
-          [ 2560 1000 ]
-          [ 3440 1200 ]
-          [ 3840 1280 ]
-          [ 4096 1400 ]
-          [ 4480 1600 ]
-          [ 7680 2400 ]
-        ];
+      layout = { auto_tile = true; };
+
+      focus = { lockin_delay = 500; };
+
+      misc = {
+        seq_inhibit = false;
+        auto_nop_delay = 3000;
       };
-
-      focus = { lockin_delay = 750; };
-
-      misc = { seq_inhibit = false; };
     };
   };
 

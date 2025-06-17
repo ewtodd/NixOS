@@ -12,8 +12,6 @@
       # Play-specific keybindings
       keybindings = {
         "Mod4+Shift+t" = "exec firefox --new-window https://monkeytype.com";
-        "Mod4+p" =
-          "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options?";
       };
 
       # Play-specific startup applications

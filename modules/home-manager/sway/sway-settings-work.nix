@@ -12,8 +12,6 @@
       keybindings = {
         "Mod4+g" =
           "exec firefox --new-window -url https://umgpt.umich.edu/ -new-tab -url https://www.perplexity.ai/";
-        "Mod4+p" =
-          "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options?";
 
         # Brightness controls for laptop
         "XF86MonBrightnessUp" =
