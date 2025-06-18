@@ -90,5 +90,66 @@
       mode = [ "n" "i" "v" ];
       options = { nowait = true; };
     }
+    {
+      key = "<S-CR>";
+      action = ":MoltenEvaluateOperator<CR>ip";
+      mode = "n";
+      options.desc = "Evaluate current cell";
+    }
+
+    # Initialize molten
+    {
+      key = "<localleader>mi";
+      action = ":MoltenInit<CR>";
+      mode = "n";
+      options.desc = "Initialize Molten";
+    }
+
+    # Evaluate line
+    {
+      key = "<localleader>rl";
+      action = ":MoltenEvaluateLine<CR>";
+      mode = "n";
+      options.desc = "Evaluate line";
+    }
+
+    # Re-evaluate cell
+    {
+      key = "<localleader>rr";
+      action = ":MoltenReevaluateCell<CR>";
+      mode = "n";
+      options.desc = "Re-evaluate cell";
+    }
+
+    # Evaluate visual selection
+    {
+      key = "<localleader>r";
+      action = ":<C-u>MoltenEvaluateVisual<CR>gv";
+      mode = "v";
+      options.desc = "Evaluate visual selection";
+    }
+
+    # Show/hide output
+    {
+      key = "<localleader>os";
+      action = ":noautocmd MoltenEnterOutput<CR>";
+      mode = "n";
+      options.desc = "Show output";
+    }
+
+    {
+      key = "<localleader>oh";
+      action = ":MoltenHideOutput<CR>";
+      mode = "n";
+      options.desc = "Hide output";
+    }
+
+    # Delete cell
+    {
+      key = "<localleader>md";
+      action = ":MoltenDelete<CR>";
+      mode = "n";
+      options.desc = "Delete cell";
+    }
   ];
 }
