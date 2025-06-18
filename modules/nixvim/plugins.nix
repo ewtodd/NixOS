@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }: {
+{ config, pkgs, lib, inputs, ... }: {
   programs.nixvim.extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
@@ -9,64 +9,31 @@
       extensions.file-browser.enable = true;
     };
 
-    notebook-navigator = {
+    molten = {
       enable = true;
-      autoLoad = true;
       settings = {
-        activate_hydra_keys = "<leader>h";
-        cell_highlight_group = "Folded";
-        cell_markers = { python = "# %%"; };
-        hydra_keys = {
-          add_cell_after = "b";
-          add_cell_before = "a";
-          comment = "c";
-          move_down = "j";
-          move_up = "k";
-          run = "X";
-          run_and_move = "x";
-          split_cell = "s";
-        };
-        repl_provider = "iron";
-        syntax_highlight = true;
+        auto_open_output = false;
+        image_provider = "image.nvim";
+        wrap_output = true;
+        virt_text_output = true;
+        virt_lines_off_by_1 = true;
+        # Show output inline by default
+        output_show_more = true;
+        # Configure cell markers
+        cell_marker = "# %%";
       };
     };
 
-    iron = {
+    image = {
       enable = true;
       settings = {
-        highlight = { italic = true; };
-        keymaps = {
-          send_line = "<space>sl";
-          send_motion = "<space>sc";
-          visual_send = "<space>sc";
-        };
-        repl_definition = {
-          python = {
-            command = [ "python3" ];
-            format = {
-              __raw = "require('iron.fts.common').bracketed_paste_python";
-            };
-          };
-          sh = { command = [ "zsh" ]; };
-        };
-        repl_open_cmd = { __raw = ''require("iron.view").bottom(40)''; };
-        scratch_repl = true;
-        close_window_on_exit = false;
-        visibility = { __raw = "require('iron.visibility').toggle"; };
-      };
-    };
-
-    hydra = {
-      enable = true;
-      settings = {
-        hint = {
-          float_opts = {
-            border = "rounded"; # Move border here
-            style = "minimal";
-            focusable = false;
-            noautocmd = true;
-          };
-        };
+        backend = "kitty";
+        max_width = 100;
+        max_height = 12;
+        max_height_window_percentage = "math.huge";
+        max_width_window_percentage = "math.huge";
+        window_overlap_clear_enabled = true;
+        window_overlap_clear_ft_ignore = [ "cmp_menu" "cmp_docs" "" ];
       };
     };
 
@@ -94,7 +61,6 @@
         pkgs.vimPlugins.nvim-treesitter.builtGrammars.bash
         pkgs.vimPlugins.nvim-treesitter.builtGrammars.yaml
         pkgs.vimPlugins.nvim-treesitter.builtGrammars.cmake
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.hyprlang
       ];
     };
 

@@ -10,6 +10,7 @@
     ../../modules/nixos/obs.nix
     ../../modules/nixos/steam.nix
     ../../modules/nixos/quickemu.nix
+    ../../modules/nixos/zoom.nix
   ];
   users.users.v-play = {
     isNormalUser = true;
