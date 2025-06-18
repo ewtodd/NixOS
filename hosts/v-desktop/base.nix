@@ -9,6 +9,7 @@
     ../../modules/nixos/cosmic-de.nix
     ../../modules/nixos/obs.nix
     ../../modules/nixos/steam.nix
+    ../../modules/nixos/quickemu.nix
   ];
   users.users.v-play = {
     isNormalUser = true;
