@@ -1,6 +1,12 @@
 { config, lib, pkgs, ... }: {
   programs.nixvim.keymaps = [
     {
+      action = "<cmd>IronHide<CR>";
+      key = "<S-esc>";
+      mode = [ "n" "i" "v" ];
+      options = { nowait = true; };
+    }
+    {
       action = "<cmd>Telescope file_browser<CR>";
       key = "<C-f>";
       mode = [ "n" "i" "v" ];
@@ -84,5 +90,5 @@
       mode = [ "n" "i" "v" ];
       options = { nowait = true; };
     }
-      ];
+  ];
 }

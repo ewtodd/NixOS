@@ -63,6 +63,7 @@
       line-color = "ffffff";
       show-failed-attempts = true;
       daemonize = true;
+      fade = 1;
     };
   };
 
