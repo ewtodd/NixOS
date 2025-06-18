@@ -2,7 +2,7 @@
 result
 result-*
 
-.deb
+*.deb
 
 
 # Ignore automatically generated direnv output
