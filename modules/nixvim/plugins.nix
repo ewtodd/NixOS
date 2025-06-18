@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, inputs, ... }: {
   programs.nixvim.extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
@@ -26,13 +26,49 @@
           run_and_move = "x";
           split_cell = "s";
         };
-        repl_provider = "toggleterm";
+        repl_provider = "iron";
         syntax_highlight = true;
       };
     };
 
-    molten.enable = true;
-    hydra.enable = true;
+    iron = {
+      enable = true;
+      settings = {
+        highlight = { italic = true; };
+        keymaps = {
+          send_line = "<space>sl";
+          send_motion = "<space>sc";
+          visual_send = "<space>sc";
+        };
+        repl_definition = {
+          python = {
+            command = [ "python3" ];
+            format = {
+              __raw = "require('iron.fts.common').bracketed_paste_python";
+            };
+          };
+          sh = { command = [ "zsh" ]; };
+        };
+        repl_open_cmd = { __raw = ''require("iron.view").bottom(40)''; };
+        scratch_repl = true;
+        close_window_on_exit = false;
+        visibility = { __raw = "require('iron.visibility').toggle"; };
+      };
+    };
+
+    hydra = {
+      enable = true;
+      settings = {
+        hint = {
+          float_opts = {
+            border = "rounded"; # Move border here
+            style = "minimal";
+            focusable = false;
+            noautocmd = true;
+          };
+        };
+      };
+    };
 
     barbar = {
       enable = true;
@@ -40,15 +76,6 @@
         clickable = true;
         focus_on_close = "left";
         insert_at_end = true;
-      };
-    };
-
-    toggleterm = {
-      enable = true;
-      settings = {
-        direction = "horizontal";
-        open_mapping = "[[<C-n>]]";
-        autochdir = true;
       };
     };
 
