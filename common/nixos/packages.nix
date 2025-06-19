@@ -20,6 +20,7 @@ in {
     nixfmt-classic
     tree
     usbutils
+    pciutils
     unzip
     paprefs
     bottles
