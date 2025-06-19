@@ -12,14 +12,12 @@
     molten = {
       enable = true;
       settings = {
-        auto_open_output = false;
+        auto_open_output = true;
         image_provider = "image.nvim";
         wrap_output = true;
         virt_text_output = true;
         virt_lines_off_by_1 = true;
-        # Show output inline by default
         output_show_more = true;
-        # Configure cell markers
         cell_marker = "# %%";
       };
     };
@@ -28,10 +26,6 @@
       enable = true;
       settings = {
         backend = "kitty";
-        max_width = 100;
-        max_height = 12;
-        max_height_window_percentage = "math.huge";
-        max_width_window_percentage = "math.huge";
         window_overlap_clear_enabled = true;
         window_overlap_clear_ft_ignore = [ "cmp_menu" "cmp_docs" "" ];
       };

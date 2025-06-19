@@ -1,9 +1,9 @@
 let pkgs = import <nixpkgs> { };
 in pkgs.mkShell {
-  packages = [
-    pkgs.root
-    pkgs.liberation_ttf
-    (pkgs.python3.withPackages (python-pkgs:
+  packages = with pkgs; [
+    root
+    liberation_ttf
+    (python3.withPackages (python-pkgs:
       with python-pkgs; [
         tensorflow
         matplotlib
@@ -14,10 +14,14 @@ in pkgs.mkShell {
         mplhep
         awkward
         pynvim
-        jupyter-client
+        ipykernel
         cairosvg
         plotly
         kaleido
       ]))
   ];
+  shellHook = ''
+    mkdir -p $HOME/.local/share/jupyter/runtime
+    python -m ipykernel install --user --name nix-python --display-name "Nix Python"
+  '';
 }

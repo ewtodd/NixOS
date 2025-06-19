@@ -91,18 +91,20 @@
       options = { nowait = true; };
     }
     {
-      key = "<S-CR>";
-      action = ":MoltenEvaluateOperator<CR>ip";
-      mode = "n";
+      key = "<C-e>";
+      action = ":MoltenEvaluateOperator<CR>";
+      mode = [ "n" "i" "v" ];
+      options.nowait = true;
       options.desc = "Evaluate current cell";
     }
 
     # Initialize molten
     {
-      key = "<localleader>mi";
-      action = ":MoltenInit<CR>";
-      mode = "n";
-      options.desc = "Initialize Molten";
+      key = "<C-m>";
+      action = "<cmd>MoltenInit nix-python<CR>";
+      mode = [ "n" "i" "v" ];
+      option.nowait = true;
+      options.desc = "Initialize Molten for Python";
     }
 
     # Evaluate line
@@ -129,22 +131,6 @@
       options.desc = "Evaluate visual selection";
     }
 
-    # Show/hide output
-    {
-      key = "<localleader>os";
-      action = ":noautocmd MoltenEnterOutput<CR>";
-      mode = "n";
-      options.desc = "Show output";
-    }
-
-    {
-      key = "<localleader>oh";
-      action = ":MoltenHideOutput<CR>";
-      mode = "n";
-      options.desc = "Hide output";
-    }
-
-    # Delete cell
     {
       key = "<localleader>md";
       action = ":MoltenDelete<CR>";
