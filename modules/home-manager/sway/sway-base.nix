@@ -151,8 +151,7 @@
         "Mod4+Shift+p" = "exec firefox --private-window";
         "Mod4+p" =
           "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
-        "Mod4+k+l" =
-          "exec ${pkgs.swayidle}/bin/swayidle -w lock ${pkgs.swaylock-effects}/bin/swaylock";
+        "Mod4+k+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
         "Mod4+h" = "focus left";
         "Mod4+j" = "focus down";
         "Mod4+k" = "focus up";
@@ -295,7 +294,7 @@
       # Per-application saturation for artistic effect
       for_window [app_id="firefox"] saturation set 1.1
       for_window [app_id="spotify"] saturation set 1.2
-
+      for_window [class=".*"] inhibit_idle fullscreenfor_windowfor_window [app_id=".*"] inhibit_idle fullscreen
       layer_effects "swaync-control-center" blur enable; shadows enable; corner_radius 15
 
       exec xss-lock --transfer-sleep-lock ${pkgs.swaylock-effects}/bin/swaylock 
