@@ -5,6 +5,7 @@
     displayManager.gdm.enable = true;
     displayManager.gdm.wayland = true;
     displayManager.gdm.autoSuspend = false;
+    displayManager.gdm.banner = "NO DOGS";
   };
 
   programs.sway = {
