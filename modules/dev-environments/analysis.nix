@@ -22,6 +22,7 @@ in pkgs.mkShell {
   ];
   shellHook = ''
     mkdir -p $HOME/.local/share/jupyter/runtime
+    jupyter kernelspec remove nix-python -f 2>/dev/null || true
     python -m ipykernel install --user --name nix-python --display-name "Nix Python"
   '';
 }
