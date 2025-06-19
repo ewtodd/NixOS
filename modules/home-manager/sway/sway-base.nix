@@ -60,10 +60,10 @@
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
-      line-color = "ffffff";
+      line-color = "cba6f7";
       show-failed-attempts = true;
       daemonize = true;
-      fade = 1;
+      fade = 0.5;
     };
   };
 
@@ -151,8 +151,8 @@
         "Mod4+Shift+p" = "exec firefox --private-window";
         "Mod4+p" =
           "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
-        # Enhanced idle/lock for work (with suspend)
-        "Mod4+k+l" = "exec loginctl lock-session";
+        "Mod4+k+l" =
+          "exec ${pkgs.swayidle}/bin/swayidle -w lock ${pkgs.swaylock-effects}/bin/swaylock";
         "Mod4+h" = "focus left";
         "Mod4+j" = "focus down";
         "Mod4+k" = "focus up";
@@ -298,6 +298,7 @@
 
       layer_effects "swaync-control-center" blur enable; shadows enable; corner_radius 15
 
+      exec xss-lock --transfer-sleep-lock ${pkgs.swaylock-effects}/bin/swaylock 
       exec swaymsg "layer_effects 'swaync-control-center' 'blur enable'"
       exec swaync 
       exec udiskie --tray
