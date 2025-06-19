@@ -60,10 +60,39 @@
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
-      line-color = "ffffff";
       show-failed-attempts = true;
       daemonize = true;
-      fade = 1;
+      fade = 0.5;
+      text-color = "#3e8fb0";
+      text-clear-color = "#9ccfd8";
+      text-caps-lock-color = "#f6c177";
+      text-ver-color = "#c4a7e7";
+      text-wrong-color = "#eb6f92";
+
+      bs-hl-color = "#23213666";
+      key-hl-color = "#3e8fb0";
+      caps-lock-bs-hl-color = "#23213666";
+      caps-lock-key-hl-color = "#f6c177";
+
+      separator-color = "#00000000";
+
+      inside-color = "#3e8fb055";
+      inside-clear-color = "#9ccfd855";
+      inside-caps-lock-color = "#f6c17755";
+      inside-ver-color = "#c4a7e755";
+      inside-wrong-color = "#eb6f9255";
+
+      line-color = "#3e8fb011";
+      line-clear-color = "#9ccfd811";
+      line-caps-lock-color = "#f6c17711";
+      line-ver-color = "#c4a7e711";
+      line-wrong-color = "#eb6f9211";
+
+      ring-color = "#3e8fb0aa";
+      ring-clear-color = "#9ccfd8aa";
+      ring-caps-lock-color = "#f6c177aa";
+      ring-ver-color = "#c4a7e7aa";
+      ring-wrong-color = "#eb6f92aa";
     };
   };
 
@@ -151,8 +180,7 @@
         "Mod4+Shift+p" = "exec firefox --private-window";
         "Mod4+p" =
           "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
-        # Enhanced idle/lock for work (with suspend)
-        "Mod4+k+l" = "exec loginctl lock-session";
+        "Mod4+k+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
         "Mod4+h" = "focus left";
         "Mod4+j" = "focus down";
         "Mod4+k" = "focus up";
@@ -295,9 +323,10 @@
       # Per-application saturation for artistic effect
       for_window [app_id="firefox"] saturation set 1.1
       for_window [app_id="spotify"] saturation set 1.2
-
+      for_window [class=".*"] inhibit_idle fullscreenfor_windowfor_window [app_id=".*"] inhibit_idle fullscreen
       layer_effects "swaync-control-center" blur enable; shadows enable; corner_radius 15
 
+      exec xss-lock --transfer-sleep-lock ${pkgs.swaylock-effects}/bin/swaylock 
       exec swaymsg "layer_effects 'swaync-control-center' 'blur enable'"
       exec swaync 
       exec udiskie --tray
