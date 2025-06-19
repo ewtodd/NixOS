@@ -15,7 +15,7 @@ in {
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = true;
-    package = pkgs.linuxPackages.nvidiaPackages.production;
+    package = pkgs.linuxPackages_cachyos.nvidiaPackages.production;
     nvidiaSettings = true;
     open = true;
   };
