@@ -103,7 +103,7 @@
       key = "<C-m>";
       action = "<cmd>MoltenInit nix-python<CR>";
       mode = [ "n" "i" "v" ];
-      option.nowait = true;
+      options.nowait = true;
       options.desc = "Initialize Molten for Python";
     }
 
