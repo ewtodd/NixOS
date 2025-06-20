@@ -8,6 +8,7 @@
     ../../modules/nixos/laptop-power.nix
     ../../modules/nixos/obs.nix
     ../../modules/nixos/sway-de.nix
+    ../../modules/nixos/bluetooth.nix
     ../../modules/nixos/steam.nix
   ];
 
