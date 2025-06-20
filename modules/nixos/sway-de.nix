@@ -28,9 +28,7 @@
   };
 
   security.pam.services.swaylock-effects = { };
-  services.blueman.enable = true;
-  hardware.bluetooth.powerOnBoot = false;
-  services.udisks2.enable = true;
+    services.udisks2.enable = true;
   services.gvfs.enable = true;
 
   qt = {
