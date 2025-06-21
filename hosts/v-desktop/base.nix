@@ -11,6 +11,7 @@
     ../../modules/nixos/steam.nix
     ../../modules/nixos/quickemu.nix
     ../../modules/nixos/zoom.nix
+    ../../modules/nixos/starship.nix
   ];
   users.users.v-play = {
     isNormalUser = true;
