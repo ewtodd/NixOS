@@ -38,7 +38,7 @@
           ./hosts/v-desktop/configuration.nix
         ];
       };
-      nixos-desktop = nixpkgs.lib.nixosSystem {
+      e-desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
