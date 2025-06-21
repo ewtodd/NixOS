@@ -29,6 +29,7 @@
 
     extraConfig = ''
       exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/play.jpg
+      exec . /etc/nixos/modules/home-manager/sway/scripts/startup-terminals.sh
     '';
   };
 }
