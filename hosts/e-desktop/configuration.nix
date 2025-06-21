@@ -4,7 +4,7 @@
   imports = [ ./hardware-configuration.nix ./environment.nix ./base.nix ];
 
   time.timeZone = "America/New_York";
-  network.hostName = "e-desktop";
+  networking.hostName = "e-desktop";
   system.stateVersion = "24.11";
 
 }

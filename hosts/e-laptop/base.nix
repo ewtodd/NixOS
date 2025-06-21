@@ -10,6 +10,7 @@
     ../../modules/nixos/sway-de.nix
     ../../modules/nixos/bluetooth.nix
     ../../modules/nixos/steam.nix
+    ../../modules/nixos/starship.nix
   ];
 
   users.users.e-play = {
