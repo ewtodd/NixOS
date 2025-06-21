@@ -8,6 +8,9 @@
     ../../modules/nixos/obs.nix
     ../../modules/nixos/sway-de.nix
     ../../modules/nixos/ssh.nix
+    ../../modules/nixos/steam.nix
+    ../../modules/nixos/suspend-then-hibernate.nix
+    ../../modules/nixos/starship.nix
   ];
 
   users.users.e-play = {
