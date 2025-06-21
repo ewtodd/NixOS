@@ -4,6 +4,8 @@ result-*
 
 *.deb
 
+packages/obs-studio/obs-studio-31.1.0-beta2/plugins/obs-browser/
+packages/obs-studio/obs-studio-31.1.0-beta2/plugins/obs-websocket/
 
 # Ignore automatically generated direnv output
 .direnv
