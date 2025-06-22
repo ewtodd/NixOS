@@ -1,11 +1,8 @@
-{ pkgs, inputs, ... }:
-#let unstable = inputs.unstable.legacyPackages.${pkgs.system};
-#in
-{
+{ pkgs, inputs, ... }: {
   programs.obs-studio = {
     enable = true;
-    package = pkgs.callPackage ../../packages/obs-studio/default.nix
-      { }; # unstable.obs-studio;
+    package =
+      pkgs.qt6Packages.callPackage ../../packages/obs-studio/default.nix { };
     plugins = with pkgs.obs-studio-plugins; [ obs-backgroundremoval ];
   };
 
