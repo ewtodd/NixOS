@@ -130,14 +130,6 @@ in stdenv.mkDerivation (finalAttrs: {
       }"
       ''${gappsWrapperArgs[@]}
     )
-  '' + lib.optionalString browserSupport ''
-    # Remove cef components before patchelf, otherwise it will fail
-    rm $out/lib/obs-plugins/libcef.so
-    rm $out/lib/obs-plugins/libEGL.so
-    rm $out/lib/obs-plugins/libGLESv2.so
-    rm $out/lib/obs-plugins/libvk_swiftshader.so
-    rm $out/lib/obs-plugins/libvulkan.so.1
-    rm $out/lib/obs-plugins/chrome-sandbox
   '';
 
   postFixup = lib.concatStrings [
@@ -146,10 +138,6 @@ in stdenv.mkDerivation (finalAttrs: {
       addDriverRunpath $out/lib/obs-plugins/*.so
     '')
 
-    (lib.optionalString browserSupport ''
-      # Link cef components again after patchelfing other libs
-      ln -sf ${cef}/${cef.buildType}/* $out/lib/obs-plugins/
-    '')
   ];
 
   passthru.updateScript = nix-update-script { };
