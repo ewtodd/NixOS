@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  imports = [ ./xdg.nix ];
+  imports = [ ./xdg.nix ./kitty/kitty.nix ./fastfetch/fastfetch.nix ];
   home.packages = with pkgs; [
     signal-desktop
     mangohud
