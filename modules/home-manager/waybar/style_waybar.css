@@ -22,7 +22,7 @@ window#waybar {
 	margin-right: 0px;
 	font-size: 22px;
 	border-radius: 8px 0 0 8px; /* Left rounded corners */
-	color: #1793d1;
+	color: #1e1e2e; /* #8be9fd;  Dracula cyan instead of blue */
 	min-width: 30px;
 	background-color: #cba6f7;
 	margin: 6px 0 6px 3px;
@@ -75,7 +75,7 @@ window#waybar {
 	margin: 6px 3px;
 	border-radius: 8px;
 	background-color: #1e1e2e;
-	color: #be257e;
+	color: #ff79c6; /* Proper Dracula pink */
 	border: none;
 }
 
@@ -134,8 +134,8 @@ window#waybar {
 #battery.warning,
 #battery.critical,
 #battery.urgent {
-	background-color: #ff0000;
-	color: #ffff00;
+	background-color: #f38ba8; /* Dracula red */
+	color: #f8f8f2; /* Dracula foreground */
 	border-right: 1px solid rgba(24, 24, 37, 0.2);
 }
 
@@ -185,10 +185,10 @@ window#waybar {
 tooltip {
 	border-radius: 8px;
 	padding: 15px;
-	background-color: #131822;
+	background-color: #1e1e2e; /* Proper Dracula background */
 }
 
 tooltip label {
 	padding: 5px;
-	background-color: #131822;
+	background-color: #1e1e2e; /* Proper Dracula background */
 }
