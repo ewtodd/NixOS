@@ -136,7 +136,7 @@
         "Mod4+Shift+0" = "move container to workspace number 10";
 
         # Papersway-specific window management
-        "Mod4+g" =
+        "Mod4+r" =
           "exec papersway-msg width toggle"; # Changed from Mod4+f to keep Firefox
         "Mod4+o" = "exec papersway-msg other-column";
 
@@ -147,8 +147,8 @@
         "Mod4+b" = "exec papersway-msg bury-workspace";
 
         # Papersway column management
-        "Mod4+e" = "exec papersway-msg absorb-expel left";
-        "Mod4+r" = "exec papersway-msg absorb-expel right";
+        "Alt+Shift+e" = "exec papersway-msg absorb-expel left";
+        "Alt+Shift+r" = "exec papersway-msg absorb-expel right";
         "Mod4+minus" = "exec papersway-msg cols decr";
         "Mod4+equal" = "exec papersway-msg cols incr";
 
