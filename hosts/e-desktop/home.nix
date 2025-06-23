@@ -8,7 +8,8 @@
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/swaync/swaync.nix
       ../../modules/home-manager/kitty/kitty.nix
-      ../../modules/home-manager/sway/sway-base.nix
+      #../../modules/home-manager/sway/sway-base.nix
+      ../../modules/home-manager/sway/papersway.nix
       ../../modules/home-manager/sway/sway-settings-play.nix
       ../../modules/home-manager/sway/sway-desktop-settings.nix
 
@@ -24,7 +25,8 @@
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/swaync/swaync.nix
       ../../modules/home-manager/kitty/kitty.nix
-      ../../modules/home-manager/sway/sway-base.nix
+      #../../modules/home-manager/sway/sway-base.nix
+      ../../modules/home-manager/sway/papersway.nix
       ../../modules/home-manager/sway/sway-settings-work.nix
       ../../modules/home-manager/sway/sway-desktop-settings.nix
     ];

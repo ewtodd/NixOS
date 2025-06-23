@@ -5,13 +5,13 @@
     displayManager.gdm.enable = true;
     displayManager.gdm.wayland = true;
     displayManager.gdm.autoSuspend = false;
-    displayManager.gdm.banner = "NO DOGS";
   };
 
   programs.sway = {
     enable = true;
     package = pkgs.swayfx;
     extraPackages = with pkgs; [
+      perl540Packages.Apppapersway
       birdtray
       wl-clipboard
       swaybg
