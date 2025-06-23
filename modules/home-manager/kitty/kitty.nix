@@ -1,4 +1,4 @@
-{config, pkgs, ...}: {
+{ config, pkgs, ... }: {
   programs.kitty = {
     enable = true;
     font = {
@@ -12,38 +12,60 @@
       initial_window_width = 700;
       initial_window_height = 500;
       remember_window_size = "no";
-      background_opacity = "0.65";
-      background = "#1a1625";
-      foreground = "#e8d5ff";
-      color0 = "#2d1b3d";
-      color1 = "#ff6b9d";
-      color2 = "#7dd3fc";
-      color3 = "#fbbf24";
-      color4 = "#8b5cf6";
-      color5 = "#ec4899";
-      color6 = "#06b6d4";
-      color7 = "#f1e6ff";
-      color8 = "#4c3957";
-      color9 = "#ff8fab";
-      color10 = "#87ceeb";
-      color11 = "#fde047";
-      color12 = "#a78bfa";
-      color13 = "#f472b6";
-      color14 = "#22d3ee";
+      background_opacity = "0.75";
+
+      # Dracula theme colors
+      background = "#282a36";
+      foreground = "#f8f8f2";
+
+      # Black
+      color0 = "#21222c";
+      color8 = "#6272a4";
+
+      # Red
+      color1 = "#ff5555";
+      color9 = "#ff6e6e";
+
+      # Green
+      color2 = "#50fa7b";
+      color10 = "#69ff94";
+
+      # Yellow
+      color3 = "#f1fa8c";
+      color11 = "#ffffa5";
+
+      # Blue
+      color4 = "#bd93f9";
+      color12 = "#d6acff";
+
+      # Magenta
+      color5 = "#ff79c6";
+      color13 = "#ff92df";
+
+      # Cyan
+      color6 = "#8be9fd";
+      color14 = "#a4ffff";
+
+      # White
+      color7 = "#f8f8f2";
       color15 = "#ffffff";
-      selection_foreground = "#1a1625";
-      selection_background = "#c084fc";
-      url_color = "#8b5cf6";
-      cursor = "#ff6b9d";
-      cursor_text_color = "#1a1625";
+
+      selection_foreground = "#282a36";
+      selection_background = "#44475a";
+      url_color = "#8be9fd";
+      cursor = "#f8f8f2";
+      cursor_text_color = "#282a36";
       cursor_shape = "block";
       cursor_blink_interval = 0;
-      active_tab_foreground = "#1a1625";
-      active_tab_background = "#c084fc";
-      inactive_tab_foreground = "#9ca3af";
-      inactive_tab_background = "#374151";
-      active_border_color = "#8b5cf6";
-      inactive_border_color = "#4c3957";
+
+      active_tab_foreground = "#282a36";
+      active_tab_background = "#f8f8f2";
+      inactive_tab_foreground = "#6272a4";
+      inactive_tab_background = "#21222c";
+
+      active_border_color = "#ff79c6";
+      inactive_border_color = "#44475a";
+
       scrollback_lines = 1000;
       copy_on_select = "yes";
       strip_trailing_spaces = "smart";
@@ -60,6 +82,7 @@
       sync_to_monitor = "yes";
       confirm_os_window_close = "-1";
     };
+
     extraConfig = ''
       # Key bindings
       map ctrl+shift+c copy_to_clipboard
