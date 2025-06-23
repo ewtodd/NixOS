@@ -4,7 +4,7 @@ in {
   programs.waybar = {
     enable = true;
     settings = [{
-      layer = "top";
+      layer = "bottom";
       position = "top";
       spacing = 0;
       height = 34;

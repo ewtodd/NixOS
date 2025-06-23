@@ -8,38 +8,33 @@
           "--dmenu"
           "--prompt= " # Window emoji for visual appeal
           "--lines=15"
-          "--width=80" # Wider to accommodate longer app names
+          "--width=80"
           "--horizontal-pad=20"
           "--vertical-pad=10"
           "--inner-pad=5"
           "--border-radius=12"
           "--border-width=1"
-          "--font=JetBrains Mono NF:size=14"
-          "--background-color=000000cc"
-          "--text-color=cdd6f4ff"
-          "--selection-color=cba6f7ff"
-          "--selection-text-color=181825ff"
+          "--font=JetBrains Mono NF:weight=bold:size=14"
+          "--background-color=282a36bf"
+          "--text-color=f8f8f2ff"
+          "--selection-color=44475aff"
+          "--selection-text-color=f8f8f2ff"
           "--border-color=6272a4ff"
-          "--match-color=f9e2afff"
-          "--prompt-color=be257eff"
+          "--match-color=ffb86cff"
+          "--prompt-color=ff79c6ff"
         ];
       };
-
       format = {
         output_format = "{indent}Output {name}";
         workspace_format =
           "{indent}Workspace {name} [{layout}] on {output_name}";
         container_format =
           "{indent}Container [{layout}] on workspace {workspace_name}";
-
-        # Enhanced window format with proper app names and icon support
         window_format =
           "{app_name} — {title} on workspace {workspace_name}u0000iconu001f{app_icon}";
-
-        indent = "  ";
+        indent = " ";
         html_escape = false;
       };
-
       layout = {
         auto_tile = false;
         auto_tile_min_window_width_per_output_width = [
@@ -60,7 +55,6 @@
           [ 7680 2400 ]
         ];
       };
-
       focus = { lockin_delay = 500; };
       misc = { seq_inhibit = false; };
     };
