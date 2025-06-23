@@ -21,7 +21,6 @@ in {
     libreoffice
     tree
     fancy-cat
-    fastfetch
     texliveSmall
     htop
     nix-prefetch-github
