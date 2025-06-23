@@ -4,14 +4,14 @@
     ../../common/nixos/base.nix
     ../../common/nixos/packages.nix
     ../../common/nixos/services.nix
-    ../../modules/nixos/nvidia-graphics.nix
-    ../../modules/nixos/openrgb.nix
-    ../../modules/nixos/cosmic-de.nix
-    ../../modules/nixos/obs.nix
-    ../../modules/nixos/steam.nix
-    ../../modules/nixos/quickemu.nix
-    ../../modules/nixos/zoom.nix
-    ../../modules/nixos/starship.nix
+    ../../modules/nixos/hardware/nvidia-graphics.nix
+    ../../modules/nixos/hardware/openrgb.nix
+    ../../modules/nixos/desktops/cosmic-de.nix
+    ../../modules/nixos/packages/obs.nix
+    ../../modules/nixos/packages/steam.nix
+    ../../modules/nixos/packages/quickemu.nix
+    ../../modules/nixos/packages/zoom.nix
+    ../../modules/nixos/packages/starship.nix
   ];
   users.users.v-play = {
     isNormalUser = true;
