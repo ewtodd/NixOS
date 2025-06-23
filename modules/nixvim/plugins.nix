@@ -62,7 +62,7 @@
 
     vimtex = {
       enable = true;
-      settings = { view_general_viewer = "zathura"; };
+      settings = { view_general_viewer = "fancy-cat"; };
     };
 
     lsp = {
