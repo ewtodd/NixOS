@@ -10,92 +10,92 @@
         {
           type = "os";
           key = " OS";
-          keyColor = "red";
+          keyColor = "31";
           format = "{2}";
         }
         {
           type = "bios";
           key = "├  ";
-          keyColor = "red";
+          keyColor = "31";
           format = "{vendor}-{version}";
         }
         {
           type = "kernel";
           key = "├  ";
-          keyColor = "red";
+          keyColor = "31";
         }
         {
           type = "packages";
           key = "├ 󰏖 ";
-          keyColor = "red";
+          keyColor = "31";
         }
         {
           type = "shell";
           key = "└  ";
-          keyColor = "red";
+          keyColor = "31";
         }
         "break"
         {
           type = "wm";
           key = "  DE/WM";
           format = "{process-name} ({version} ({protocol-name})";
-          keyColor = "blue";
+          keyColor = "35";
         }
         {
           type = "lm";
           key = "├ 󰧨 ";
-          keyColor = "blue";
+          keyColor = "35";
         }
         {
           type = "wmtheme";
           key = "├  ";
-          keyColor = "blue";
+          keyColor = "35";
         }
         {
           type = "theme";
           key = "├  ";
-          keyColor = "blue";
+          keyColor = "35";
         }
         {
           type = "icons";
           key = "├ 󰀻 ";
-          keyColor = "blue";
+          keyColor = "35";
         }
         {
           type = "terminal";
           key = "└  ";
-          keyColor = "blue";
+          keyColor = "35";
         }
         "break"
         {
           type = "host";
           key = "󰌢  PC";
-          keyColor = "green";
+          keyColor = "32";
         }
         {
           type = "cpu";
           key = "├ 󰻠 ";
-          keyColor = "green";
+          keyColor = "32";
         }
         {
           type = "gpu";
           key = "├ 󰍛 ";
-          keyColor = "green";
+          keyColor = "32";
         }
         {
           type = "disk";
           key = "├  ";
-          keyColor = "green";
+          keyColor = "32";
         }
         {
           type = "memory";
           key = "├ 󰑭 ";
-          keyColor = "green";
+          keyColor = "32";
         }
         {
           type = "swap";
           key = "└ 󰓡 ";
-          keyColor = "green";
+          keyColor = "32";
         }
         "break"
         "colors"
