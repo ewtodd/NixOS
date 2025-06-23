@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  imports = [ ./xdg.nix ];
+  imports = [ ./xdg.nix ./kitty/kitty.nix ./fastfetch/fastfetch.nix ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
   xdg.desktopEntries.steam = {
