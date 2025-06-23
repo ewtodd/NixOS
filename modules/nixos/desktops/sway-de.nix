@@ -2,9 +2,28 @@
   services.xserver = {
     enable = true;
     displayManager.startx.enable = false;
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = true;
-    displayManager.gdm.autoSuspend = false;
+  };
+
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = ''
+          ${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format "%c" --user-menu --greeting "Access is restricted to authorized personnel only. NO DOGS!" --cmd sway'';
+        user = "greeter";
+      };
+    };
+  };
+
+  systemd.services.greetd.serviceConfig = {
+    Type = "idle";
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    StandardError = "journal"; # Without this errors will spam on screen
+    # Without these bootlogs will spam on screen
+    TTYReset = true;
+    TTYVHangup = true;
+    TTYVTDisallocate = true;
   };
 
   programs.sway = {
@@ -24,6 +43,9 @@
       thunderbird-latest
       udiskie
       gnome-themes-extra
+      dracula-icon-theme
+      dracula-theme
+      dracula-qt5-theme
     ];
   };
 
@@ -35,8 +57,8 @@
 
   qt = {
     enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark";
+    platformTheme = "gtk2"; # "gnome";
+    style = "gtk2"; # "adwaita-dark";
   };
 
   programs.gnome-disks = { enable = true; };
@@ -48,6 +70,6 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    GTK_THEME = "Adwaita-dark";
+    GTK_THEME = "Dracula"; # "Adwaita-dark";
   };
 }
