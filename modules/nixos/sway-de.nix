@@ -1,12 +1,4 @@
-{ pkgs, ... }:
-let
-  fancy-cat = pkgs.callPackage (pkgs.fetchFromGitHub {
-    owner = "freref";
-    repo = "fancy-cat-nix";
-    rev = "0c8e04a";
-    sha256 = "sha256-zem1jSbtQZNwE6wGE6fsG8/aHW/+brhh9f1QEtgk5oM=";
-  }) { };
-in {
+{ pkgs, ... }: {
   services.xserver = {
     enable = true;
     displayManager.startx.enable = false;
@@ -30,7 +22,6 @@ in {
       imagemagick # for kitty
       nautilus
       thunderbird-latest
-      fancy-cat
       udiskie
       gnome-themes-extra
     ];
