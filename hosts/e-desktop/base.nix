@@ -4,13 +4,13 @@
     ../../common/nixos/base.nix
     ../../common/nixos/packages.nix
     ../../common/nixos/services.nix
-    ../../modules/nixos/intel-graphics.nix
-    ../../modules/nixos/obs.nix
-    ../../modules/nixos/sway-de.nix
-    ../../modules/nixos/ssh.nix
-    ../../modules/nixos/steam.nix
-    ../../modules/nixos/suspend-then-hibernate.nix
-    ../../modules/nixos/starship.nix
+    ../../modules/nixos/hardware/intel-graphics.nix
+    ../../modules/nixos/packages/obs.nix
+    ../../modules/nixos/desktop/sway-de.nix
+    ../../modules/nixos/service/ssh.nix
+    ../../modules/nixos/package/steam.nix
+    ../../modules/nixos/service/suspend-then-hibernate.nix
+    ../../modules/nixos/packages/starship.nix
   ];
 
   users.users.e-play = {
