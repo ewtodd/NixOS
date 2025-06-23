@@ -1,4 +1,5 @@
 { pkgs, ... }: {
+  imports = [ ./xdg.nix ];
   home.packages = with pkgs; [
     signal-desktop
     mangohud
@@ -20,7 +21,5 @@
       ll = "ls -l";
     };
   };
-  home.sessionVariables = {
-    VKD3D_CONFIG = "no_upload_hvv";
-  };
+  home.sessionVariables = { VKD3D_CONFIG = "no_upload_hvv"; };
 }
