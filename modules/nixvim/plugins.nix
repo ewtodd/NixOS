@@ -62,7 +62,10 @@
 
     vimtex = {
       enable = true;
-      settings = { view_general_viewer = "fancy-cat"; };
+      settings = {
+        view_method = "general";
+        general_viewer = "xdg-open";
+      };
     };
 
     lsp = {
