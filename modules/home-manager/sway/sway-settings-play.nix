@@ -20,16 +20,12 @@
         { command = "spotify"; }
         { command = "sh -c 'sleep 2 && signal-desktop --use-tray-icon'"; }
         { command = "thunderbird"; }
-        {
-          command = "sh -c 'sleep 10 && birdtray'";
-        }
-        # { command = "./scripts/startup-terminals.sh"; }
+        { command = "sh -c 'sleep 10 && birdtray'"; }
       ];
     };
 
     extraConfig = ''
       exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/play.jpg
-      exec . /etc/nixos/modules/home-manager/sway/scripts/startup-terminals.sh
     '';
   };
 }
