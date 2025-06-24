@@ -38,7 +38,7 @@
         {
           type = "wm";
           key = "  DE/WM";
-          format = "{process-name} ({version} ({protocol-name})";
+          format = "{process-name} {version} ({protocol-name})";
           keyColor = "35";
         }
         {

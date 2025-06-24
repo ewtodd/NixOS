@@ -19,8 +19,7 @@
     Type = "idle";
     StandardInput = "tty";
     StandardOutput = "tty";
-    StandardError = "journal"; # Without this errors will spam on screen
-    # Without these bootlogs will spam on screen
+    StandardError = "journal";
     TTYReset = true;
     TTYVHangup = true;
     TTYVTDisallocate = true;
@@ -30,7 +29,6 @@
     enable = true;
     package = pkgs.swayfx;
     extraPackages = with pkgs; [
-      # perl540Packages.Apppapersway - Enable for paper style tiling!
       birdtray
       wl-clipboard
       swaybg
@@ -57,8 +55,8 @@
 
   qt = {
     enable = true;
-    platformTheme = "gtk2"; # "gnome";
-    style = "gtk2"; # "adwaita-dark";
+    platformTheme = "gtk2"; 
+    style = "gtk2"; 
   };
 
   programs.gnome-disks = { enable = true; };
@@ -70,6 +68,6 @@
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    GTK_THEME = "Dracula"; # "Adwaita-dark";
+    GTK_THEME = "Dracula"; 
   };
 }

@@ -1,7 +1,24 @@
 { config, pkgs, ... }: {
 
   imports = [ ./swayr.nix ./swayidle.nix ./fuzzel.nix ./swaylock.nix ];
+  gtk = {
+    enable = true;
 
+    theme = {
+      package = pkgs.dracula-theme;
+      name = "Dracula";
+    };
+
+    iconTheme = {
+      package = pkgs.dracula-icon-theme;
+      name = "Dracula";
+    };
+
+    font = {
+      name = "JetBrainsMonoNF";
+      size = 12;
+    };
+  };
   wayland.windowManager.sway = {
     enable = true;
     package = null;
@@ -31,9 +48,6 @@
         outer = 2;
         smartBorders = "on";
       };
-
-      # Essential for papersway
-      focus.wrapping = "no";
 
       # Colors (Dracula theme)
       colors = {
@@ -85,31 +99,29 @@
         "Mod4+Shift+Tab" = "exec swayr switch-workspace";
         "Mod4+Delete" = "exec swayr quit-window";
         "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
-        "Mod4+f" = "exec firefox"; # Keep your Firefox binding
+        "Mod4+f" = "exec firefox";
         "Mod4+Shift+p" = "exec firefox --private-window";
         "Mod4+p" =
           "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
         "Mod4+k+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
-
-        # Papersway navigation (replaces basic focus commands)
-        "Mod4+h" = "exec papersway-msg focus left";
+        "Mod4+h" = "focus left";
         "Mod4+j" = "focus down";
         "Mod4+k" = "focus up";
-        "Mod4+l" = "exec papersway-msg focus right";
-        "Mod4+Left" = "exec papersway-msg focus left";
+        "Mod4+l" = "focus right";
+        "Mod4+Left" = "focus left";
         "Mod4+Down" = "focus down";
         "Mod4+Up" = "focus up";
-        "Mod4+Right" = "exec papersway-msg focus right";
+        "Mod4+Right" = "focus right";
 
-        # Papersway window movement (replaces basic move commands)
-        "Mod4+Shift+h" = "exec papersway-msg move left";
+        # Move windows
+        "Mod4+Shift+h" = "move left";
         "Mod4+Shift+j" = "move down";
         "Mod4+Shift+k" = "move up";
-        "Mod4+Shift+l" = "exec papersway-msg move right";
-        "Mod4+Shift+Left" = "exec papersway-msg move left";
+        "Mod4+Shift+l" = "move right";
+        "Mod4+Shift+Left" = "move left";
         "Mod4+Shift+Down" = "move down";
         "Mod4+Shift+Up" = "move up";
-        "Mod4+Shift+Right" = "exec papersway-msg move right";
+        "Mod4+Shift+Right" = "move right";
 
         # Workspaces
         "Mod4+1" = "workspace number 1";
@@ -135,43 +147,26 @@
         "Mod4+Shift+9" = "move container to workspace number 9";
         "Mod4+Shift+0" = "move container to workspace number 10";
 
-        # Papersway-specific window management
-        "Mod4+r" =
-          "exec papersway-msg width toggle"; # Changed from Mod4+f to keep Firefox
-        "Mod4+o" = "exec papersway-msg other-column";
-
-        # Papersway workspace management
-        "Mod4+a" = "exec papersway-msg fresh-workspace";
-        "Mod4+n" = "exec papersway-msg fresh-workspace send";
-        "Mod4+t" = "exec papersway-msg fresh-workspace take";
-        "Mod4+b" = "exec papersway-msg bury-workspace";
-
-        # Papersway column management
-        "Alt+Shift+e" = "exec papersway-msg absorb-expel left";
-        "Alt+Shift+r" = "exec papersway-msg absorb-expel right";
-        "Mod4+minus" = "exec papersway-msg cols decr";
-        "Mod4+equal" = "exec papersway-msg cols incr";
-
-        # Papersway workspace navigation
-        "Mod4+u" = "exec papersway-msg workspace prev";
-        "Mod4+i" = "exec papersway-msg workspace next";
-        "Mod4+Shift+u" = "exec papersway-msg move-to-workspace prev";
-        "Mod4+Shift+i" = "exec papersway-msg move-to-workspace next";
-
-        # Layout management (keeping fullscreen and floating)
+        # Layout management
+        "Mod4+b" = "splith";
+        "Mod4+v" = "splitv";
+        "Mod4+s" = "layout stacking";
+        "Mod4+w" = "layout tabbed";
+        "Mod4+e" = "layout toggle split";
         "Mod4+Shift+f" = "fullscreen";
         "Mod4+Shift+space" = "floating toggle";
         "Mod4+space" = "focus mode_toggle";
+        "Mod4+a" = "focus parent";
 
-        # Scratchpad (reassigned from minus key)
-        "Mod4+Shift+grave" = "move scratchpad";
-        "Mod4+BackSpace" = "scratchpad show";
+        # Scratchpad
+        "Mod4+Shift+minus" = "move scratchpad";
+        "Mod4+minus" = "scratchpad show";
 
         # System controls
         "Mod4+Shift+c" = "reload";
         "Mod4+Shift+e" = "exec swaync-client --close-all";
         "Mod4+m" = "exit";
-        "Mod4+Ctrl+r" = "mode resize"; # Changed from Mod4+r to avoid conflict
+        "Mod4+r" = "mode resize";
 
         # Notifications
         "Mod4+Shift+n" = "exec swaync-client -t -sw";
@@ -208,7 +203,7 @@
         };
       };
 
-      # Status bar - keeping your Waybar
+      # Status bar
       bars = [{
         position = "top";
         command = "waybar";
@@ -227,10 +222,7 @@
 
     # Common startup applications
     extraConfig = ''
-      # Start papersway for window management
-      exec papersway --debug
-
-      blur enable
+      blur enable 
       blur_passes 1
       blur_radius 2
       blur_contrast 1.0
@@ -258,7 +250,7 @@
       layer_effects "swaync-control-center" blur enable; shadows enable; corner_radius 15
 
       exec swaymsg "layer_effects 'swaync-control-center' 'blur enable'"
-      exec swaync
+      exec swaync 
       exec udiskie --tray
       exec swayrd
       exec . /etc/nixos/modules/home-manager/sway/scripts/startup-terminals.sh
