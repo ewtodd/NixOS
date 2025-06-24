@@ -8,6 +8,7 @@ in {
     enable = true;
     package = unstable.swayfx;
     extraPackages = with pkgs; [
+      wlogout
       birdtray
       wl-clipboard
       swaybg

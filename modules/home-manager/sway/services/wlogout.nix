@@ -1,20 +1,9 @@
 { pkgs, ... }: {
   programs.wlogout = {
     enable = true;
-
+    package = null;
+    
     layout = [
-      {
-        label = "lock";
-        action = "swaylock";
-        text = "Lock";
-        keybind = "l";
-      }
-      {
-        label = "hibernate";
-        action = "systemctl hibernate";
-        text = "Hibernate";
-        keybind = "h";
-      }
       {
         label = "logout";
         action = "swaymsg exit";
@@ -75,9 +64,6 @@
         outline-style: none;
       }
 
-      #lock {
-        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/lock.png"));
-      }
 
       #logout {
         background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/logout.png"));
@@ -85,10 +71,6 @@
 
       #suspend {
         background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/suspend.png"));
-      }
-
-      #hibernate {
-        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/hibernate.png"));
       }
 
       #shutdown {
