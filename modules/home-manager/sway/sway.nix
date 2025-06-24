@@ -3,9 +3,11 @@
   imports = [
     ./services/swayr.nix
     ./services/swayidle.nix
+    ./services/swaync.nix
+    ./services/swaylock.nix
+    ./waybar/waybar-sway.nix
     ./launcher/rofi.nix
     ./misc/gtk.nix
-    ./services/swaylock.nix
   ];
 
   wayland.windowManager.sway = {
@@ -244,10 +246,9 @@
       layer_effects "rofi" blur enable; shadows enable 
       layer_effects "gtk-layer-shell" blur enable; shadows enable
       layer_effects "logout_dialog" blur enable
-      exec swaync 
       exec udiskie --tray
       exec swayrd
-      
+
     '';
   };
 }

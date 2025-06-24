@@ -7,20 +7,25 @@
       screenshots = true;
       effect-blur = "7x7";
 
-      # Hide indicator until typing begins
-      indicator = true;
-      indicator-idle-visible = false; # This hides the indicator when idle
+      effect-compose =
+        "50%,77%;center;/etc/nixos/modules/home-manager/sway/services/nixos.png";
 
+      # Hide indicator until typing begins
+      indicator-idle-visible = false; # This hides the indicator when idle
+      indicator-y-position = "300";
       # Clock configuration - will be visible when indicator is hidden
       clock = true;
       timestr = "%-I:%M %p";
       datestr = "%a, %b %d";
-      font-size = 24;
+      font = "JetBrainsMonoNF";
+      font-size = 32;
 
-      indicator-radius = 100;
+      indicator-radius = 150;
       show-failed-attempts = true;
+      ignore-empty-password = true;
       daemonize = true;
-      fade = 0.5;
+      fade = 5;
+      grace = 5;
 
       # Dracula Color Scheme
       color = "282a36";
