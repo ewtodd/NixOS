@@ -247,8 +247,7 @@
       exec swaync 
       exec udiskie --tray
       exec swayrd
-      exec . /etc/nixos/modules/home-manager/sway/scripts/startup-terminals.sh
-
+      
     '';
   };
 }
