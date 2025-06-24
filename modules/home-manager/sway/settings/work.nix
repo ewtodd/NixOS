@@ -34,7 +34,7 @@
     };
 
     extraConfig = ''
-      exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/work.jpg 
+      exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/work_dracula.png 
     '';
   };
 }

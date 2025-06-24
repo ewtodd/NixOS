@@ -5,6 +5,7 @@
     ./services/swayidle.nix
     ./services/swaync.nix
     ./services/swaylock.nix
+    ./services/wlogout.nix
     ./waybar/waybar-sway.nix
     ./launcher/rofi.nix
     ./misc/gtk.nix
@@ -160,7 +161,7 @@
         # System controls
         "Mod4+Shift+c" = "reload";
         "Mod4+Shift+e" = "exec swaync-client --close-all";
-        "Mod4+m" = "exec ${pkgs.wlogout}/bin/wlogout -p layer-shell";
+        "Mod4+m" = "exec ${pkgs.wlogout}/bin/wlogout -p layer-shell --buttons-per-row 2";
         "Mod4+r" = "mode resize";
 
         # Notifications

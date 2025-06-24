@@ -1,5 +1,5 @@
 { config, pkgs, ... }:
-let waybarStyle = builtins.readFile ./style.css;
+let waybarStyle = builtins.readFile ./dark_style.css;
 in {
   programs.waybar = {
     enable = true;
@@ -8,10 +8,16 @@ in {
       position = "top";
       spacing = 0;
       height = 34;
-      modules-left = [ "custom/logo" "sway/workspaces" "sway/mode" ];
+      modules-left =
+        [ "custom/logo" "sway/workspaces" "sway/window" "sway/mode" ];
       modules-center = [ "clock" "custom/notification" "tray" ];
       modules-right =
         [ "cpu" "memory" "network" "pulseaudio" "battery" "custom/power" ];
+
+      "sway/window" = {
+        format = "";
+        max-length = 0;
+      };
 
       "sway/workspaces" = {
         "on-click" = "activate";
@@ -148,7 +154,8 @@ in {
       "custom/power" = {
         format = "󰤆";
         tooltip = false;
-        "on-click" = "${pkgs.wlogout}/bin/wlogout -p layer-shell";
+        "on-click" =
+          "${pkgs.wlogout}/bin/wlogout -p layer-shell --buttons-per-row 2";
       };
     }];
 

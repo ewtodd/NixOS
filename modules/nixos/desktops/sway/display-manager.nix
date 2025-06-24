@@ -2,6 +2,7 @@
   services.xserver = {
     enable = true;
     displayManager.startx.enable = false;
+    excludePackages = with pkgs; [ xterm ];
   };
 
   services.greetd = {
