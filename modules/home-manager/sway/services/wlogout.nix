@@ -2,13 +2,13 @@
   programs.wlogout = {
     enable = true;
     package = null;
-    
+
     layout = [
       {
         label = "logout";
         action = "swaymsg exit";
         text = "Logout";
-        keybind = "e";
+        keybind = "l";
       }
       {
         label = "shutdown";
@@ -51,8 +51,7 @@
         background-position: center;
         background-size: 25%;
         font-family: "JetBrains Mono NF";
-        font-size: 14px;
-        font-weight: bold;
+        font-size: 20px;
         margin: 10px;
         min-width: 150px;
         min-height: 150px;
