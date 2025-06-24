@@ -25,7 +25,7 @@
     };
 
     extraConfig = ''
-      exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/play.jpg
+      exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/play_dracula.png
     '';
   };
 }

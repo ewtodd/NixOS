@@ -8,7 +8,7 @@
       effect-blur = "7x7";
 
       effect-compose =
-        "50%,77%;center;/etc/nixos/modules/home-manager/sway/services/nixos.png";
+        "50%,77%;center;/etc/nixos/modules/home-manager/sway/services/nixos_dracula.png";
 
       # Hide indicator until typing begins
       indicator-idle-visible = false; # This hides the indicator when idle
