@@ -1,24 +1,13 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, launcherCommand ? "fuzzel", ... }: {
 
-  imports = [ ./swayr.nix ./swayidle.nix ./fuzzel.nix ./swaylock.nix ];
-  gtk = {
-    enable = true;
+  imports = [
+    ./services/swayr.nix
+    ./services/swayidle.nix
+    ./launcher/rofi.nix
+    ./misc/gtk.nix
+    ./services/swaylock.nix
+  ];
 
-    theme = {
-      package = pkgs.dracula-theme;
-      name = "Dracula";
-    };
-
-    iconTheme = {
-      package = pkgs.dracula-icon-theme;
-      name = "Dracula";
-    };
-
-    font = {
-      name = "JetBrainsMonoNF";
-      size = 12;
-    };
-  };
   wayland.windowManager.sway = {
     enable = true;
     package = null;
@@ -29,7 +18,7 @@
       # Variables
       modifier = "Mod4";
       terminal = "kitty";
-      menu = "fuzzel | xargs swaymsg exec --";
+      menu = "${launcherCommand} | xargs swaymsg exec --";
 
       # Direction keys (vim-style)
       left = "h";
@@ -147,6 +136,10 @@
         "Mod4+Shift+9" = "move container to workspace number 9";
         "Mod4+Shift+0" = "move container to workspace number 10";
 
+        # Troubleshooting!
+        "Mod4+Shift+Return" =
+          "exec swaymsg -r -t get_outputs | jq '.[0].layer_shell_surfaces | .[] | .namespace' | xargs notify-send";
+
         # Layout management
         "Mod4+b" = "splith";
         "Mod4+v" = "splitv";
@@ -165,7 +158,7 @@
         # System controls
         "Mod4+Shift+c" = "reload";
         "Mod4+Shift+e" = "exec swaync-client --close-all";
-        "Mod4+m" = "exit";
+        "Mod4+m" = "exec ${pkgs.wlogout}/bin/wlogout -p layer-shell";
         "Mod4+r" = "mode resize";
 
         # Notifications
@@ -223,7 +216,7 @@
     # Common startup applications
     extraConfig = ''
       blur enable 
-      blur_passes 1
+      blur_passes 3
       blur_radius 2
       blur_contrast 1.0
 
@@ -247,9 +240,10 @@
       for_window [app_id="firefox"] saturation set 1.1
       for_window [app_id="spotify"] saturation set 1.2
       for_window [class=".*"] inhibit_idle fullscreenfor_windowfor_window [app_id=".*"] inhibit_idle fullscreen
-      layer_effects "swaync-control-center" blur enable; shadows enable; corner_radius 15
-
-      exec swaymsg "layer_effects 'swaync-control-center' 'blur enable'"
+      layer_effects "swaync-control-center" blur enable; shadows enable
+      layer_effects "rofi" blur enable; shadows enable 
+      layer_effects "gtk-layer-shell" blur enable; shadows enable
+      layer_effects "logout_dialog" blur enable
       exec swaync 
       exec udiskie --tray
       exec swayrd
