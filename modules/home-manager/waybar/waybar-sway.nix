@@ -1,5 +1,5 @@
 { config, pkgs, ... }:
-let waybarStyle = builtins.readFile ./style_waybar.css;
+let waybarStyle = builtins.readFile ./style.css;
 in {
   programs.waybar = {
     enable = true;
