@@ -4,7 +4,7 @@
     ../../common/nixos/base.nix
     ../../common/nixos/packages.nix
     ../../common/nixos/services.nix
-    ../../modules/nixos/desktops/sway-de.nix
+    ../../modules/nixos/desktops/sway/sway-de.nix
     ../../modules/nixos/hardware/bluetooth.nix
     ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/laptop-power.nix
