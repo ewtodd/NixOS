@@ -148,7 +148,7 @@ in {
       "custom/power" = {
         format = "󰤆";
         tooltip = false;
-        "on-click" = "swaylock";
+        "on-click" = "${pkgs.wlogout}/bin/wlogout -p layer-shell";
       };
     }];
 

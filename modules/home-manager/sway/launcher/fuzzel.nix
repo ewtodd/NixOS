@@ -27,4 +27,5 @@
       };
     };
   };
+  _module.args.launcherCommand = "fuzzel";
 }
