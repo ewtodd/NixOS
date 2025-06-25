@@ -1,8 +1,10 @@
 { pkgs, ... }: {
   imports = [
+    ./system-options.nix
     ./xdg/xdg.nix
     ./kitty/kitty.nix
     ./fastfetch/fastfetch.nix
+    ./nix-colors/colorschemes.nix
     ./nixvim/nixvim.nix
   ];
   home.packages = with pkgs; [
@@ -13,12 +15,9 @@
     spotify
     android-tools
   ];
-  nixvimProfile = "play";
+  Profile = "play";
   programs.nixvim.enable = true;
-  programs.kitty = {
-    enable = true;
-    Configuration.profile = "play";
-  };
+  programs.kitty = { enable = true; };
   dconf = {
     enable = true;
     settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";

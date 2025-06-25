@@ -1,6 +1,11 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
-{
+with lib;
+
+let
+  colors = config.colorScheme.palette;
+  profile = config.Profile;
+in {
   services.swaync = {
     enable = true;
     settings = {
@@ -23,8 +28,8 @@
       timeout-low = 5;
       timeout-critical = 0;
       fit-to-screen = true;
-      control-center-width = 600; # Increased width for calendar
-      control-center-height = 700; # Increased height
+      control-center-width = 600;
+      control-center-height = 700;
       notification-window-width = 500;
       keyboard-shortcuts = true;
       image-visibility = "when-available";
@@ -32,9 +37,7 @@
       hide-on-clear = false;
       hide-on-action = true;
       script-fail-notify = true;
-
       widgets = [ "title" "dnd" "notifications" ];
-
       widget-config = {
         title = {
           text = "Notifications";
@@ -47,8 +50,8 @@
 
     style = ''
       .control-center {
-        background-color: rgba(24, 24, 37, 0.95);
-        border: 1px solid rgba(205, 214, 244, 0.2);
+        background-color: #${colors.base00}f2;
+        border: 1px solid #${colors.base05}33;
         border-radius: 12px;
         margin: 18px;
         padding: 12px;
@@ -59,8 +62,8 @@
       }
 
       .notification {
-        background-color: rgba(30, 30, 46, 0.9);
-        border: 1px solid rgba(205, 214, 244, 0.1);
+        background-color: #${colors.base01}e6;
+        border: 1px solid #${colors.base05}1a;
         border-radius: 8px;
         margin: 6px 0;
         padding: 12px;
@@ -75,72 +78,71 @@
       .summary {
         font-size: 14px;
         font-weight: bold;
-        color: #cdd6f4;
+        color: #${colors.base05};
         background-color: transparent;
       }
 
       .time {
         font-size: 12px;
-        color: #a6adc8;
+        color: #${colors.base04};
         margin-right: 18px;
         background-color: transparent;
       }
 
       .body {
         font-size: 13px;
-        color: #bac2de;
+        color: #${colors.base05};
         background-color: transparent;
       }
 
       .widget-title {
-        color: #cdd6f4;
-        background-color: rgba(30, 30, 46, 0.9);
+        color: #${colors.base05};
+        background-color: #${colors.base01}e6;
         padding: 8px 12px;
         margin: 6px 0;
         border-radius: 8px;
-        border: 1px solid rgba(205, 214, 244, 0.1);
+        border: 1px solid #${colors.base05}1a;
       }
 
       .widget-title > button {
         font-size: 12px;
-        color: #f38ba8;
+        color: #${colors.base08};
         text-shadow: none;
         background-color: transparent;
-        border: 1px solid #f38ba8;
+        border: 1px solid #${colors.base08};
         border-radius: 4px;
         padding: 4px 8px;
       }
 
       .widget-title > button:hover {
-        background-color: rgba(243, 139, 168, 0.15);
+        background-color: #${colors.base08}26;
       }
 
       .widget-dnd {
-        background-color: rgba(30, 30, 46, 0.9);
-        border: 1px solid rgba(205, 214, 244, 0.1);
+        background-color: #${colors.base01}e6;
+        border: 1px solid #${colors.base05}1a;
         border-radius: 8px;
         margin: 6px 0;
         padding: 8px;
-        color: #cdd6f4;
+        color: #${colors.base05};
       }
 
       .widget-dnd > switch {
-        background-color: #313244;
+        background-color: #${colors.base02};
         border-radius: 8px;
       }
 
       .widget-dnd > switch:checked {
-        background-color: rgba(243, 139, 168, 0.8);
+        background-color: #${colors.base08}cc;
       }
 
-      /* Calendar Widget Styling */
       .widget-calendar {
-        background-color: rgba(30, 30, 46, 0.9);
-        border: 1px solid rgba(205, 214, 244, 0.1);
+        background-color: #${colors.base01}e6;
+        border: 1px solid #${colors.base05}1a;
         border-radius: 8px;
         margin: 6px 0;
         padding: 12px;
-        color: #cdd6f4;
+        color: #${colors.base05};
       }
 
       .widget-calendar .calendar-date {
@@ -148,23 +150,23 @@
         font-weight: bold;
         text-align: center;
         margin-bottom: 8px;
-        color: #cdd6f4;
+        color: #${colors.base05};
       }
 
       .widget-calendar calendar {
         background-color: transparent;
         border: none;
-        color: #cdd6f4;
+        color: #${colors.base05};
       }
 
       .widget-calendar calendar:selected {
-        background-color: rgba(203, 166, 247, 0.3);
-        color: #cdd6f4;
+        background-color: #${colors.base0E}4d;
+        color: #${colors.base05};
         border-radius: 4px;
       }
 
       .widget-calendar calendar:indeterminate {
-        color: #6c7086;
+        color: #${colors.base03};
       }
     '';
   };
