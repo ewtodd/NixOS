@@ -13,8 +13,8 @@
     spotify
     android-tools
   ];
+  nixvimProfile = "play";
   programs.nixvim.enable = true;
-  programs.nixvimProfile = "play";
   programs.kitty = {
     enable = true;
     Configuration.profile = "play";
