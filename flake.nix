@@ -24,13 +24,13 @@
           system = "x86_64-linux";
         };
         modules = [
-          inputs.nixvim.nixosModules.nixvim
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/v-desktop/home.nix;
             };
@@ -45,13 +45,13 @@
           system = "x86_64-linux";
         };
         modules = [
-          inputs.nixvim.nixosModules.nixvim
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
             };
@@ -66,13 +66,13 @@
           system = "x86_64-linux";
         };
         modules = [
-          inputs.nixvim.nixosModules.nixvim
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;
             };

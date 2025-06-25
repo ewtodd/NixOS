@@ -6,7 +6,6 @@
     ./services/swaync.nix
     ./services/swaylock.nix
     ./services/wlogout.nix
-    ./waybar/waybar-sway.nix
     ./launcher/rofi.nix
     ./misc/gtk.nix
   ];
