@@ -13,9 +13,8 @@ window#waybar {
 	box-shadow: none;
 }
 
-/* Solid Dracula background when windows are present */
 window#waybar:not(.empty) {
-	background-color: #1e1e2e;
+	background-color: #d7dae7; /* Light Tokyo Night background */
 	border-radius: 0;
 }
 
@@ -29,11 +28,11 @@ window#waybar:not(.empty) {
 	margin-right: 0px;
 	font-size: 22px;
 	border-radius: 8px 0 0 8px;
-	color: #cba6f7;
+	color: #3760bf; /* Dark Tokyo Night blue */
 	min-width: 30px;
-	background-color: #1e1e2e;
+	background-color: #d7dae7; /* Light Tokyo Night background */
 	margin: 6px 0 6px 3px;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 	border-left: none;
 }
 
@@ -48,14 +47,14 @@ window#waybar:not(.empty) {
 	padding: 8px 12px;
 	margin: 0;
 	border-radius: 0;
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	transition: background 0.2s, color 0.2s;
 	border-left: none;
 }
 
 #workspaces button:not(:last-child) {
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 }
 
 #workspaces button:last-child {
@@ -65,13 +64,13 @@ window#waybar:not(.empty) {
 
 #workspaces button.active,
 #workspaces button:hover {
-	color: #1e1e2e;
-	background-color: #cba6f7;
+	color: #d7dae7;
+	background-color: #3760bf; /* Dark Tokyo Night blue */
 }
 
 #workspaces button.urgent {
-	background-color: #f38ba8;
-	color: #181825;
+	background-color: #c53b53; /* Dark Tokyo Night red */
+	color: #d7dae7;
 }
 
 /* Hidden window module - just for state detection */
@@ -89,51 +88,50 @@ window#waybar:not(.empty) {
 	padding: 8px 18px;
 	margin: 6px 3px;
 	border-radius: 8px;
-	background-color: #1e1e2e;
-	color: #ff79c6;
+	background-color: #d7dae7;
+	color: #5a4a78; /* Dark Tokyo Night purple */
 	border: none;
 }
 
 /* Group 2: Individual modules grouped together */
 #cpu {
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding: 8px 12px;
 	border-radius: 8px 0 0 8px;
 	margin: 6px 0 6px 3px;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 	border-left: none;
 }
 
 #memory,
 #battery,
-#backlight,
 #pulseaudio {
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding: 8px 12px;
 	border-radius: 0;
 	margin: 6px 0;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 	border-left: none;
 }
 
 #network {
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 8px;
 	padding-right: 12px;
 	border-radius: 0;
 	margin: 6px 0;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 	border-left: none;
 }
 
 #custom-power {
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 8px;
@@ -148,46 +146,46 @@ window#waybar:not(.empty) {
 #battery.warning,
 #battery.critical,
 #battery.urgent {
-	background-color: #f38ba8;
-	color: #f8f8f2;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	background-color: #c53b53; /* Dark Tokyo Night red */
+	color: #d7dae7; /* Light foreground */
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 }
 
 #battery.charging {
-	background-color: #a6e3a1;
-	color: #181825;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	background-color: #485e30; /* Dark Tokyo Night green */
+	color: #d7dae7;
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 }
 
 /* Group 3: Clock + Notification + Tray */
 #clock {
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding: 8px 12px;
 	border-radius: 8px 0 0 8px;
 	margin: 6px 0 6px 3px;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 	border-left: none;
 }
 
 #custom-notification {
-	background-color: #1e1e2e;
+	background-color: #d7dae7; /* Light Tokyo Night background */
 	font-size: 15px;
-	color: #cba6f7;
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding-top: 8px;
 	padding-bottom: 8px;
 	padding-left: 8px;
 	padding-right: 10px;
 	border-radius: 0;
 	margin: 6px 0;
-	border-right: 1px solid rgba(203, 166, 247, 0.2);
+	border-right: 1px solid rgba(55, 96, 191, 0.2);
 	border-left: none;
 	min-width: 24px;
 }
 
 #tray {
-	background-color: #1e1e2e;
-	color: #cba6f7;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark Tokyo Night blue */
 	padding: 8px 12px;
 	border-radius: 0 8px 8px 0;
 	margin: 6px 3px 6px 0;
@@ -199,10 +197,11 @@ window#waybar:not(.empty) {
 tooltip {
 	border-radius: 8px;
 	padding: 15px;
-	background-color: #1e1e2e;
+	background-color: #d7dae7; /* Light Tokyo Night background */
 }
 
 tooltip label {
 	padding: 5px;
-	background-color: #1e1e2e;
+	background-color: #d7dae7; /* Light Tokyo Night background */
+	color: #3760bf; /* Dark text */
 }
