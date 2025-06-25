@@ -37,7 +37,7 @@ with lib;
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/latte.png
+          exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/kanagawa.png
         '';
       };
     })
