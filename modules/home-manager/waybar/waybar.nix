@@ -1,24 +1,13 @@
 { config, pkgs, lib, ... }:
 with lib;
 
-let cfg = config.programs.waybar.Configuration;
+let windowManager = config.WindowManager;
+
 in {
-  options.programs.waybar.Configuration = {
-    profile = mkOption {
-      type = types.enum [ "work" "play" ];
-      description = "Which profile to use (work or play)";
-    };
-    windowManager = mkOption {
-      type = types.enum [ "sway" "hyprland" ];
-      description = "Which window manager waybar is being used with!";
-    };
-  };
+  imports = [ ./style.nix ];
 
   config = mkIf config.programs.waybar.enable {
     programs.waybar = {
-      style = builtins.readFile
-        (if cfg.profile == "work" then ./dracula.css else ./tokyonight.css);
-
       settings = [{
         layer = "bottom";
         position = "top";
@@ -26,20 +15,20 @@ in {
         height = 34;
         modules-left = [
           "custom/logo"
-          "${cfg.windowManager}/workspaces"
-          "${cfg.windowManager}/window"
-          "${cfg.windowManager}/mode"
+          "${windowManager}/workspaces"
+          "${windowManager}/window"
+          "${windowManager}/mode"
         ];
         modules-center = [ "clock" "custom/notification" "tray" ];
         modules-right =
           [ "cpu" "memory" "network" "pulseaudio" "battery" "custom/power" ];
 
-        "${cfg.windowManager}/window" = {
+        "${windowManager}/window" = {
           format = "";
           max-length = 0;
         };
 
-        "${cfg.windowManager}/workspaces" = {
+        "${windowManager}/workspaces" = {
           "on-click" = "activate";
           format = "{icon}";
           format-icons = {

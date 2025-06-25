@@ -1,26 +1,20 @@
 { config, lib, pkgs, ... }:
 
-with lib; {
+{
   imports = [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix ];
 
-  options.nixvimProfile = mkOption {
-    type = types.enum [ "work" "play" ];
-    default = "play";
-    description = "Profile for nixvim (work/play)";
-  };
-
-  config = let profile = config.nixvimProfile;
+  config = let profile = config.Profile;
   in {
     programs.nixvim = {
-      colorschemes = if (profile == "work") then {
+      colorschemes = if (profile == "play") then {
         dracula = {
           enable = true;
           settings.colorterm = false;
         };
       } else {
-        tokyonight = {
+        catppuccin = {
           enable = true;
-          settings.style = "night";
+          settings.flavour = "latte";
         };
       };
     };

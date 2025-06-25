@@ -1,5 +1,5 @@
 {
-  "e-play" = { config, pkgs, ... }: {
+  "e-play" = { ... }: {
     home.username = "e-play";
     home.homeDirectory = "/home/e-play";
     home.stateVersion = "25.05";
@@ -7,19 +7,14 @@
       ../../common/home-manager/play-user.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/sway/sway.nix
-      ../../modules/home-manager/sway/settings/play.nix
-      ../../modules/home-manager/sway/settings/desktop.nix
+      #  ../../modules/home-manager/sway/settings/play.nix
     ];
-    programs.waybar = {
-      enable = true;
-      Configuration = {
-        profile = "play";
-        windowManager = "sway";
-      };
-    };
+    programs.waybar.enable = true;
+    wayland.windowManager.sway.enable = true;
+    gtk.enable = true;
   };
 
-  "e-work" = { config, pkgs, ... }: {
+  "e-work" = { ... }: {
     home.username = "e-work";
     home.homeDirectory = "/home/e-work";
     home.stateVersion = "25.05";
@@ -27,15 +22,10 @@
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/sway/sway.nix
-      ../../modules/home-manager/sway/settings/work.nix
-      ../../modules/home-manager/sway/settings/desktop.nix
+      # ../../modules/home-manager/sway/settings/work.nix
     ];
-    programs.waybar = {
-      enable = true;
-      Configuration = {
-        profile = "work";
-        windowManager = "sway";
-      };
-    };
+    programs.waybar.enable = true;
+    wayland.windowManager.sway.enable = true;
+    gtk.enable = true;
   };
 }
