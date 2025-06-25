@@ -142,7 +142,7 @@ in {
         "custom/logo" = {
           format = " 󱄅 ";
           tooltip = false;
-          "on-click" = "fuzzel";
+          "on-click" = "rofi -show drun -matching fuzzy";
         };
 
         battery = {
