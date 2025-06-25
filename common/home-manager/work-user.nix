@@ -1,12 +1,22 @@
 { pkgs, ... }: {
-  imports = [ ./xdg/xdg.nix ./kitty/kitty.nix ./fastfetch/fastfetch.nix ];
+  imports = [
+    ./xdg/xdg.nix
+    ./kitty/kitty.nix
+    ./fastfetch/fastfetch.nix
+    ./nixvim/nixvim.nix
+  ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
   xdg.desktopEntries.steam = {
     name = "Steam";
     noDisplay = true;
   };
-
+   programs.nixvim.enable = true;
+  programs.nixvimProfile = "work";
+  programs.kitty = {
+    enable = true;
+    Configuration.profile = "work";
+  };
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -23,7 +33,4 @@
         "git add . && git commit -m 'Automated commit.' && git push -u origin main";
     };
   };
-
-  programs.zathura.extraConfig =
-    "\n        set sandbox none \n        set selection-clipboard clipboard\n  ";
 }

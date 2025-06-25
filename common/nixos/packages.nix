@@ -9,12 +9,8 @@ let
   }) { };
 in {
 
-  imports = [ ../../modules/nixvim/nixvim.nix ];
-
   environment.variables.EDITOR = "nvim";
-  environment.shellAliases = {
-    vim = "nvim";
-  };
+  environment.shellAliases = { vim = "nvim"; };
   environment.systemPackages = with pkgs; [
     git
     gh
