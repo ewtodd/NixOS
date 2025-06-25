@@ -1,8 +1,73 @@
-{ pkgs, ... }: {
+{ config, pkgs, lib, ... }:
+
+with lib;
+
+let
+  colors = config.colorScheme.palette;
+  profile = config.Profile;
+
+  # Font selection based on profile
+  fontFamily = if profile == "work" then
+    "FiraCode Nerd Font"
+  else
+    "JetBrains Mono Nerd Font";
+
+  # Helper to convert single hex digit to decimal
+  hexDigitToInt = d:
+    if d == "0" then
+      0
+    else if d == "1" then
+      1
+    else if d == "2" then
+      2
+    else if d == "3" then
+      3
+    else if d == "4" then
+      4
+    else if d == "5" then
+      5
+    else if d == "6" then
+      6
+    else if d == "7" then
+      7
+    else if d == "8" then
+      8
+    else if d == "9" then
+      9
+    else if d == "a" then
+      10
+    else if d == "b" then
+      11
+    else if d == "c" then
+      12
+    else if d == "d" then
+      13
+    else if d == "e" then
+      14
+    else if d == "f" then
+      15
+    else
+      throw "Invalid hex digit: ${d}";
+
+  # Convert two hex digits to decimal
+  hexPairToInt = hex:
+    let
+      d1 = hexDigitToInt (builtins.substring 0 1 hex);
+      d2 = hexDigitToInt (builtins.substring 1 1 hex);
+    in d1 * 16 + d2;
+
+  # Helper to convert hex to rgba
+  hexToRgba = hex: alpha:
+    let
+      r = toString (hexPairToInt (builtins.substring 0 2 hex));
+      g = toString (hexPairToInt (builtins.substring 2 2 hex));
+      b = toString (hexPairToInt (builtins.substring 4 2 hex));
+    in "rgba(${r}, ${g}, ${b}, ${alpha})";
+
+in {
   programs.wlogout = {
     enable = true;
     package = null;
-
     layout = [
       {
         label = "logout";
@@ -37,20 +102,20 @@
       }
 
       window {
-        background-color: rgba(40, 42, 54, 0.75);
+        background-color: ${hexToRgba colors.base00 "0.75"};
       }
 
       button {
-        color: #f8f8f2;
-        background-color: rgba(68, 71, 90, 0.8);
+        color: #${colors.base05};
+        background-color: ${hexToRgba colors.base01 "0.8"};
         border-style: solid;
         border-width: 2px;
         border-radius: 15px;
-        border-color: rgba(98, 114, 164, 0.8);
+        border-color: ${hexToRgba colors.base04 "0.8"};
         background-repeat: no-repeat;
         background-position: center;
         background-size: 25%;
-        font-family: "JetBrains Mono NF";
+        font-family: "${fontFamily}";
         font-size: 20px;
         margin: 10px;
         min-width: 150px;
@@ -58,11 +123,10 @@
       }
 
       button:focus, button:active, button:hover {
-        background-color: rgba(189, 147, 249, 0.8);
-        border-color: #bd93f9;
+        background-color: ${hexToRgba colors.base0E "0.8"};
+        border-color: #${colors.base0E};
         outline-style: none;
       }
-
 
       #logout {
         background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/logout.png"));
@@ -81,5 +145,4 @@
       }
     '';
   };
-
 }

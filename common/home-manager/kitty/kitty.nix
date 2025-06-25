@@ -2,19 +2,14 @@
 
 with lib;
 
-let cfg = config.programs.kitty.Configuration;
+let
+  colors = config.colorScheme.palette;
+  profile = config.Profile;
 in {
-  options.programs.kitty.Configuration = {
-    profile = mkOption {
-      type = types.enum [ "work" "play" ];
-      description = "Which profile to use (work or play)";
-    };
-  };
-
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {
       font = {
-        name = if cfg.profile == "work" then
+        name = if profile == "work" then
           "FiraCode Nerd Font"
         else
           "JetBrains Mono Nerd Font";
@@ -46,69 +41,35 @@ in {
         input_delay = 1;
         sync_to_monitor = "yes";
         confirm_os_window_close = "-1";
-      } // (if cfg.profile == "work" then {
-        # Dracula colors for work
-        background = "#282a36";
-        foreground = "#f8f8f2";
-        color0 = "#21222c";
-        color8 = "#6272a4";
-        color1 = "#ff5555";
-        color9 = "#ff6e6e";
-        color2 = "#50fa7b";
-        color10 = "#69ff94";
-        color3 = "#f1fa8c";
-        color11 = "#ffffa5";
-        color4 = "#bd93f9";
-        color12 = "#d6acff";
-        color5 = "#ff79c6";
-        color13 = "#ff92df";
-        color6 = "#8be9fd";
-        color14 = "#a4ffff";
-        color7 = "#f8f8f2";
-        color15 = "#ffffff";
-        selection_foreground = "#282a36";
-        selection_background = "#44475a";
-        url_color = "#8be9fd";
-        cursor = "#f8f8f2";
-        cursor_text_color = "#282a36";
-        active_tab_foreground = "#282a36";
-        active_tab_background = "#f8f8f2";
-        inactive_tab_foreground = "#6272a4";
-        inactive_tab_background = "#21222c";
-        active_border_color = "#ff79c6";
-        inactive_border_color = "#44475a";
-      } else {
-        # Tokyo Night colors for play
-        background = "#1a1b26";
-        foreground = "#c0caf5";
-        color0 = "#15161e";
-        color8 = "#414868";
-        color1 = "#f7768e";
-        color9 = "#f7768e";
-        color2 = "#9ece6a";
-        color10 = "#9ece6a";
-        color3 = "#e0af68";
-        color11 = "#e0af68";
-        color4 = "#7aa2f7";
-        color12 = "#7aa2f7";
-        color5 = "#bb9af7";
-        color13 = "#bb9af7";
-        color6 = "#7dcfff";
-        color14 = "#7dcfff";
-        color7 = "#a9b1d6";
-        color15 = "#c0caf5";
-        selection_foreground = "#1a1b26";
-        selection_background = "#33467c";
-        url_color = "#73daca";
-        cursor = "#c0caf5";
-        cursor_text_color = "#1a1b26";
-        active_tab_foreground = "#1a1b26";
-        active_tab_background = "#7aa2f7";
-        inactive_tab_foreground = "#545c7e";
-        inactive_tab_background = "#1f2335";
-        active_border_color = "#7aa2f7";
-        inactive_border_color = "#292e42";
-      });
+
+        # Use nix-colors palette
+        background = "#${colors.base00}";
+        foreground = "#${colors.base05}";
+
+        # Terminal colors using base16 standard
+        color0 = "#${colors.base00}";
+        color1 = "#${colors.base08}";
+        color2 = "#${colors.base0B}";
+        color3 = "#${colors.base0A}";
+        color4 = "#${colors.base0D}";
+        color5 = "#${colors.base0E}";
+        color6 = "#${colors.base0C}";
+        color7 = "#${colors.base05}";
+        color8 = "#${colors.base03}";
+        color9 = "#${colors.base08}";
+        color10 = "#${colors.base0B}";
+        color11 = "#${colors.base0A}";
+        color12 = "#${colors.base0D}";
+        color13 = "#${colors.base0E}";
+        color14 = "#${colors.base0C}";
+        color15 = "#${colors.base07}";
+
+        selection_foreground = "#${colors.base00}";
+        selection_background = "#${colors.base05}";
+        url_color = "#${colors.base0D}";
+        cursor = "#${colors.base05}";
+        cursor_text_color = "#${colors.base00}";
+      };
 
       extraConfig = ''
         # Key bindings

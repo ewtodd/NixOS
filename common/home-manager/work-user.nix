@@ -1,10 +1,11 @@
 { pkgs, ... }: {
   imports = [
+    ./system-options.nix
     ./xdg/xdg.nix
     ./kitty/kitty.nix
     ./fastfetch/fastfetch.nix
+    ./nix-colors/colorschemes.nix
     ./nixvim/nixvim.nix
-    ./profile.nix
   ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
@@ -12,12 +13,9 @@
     name = "Steam";
     noDisplay = true;
   };
-  nixvimProfile = "work";
+  Profile = "work";
   programs.nixvim.enable = true;
-  programs.kitty = {
-    enable = true;
-    Configuration.profile = "work";
-  };
+  programs.kitty = { enable = true; };
   programs.bash = {
     enable = true;
     enableCompletion = true;
