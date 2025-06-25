@@ -5,7 +5,7 @@ in {
   config = {
     # Set the colorScheme based on profile
     colorScheme = if profile == "work" then
-      inputs.nix-colors.colorSchemes.catppuccin-latte
+      inputs.nix-colors.colorSchemes.kanagawa
     else
       inputs.nix-colors.colorSchemes.dracula;
   };

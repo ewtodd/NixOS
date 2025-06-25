@@ -12,7 +12,7 @@ let
   else
     "JetBrains Mono Nerd Font";
 
-  # Helper to convert single hex digit to decimal
+  # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
     if d == "0" then
       0
@@ -34,17 +34,17 @@ let
       8
     else if d == "9" then
       9
-    else if d == "a" then
+    else if d == "a" || d == "A" then
       10
-    else if d == "b" then
+    else if d == "b" || d == "B" then
       11
-    else if d == "c" then
+    else if d == "c" || d == "C" then
       12
-    else if d == "d" then
+    else if d == "d" || d == "D" then
       13
-    else if d == "e" then
+    else if d == "e" || d == "E" then
       14
-    else if d == "f" then
+    else if d == "f" || d == "F" then
       15
     else
       throw "Invalid hex digit: ${d}";
