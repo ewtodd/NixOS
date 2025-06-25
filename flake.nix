@@ -13,6 +13,7 @@
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = inputs@{ self, nixpkgs, ... }: {
@@ -22,7 +23,7 @@
         specialArgs = {
           inherit inputs;
           system = "x86_64-linux";
-        };
+                  };
         modules = [
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
@@ -30,8 +31,12 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
-              extraSpecialArgs = { inherit inputs; };
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; deviceType = "desktop";
+};
               users = import ./hosts/v-desktop/home.nix;
             };
           }
@@ -43,7 +48,7 @@
         specialArgs = {
           inherit inputs;
           system = "x86_64-linux";
-        };
+                  };
         modules = [
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
@@ -51,8 +56,12 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
-              extraSpecialArgs = { inherit inputs; };
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; deviceType = "desktop";
+};
               users = import ./hosts/e-desktop/home.nix;
             };
           }
@@ -64,6 +73,7 @@
         specialArgs = {
           inherit inputs;
           system = "x86_64-linux";
+          
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
@@ -72,8 +82,11 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              sharedModules = [ inputs.nixvim.homeModules.nixvim ];
-              extraSpecialArgs = { inherit inputs; };
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; deviceType = "laptop";};
               users = import ./hosts/e-laptop/home.nix;
             };
           }
