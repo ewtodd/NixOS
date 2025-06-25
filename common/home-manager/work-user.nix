@@ -4,6 +4,7 @@
     ./kitty/kitty.nix
     ./fastfetch/fastfetch.nix
     ./nixvim/nixvim.nix
+    ./profile.nix
   ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
@@ -11,8 +12,8 @@
     name = "Steam";
     noDisplay = true;
   };
-   programs.nixvim.enable = true;
-  programs.nixvimProfile = "work";
+  nixvimProfile = "work";
+  programs.nixvim.enable = true;
   programs.kitty = {
     enable = true;
     Configuration.profile = "work";
