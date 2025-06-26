@@ -34,16 +34,16 @@ in {
 
     gtk = {
       theme = if profile == "play" then {
-        package = pkgs.dracula-theme;
-        name = "Dracula";
+        package = pkgs.tokyo-night-gtk;
+        name = "Tokyonight-Storm-B";
       } else {
         package = pkgs.kanagawa-gtk-theme;
         name = "Kanagawa";
       };
 
       iconTheme = if profile == "play" then {
-        package = pkgs.dracula-icon-theme;
-        name = "Dracula";
+        package = pkgs.papirus-icon-theme;
+        name = "Papirus-Dark";
       } else {
         package = kanagawa-with-inheritance; # Use the modified version
         name = "Kanagawa";

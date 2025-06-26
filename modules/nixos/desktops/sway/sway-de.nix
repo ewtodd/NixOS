@@ -1,12 +1,10 @@
-{ pkgs, inputs, ... }:
-let unstable = inputs.unstable.legacyPackages.${pkgs.system};
-in {
+{ pkgs, inputs, ... }: {
 
   imports = [ ./display-manager.nix ./misc.nix ];
 
   programs.sway = {
     enable = true;
-    package = unstable.swayfx;
+    package = pkgs.swayfx;
     extraPackages = with pkgs; [
       wlogout
       birdtray
