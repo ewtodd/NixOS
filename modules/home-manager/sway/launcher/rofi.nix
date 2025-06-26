@@ -12,7 +12,7 @@ let
   else
     "JetBrains Mono Nerd Font";
   fontSize = "14";
-
+  accentColor = if profile == "work" then colors.base09 else colors.base0E;
   # Icon theme based on profile
   iconTheme = if profile == "work" then "Papirus-Light" else "Dracula";
 
@@ -103,7 +103,7 @@ in {
     prompt {
       enabled: true;
       background-color: transparent;
-      text-color: #${colors.base0E};
+      text-color: #${accentColor};
     }
 
     entry {

@@ -5,7 +5,7 @@ with lib;
 let
   colors = config.colorScheme.palette;
   profile = config.Profile;
-
+  accentColor = if profile == "work" then colors.base09 else colors.base0E;
   # Font selection based on profile
   fontFamily = if profile == "work" then
     "FiraCode Nerd Font"
@@ -123,8 +123,8 @@ in {
       }
 
       button:focus, button:active, button:hover {
-        background-color: ${hexToRgba colors.base0E "0.8"};
-        border-color: #${colors.base0E};
+        background-color: ${hexToRgba accentColor "0.8"};
+        border-color: #${accentColor};
         outline-style: none;
       }
 
