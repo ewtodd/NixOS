@@ -65,9 +65,9 @@ let
   swayosdStyle = pkgs.writeText "swayosd-style.css" ''
     window {
       background-color: ${hexToRgba colors.base00 "0.95"};
-      border-radius: 15px;
+      border-radius: 10px;
       border: 2px solid #${accentColor};
-      box-shadow: 0 8px 32px ${hexToRgba colors.base00 "0.8"};
+     /* box-shadow: 0 8px 32px ${hexToRgba colors.base00 "0.8"}; */
     }
 
     #container {
@@ -104,15 +104,18 @@ let
     /* Specific styling for different OSD types */
     .osd-volume {
       background-color: ${hexToRgba colors.base00 "0.95"};
+      border-radius: 10px;
     }
 
     .osd-brightness {
       background-color: ${hexToRgba colors.base00 "0.95"};
+      border-radius: 10px;
     }
 
     .osd-caps-lock {
       background-color: ${hexToRgba colors.base08 "0.95"};
       border-color: #${colors.base08};
+      border-radius: 10px;
     }
 
     .osd-caps-lock label {
