@@ -7,10 +7,7 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    scenefx = {
-      url = "github:wlrfx/scenefx";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -35,6 +32,8 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              backupFileExtension = "backup";
+              nixpkgs.overlays = [ inputs.neorg-overlay.overlays.default ];
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
@@ -62,6 +61,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              backupFileExtension = "backup";
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
@@ -90,6 +90,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
+              backupFileExtension = "backup";
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
