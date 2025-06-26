@@ -13,6 +13,7 @@
     protontricks
     lutris
     spotify
+    gearlever
     android-tools
   ];
   Profile = "play";
