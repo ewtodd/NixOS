@@ -1,11 +1,12 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }:
+{
   # Install packages
-  home.packages = with pkgs; [ taskwarrior2 nb inotify-tools ];
+  home.packages = with pkgs; [ vit taskwarrior3 nb inotify-tools ];
 
   # TaskWarrior configuration
   programs.taskwarrior = {
     enable = true;
-    package = pkgs.taskwarrior2;
+    package = pkgs.taskwarrior3;
     dataLocation = "${config.home.homeDirectory}/tasks-notes";
     config = {
       # Use Git sync instead of taskserver
@@ -16,29 +17,6 @@
       uda.note.label = "Note";
       uda.note.default = "";
 
-      # VIT requires explicit column definitions - this is the actual fix
-      report.next.columns =
-        "id,start.age,entry.age,depends,priority,project,tag,recur,scheduled.countdown,due.relative,until.remaining,description,urgency";
-      report.next.labels =
-        "ID,Active,Age,Deps,P,Project,Tag,Recur,S,Due,Until,Description,Urg";
-
-      report.list.columns =
-        "id,start.age,entry.age,depends.indicator,priority,project,tag,recur.indicator,scheduled.countdown,due.relative,until.remaining,description.count,urgency";
-      report.list.labels =
-        "ID,Active,Age,D,P,Project,Tag,R,S,Due,Until,Description,Urg";
-
-      report.work.description = "Work tasks";
-      report.work.filter = "project:work status:pending";
-      report.work.columns =
-        "id,start.age,entry.age,priority,project,tag,due.relative,description,urgency";
-      report.work.labels = "ID,Active,Age,P,Project,Tag,Due,Description,Urg";
-
-      report.play.description = "Play tasks";
-      report.play.filter = "project:play status:pending";
-      report.play.columns =
-        "id,start.age,entry.age,priority,project,tag,due.relative,description,urgency";
-      report.play.labels =
-        "ID,Active,Age,P,Project,Tag,Due,Description,Urg"; # Color scheme
       color.active = "rgb013";
       color.due = "rgb500";
       color.overdue = "rgb550";
