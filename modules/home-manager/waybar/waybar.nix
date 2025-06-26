@@ -20,8 +20,15 @@ in {
           "${windowManager}/mode"
         ];
         modules-center = [ "clock" "custom/notification" "tray" ];
-        modules-right =
-          [ "cpu" "memory" "network" "pulseaudio" "battery" "custom/power" ];
+        modules-right = [
+          "cpu"
+          "memory"
+          "network"
+          "pulseaudio"
+          "backlight"
+          "battery"
+          "custom/power"
+        ];
 
         "${windowManager}/window" = {
           format = "";
@@ -81,6 +88,13 @@ in {
           "on-click" = "swaync-client -t -sw";
           "on-click-right" = "swaync-client -d -sw";
           tooltip = false;
+        };
+
+        backlight = {
+          format = "{percent}% {icon}";
+          format-icons = "";
+          on-scroll-down = "brightnessctl -c backlight set 1%-";
+          on-scroll-up = "brightnessctl -c backlight set +1%";
         };
 
         "custom/notification" = {
