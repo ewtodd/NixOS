@@ -94,7 +94,7 @@ in {
       hide-on-clear = false;
       hide-on-action = true;
       script-fail-notify = true;
-      widgets = [ "title" "volume" "backlight" "dnd" "notifications" ];
+      widgets = [ "title"  "dnd" "notifications" ];
       widget-config = {
         title = {
           text = "Notifications";
@@ -106,7 +106,7 @@ in {
           label = "  Volume";
           show-per-app = false;
         };
-        backlight = { label = " Brightness"; };
+        #backlight = { label = " Brightness"; };
       };
     };
 
