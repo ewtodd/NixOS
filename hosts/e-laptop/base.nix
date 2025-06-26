@@ -30,7 +30,7 @@
   users.users.e-work = {
     isNormalUser = true;
     description = "ethan-work";
-    extraGroups = [ "networkmanager" "wheel" "plugdev" "dialout" ];
+    extraGroups = [ "networkmanager" "wheel" "plugdev" "dialout" "video" ];
   };
 
 }
