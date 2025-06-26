@@ -7,7 +7,6 @@
     ../../modules/nixos/hardware/intel-graphics.nix
     ../../modules/nixos/desktops/sway/sway-de.nix
     # ../../modules/nixos/services/ssh.nix
-    ../../modules/nixos/services/taskserver.nix
     #../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/obs.nix
