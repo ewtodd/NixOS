@@ -9,6 +9,9 @@ let
   }) { };
 in {
 
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
+
   environment.variables.EDITOR = "nvim";
   environment.shellAliases = { vim = "nvim"; };
   environment.systemPackages = with pkgs; [
@@ -29,6 +32,8 @@ in {
     unzip
     paprefs
     bottles
+    zip
+    gearlever
   ];
 
   fonts.packages = with pkgs; [
