@@ -7,7 +7,7 @@ let
     "FiraCode Nerd Font"
   else
     "JetBrains Mono Nerd Font";
-
+  accentColor = if profile == "work" then colors.base09 else colors.base0E;
   # Helper to convert hex to rgba
   hexToRgba = hex: alpha:
     let
@@ -89,7 +89,7 @@ in {
       margin-right: 0px;
       font-size: 22px;
       border-radius: 8px 0 0 8px;
-      color: #${colors.base0E};
+      color: #${accentColor};
       min-width: 30px;
       background-color: #${colors.base00};
       margin: 6px 0 6px 3px;
@@ -109,7 +109,7 @@ in {
       margin: 0;
       border-radius: 0;
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       transition: background 0.2s, color 0.2s;
       border-left: none;
     }
@@ -126,7 +126,7 @@ in {
     #workspaces button.active,
     #workspaces button:hover {
       color: #${colors.base00};
-      background-color: #${colors.base0E};
+      background-color: #${accentColor};
     }
 
     #workspaces button.urgent {
@@ -157,7 +157,7 @@ in {
     /* Group 2: Individual modules grouped together */
     #cpu {
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding: 8px 12px;
       border-radius: 8px 0 0 8px;
       margin: 6px 0 6px 3px;
@@ -170,7 +170,7 @@ in {
     #backlight,
     #pulseaudio {
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding: 8px 12px;
       border-radius: 0;
       margin: 6px 0;
@@ -180,7 +180,7 @@ in {
 
     #network {
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding-top: 8px;
       padding-bottom: 8px;
       padding-left: 8px;
@@ -193,7 +193,7 @@ in {
 
     #custom-power {
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding-top: 8px;
       padding-bottom: 8px;
       padding-left: 8px;
@@ -222,7 +222,7 @@ in {
     /* Group 3: Clock + Notification + Tray */
     #clock {
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding: 8px 12px;
       border-radius: 8px 0 0 8px;
       margin: 6px 0 6px 3px;
@@ -233,7 +233,7 @@ in {
     #custom-notification {
       background-color: #${colors.base00};
       font-size: 15px;
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding-top: 8px;
       padding-bottom: 8px;
       padding-left: 8px;
@@ -247,7 +247,7 @@ in {
 
     #tray {
       background-color: #${colors.base00};
-      color: #${colors.base0E};
+      color: #${accentColor};
       padding: 8px 12px;
       border-radius: 0 8px 8px 0;
       margin: 6px 3px 6px 0;
