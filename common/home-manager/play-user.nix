@@ -6,7 +6,6 @@
     ./fastfetch/fastfetch.nix
     ./nix-colors/colorschemes.nix
     ./nixvim/nixvim.nix
-    ./taskmanager/taskmanager.nix
   ];
   home.packages = with pkgs; [
     signal-desktop
