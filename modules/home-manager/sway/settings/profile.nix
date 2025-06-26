@@ -17,10 +17,10 @@ with lib;
             "Mod4+g" =
               "exec firefox --new-window -url https://umgpt.umich.edu/ -new-tab -url https://www.perplexity.ai/";
             # Brightness controls for laptop
-            "XF86MonBrightnessUp" =
-              "exec brightnessctl --device='acpi_video0' set +5%";
-            "XF86MonBrightnessDown" =
-              "exec brightnessctl --device='acpi_video0' set 5%-";
+           # "XF86MonBrightnessUp" =
+            #  "exec brightnessctl --device='acpi_video0' set +5%";
+           # "XF86MonBrightnessDown" =
+           #   "exec brightnessctl --device='acpi_video0' set 5%-";
           };
 
           # Work-specific startup applications
