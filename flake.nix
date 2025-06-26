@@ -12,6 +12,7 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    self.submodules=true;
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
