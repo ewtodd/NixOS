@@ -4,7 +4,7 @@ result-*
 
 *.deb
 
-packages/_obs-studio
+packages/obs-studio
 
 # Ignore automatically generated direnv output
 .direnv
