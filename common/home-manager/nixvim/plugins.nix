@@ -1,5 +1,8 @@
-{ config, pkgs, lib, inputs, ... }: {
-  programs.nixvim.extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
+{ config, pkgs, lib, inputs, ... }:
+ {
+  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [
+    plenary-nvim
+      ];
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
     lualine = { enable = true; };
@@ -7,8 +10,9 @@
     telescope = {
       enable = true;
       extensions.file-browser.enable = true;
-    };
 
+    };
+    which-key = { enable = true; };
     molten = {
       enable = true;
       settings = {
@@ -44,18 +48,19 @@
       enable = true;
       nixvimInjections = true;
       settings.highlight.enable = true;
-      grammarPackages = [
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.vim
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.java
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.latex
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.nix
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.python
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.cpp
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.c
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.bash
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.yaml
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.cmake
-      ];
+      grammarPackages =
+        (with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+          vim
+          java
+          latex
+          nix
+          python
+          cpp
+          c
+          bash
+          yaml
+          cmake
+        ]);
     };
 
     nix.enable = true;
@@ -122,6 +127,7 @@
             name = "luasnip";
             keywordLength = 3;
           }
+          { name = "neorg"; }
         ];
         snippet = { expand = "luasnip"; };
         mapping = {
@@ -142,27 +148,7 @@
     cmp-buffer.enable = true;
     cmp_luasnip.enable = true;
     cmp-cmdline.enable = true;
-    #autoclose.enable = true;
     indent-blankline = { enable = true; };
 
-    lz-n = {
-      enable = true;
-      plugins = [{
-        __unkeyed-1 = "telescope.nvim";
-        cmd = [ "Telescope" ];
-        keys = [
-          {
-            __unkeyed-1 = "<leader>fa";
-            __unkeyed-2 = "<CMD>Telescope autocommands<CR>";
-            desc = "Telescope autocommands";
-          }
-          {
-            __unkeyed-1 = "<leader>fb";
-            __unkeyed-2 = "<CMD>Telescope buffers<CR>";
-            desc = "Telescope buffers";
-          }
-        ];
-      }];
-    };
   };
 }
