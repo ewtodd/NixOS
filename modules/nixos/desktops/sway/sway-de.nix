@@ -1,4 +1,5 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, inputs, ... }:
+{
 
   imports = [ ./display-manager.nix ./misc.nix ];
 
