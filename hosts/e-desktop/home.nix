@@ -12,6 +12,13 @@
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
     gtk.enable = true;
+    programs.git = {
+      enable = true;
+      userName = "Ethan Todd";
+      userEmail = "30243637+ewtodd@users.noreply.github.com";
+      extraConfig = { init = { defaultBranch = "main"; }; };
+    };
+
   };
 
   "e-work" = { ... }: {
@@ -27,5 +34,12 @@
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
     gtk.enable = true;
+    programs.git = {
+      enable = true;
+      userName = "Ethan Todd";
+      userEmail = "30243637+ewtodd@users.noreply.github.com";
+      extraConfig = { init = { defaultBranch = "main"; }; };
+    };
+
   };
 }

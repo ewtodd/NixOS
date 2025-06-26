@@ -1,0 +1,3 @@
+[submodule "packages/vit"]
+	path = packages/vit
+	url = https://github.com/scottkosty/vit.git
