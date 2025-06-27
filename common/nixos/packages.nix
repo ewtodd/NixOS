@@ -13,7 +13,13 @@ in {
   programs.appimage.binfmt = true;
 
   environment.variables.EDITOR = "nvim";
-  environment.shellAliases = { vim = "nvim"; };
+
+  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
+
+  environment.shellAliases = {
+    vim = "nvim";
+    ":q" = "exit";
+  };
   environment.systemPackages = with pkgs; [
     git
     gh
