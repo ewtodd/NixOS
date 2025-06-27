@@ -1,8 +1,5 @@
-{ config, pkgs, lib, inputs, ... }:
- {
-  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [
-    plenary-nvim
-      ];
+{ config, pkgs, lib, inputs, ... }: {
+  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
     lualine = { enable = true; };
@@ -11,6 +8,22 @@
       enable = true;
       extensions.file-browser.enable = true;
 
+    };
+    zk = {
+      enable = true;
+      settings = {
+        picker = "telescope";
+        lsp = {
+          config = {
+            cmd = [ "zk" "lsp" ];
+            name = "zk";
+          };
+          auto_attach = {
+            enabled = true;
+            filetypes = [ "markdown" ];
+          };
+        };
+      };
     };
     which-key = { enable = true; };
     molten = {
@@ -48,19 +61,18 @@
       enable = true;
       nixvimInjections = true;
       settings.highlight.enable = true;
-      grammarPackages =
-        (with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-          vim
-          java
-          latex
-          nix
-          python
-          cpp
-          c
-          bash
-          yaml
-          cmake
-        ]);
+      grammarPackages = (with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+        vim
+        java
+        latex
+        nix
+        python
+        cpp
+        c
+        bash
+        yaml
+        cmake
+      ]);
     };
 
     nix.enable = true;
@@ -84,6 +96,7 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
+        marksman.enable = true;
       };
     };
 
@@ -113,6 +126,7 @@
         };
         formatting = { fields = [ "kind" "abbr" "menu" ]; };
         sources = [
+          { name = "zk"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer";
@@ -127,7 +141,6 @@
             name = "luasnip";
             keywordLength = 3;
           }
-          { name = "neorg"; }
         ];
         snippet = { expand = "luasnip"; };
         mapping = {
