@@ -25,7 +25,57 @@
         };
       };
     };
-    which-key = { enable = true; };
+    render-markdown = {
+      enable = true;
+      settings = {
+        code = {
+          sign = false;
+          width = "block";
+        };
+        heading = {
+          sign = false;
+          icons = { };
+        };
+      };
+    };
+
+    which-key = {
+      enable = true;
+      settings = {
+        icons = {
+          keys = {
+            Up = "";
+            Down = "";
+            Left = "";
+            Right = "";
+            C = "CTRL ";
+            M = "ALT ";
+            D = "SUPER ";
+            S = "SHIFT ";
+            CR = "ENTER";
+            Esc = "ESC ";
+            ScrollWheelDown = "SCROLL DOWN ";
+            ScrollWheelUp = "SCROLL UP ";
+            NL = "NEW LINE ";
+            BS = "󰁮";
+            Space = "SPACE ";
+            Tab = "TAB ";
+            F1 = "󱊫";
+            F2 = "󱊬";
+            F3 = "󱊭";
+            F4 = "󱊮";
+            F5 = "󱊯";
+            F6 = "󱊰";
+            F7 = "󱊱";
+            F8 = "󱊲";
+            F9 = "󱊳";
+            F10 = "󱊴";
+            F11 = "󱊵";
+            F12 = "󱊶";
+          };
+        };
+      };
+    };
     molten = {
       enable = true;
       settings = {
@@ -72,6 +122,7 @@
         bash
         yaml
         cmake
+        markdown
       ]);
     };
 
@@ -96,7 +147,6 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
-        marksman.enable = true;
       };
     };
 
@@ -127,6 +177,7 @@
         formatting = { fields = [ "kind" "abbr" "menu" ]; };
         sources = [
           { name = "zk"; }
+          { name = "mkdnflow"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer";
@@ -145,13 +196,13 @@
         snippet = { expand = "luasnip"; };
         mapping = {
           "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
-          "<C-j>" = "cmp.mapping.select_next_item()";
-          "<C-k>" = "cmp.mapping.select_prev_item()";
-          "<C-e>" = "cmp.mapping.abort()";
-          "<C-b>" = "cmp.mapping.scroll_docs(-4)";
-          "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          "<A-j>" = "cmp.mapping.select_next_item()";
+          "<A-k>" = "cmp.mapping.select_prev_item()";
+          "<A-e>" = "cmp.mapping.abort()";
+          "<A-b>" = "cmp.mapping.scroll_docs(-4)";
+          "<A-f>" = "cmp.mapping.scroll_docs(4)";
           "<CR>" = "cmp.mapping.confirm({ select = true })";
-          "<S-CR>" =
+          "<A-CR>" =
             "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
         };
       };

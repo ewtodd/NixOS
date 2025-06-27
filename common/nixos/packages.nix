@@ -14,8 +14,6 @@ in {
 
   environment.variables.EDITOR = "nvim";
 
-  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
-
   environment.shellAliases = {
     vim = "nvim";
     ":q" = "exit";
@@ -48,4 +46,7 @@ in {
     fira-code
     fira-code-symbols
   ];
+
+  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
+  
 }

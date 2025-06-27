@@ -5,7 +5,6 @@
   programs.zk = {
     enable = true;
     settings = {
-      # Specify the notebook directory
       notebook-dir = "${config.home.homeDirectory}/zettelkasten";
 
       note = {
@@ -20,9 +19,9 @@
       };
 
       format.markdown = {
-        link-format = "[[{{filename}}]]";
-        link-drop-extension = true;
-        link-encode-path = true;
+        link-format = "wiki";
+        link-drop-extension = false;
+        link-encode-path = false;
       };
 
       tool = {
@@ -61,7 +60,7 @@
           paths = [ "tasks/backlog" ];
           note = {
             filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
-            template = "task.md";
+            template = "backlog.md";
           };
         };
         projects = {
@@ -76,20 +75,6 @@
           note = {
             filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
             template = "idea.md";
-          };
-        };
-        brainstorms = {
-          paths = [ "ideas/brainstorms" ];
-          note = {
-            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
-            template = "brainstorm.md";
-          };
-        };
-        concepts = {
-          paths = [ "ideas/concepts" ];
-          note = {
-            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
-            template = "concept.md";
           };
         };
         meetings = {
@@ -116,21 +101,19 @@
       };
 
       alias = {
-        # Use groups for dynamic filenames
-        daily = "zk new --group daily --no-input $HOME/zettelkasten/daily";
-        task = "zk new --group tasks $HOME/zettelkasten/tasks/active";
-        backlog = "zk new --group tasks $HOME/zettelkasten/tasks/backlog";
-        project = "zk new --group projects $HOME/zettelkasten/projects";
-        idea = "zk new --group ideas $HOME/zettelkasten/ideas";
-        brainstorm =
-          "zk new --group ideas $HOME/zettelkasten/ideas/brainstorms";
-        concept = "zk new --group ideas $HOME/zettelkasten/ideas/concepts";
-        meeting = "zk new --group meetings $HOME/zettelkasten/meetings";
-        research = "zk new --group research $HOME/zettelkasten/research";
-        howto = "zk new --group howtos $HOME/zettelkasten/reference/howtos";
+        # No prompt - uses standard date format
+        daily = "zk new daily --no-input";
 
+        # Use shell expansion to handle arguments properly
+        task = ''zk new tasks/active --no-input --title "$@"'';
+        backlog = ''zk new tasks/backlog --no-input --title "$@"'';
+        project = ''zk new projects --no-input --title "$@"'';
+        idea = ''zk new ideas --no-input --title "$@"'';
+        meeting = ''zk new meetings --no-input --title "$@"'';
+        research = ''zk new research --no-input --title "$@"'';
+        howto = ''zk new howtos --no-input --title "$@"'';
         # Task management
-        done = "zk edit --interactive --tag task --tag active";
+        done = "zk edit  --tag task --tag active";
 
         # Navigation
         recent = "zk list --sort modified- --limit 10";
@@ -145,9 +128,7 @@
     "${config.home.homeDirectory}/zettelkasten/tasks/active/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/tasks/backlog/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/projects/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/ideas/brainstorms/.keep".text =
-      "";
-    "${config.home.homeDirectory}/zettelkasten/ideas/concepts/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/ideas/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/meetings/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/research/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/howtos/.keep".text = "";
