@@ -8,6 +8,12 @@
       options = { nowait = true; };
     }
     {
+      action = "<cmd>lua vim.lsp.buf.definition()<CR>";
+      key = "<A-f>";
+      mode = [ "n" "i" "v" ];
+      options = { nowait = true; };
+    }
+    {
       action = "<cmd>Telescope file_browser<CR>";
       key = "<C-f>";
       mode = [ "n" "i" "v" ];
@@ -101,7 +107,7 @@
 
     # Initialize molten
     {
-      key = "<C-m>";
+      key = "<C-p>";
       action = "<cmd>MoltenInit nix-python<CR>";
       mode = [ "n" "i" "v" ];
       options.nowait = true;
@@ -137,41 +143,6 @@
       action = ":MoltenDelete<CR>";
       mode = "n";
       options.desc = "Delete cell";
-    }
-
-    # ACTUALLY CORRECT Org-mode keymaps
-    {
-      mode = "n";
-      key = "<A-a>";
-      action = "<cmd>lua Org.agenda()<CR>";
-      options.desc = "Open org agenda";
-    }
-    {
-      mode = "n";
-      key = "<A-c>";
-      action = "<cmd>lua Org.capture()<CR>";
-      options.desc = "Org capture";
-    }
-    {
-      mode = "n";
-      key = "<A-s>";
-      action =
-        "<cmd>lua require('orgmode.api').current():get_closest_headline():set_scheduled()<CR>";
-      options.desc = "Set scheduled date";
-    }
-    {
-      mode = "n";
-      key = "<A-d>";
-      action =
-        "<cmd>lua require('orgmode.api').current():get_closest_headline():set_deadline()<CR>";
-      options.desc = "Set deadline";
-    }
-    {
-      mode = "n";
-      key = "<A-t>";
-      action =
-        "<cmd>lua require('orgmode.api').current():get_closest_headline():set_todo()<CR>";
-      options.desc = "Change TODO state forward";
     }
   ];
 }

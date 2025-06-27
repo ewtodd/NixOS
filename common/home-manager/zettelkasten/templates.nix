@@ -1,186 +1,202 @@
-
 { config, ... }:
 
 let templatepath = "${config.home.homeDirectory}/zettelkasten/.zk/";
 
 in {
 
-home.file = {
+  home.file = {
 
-"${templatepath}/templates/default.md".text = ''
-# {{title}}
+    "${templatepath}/templates/default.md".text = ''
+      # {{title}}
 
-**Created:** {{format-date now "full"}}
-**Tags:** 
+      **Created:** {{format-date now "full"}}
+      **Tags:** 
 
-## Content
+      ## Content
 
-'';
+    '';
 
-"${templatepath}/templates/task.md".text = ''
-# {{title}}
+    "${templatepath}/templates/task.md".text = ''
+      # {{title}}
 
-**Created:** {{format-date now "full"}}
-**Due:** 
-**Priority:** medium
-**Status:** active
-**Project:** [[]]
-**Tags:** #task #active
+      **Created:** {{format-date now "full"}}
+      **Due:** 
+      **Priority:** medium
+      **Status:** active
+      **Project:** [[]]
+      **Tags:** #task #active
 
-## Description
+      ## Description
 
-## Acceptance Criteria
+      ## Acceptance Criteria
 
-- [ ] 
+      - [ ] 
 
-## Related
+      ## Related
 
-'';
+    '';
+    "${templatepath}/templates/backlog.md".text = ''
+      # {{title}}
 
-"${templatepath}/templates/project.md".text = ''
-# {{title}}
+      **Created:** {{format-date now "full"}}
+      **Due:** 
+      **Priority:** medium
+      **Status:** backlog 
+      **Project:** [[]]
+      **Tags:** #task #backlog
 
-**Created:** {{format-date now "full"}}
-**Status:** planning
-**Tags:** #project
+      ## Description
 
-## Overview
+      ## Acceptance Criteria
 
-## Current Tasks
+      - [ ] 
 
-## Related Ideas
+      ## Related
 
-## Meeting Notes
+    '';
+    "${templatepath}/templates/project.md".text = ''
+      # {{title}}
 
-'';
+      **Created:** {{format-date now "full"}}
+      **Status:** planning
+      **Tags:** #project
 
-"${templatepath}/templates/idea.md".text = ''
-# {{title}}
+      ## Overview
 
-**Created:** {{format-date now "full"}}
-**Tags:** #idea
+      ## Current Tasks
 
-## Core Concept
+      ## Related Ideas
 
-## Potential Applications
+      ## Meeting Notes
 
-## Related Projects
+    '';
 
-## Next Steps
+    "${templatepath}/templates/idea.md".text = ''
+      # {{title}}
 
-- [ ] 
+      **Created:** {{format-date now "full"}}
+      **Tags:** #idea
 
-'';
+      ## Core Concept
 
-"${templatepath}/templates/brainstorm.md".text = ''
-# {{title}}
+      ## Potential Applications
 
-**Created:** {{format-date now "full"}}
-**Tags:** #brainstorm #idea
+      ## Related Projects
 
-## Problem/Challenge
+      ## Next Steps
 
-## Ideas
+      - [ ] 
 
-## Related Projects
+    '';
 
-## Action Items
+    "${templatepath}/templates/brainstorm.md".text = ''
+      # {{title}}
 
-- [ ] 
+      **Created:** {{format-date now "full"}}
+      **Tags:** #brainstorm #idea
 
-'';
+      ## Problem/Challenge
 
-"${templatepath}/templates/concept.md".text = ''
-# {{title}}
+      ## Ideas
 
-**Created:** {{format-date now "full"}}
-**Tags:** #concept #idea
+      ## Related Projects
 
-## Definition
+      ## Action Items
 
-## Examples
+      - [ ] 
 
-## Applications
+    '';
 
-## Related Concepts
+    "${templatepath}/templates/concept.md".text = ''
+      # {{title}}
 
-'';
+      **Created:** {{format-date now "full"}}
+      **Tags:** #concept #idea
 
-"${templatepath}/templates/daily.md".text = ''
-# {{format-date now "full"}}
+      ## Definition
 
-**Date:** {{format-date now "medium"}}
-**Tags:** #daily
+      ## Examples
 
-## Today's Focus
+      ## Applications
 
-## Tasks
+      ## Related Concepts
 
-- [ ] 
+    '';
 
-## Ideas & Insights
+    "${templatepath}/templates/daily.md".text = ''
+      # {{format-date now "full"}}
 
-## Project Updates
+      **Date:** {{format-date now "medium"}}
+      **Tags:** #daily
 
-'';
+      ## Today's Focus
 
-"${templatepath}/templates/meeting.md".text = ''
-# {{title}}
+      ## Tasks
 
-**Date:** {{format-date now "full"}}
-**Attendees:** 
-**Project:** [[]]
-**Tags:** #meeting
+      - [ ] 
 
-## Agenda
+      ## Ideas & Insights
 
-## Discussion
+      ## Project Updates
 
-## Action Items
+    '';
 
-- [ ] 
+    "${templatepath}/templates/meeting.md".text = ''
+      # {{title}}
 
-## Related Tasks
+      **Date:** {{format-date now "full"}}
+      **Attendees:** 
+      **Project:** [[]]
+      **Tags:** #meeting
 
-'';
+      ## Agenda
 
-"${templatepath}/templates/research.md".text = ''
-# {{title}}
+      ## Discussion
 
-**Created:** {{format-date now "full"}}
-**Tags:** #research
+      ## Action Items
 
-## Research Question
+      - [ ] 
 
-## Findings
+      ## Related Tasks
 
-## Related Projects
+    '';
 
-## Next Steps
+    "${templatepath}/templates/research.md".text = ''
+      # {{title}}
 
-- [ ] 
+      **Created:** {{format-date now "full"}}
+      **Tags:** #research
 
-'';
+      ## Research Question
 
-"${templatepath}/templates/howto.md".text = ''
-# How to {{title}}
+      ## Findings
 
-**Created:** {{format-date now "full"}}
-**Tags:** #howto #reference
+      ## Related Projects
 
-## Steps
+      ## Next Steps
 
-1. 
+      - [ ] 
 
-2. 
+    '';
 
-## Tips
+    "${templatepath}/templates/howto.md".text = ''
+      # How to {{title}}
 
-## Related Projects
+      **Created:** {{format-date now "full"}}
+      **Tags:** #howto #reference
 
-'';
+      ## Steps
 
-};
+      1. 
+
+      2. 
+
+      ## Tips
+
+      ## Related Projects
+
+    '';
+
+  };
 
 }
-
