@@ -7,12 +7,10 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    neorg-overlay.url = "github:nvim-neorg/nixpkgs-neorg-overlay";
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    self.submodules=true;
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
