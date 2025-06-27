@@ -1,4 +1,5 @@
 { config, ... }: {
+
   imports = [ ./templates.nix ./sync.nix ];
 
   programs.zk = {
@@ -10,7 +11,7 @@
       note = {
         language = "en";
         default-title = "untitled";
-        filename = "{{format-date now 'timestamp'}}-{{slug title}}";
+        filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
         extension = "md";
         template = "default.md";
         id-charset = "alphanum";
@@ -26,7 +27,6 @@
 
       tool = {
         editor = "nvim";
-        shell = "/bin/bash";
         fzf-preview = "bat -p --color always {-1}";
       };
 
@@ -42,40 +42,25 @@
         };
       };
 
-      alias = {
-        # Core note types
-        daily = "zk new --no-input --template daily.md daily";
-        task = "zk new --no-input --template task.md tasks/active";
-        project = "zk new --no-input --template project.md projects";
-        idea = "zk new --no-input --template idea.md ideas";
-        brainstorm =
-          "zk new --no-input --template brainstorm.md ideas/brainstorms";
-        concept = "zk new --no-input --template concept.md ideas/concepts";
-        meeting = "zk new --no-input --template meeting.md meetings";
-        research = "zk new --no-input --template research.md research";
-        howto = "zk new --no-input --template howto.md reference/howtos";
-
-        # Task management
-        done = "zk edit --interactive --tag task --tag active";
-        backlog = "zk new --no-input --template task.md tasks/backlog";
-
-        # Navigation
-        recent = "zk list --sort modified- --limit 10";
-        todos = "zk list --tag task --tag active --sort priority-,created-";
-      };
-
       group = {
         daily = {
           paths = [ "daily" ];
           note = {
-            filename = "{{format-date now '2006-01-02'}}";
+            filename = ''{{format-date now "%Y-%m-%d"}}'';
             template = "daily.md";
           };
         };
         tasks = {
-          paths = [ "tasks" ];
+          paths = [ "tasks/active" ];
           note = {
-            filename = "{{format-date now 'timestamp'}}-{{slug title}}";
+            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
+            template = "task.md";
+          };
+        };
+        backlog = {
+          paths = [ "tasks/backlog" ];
+          note = {
+            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
             template = "task.md";
           };
         };
@@ -89,33 +74,83 @@
         ideas = {
           paths = [ "ideas" ];
           note = {
-            filename = "{{format-date now 'timestamp'}}-{{slug title}}";
+            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
             template = "idea.md";
+          };
+        };
+        brainstorms = {
+          paths = [ "ideas/brainstorms" ];
+          note = {
+            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
+            template = "brainstorm.md";
+          };
+        };
+        concepts = {
+          paths = [ "ideas/concepts" ];
+          note = {
+            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
+            template = "concept.md";
           };
         };
         meetings = {
           paths = [ "meetings" ];
           note = {
-            filename = "{{format-date now '2006-01-02'}}-{{slug title}}";
+            filename = ''{{format-date now "%Y-%m-%d"}}-{{slug title}}'';
             template = "meeting.md";
           };
         };
         research = {
           paths = [ "research" ];
           note = {
-            filename = "{{format-date now 'timestamp'}}-{{slug title}}";
+            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
             template = "research.md";
           };
         };
-        reference = {
-          paths = [ "reference" ];
+        howtos = {
+          paths = [ "reference/howtos" ];
           note = {
             filename = "{{slug title}}";
             template = "howto.md";
           };
         };
       };
+
+      alias = {
+        # Use groups for dynamic filenames
+        daily = "zk new --group daily --no-input $HOME/zettelkasten/daily";
+        task = "zk new --group $HOME/zettelkasten/tasks/active";
+        backlog = "zk new --group $HOME/zettelkasten/tasks/backlog";
+        project = "zk new --group $HOME/zettelkasten/projects";
+        idea = "zk new --group $HOME/zettelkasten/ideas";
+        brainstorm = "zk new --group $HOME/zettelkasten/ideas/brainstorms";
+        concept = "zk new --group $HOME/zettelkasten/ideas/concepts";
+        meeting = "zk new --group $HOME/zettelkasten/meetings";
+        research = "zk new --group $HOME/zettelkasten/research";
+        howto = "zk new --group $HOME/zettelkasten/reference/howtos";
+
+        # Task management
+        done = "zk edit --interactive --tag task --tag active";
+
+        # Navigation
+        recent = "zk list --sort modified- --limit 10";
+        todos = "zk list --tag task --tag active --sort priority-,created-";
+      };
     };
+  };
+
+  home.file = {
+    # Create directory structure
+    "${config.home.homeDirectory}/zettelkasten/daily/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/tasks/active/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/tasks/backlog/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/projects/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/ideas/brainstorms/.keep".text =
+      "";
+    "${config.home.homeDirectory}/zettelkasten/ideas/concepts/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/meetings/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/research/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/reference/howtos/.keep".text =
+      "";
   };
 
 }

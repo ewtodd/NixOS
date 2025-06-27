@@ -1,223 +1,186 @@
-{ ... }: {
 
-  home.file = {
-    ".config/zk/templates/default.md".text = ''
-      # {{title}}
+{ config, ... }:
 
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Tags:** 
+let templatepath = "${config.home.homeDirectory}/zettelkasten/.zk/";
 
-      ## Content
+in {
 
+home.file = {
 
-    '';
+"${templatepath}/templates/default.md".text = ''
+# {{title}}
 
-    ".config/zk/templates/task.md".text = ''
-      # {{title}}
+**Created:** {{format-date now "full"}}
+**Tags:** 
 
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Due:** 
-      **Priority:** medium
-      **Status:** active
-      **Project:** [[]]
-      **Tags:** #task #active
+## Content
 
-      ## Description
+'';
 
+"${templatepath}/templates/task.md".text = ''
+# {{title}}
 
+**Created:** {{format-date now "full"}}
+**Due:** 
+**Priority:** medium
+**Status:** active
+**Project:** [[]]
+**Tags:** #task #active
 
-      ## Acceptance Criteria
+## Description
 
-      - [ ] 
+## Acceptance Criteria
 
-      ## Related
+- [ ] 
 
+## Related
 
-    '';
+'';
 
-    ".config/zk/templates/project.md".text = ''
-      # {{title}}
+"${templatepath}/templates/project.md".text = ''
+# {{title}}
 
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Status:** planning
-      **Tags:** #project
+**Created:** {{format-date now "full"}}
+**Status:** planning
+**Tags:** #project
 
-      ## Overview
+## Overview
 
+## Current Tasks
 
+## Related Ideas
 
-      ## Current Tasks
+## Meeting Notes
 
+'';
 
+"${templatepath}/templates/idea.md".text = ''
+# {{title}}
 
-      ## Related Ideas
+**Created:** {{format-date now "full"}}
+**Tags:** #idea
 
+## Core Concept
 
+## Potential Applications
 
-      ## Meeting Notes
+## Related Projects
 
+## Next Steps
 
-    '';
+- [ ] 
 
-    ".config/zk/templates/idea.md".text = ''
-      # {{title}}
+'';
 
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Tags:** #idea
+"${templatepath}/templates/brainstorm.md".text = ''
+# {{title}}
 
-      ## Core Concept
+**Created:** {{format-date now "full"}}
+**Tags:** #brainstorm #idea
 
+## Problem/Challenge
 
+## Ideas
 
-      ## Potential Applications
+## Related Projects
 
+## Action Items
 
+- [ ] 
 
-      ## Related Projects
+'';
 
+"${templatepath}/templates/concept.md".text = ''
+# {{title}}
 
+**Created:** {{format-date now "full"}}
+**Tags:** #concept #idea
 
-      ## Next Steps
+## Definition
 
-      - [ ] 
-    '';
+## Examples
 
-    ".config/zk/templates/brainstorm.md".text = ''
-      # {{title}}
+## Applications
 
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Tags:** #brainstorm #idea
+## Related Concepts
 
-      ## Problem/Challenge
+'';
 
+"${templatepath}/templates/daily.md".text = ''
+# {{format-date now "full"}}
 
+**Date:** {{format-date now "medium"}}
+**Tags:** #daily
 
-      ## Ideas
+## Today's Focus
 
-      - 
-      - 
+## Tasks
 
-      ## Related Projects
+- [ ] 
 
+## Ideas & Insights
 
+## Project Updates
 
-      ## Action Items
+'';
 
-      - [ ] 
-    '';
+"${templatepath}/templates/meeting.md".text = ''
+# {{title}}
 
-    ".config/zk/templates/concept.md".text = ''
-      # {{title}}
+**Date:** {{format-date now "full"}}
+**Attendees:** 
+**Project:** [[]]
+**Tags:** #meeting
 
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Tags:** #concept #idea
+## Agenda
 
-      ## Definition
+## Discussion
 
+## Action Items
 
+- [ ] 
 
-      ## Examples
+## Related Tasks
 
+'';
 
+"${templatepath}/templates/research.md".text = ''
+# {{title}}
 
-      ## Applications
+**Created:** {{format-date now "full"}}
+**Tags:** #research
 
+## Research Question
 
+## Findings
 
-      ## Related Concepts
+## Related Projects
 
+## Next Steps
 
-    '';
+- [ ] 
 
-    ".config/zk/templates/daily.md".text = ''
-      # {{format-date now "Monday, January 2, 2006"}}
+'';
 
-      **Date:** {{format-date now "2006-01-02"}}
-      **Tags:** #daily
+"${templatepath}/templates/howto.md".text = ''
+# How to {{title}}
 
-      ## Today's Focus
+**Created:** {{format-date now "full"}}
+**Tags:** #howto #reference
 
+## Steps
 
+1. 
 
-      ## Tasks
+2. 
 
-      - [ ] 
+## Tips
 
-      ## Ideas & Insights
+## Related Projects
 
+'';
 
+};
 
-      ## Project Updates
-
-
-    '';
-
-    ".config/zk/templates/meeting.md".text = ''
-      # {{title}}
-
-      **Date:** {{format-date now "2006-01-02 15:04"}}
-      **Attendees:** 
-      **Project:** [[]]
-      **Tags:** #meeting
-
-      ## Agenda
-
-
-
-      ## Discussion
-
-
-
-      ## Action Items
-
-      - [ ] 
-
-      ## Related Tasks
-
-
-    '';
-
-    ".config/zk/templates/research.md".text = ''
-      # {{title}}
-
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Tags:** #research
-
-      ## Research Question
-
-
-
-      ## Findings
-
-
-
-      ## Related Projects
-
-
-
-      ## Next Steps
-
-      - [ ] 
-    '';
-
-    ".config/zk/templates/howto.md".text = ''
-      # How to {{title}}
-
-      **Created:** {{format-date now "2006-01-02 15:04"}}
-      **Tags:** #howto #reference
-
-      ## Steps
-
-      1. 
-      2. 
-
-      ## Tips
-
-
-
-      ## Related Projects
-
-
-    '';
-  };
 }
+
