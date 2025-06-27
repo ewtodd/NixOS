@@ -71,6 +71,8 @@ with lib; {
           "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
           "Mod4+f" = "exec firefox";
           "Mod4+Shift+p" = "exec firefox --private-window";
+          "Mod4+n" =
+            "exec firefox https://nix-community.github.io/nixvim/25.05/";
           "Mod4+p" =
             "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
           "Mod4+k+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
