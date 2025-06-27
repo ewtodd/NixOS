@@ -6,7 +6,7 @@
     ./fastfetch/fastfetch.nix
     ./nix-colors/colorschemes.nix
     ./nixvim/nixvim.nix
-    ./taskwarrior/taskwarrior-nb.nix
+    ./zettelkasten/zk.nix
   ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
@@ -24,7 +24,7 @@
       ls = "ls -vAF";
       ll = "ls -la";
       rootbrowse = ''nix-shell -p root --run "rootbrowse --web=off"'';
-      fix_clang = ". /etc/nixos/home/e-work/scripts/update_clang.sh";
+      fix-clang = ". /etc/nixos/home/e-work/scripts/update-clang.sh";
       geant4-env = "nix-shell /etc/nixos/home/e-work/geant4.nix";
       analysis-env =
         "nix-shell /etc/nixos/modules/dev-environments/analysis.nix";
