@@ -107,7 +107,7 @@
           };
         };
         howtos = {
-          paths = [ "reference/howtos" ];
+          paths = [ "howtos" ];
           note = {
             filename = "{{slug title}}";
             template = "howto.md";
@@ -118,15 +118,16 @@
       alias = {
         # Use groups for dynamic filenames
         daily = "zk new --group daily --no-input $HOME/zettelkasten/daily";
-        task = "zk new --group $HOME/zettelkasten/tasks/active";
-        backlog = "zk new --group $HOME/zettelkasten/tasks/backlog";
-        project = "zk new --group $HOME/zettelkasten/projects";
-        idea = "zk new --group $HOME/zettelkasten/ideas";
-        brainstorm = "zk new --group $HOME/zettelkasten/ideas/brainstorms";
-        concept = "zk new --group $HOME/zettelkasten/ideas/concepts";
-        meeting = "zk new --group $HOME/zettelkasten/meetings";
-        research = "zk new --group $HOME/zettelkasten/research";
-        howto = "zk new --group $HOME/zettelkasten/reference/howtos";
+        task = "zk new --group tasks $HOME/zettelkasten/tasks/active";
+        backlog = "zk new --group tasks $HOME/zettelkasten/tasks/backlog";
+        project = "zk new --group projects $HOME/zettelkasten/projects";
+        idea = "zk new --group ideas $HOME/zettelkasten/ideas";
+        brainstorm =
+          "zk new --group ideas $HOME/zettelkasten/ideas/brainstorms";
+        concept = "zk new --group ideas $HOME/zettelkasten/ideas/concepts";
+        meeting = "zk new --group meetings $HOME/zettelkasten/meetings";
+        research = "zk new --group research $HOME/zettelkasten/research";
+        howto = "zk new --group howtos $HOME/zettelkasten/reference/howtos";
 
         # Task management
         done = "zk edit --interactive --tag task --tag active";
@@ -149,8 +150,7 @@
     "${config.home.homeDirectory}/zettelkasten/ideas/concepts/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/meetings/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/research/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/reference/howtos/.keep".text =
-      "";
+    "${config.home.homeDirectory}/zettelkasten/howtos/.keep".text = "";
   };
 
 }
