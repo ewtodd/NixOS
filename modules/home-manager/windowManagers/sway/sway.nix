@@ -229,6 +229,7 @@ in {
 
         exec udiskie --tray
         exec swayrd
+
       '';
     };
   };
