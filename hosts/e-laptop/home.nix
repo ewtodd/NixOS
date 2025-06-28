@@ -6,8 +6,7 @@
     imports = [
       ../../common/home-manager/play-user.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/sway/sway.nix
-      # ../../modules/home-manager/sway/settings/play.nix
+      ../../modules/home-manager/windowManagers/windowManager.nix
     ];
 
     programs.waybar.enable = true;
@@ -28,8 +27,7 @@
     imports = [
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/sway/sway.nix
-      # ../../modules/home-manager/sway/settings/work.nix
+      ../../modules/home-manager/windowManagers/windowManager.nix
     ];
     programs.bash.shellAliases = {
       phone-home = "ssh e-work@ssh.ethanwtodd.com";

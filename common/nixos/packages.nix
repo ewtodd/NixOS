@@ -17,6 +17,7 @@ in {
   environment.shellAliases = {
     vim = "nvim";
     ":q" = "exit";
+    nrs = "sudo nixos-rebuild switch";
   };
   environment.systemPackages = with pkgs; [
     git

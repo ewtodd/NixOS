@@ -1,5 +1,6 @@
 { config, pkgs, lib, inputs, ... }: {
   programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
     lualine = { enable = true; };
@@ -9,35 +10,37 @@
       extensions.file-browser.enable = true;
 
     };
+
     zk = {
       enable = true;
       settings = {
         picker = "telescope";
-        lsp = {
-          config = {
-            cmd = [ "zk" "lsp" ];
-            name = "zk";
-          };
-          auto_attach = {
-            enabled = true;
-            filetypes = [ "markdown" ];
-          };
-        };
+        lsp = { auto_attach.enabled = false; };
       };
     };
+
     render-markdown = {
       enable = true;
       settings = {
-        code = {
-          sign = false;
-          width = "block";
+        file_types = [ "markdown" ];
+        render_modes = true;
+        # Remove image icons
+        link = {
+          enabled = true;
+          image = ""; # No image icon
+          email = "󰀓 ";
+          hyperlink = "󰌹 ";
         };
-        heading = {
-          sign = false;
-          icons = { };
+
+        # Clean bullets
+        bullet = {
+          icons = [ "●" "○" "◆" "◇" ];
+          highlight = "Normal";
         };
       };
     };
+
+    wilder = { enable = true; };
 
     which-key = {
       enable = true;
@@ -93,6 +96,8 @@
       enable = true;
       settings = {
         backend = "kitty";
+        only_render_image_at_cursor = true;
+        only_render_image_at_cursor_mode = "popup";
         window_overlap_clear_enabled = true;
         window_overlap_clear_ft_ignore = [ "cmp_menu" "cmp_docs" "" ];
       };
@@ -147,6 +152,10 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
+        zk = {
+          enable = true;
+          rootMarkers = [ ".zk" ];
+        };
       };
     };
 
@@ -177,7 +186,6 @@
         formatting = { fields = [ "kind" "abbr" "menu" ]; };
         sources = [
           { name = "zk"; }
-          { name = "mkdnflow"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer";
