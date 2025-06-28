@@ -42,9 +42,8 @@
         }
       ];
     };
-    extraConfig = ''
-      exec . ../scripts/startup-terminals.sh
-    '';
+    extraConfig =
+      "exec . /etc/nixos/modules/home-manager/windowManagers/sway/scripts/startup-terminals.sh     ";
   };
 
 }
