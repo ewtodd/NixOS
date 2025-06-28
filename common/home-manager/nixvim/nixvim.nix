@@ -1,7 +1,8 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix ];
+  imports =
+    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix  ];
 
   config = let profile = config.Profile;
   in {

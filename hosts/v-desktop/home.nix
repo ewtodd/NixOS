@@ -4,7 +4,12 @@
     home.homeDirectory = "/home/v-play";
     home.stateVersion = "25.05";
     imports = [ ../../common/home-manager/play-user.nix ];
-
+    programs.git = {
+      enable = true;
+      userName = "Valarie Milton";
+      userEmail = "157831739+vael3429@users.noreply.github.com";
+      extraConfig = { init = { defaultBranch = "main"; }; };
+    };
   };
 
   "v-work" = { config, pkgs, lib, ... }:
@@ -16,5 +21,11 @@
       imports = [ ../../common/home-manager/work-user.nix ];
       home.packages = [ lisepp ];
       Profile = lib.mkForce "play";
+      programs.git = {
+        enable = true;
+        userName = "Valarie Milton";
+        userEmail = "157831739+vael3429@users.noreply.github.com";
+        extraConfig = { init = { defaultBranch = "main"; }; };
+      };
     };
 }
