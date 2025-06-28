@@ -16,14 +16,8 @@ with lib;
           keybindings = {
             "Mod4+g" =
               "exec firefox --new-window -url https://umgpt.umich.edu/ -new-tab -url https://www.perplexity.ai/";
-            # Brightness controls for laptop
-           # "XF86MonBrightnessUp" =
-            #  "exec brightnessctl --device='acpi_video0' set +5%";
-           # "XF86MonBrightnessDown" =
-           #   "exec brightnessctl --device='acpi_video0' set 5%-";
           };
 
-          # Work-specific startup applications
           startup = [
             {
               command =
@@ -37,7 +31,7 @@ with lib;
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/kanagawa.png
+          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/kanagawa.png 
         '';
       };
     })
@@ -68,7 +62,7 @@ with lib;
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/sway/wallpapers/tokyonight.png
+          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/tokyonight.png
         '';
       };
     })

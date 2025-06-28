@@ -1,28 +1,25 @@
-{ pkgs, config, lib, inputs, ... }:
-{
-  config = lib.mkIf (config.WindowManager == "sway") {
+{ pkgs, config, lib, ... }: {
+  config = lib.mkIf (config.WindowManager == "niri") {
+    programs.niri.enable = true;
+    environment.systemPackages = with pkgs; [
+      xwayland-satellite
+      wlogout
+      birdtray
+      wl-clipboard
+      swaybg
+      jq
+      libnotify
+      sway-contrib.grimshot
+      pavucontrol
+      pulseaudio
+      gthumb # keep gthumb for detailed image viewing
+      imagemagick # for kitty
+      nautilus
+      thunderbird-latest
+      udiskie
+      gnome-themes-extra
+    ];
 
-    programs.sway = {
-      enable = true;
-      package = pkgs.swayfx;
-      extraPackages = with pkgs; [
-        wlogout
-        birdtray
-        wl-clipboard
-        swaybg
-        jq
-        libnotify
-        sway-contrib.grimshot
-        pavucontrol
-        pulseaudio
-        gthumb # keep gthumb for detailed image viewing
-        imagemagick # for kitty
-        nautilus
-        thunderbird-latest
-        udiskie
-        gnome-themes-extra
-      ];
-    };
     environment.shellAliases = {
       view-image = "kitten icat";
       get-layer-shells =
@@ -62,7 +59,7 @@
       settings = {
         default_session = {
           command = ''
-            ${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format "%c" --user-menu --greeting "Access is restricted to authorized personnel only. NO DOGS!" --cmd sway'';
+            ${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format "%c" --user-menu --greeting "Access is restricted to authorized personnel only. NO DOGS!" --cmd niri'';
           user = "greeter";
         };
       };
