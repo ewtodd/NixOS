@@ -6,8 +6,7 @@
     imports = [
       ../../common/home-manager/play-user.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/sway/sway.nix
-      #  ../../modules/home-manager/sway/settings/play.nix
+      ../../modules/home-manager/windowManagers/windowManager.nix
     ];
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
@@ -18,7 +17,6 @@
       userEmail = "30243637+ewtodd@users.noreply.github.com";
       extraConfig = { init = { defaultBranch = "main"; }; };
     };
-
   };
 
   "e-work" = { ... }: {
@@ -28,8 +26,7 @@
     imports = [
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/sway/sway.nix
-      # ../../modules/home-manager/sway/settings/work.nix
+      ../../modules/home-manager/windowManagers/sway/sway.nix
     ];
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
@@ -40,6 +37,5 @@
       userEmail = "30243637+ewtodd@users.noreply.github.com";
       extraConfig = { init = { defaultBranch = "main"; }; };
     };
-
   };
 }

@@ -1,6 +1,6 @@
 { config, ... }: {
 
-  imports = [ ./templates.nix ./sync.nix ];
+  imports = [ ./templates.nix ];
 
   programs.zk = {
     enable = true;
@@ -18,11 +18,7 @@
         id-case = "lower";
       };
 
-      format.markdown = {
-        link-format = "wiki";
-        link-drop-extension = false;
-        link-encode-path = false;
-      };
+      format = { markdown = { link-format = "wiki"; }; };
 
       tool = {
         editor = "nvim";
@@ -35,9 +31,10 @@
           dead-link = "error";
         };
         completion = {
-          note-label = "title";
+          note-label = "{{title}}"; # Use template to show actual title
           note-filter-text = "title body";
-          note-detail = "filename";
+          note-detail =
+            "{{title}} ({{filename}})"; # Show title and filename in details
         };
       };
 
