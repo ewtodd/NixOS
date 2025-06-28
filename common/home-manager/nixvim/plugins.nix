@@ -1,5 +1,6 @@
 { config, pkgs, lib, inputs, ... }: {
-  programs.nixvim.extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
+  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
     lualine = { enable = true; };
@@ -7,8 +8,77 @@
     telescope = {
       enable = true;
       extensions.file-browser.enable = true;
+
     };
 
+    zk = {
+      enable = true;
+      settings = {
+        picker = "telescope";
+        lsp = { auto_attach.enabled = false; };
+      };
+    };
+
+    render-markdown = {
+      enable = true;
+      settings = {
+        file_types = [ "markdown" ];
+        render_modes = true;
+        # Remove image icons
+        link = {
+          enabled = true;
+          image = ""; # No image icon
+          email = "󰀓 ";
+          hyperlink = "󰌹 ";
+        };
+
+        # Clean bullets
+        bullet = {
+          icons = [ "●" "○" "◆" "◇" ];
+          highlight = "Normal";
+        };
+      };
+    };
+
+    wilder = { enable = true; };
+
+    which-key = {
+      enable = true;
+      settings = {
+        icons = {
+          keys = {
+            Up = "";
+            Down = "";
+            Left = "";
+            Right = "";
+            C = "CTRL ";
+            M = "ALT ";
+            D = "SUPER ";
+            S = "SHIFT ";
+            CR = "ENTER";
+            Esc = "ESC ";
+            ScrollWheelDown = "SCROLL DOWN ";
+            ScrollWheelUp = "SCROLL UP ";
+            NL = "NEW LINE ";
+            BS = "󰁮";
+            Space = "SPACE ";
+            Tab = "TAB ";
+            F1 = "󱊫";
+            F2 = "󱊬";
+            F3 = "󱊭";
+            F4 = "󱊮";
+            F5 = "󱊯";
+            F6 = "󱊰";
+            F7 = "󱊱";
+            F8 = "󱊲";
+            F9 = "󱊳";
+            F10 = "󱊴";
+            F11 = "󱊵";
+            F12 = "󱊶";
+          };
+        };
+      };
+    };
     molten = {
       enable = true;
       settings = {
@@ -26,6 +96,8 @@
       enable = true;
       settings = {
         backend = "kitty";
+        only_render_image_at_cursor = true;
+        only_render_image_at_cursor_mode = "popup";
         window_overlap_clear_enabled = true;
         window_overlap_clear_ft_ignore = [ "cmp_menu" "cmp_docs" "" ];
       };
@@ -44,18 +116,19 @@
       enable = true;
       nixvimInjections = true;
       settings.highlight.enable = true;
-      grammarPackages = [
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.vim
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.java
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.latex
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.nix
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.python
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.cpp
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.c
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.bash
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.yaml
-        pkgs.vimPlugins.nvim-treesitter.builtGrammars.cmake
-      ];
+      grammarPackages = (with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+        vim
+        java
+        latex
+        nix
+        python
+        cpp
+        c
+        bash
+        yaml
+        cmake
+        markdown
+      ]);
     };
 
     nix.enable = true;
@@ -79,6 +152,10 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
+        zk = {
+          enable = true;
+          rootMarkers = [ ".zk" ];
+        };
       };
     };
 
@@ -108,6 +185,7 @@
         };
         formatting = { fields = [ "kind" "abbr" "menu" ]; };
         sources = [
+          { name = "zk"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer";
@@ -126,13 +204,13 @@
         snippet = { expand = "luasnip"; };
         mapping = {
           "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
-          "<C-j>" = "cmp.mapping.select_next_item()";
-          "<C-k>" = "cmp.mapping.select_prev_item()";
-          "<C-e>" = "cmp.mapping.abort()";
-          "<C-b>" = "cmp.mapping.scroll_docs(-4)";
-          "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          "<A-j>" = "cmp.mapping.select_next_item()";
+          "<A-k>" = "cmp.mapping.select_prev_item()";
+          "<A-e>" = "cmp.mapping.abort()";
+          "<A-b>" = "cmp.mapping.scroll_docs(-4)";
+          "<A-f>" = "cmp.mapping.scroll_docs(4)";
           "<CR>" = "cmp.mapping.confirm({ select = true })";
-          "<S-CR>" =
+          "<A-CR>" =
             "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
         };
       };
@@ -142,27 +220,7 @@
     cmp-buffer.enable = true;
     cmp_luasnip.enable = true;
     cmp-cmdline.enable = true;
-    #autoclose.enable = true;
     indent-blankline = { enable = true; };
 
-    lz-n = {
-      enable = true;
-      plugins = [{
-        __unkeyed-1 = "telescope.nvim";
-        cmd = [ "Telescope" ];
-        keys = [
-          {
-            __unkeyed-1 = "<leader>fa";
-            __unkeyed-2 = "<CMD>Telescope autocommands<CR>";
-            desc = "Telescope autocommands";
-          }
-          {
-            __unkeyed-1 = "<leader>fb";
-            __unkeyed-2 = "<CMD>Telescope buffers<CR>";
-            desc = "Telescope buffers";
-          }
-        ];
-      }];
-    };
   };
 }

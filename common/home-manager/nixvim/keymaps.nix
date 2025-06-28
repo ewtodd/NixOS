@@ -1,10 +1,35 @@
 { config, lib, pkgs, ... }: {
+
   programs.nixvim.keymaps = [
     {
-      action = "<cmd>IronHide<CR>";
-      key = "<S-esc>";
+      action = "<cmd>WhichKey<CR>";
+      key = "<A-w>";
       mode = [ "n" "i" "v" ];
       options = { nowait = true; };
+    }
+    {
+      action = "<cmd>lua vim.lsp.buf.definition()<CR>";
+      key = "<A-f>";
+      mode = [ "n" "i" "v" ];
+      options = { nowait = true; };
+    }
+    {
+      mode = "n";
+      key = "zl";
+      action = "<cmd>ZkLinks<CR>";
+      options.silent = true;
+    }
+    {
+      mode = "n";
+      key = "zb";
+      action = "<cmd>ZkBacklinks<CR>";
+      options.silent = true;
+    }
+    {
+      mode = "n";
+      key = "zn";
+      action = "<cmd>ZkNotes<CR>";
+      options.silent = true;
     }
     {
       action = "<cmd>Telescope file_browser<CR>";
@@ -100,7 +125,7 @@
 
     # Initialize molten
     {
-      key = "<C-m>";
+      key = "<C-p>";
       action = "<cmd>MoltenInit nix-python<CR>";
       mode = [ "n" "i" "v" ];
       options.nowait = true;
