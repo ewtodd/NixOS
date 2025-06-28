@@ -13,7 +13,12 @@ in {
   programs.appimage.binfmt = true;
 
   environment.variables.EDITOR = "nvim";
-  environment.shellAliases = { vim = "nvim"; };
+
+  environment.shellAliases = {
+    vim = "nvim";
+    ":q" = "exit";
+    nrs = "sudo nixos-rebuild switch";
+  };
   environment.systemPackages = with pkgs; [
     git
     gh
@@ -42,4 +47,7 @@ in {
     fira-code
     fira-code-symbols
   ];
+
+  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
+  
 }

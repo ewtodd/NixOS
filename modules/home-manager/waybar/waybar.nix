@@ -1,7 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig, ... }:
 with lib;
 
-let windowManager = config.WindowManager;
+let windowManager = osConfig.WindowManager;
 
 in {
   imports = [ ./style.nix ];
@@ -13,12 +13,11 @@ in {
         position = "top";
         spacing = 0;
         height = 34;
-        modules-left = [
-          "custom/logo"
-          "${windowManager}/workspaces"
-          "${windowManager}/window"
-          "${windowManager}/mode"
-        ];
+        modules-left = [ "custom/logo" "${windowManager}/workspaces" ]
+          ++ optionals (windowManager != "niri") [
+            "${windowManager}/window"
+            "${windowManager}/mode"
+          ];
         modules-center = [ "clock" "custom/notification" "tray" ];
         modules-right = [
           "cpu"
@@ -30,16 +29,22 @@ in {
           "custom/power"
         ];
 
-        "${windowManager}/window" = {
+        "${windowManager}/window" = mkIf (windowManager != "niri") {
           format = "";
           max-length = 0;
         };
 
-        "${windowManager}/workspaces" = {
+        "${windowManager}/mode" =
+          mkIf (windowManager != "niri") { format = "{}"; };
+
+        "${windowManager}/workspaces" = if windowManager == "niri" then {
+          format = "{name}";
+          on-click = "activate";
+        } else {
           "on-click" = "activate";
           format = "{icon}";
           format-icons = {
-            default = "";
+            default = "";
             "1" = "1";
             "2" = "2";
             "3" = "3";
@@ -49,9 +54,8 @@ in {
             "7" = "7";
             "8" = "8";
             "9" = "9";
-
-            active = "󱓻";
-            urgent = "󱓻";
+            active = "";
+            urgent = "";
           };
           persistent_workspaces = {
             "1" = [ ];
@@ -61,7 +65,6 @@ in {
             "5" = [ ];
           };
         };
-
         cpu = {
           interval = 5;
           format = "  {usage}%";
