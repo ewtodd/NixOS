@@ -1,9 +1,10 @@
-{ config, pkgs, lib, deviceType, ... }:
-with lib; {
+{ config, pkgs, lib, osConfig, ... }:
+with lib;
+let deviceType = osConfig.DeviceType;
+in {
   imports = [
     ./settings/sway-colors.nix
     ./settings/profile.nix
-    ./services/swayr.nix
     ./services/swayidle.nix
     ./services/swaync.nix
     ./services/swaylock.nix

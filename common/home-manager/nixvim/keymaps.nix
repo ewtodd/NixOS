@@ -14,6 +14,24 @@
       options = { nowait = true; };
     }
     {
+      mode = "n";
+      key = "zl";
+      action = "<cmd>ZkLinks<CR>";
+      options.silent = true;
+    }
+    {
+      mode = "n";
+      key = "zb";
+      action = "<cmd>ZkBacklinks<CR>";
+      options.silent = true;
+    }
+    {
+      mode = "n";
+      key = "zn";
+      action = "<cmd>ZkNotes<CR>";
+      options.silent = true;
+    }
+    {
       action = "<cmd>Telescope file_browser<CR>";
       key = "<C-f>";
       mode = [ "n" "i" "v" ];
