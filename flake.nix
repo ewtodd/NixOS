@@ -15,6 +15,10 @@
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
     niri.url = "github:sodiboo/niri-flake";
+    nixpkgs-cosmic-working = {
+      url = "github:NixOS/nixpkgs/4206c4cb56751df534751b058295ea61357bbbaa";
+      flake = false;
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, ... }: {
@@ -26,6 +30,16 @@
           system = "x86_64-linux";
         };
         modules = [
+          {
+            nixpkgs.overlays = [
+              (final: prev: {
+                cosmic-greeter =
+                  inputs.nixpkgs-cosmic-working.legacyPackages.${prev.system}.cosmic-greeter;
+                cosmic-comp =
+                  inputs.nixpkgs-cosmic-working.legacyPackages.${prev.system}.cosmic-comp;
+              })
+            ];
+          }
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {

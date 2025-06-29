@@ -211,7 +211,7 @@ in {
        border-left: none;
      }
 
-     #wlr-taskbar {
+     #custom-notification {
        background-color: #${colors.base00};
        /*font-size: 15px;*/
        color: #${accentColor};

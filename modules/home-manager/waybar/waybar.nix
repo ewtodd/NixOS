@@ -20,11 +20,7 @@ in {
             "${windowManager}/window"
             "${windowManager}/mode"
           ];
-        modules-center = [
-          "clock" # "custom/notification"
-          "wlr/taskbar"
-          "tray"
-        ];
+        modules-center = [ "clock" "custom/notification" "tray" ];
         modules-right = [ "cpu" "memory" "network" "pulseaudio" "battery" ];
 
         "${windowManager}/window" = mkIf (windowManager != "niri") {
@@ -40,14 +36,7 @@ in {
           on-click = "activate";
         } else {
           "on-click" = "activate";
-          format = "{icon}{name}";
-          format-icons = {
-            default = "";
-
-            focused = "";
-
-            urgent = "󱄅 : ";
-          };
+          format = "{name}";
           persistent_workspaces = {
             "1" = [ ];
             "2" = [ ];
@@ -155,18 +144,6 @@ in {
             critical = 10;
           };
           tooltip = false;
-        };
-        "wlr/taskbar" = {
-          format = "{icon}";
-          icon-size = 14;
-          icon-theme =
-            if profile == "play" then "Tokyonight-Dark" else "Kanagawa";
-          tooltip-format = "{title}";
-          on-click = "activate";
-          on-click-middle = "close";
-          ignore-list = [ ];
-          app_ids-mapping = { };
-          rewrite = { };
         };
 
       }];
