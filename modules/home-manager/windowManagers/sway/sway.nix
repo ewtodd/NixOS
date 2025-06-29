@@ -223,6 +223,7 @@ in {
 
         layer_effects "swaync-control-center" blur enable; shadows enable
         layer_effects "rofi" blur enable; shadows enable
+        layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable
 

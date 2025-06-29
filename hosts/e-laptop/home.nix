@@ -11,7 +11,6 @@
 
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
-    #gtk.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";
@@ -35,7 +34,6 @@
     };
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
-    gtk.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";
@@ -44,4 +42,10 @@
     };
 
   };
+  "root" = { ... }: {
+    home.username = "root";
+    home.stateVersion = "25.05";
+    imports = [ ../../common/home-manager/root-user.nix ];
+  };
+
 }
