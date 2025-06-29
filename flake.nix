@@ -32,12 +32,17 @@
         modules = [
           {
             nixpkgs.overlays = [
-              (final: prev: {
-                cosmic-greeter =
-                  inputs.nixpkgs-cosmic-working.legacyPackages.${prev.system}.cosmic-greeter;
-                cosmic-comp =
-                  inputs.nixpkgs-cosmic-working.legacyPackages.${prev.system}.cosmic-comp;
-              })
+              (final: prev:
+                let
+                  workingCosmicPkgs = import inputs.nixpkgs-cosmic-working {
+                    system = prev.ssystem;
+                  };
+                in {
+                  cosmic-greeter = workingCosmicPkgs.cosmic-greeter;
+                  cosmic-comp = workingCosmicPkgs.cosmic-comp;
+                  cosmic-session = workingCosmicPkgs.cosmic-session;
+                  cosmic-settings = workingCosmicPkgs.cosmic-settings;
+                })
             ];
           }
           inputs.home-manager.nixosModules.home-manager
