@@ -11,7 +11,6 @@ in {
     ./services/wlogout.nix
     ./services/swayosd.nix
     ./launcher/rofi.nix
-    ./misc/gtk.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
@@ -228,8 +227,11 @@ in {
         layer_effects "logout_dialog" blur enable
 
         exec udiskie --tray
-        exec swayrd
-
+        exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+      '' + lib.optionalString (profile == "play") ''
+        exec gsettings set org.gnome.desktop.interface gtk-theme 'Tokyonight-dark-purple'
+      '' + lib.optionalString (profile == "work") ''
+        exec gsettings set org.gnome.desktop.interface gtk-theme 'Kanagawa-B-LB'
       '';
     };
   };
