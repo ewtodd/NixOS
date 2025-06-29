@@ -15,17 +15,6 @@
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
     niri.url = "github:sodiboo/niri-flake";
-    systems.url = "github:nix-systems/default-linux";
-
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
-    };
-    scenefx = {
-      url = "github:wlrfx/scenefx";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
   };
 
   outputs = inputs@{ self, nixpkgs, ... }: {
@@ -44,7 +33,6 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               backupFileExtension = "backup";
-              nixpkgs.overlays = [ inputs.neorg-overlay.overlays.default ];
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
@@ -87,7 +75,6 @@
         specialArgs = {
           inherit inputs;
           system = "x86_64-linux";
-
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager

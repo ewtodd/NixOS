@@ -1,5 +1,4 @@
-{ pkgs, config, lib, inputs, ... }:
-{
+{ pkgs, config, lib, inputs, ... }: {
   config = lib.mkIf (config.WindowManager == "sway") {
 
     programs.sway = {
@@ -20,6 +19,7 @@
         nautilus
         thunderbird-latest
         udiskie
+        glib
         gnome-themes-extra
       ];
     };
@@ -32,13 +32,7 @@
     security.pam.services.swaylock-effects = { };
     services.udisks2.enable = true;
     services.gvfs.enable = true;
-
-    qt = {
-      enable = true;
-      platformTheme = "gtk2";
-      style = "gtk2";
-    };
-
+    programs.dconf.enable = true;
     programs.gnome-disks = { enable = true; };
 
     programs.nautilus-open-any-terminal = {
@@ -46,10 +40,7 @@
       terminal = "kitty";
     };
 
-    environment.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-      GTK_THEME = "Dracula";
-    };
+    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
 
     services.xserver = {
       enable = true;

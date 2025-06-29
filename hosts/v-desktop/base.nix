@@ -23,6 +23,6 @@
   users.users.v-work = {
     isNormalUser = true;
     description = "v-work";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "i2c" ];
   };
 }

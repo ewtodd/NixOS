@@ -62,7 +62,7 @@ in {
       border-radius: 0;
       min-height: 0;
       font-family: "${fontFamily}";
-      font-size: 0.9rem;
+      font-size: 1.0rem;
     }
 
     /* Default transparent background when no windows */
@@ -100,6 +100,7 @@ in {
     #workspaces {
       background: transparent;
       margin: 6px 0;
+      font-size: 1.0rem;
     }
 
     #workspaces button {
@@ -232,7 +233,7 @@ in {
 
     #custom-notification {
       background-color: #${colors.base00};
-      font-size: 15px;
+      /*font-size: 15px;*/
       color: #${accentColor};
       padding-top: 8px;
       padding-bottom: 8px;
