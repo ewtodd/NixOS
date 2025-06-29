@@ -4,7 +4,7 @@
     ./xdg/xdg.nix
     ./kitty/kitty.nix
     ./fastfetch/fastfetch.nix
-    ./nix-colors/colorschemes.nix
+    ./theming/theming.nix
     ./nixvim/nixvim.nix
     ./zettelkasten/zk.nix
   ];

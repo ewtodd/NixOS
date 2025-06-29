@@ -10,7 +10,7 @@
     ];
     programs.waybar.enable = true;
     wayland.windowManager.sway.enable = true;
-    gtk.enable = true;
+    #gtk.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";
