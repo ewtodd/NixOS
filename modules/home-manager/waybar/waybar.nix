@@ -1,7 +1,9 @@
 { config, pkgs, lib, osConfig, ... }:
 with lib;
 
-let windowManager = osConfig.WindowManager;
+let
+  windowManager = osConfig.WindowManager;
+  profile = config.Profile;
 
 in {
   imports = [ ./style.nix ];
@@ -13,21 +15,17 @@ in {
         position = "top";
         spacing = 0;
         height = 34;
-        modules-left = [ "custom/logo" "${windowManager}/workspaces" ]
+        modules-left = [ "${windowManager}/workspaces" ]
           ++ optionals (windowManager != "niri") [
             "${windowManager}/window"
             "${windowManager}/mode"
           ];
-        modules-center = [ "clock" "custom/notification" "tray" ];
-        modules-right = [
-          "cpu"
-          "memory"
-          "network"
-          "pulseaudio"
-          "backlight"
-          "battery"
-          "custom/power"
+        modules-center = [
+          "clock" # "custom/notification"
+          "wlr/taskbar"
+          "tray"
         ];
+        modules-right = [ "cpu" "memory" "network" "pulseaudio" "battery" ];
 
         "${windowManager}/window" = mkIf (windowManager != "niri") {
           format = "";
@@ -42,20 +40,13 @@ in {
           on-click = "activate";
         } else {
           "on-click" = "activate";
-          format = "{icon}";
+          format = "{icon}{name}";
           format-icons = {
             default = "";
-            "1" = "1";
-            "2" = "2";
-            "3" = "3";
-            "4" = "4";
-            "5" = "5";
-            "6" = "6";
-            "7" = "7";
-            "8" = "8";
-            "9" = "9";
-            active = "";
-            urgent = "";
+
+            focused = "";
+
+            urgent = "󱄅 : ";
           };
           persistent_workspaces = {
             "1" = [ ];
@@ -93,13 +84,6 @@ in {
           "on-click" = "swaync-client -t -sw";
           "on-click-right" = "swaync-client -d -sw";
           tooltip = false;
-        };
-
-        backlight = {
-          format = "{icon} {percent}%";
-          format-icons = "";
-          on-scroll-down = "brightnessctl -c backlight set 1%-";
-          on-scroll-up = "brightnessctl -c backlight set +1%";
         };
 
         "custom/notification" = {
@@ -158,12 +142,6 @@ in {
           "on-scroll-down" = "pactl set-sink-volume @DEFAULT_SINK@ -2%";
         };
 
-        "custom/logo" = {
-          format = " 󱄅 ";
-          tooltip = false;
-          "on-click" = "rofi -show drun -matching fuzzy";
-        };
-
         battery = {
           format = "{icon} {capacity}%";
           "format-icons" = {
@@ -178,13 +156,19 @@ in {
           };
           tooltip = false;
         };
-
-        "custom/power" = {
-          format = "󰤆";
-          tooltip = false;
-          "on-click" =
-            "${pkgs.wlogout}/bin/wlogout -p layer-shell --buttons-per-row 2";
+        "wlr/taskbar" = {
+          format = "{icon}";
+          icon-size = 14;
+          icon-theme =
+            if profile == "play" then "Tokyonight-Dark" else "Kanagawa";
+          tooltip-format = "{title}";
+          on-click = "activate";
+          on-click-middle = "close";
+          ignore-list = [ ];
+          app_ids-mapping = { };
+          rewrite = { };
         };
+
       }];
     };
   };
