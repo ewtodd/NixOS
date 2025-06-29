@@ -67,7 +67,8 @@ in {
         };
         cpu = {
           interval = 5;
-          format = "  {usage}%";
+          format = "{icon} {usage}%";
+          format-icons = "";
           states = {
             warning = 70;
             critical = 90;
@@ -76,7 +77,8 @@ in {
 
         memory = {
           interval = 5;
-          format = "  {}%";
+          format = "{icon} {}%";
+          format-icons = "";
           states = {
             warning = 70;
             critical = 90;
@@ -94,7 +96,7 @@ in {
         };
 
         backlight = {
-          format = "{percent}% {icon}";
+          format = "{icon} {percent}%";
           format-icons = "";
           on-scroll-down = "brightnessctl -c backlight set 1%-";
           on-scroll-up = "brightnessctl -c backlight set +1%";
@@ -163,7 +165,7 @@ in {
         };
 
         battery = {
-          format = "{capacity}% {icon}";
+          format = "{icon} {capacity}%";
           "format-icons" = {
             charging = [ "󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅" ];
             default = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
