@@ -28,4 +28,11 @@
         extraConfig = { init = { defaultBranch = "main"; }; };
       };
     };
+
+  "root" = { ... }: {
+    home.username = "root";
+    home.stateVersion = "25.05";
+    imports = [ ../../common/home-manager/root-user.nix ];
+  };
+
 }
