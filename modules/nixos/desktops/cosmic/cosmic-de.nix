@@ -1,4 +1,5 @@
-{ config, lib, pkgs, ... }: {
+{ config, lib, pkgs, ... }:
+ {
   config = lib.mkIf (config.WindowManager == "cosmic") {
     services.desktopManager.cosmic = {
       enable = true;
