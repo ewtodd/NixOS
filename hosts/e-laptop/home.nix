@@ -5,6 +5,7 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/play-user.nix
+      ../../modules/home-manager/zettelkasten/zk.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
@@ -25,6 +26,7 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/work-user.nix
+      ../../modules/home-manager/zettelkasten/zk.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
