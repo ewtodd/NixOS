@@ -89,40 +89,6 @@ in {
 
     '';
 
-    "${templatepath}/templates/brainstorm.md".text = ''
-      # {{title}}
-
-      **Created:** {{format-date now "full"}}
-      **Tags:** #brainstorm #idea
-
-      ## Problem/Challenge
-
-      ## Ideas
-
-      ## Related Projects
-
-      ## Action Items
-
-      - [ ] 
-
-    '';
-
-    "${templatepath}/templates/concept.md".text = ''
-      # {{title}}
-
-      **Created:** {{format-date now "full"}}
-      **Tags:** #concept #idea
-
-      ## Definition
-
-      ## Examples
-
-      ## Applications
-
-      ## Related Concepts
-
-    '';
-
     "${templatepath}/templates/daily.md".text = ''
       # {{format-date now "full"}}
 
@@ -161,21 +127,17 @@ in {
 
     '';
 
-    "${templatepath}/templates/research.md".text = ''
+    "${templatepath}/templates/note.md".text = ''
       # {{title}}
 
       **Created:** {{format-date now "full"}}
-      **Tags:** #research
+      **Tags:** #notes 
 
-      ## Research Question
+      ## Topic  
 
-      ## Findings
+      ## Thoughts
 
       ## Related Projects
-
-      ## Next Steps
-
-      - [ ] 
 
     '';
 
