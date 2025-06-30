@@ -47,7 +47,7 @@
           };
         };
         tasks = {
-          paths = [ "tasks/ongoing" ];
+          paths = [ "tasks/active" ];
           note = {
             filename = ''{{format-date now "%Y-%m-%d"}}-{{slug title}}'';
             template = "task.md";
@@ -96,7 +96,7 @@
         daily = "zk new daily --no-input";
 
         # Use shell expansion to handle arguments properly
-        task = ''zk new tasks/ongoing --no-input --title "$@"'';
+        task = ''zk new tasks/active --no-input --title "$@"'';
 
         project = ''zk new projects --no-input --title "$@"'';
         idea = ''zk new ideas --no-input --title "$@"'';
@@ -116,8 +116,8 @@
   home.file = {
     # Create directory structure
     "${config.home.homeDirectory}/zettelkasten/daily/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/tasks/ongoing/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/tasks/completed/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/tasks/active/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/tasks/complete/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/projects/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/ideas/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/meetings/.keep".text = "";
