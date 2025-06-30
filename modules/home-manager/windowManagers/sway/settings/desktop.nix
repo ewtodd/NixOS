@@ -36,14 +36,10 @@
           workspace = "5";
           output = "HDMI-A-2";
         }
-        {
-          workspace = "6";
-          output = "HDMI-A-2";
-        }
       ];
     };
-    extraConfig =
-      "exec . /etc/nixos/modules/home-manager/windowManagers/sway/scripts/startup-terminals.sh     ";
+    # extraConfig =
+    #   "exec . /etc/nixos/modules/home-manager/windowManagers/sway/scripts/startup-terminals.sh     ";
   };
 
 }

@@ -48,6 +48,4 @@ in {
     fira-code-symbols
   ];
 
-  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
-  
 }
