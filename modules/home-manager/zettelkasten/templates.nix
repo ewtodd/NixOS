@@ -9,7 +9,7 @@ in {
     "${templatepath}/templates/default.md".text = ''
       # {{title}}
 
-      **Created:** {{format-date now "medium"}}
+      **Created:** {{format-date now "full"}}
       **Tags:** 
 
       ## Content
@@ -19,7 +19,7 @@ in {
     "${templatepath}/templates/task.md".text = ''
       # {{title}}
 
-      **Created:** {{format-date now "medium"}}
+      **Created:** {{format-date now "full"}}
       **Due:** 
       **Priority:** medium
       **Status:** active
@@ -39,7 +39,7 @@ in {
     "${templatepath}/templates/project.md".text = ''
       # {{title}}
 
-      **Created:** {{format-date now "medium"}}
+      **Created:** {{format-date now "full"}}
       **Status:** planning
       **Tags:** #project
 
@@ -60,7 +60,7 @@ in {
     "${templatepath}/templates/idea.md".text = ''
       # {{title}}
 
-      **Created:** {{format-date now "medium"}}
+      **Created:** {{format-date now "full"}}
       **Tags:** #idea
 
       ## Core Concept
@@ -76,9 +76,9 @@ in {
     '';
 
     "${templatepath}/templates/daily.md".text = ''
-      # {{format-date now "medium"}}
+      # {{format-date now "full"}}
 
-      **Date:** {{format-date now "medium"}}
+      **Date:** {{format-date now "full"}}
       **Tags:** #daily
 
       ## Today's Focus
@@ -97,7 +97,7 @@ in {
     "${templatepath}/templates/meeting.md".text = ''
       # {{title}}
 
-      **Date:** {{format-date now "medium"}}
+      **Date:** {{format-date now "full"}}
       **Tags:** #meeting
 
       ## Agenda
@@ -117,7 +117,7 @@ in {
     "${templatepath}/templates/note.md".text = ''
       # {{title}}
 
-      **Created:** {{format-date now "medium"}}
+      **Created:** {{format-date now "full"}}
       **Tags:** #notes 
 
       ## Topic  
@@ -137,7 +137,7 @@ in {
     "${templatepath}/templates/howto.md".text = ''
       # How to {{title}}
 
-      **Created:** {{format-date now "medium"}}
+      **Created:** {{format-date now "full"}}
       **Tags:** #howto #reference
 
       ## Steps
