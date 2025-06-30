@@ -3,8 +3,7 @@ with lib;
 
 let
   windowManager = osConfig.WindowManager;
-  profile = config.Profile;
-
+  deviceType = osConfig.DeviceType;
 in {
   imports = [ ./style.nix ];
 
@@ -21,8 +20,8 @@ in {
             "${windowManager}/mode"
           ];
         modules-center = [ "clock" "custom/notification" "tray" ];
-        modules-right = [ "cpu" "memory" "network" "pulseaudio" "battery" ];
-
+        modules-right = [ "cpu" "memory" "network" "pulseaudio" ]
+          ++ optionals (deviceType == "laptop") [ "battery" ];
         "${windowManager}/window" = mkIf (windowManager != "niri") {
           format = "";
           max-length = 0;

@@ -1,6 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, osConfig, ... }:
 
 let
+  deviceType = osConfig.DeviceType;
   colors = config.colorScheme.palette;
   profile = config.Profile;
   fontFamily = if profile == "work" then
@@ -82,6 +83,12 @@ in {
        font-size: 1.0rem;
      }
 
+     #workspaces button:first-child:last-child {
+       border-radius: 8px;
+       margin-left: 3px;
+       border-right: none;
+     }
+
      #workspaces button {
        all: initial;
        min-width: 24px;
@@ -100,10 +107,15 @@ in {
 
      #workspaces button:last-child {
        border-radius: 0 8px 8px 0;
-       border-right: none;
      }
 
      #workspaces button.focused {
+       background-color: #${colors.base00};
+       color: #${accentColor};
+       border: 2px solid #${colors.base04};
+    }
+
+     #workspaces button.focused:first-child:last-child {
        background-color: #${colors.base00};
        color: #${accentColor};
        border: 2px solid #${colors.base04};
@@ -150,8 +162,7 @@ in {
        border-left: none;
      }
 
-     #memory,
-     #pulseaudio {
+     #memory {
        background-color: #${colors.base00};
        color: #${accentColor};
        padding: 8px 12px;
@@ -160,8 +171,8 @@ in {
        border-right: 1px solid #${colors.base03};
        border-left: none;
      }
-
-     #network {
+      
+      #network {
        background-color: #${colors.base00};
        color: #${accentColor};
        padding-top: 8px;
@@ -174,6 +185,23 @@ in {
        border-left: none;
      }
 
+
+     #pulseaudio {
+       background-color: #${colors.base00};
+       color: #${accentColor};
+       padding: 8px 12px;
+       border-radius: ${if deviceType == "desktop" then "0 8px 8px 0" else "0"};
+       margin: ${if deviceType == "desktop" then "6px 3px 6px 0" else "6px 0"};
+       border-right: ${
+         if deviceType == "desktop" then
+           "none"
+         else
+           "1px solid #${colors.base03}"
+       };
+       border-left: none;
+    }
+
+     
      #battery {
        background-color: #${colors.base00};
        color: #${accentColor};
