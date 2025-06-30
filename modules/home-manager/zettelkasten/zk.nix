@@ -81,11 +81,11 @@
             template = "meeting.md";
           };
         };
-        research = {
-          paths = [ "research" ];
+        notes = {
+          paths = [ "notes" ];
           note = {
             filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
-            template = "research.md";
+            template = "note.md";
           };
         };
         howtos = {
@@ -107,7 +107,7 @@
         project = ''zk new projects --no-input --title "$@"'';
         idea = ''zk new ideas --no-input --title "$@"'';
         meeting = ''zk new meetings --no-input --title "$@"'';
-        research = ''zk new research --no-input --title "$@"'';
+        note = ''zk new notes --no-input --title "$@"'';
         howto = ''zk new howtos --no-input --title "$@"'';
         # Task management
         done = "zk edit  --tag task --tag active";
@@ -127,7 +127,7 @@
     "${config.home.homeDirectory}/zettelkasten/projects/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/ideas/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/meetings/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/research/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/notes/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/howtos/.keep".text = "";
   };
 
