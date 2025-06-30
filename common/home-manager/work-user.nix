@@ -6,7 +6,6 @@
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix
     ./nixvim/nixvim.nix
-    ./zettelkasten/zk.nix
   ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
