@@ -3,16 +3,8 @@
     enable = true;
     settings = {
       menu = {
-        executable = "${pkgs.rofi}/bin/rofi";
-        args = [
-          "--theme=nix-colors-grid"
-          "--allow-markup"
-          "--allow-images"
-          "--insensitive"
-          "--cache-file=/dev/null"
-          "--parse-search"
-          "--prompt={prompt}"
-        ];
+        executable = "{$pkgs.rofi}/bin/rofi";
+        args = [ "-show window" ];
       };
       format = {
         output_format = "{indent}Output {name} ({id})";
