@@ -35,7 +35,7 @@
               (final: prev:
                 let
                   workingCosmicPkgs = import inputs.nixpkgs-cosmic-working {
-                    system = prev.ssystem;
+                    system = prev.system;
                   };
                 in {
                   cosmic-greeter = workingCosmicPkgs.cosmic-greeter;
