@@ -227,6 +227,7 @@ in {
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable
 
+        exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
       '' + lib.optionalString (profile == "play") ''
