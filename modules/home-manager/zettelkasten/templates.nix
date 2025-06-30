@@ -45,7 +45,7 @@ in {
 
       ## Overview
 
-      ## Ongoing Action Items 
+      ## Active Action Items 
 
       - [ ]
 
@@ -88,7 +88,7 @@ in {
 
       ## Project Updates
 
-      ## Action Items 
+      ## Small Action Items 
 
       - [ ]
 
