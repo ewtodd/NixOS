@@ -136,9 +136,10 @@
     vimtex = {
       enable = true;
       settings = {
-        view_method = "general";
+        view_method = "zathura";
         general_viewer = "xdg-open";
       };
+      texlivePackage = null;
     };
 
     lsp = {
