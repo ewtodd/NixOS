@@ -92,6 +92,8 @@ in {
 
       - [ ]
 
+      ## Tomorrow's Focus
+
     '';
 
     "${templatepath}/templates/meeting.md".text = ''
