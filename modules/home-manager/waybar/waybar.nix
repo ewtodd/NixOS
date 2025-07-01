@@ -68,7 +68,7 @@ in {
 
         clock = {
           interval = 1;
-          format = "{:%I:%M, %e %b %Y}";
+          format = "{:%I:%M,%e %b %Y}";
           "on-click" = "swaync-client -t -sw";
           "on-click-right" = "swaync-client -d -sw";
           tooltip = false;

@@ -18,6 +18,8 @@ in {
     vim = "nvim";
     ":q" = "exit";
     nrs = "sudo nixos-rebuild switch";
+    fix-nixos-git =
+      "sudo chown -R root:wheel /etc/nixos/* /etc/nixos/.* && sudo chmod -R g+rwx /etc/nixos/* /etc/nixos/.*";
   };
   environment.systemPackages = with pkgs; [
     git
@@ -27,7 +29,6 @@ in {
     libreoffice
     tree
     fancy-cat
-    texliveSmall
     htop
     nix-prefetch-github
     nixfmt-classic
