@@ -26,20 +26,20 @@
     };
   };
 
-  xdg.desktopEntries.fancy-cat = {
-    name = "fancy-cat";
-    genericName = "Terminal PDF Viewer";
-    comment = "PDF viewer for terminal using Kitty image protocol";
-    exec = "kitty fancy-cat %f";
-    icon = "application-pdf";
-    type = "Application";
-    terminal = false;
-    categories = [ "Office" "Viewer" ];
-    mimeType = [ "application/pdf" ];
-  };
+  #  xdg.desktopEntries.fancy-cat = {
+  #   name = "fancy-cat";
+  #  genericName = "Terminal PDF Viewer";
+  #  comment = "PDF viewer for terminal using Kitty image protocol";
+  # exec = "kitty fancy-cat %f";
+  #icon = "application-pdf";
+  # type = "Application";
+  # terminal = false;
+  # categories = [ "Office" "Viewer" ];
+  # mimeType = [ "application/pdf" ];
+  # };
 
-  xdg.mimeApps = {
-    enable = true;
-    defaultApplications = { "application/pdf" = "fancy-cat.desktop"; };
-  };
+  #  xdg.mimeApps = {
+  #   enable = true;
+  #   defaultApplications = { "application/pdf" = "fancy-cat.desktop"; };
+  #};
 }
