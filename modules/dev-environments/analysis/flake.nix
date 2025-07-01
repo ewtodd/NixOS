@@ -1,5 +1,5 @@
 {
-  description = "LaTeX development environment with elsarticle";
+  description = "Python and ROOT environment with jupyter integration.";
 
   inputs = { nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; };
 
