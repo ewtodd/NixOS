@@ -138,6 +138,9 @@
       settings = {
         view_method = "zathura";
         general_viewer = "xdg-open";
+        view_automatic = 0;
+        quickfix_open_on_warning = 0;
+        compiler_callback_hooks = { };
       };
       texlivePackage = null;
     };
