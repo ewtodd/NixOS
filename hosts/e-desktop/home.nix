@@ -10,7 +10,6 @@
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
     programs.waybar.enable = true;
-    wayland.windowManager.sway.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";
@@ -27,10 +26,9 @@
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/zettelkasten/zk.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/windowManagers/sway/sway.nix
+      ../../modules/home-manager/windowManagers/windowManager.nix
     ];
     programs.waybar.enable = true;
-    wayland.windowManager.sway.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";

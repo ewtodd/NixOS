@@ -34,7 +34,6 @@
       "3" = { open-on-output = "HDMI-A-3"; };
       "4" = { open-on-output = "HDMI-A-3"; };
       "5" = { open-on-output = "HDMI-A-2"; };
-      "6" = { open-on-output = "HDMI-A-2"; };
     };
 
   };

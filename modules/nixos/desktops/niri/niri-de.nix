@@ -1,6 +1,9 @@
 { pkgs, config, lib, ... }: {
   config = lib.mkIf (config.WindowManager == "niri") {
-    programs.niri.enable = true;
+    programs.niri = {
+      enable = true;
+      package = pkgs.niri-stable;
+    };
     environment.systemPackages = with pkgs; [
       xwayland-satellite
       wlogout
@@ -20,21 +23,11 @@
       gnome-themes-extra
     ];
 
-    environment.shellAliases = {
-      view-image = "kitten icat";
-      get-layer-shells =
-        "swaymsg -r -t get_outputs | jq '.[0].layer_shell_surfaces | .[] | .namespace'";
-    };
+    environment.shellAliases = { view-image = "kitten icat"; };
 
     security.pam.services.swaylock-effects = { };
     services.udisks2.enable = true;
     services.gvfs.enable = true;
-
-    qt = {
-      enable = true;
-      platformTheme = "gtk2";
-      style = "gtk2";
-    };
 
     programs.gnome-disks = { enable = true; };
 
@@ -43,10 +36,7 @@
       terminal = "kitty";
     };
 
-    environment.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-      GTK_THEME = "Dracula";
-    };
+    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
 
     services.xserver = {
       enable = true;
