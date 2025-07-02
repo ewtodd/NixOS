@@ -27,14 +27,5 @@
       };
     };
 
-    # Workspace assignments to outputs
-    workspaces = {
-      "1" = { open-on-output = "HDMI-A-3"; };
-      "2" = { open-on-output = "HDMI-A-3"; };
-      "3" = { open-on-output = "HDMI-A-3"; };
-      "4" = { open-on-output = "HDMI-A-3"; };
-      "5" = { open-on-output = "HDMI-A-2"; };
-    };
-
   };
 }

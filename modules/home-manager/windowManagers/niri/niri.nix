@@ -1,5 +1,4 @@
-{ config, pkgs, lib, osConfig, ... }:
-
+{ config, lib, osConfig, pkgs, ... }:
 with lib;
 let deviceType = osConfig.DeviceType;
 in {
@@ -20,9 +19,11 @@ in {
 
     programs.niri = {
       settings = {
-        environment.DISPLAY = ":0";
+        environment = { DISPLAY = ":0"; };
+        prefer-no-csd = true;
         input = {
 
+          focus-follows-mouse.enable = true;
           touchpad = mkIf (deviceType == "laptop") {
             tap = true;
             natural-scroll = true;
@@ -41,14 +42,20 @@ in {
             { proportion = 0.66667; }
           ];
           default-column-width = { proportion = 0.5; };
-
+          always-center-single-column = true;
         };
-        window-rules = {
+
+        window-rules = [{
           clip-to-geometry = true;
-          geometry-corner-radius = 10;
-        };
 
-        # Key bindings - converted from your Sway config
+          geometry-corner-radius = {
+            top-left = 10.0;
+            top-right = 10.0;
+            bottom-right = 10.0;
+            bottom-left = 10.0;
+          };
+        }];
+
         binds = with config.lib.niri.actions; {
           # Basic window management
           "Mod+f".action = spawn "firefox";
@@ -64,7 +71,13 @@ in {
           "Mod+Return".action.spawn = "kitty";
           "Mod+Shift+q".action = close-window;
           "Mod+d".action.spawn = [ "rofi" "-show" "drun" "-matching" "fuzzy" ];
-
+          "Mod+m".action.spawn = [
+            "${pkgs.wlogout}/bin/wlogout"
+            "-p"
+            "layer-shell"
+            "--buttons-per-row"
+            "2"
+          ];
           # Focus management (vim-style)
           "Mod+h".action = focus-column-left;
           "Mod+j".action = focus-window-down;
@@ -77,29 +90,18 @@ in {
           "Mod+Shift+k".action = move-window-up;
           "Mod+Shift+l".action = move-column-right;
 
-          # Workspaces
-          "Mod+1".action.focus-workspace = 1;
-          "Mod+2".action.focus-workspace = 2;
-          "Mod+3".action.focus-workspace = 3;
-          "Mod+4".action.focus-workspace = 4;
-          "Mod+5".action.focus-workspace = 5;
-          "Mod+6".action.focus-workspace = 6;
-          "Mod+7".action.focus-workspace = 7;
-          "Mod+8".action.focus-workspace = 8;
-          "Mod+9".action.focus-workspace = 9;
-          "Mod+0".action.focus-workspace = 10;
+          "Mod+Tab".action = toggle-overview;
 
-          # Move to workspaces - CORRECTED SYNTAX
-          "Mod+Shift+1".action.move-column-to-workspace = 1;
-          "Mod+Shift+2".action.move-column-to-workspace = 2;
-          "Mod+Shift+3".action.move-column-to-workspace = 3;
-          "Mod+Shift+4".action.move-column-to-workspace = 4;
-          "Mod+Shift+5".action.move-column-to-workspace = 5;
-          "Mod+Shift+6".action.move-column-to-workspace = 6;
-          "Mod+Shift+7".action.move-column-to-workspace = 7;
-          "Mod+Shift+8".action.move-column-to-workspace = 8;
-          "Mod+Shift+9".action.move-column-to-workspace = 9;
-          "Mod+Shift+0".action.move-column-to-workspace = 10;
+          # Workspaces
+          "Mod+1".action = focus-workspace-up;
+          "Mod+2".action = focus-workspace-down;
+          "Mod+3".action = focus-monitor-next;
+          "Mod+4".action = focus-monitor-previous;
+
+          "Mod+Shift+1".action = move-window-to-workspace-up;
+          "Mod+Shift+2".action = move-window-to-workspace-down;
+          "Mod+Shift+3".action = move-window-to-monitor-next;
+          "Mod+Shift+4".action = move-window-to-monitor-previous;
 
           # Layout management
           "Mod+Shift+f".action = fullscreen-window;
@@ -107,8 +109,7 @@ in {
           "Mod+Comma".action = consume-or-expel-window-left;
           "Mod+Period".action = consume-or-expel-window-right;
           # System controls
-          "Mod+Shift+c".action.spawn =
-            [ "niri" "msg" "action" "reload-config" ];
+          "Mod+Shift+n".action.spawn = [ "swaync-client" "-t" ];
           "Mod+Shift+e".action.spawn = [ "swaync-client" "--close-all" ];
 
           # Screenshots

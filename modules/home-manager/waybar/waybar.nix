@@ -2,10 +2,7 @@
 with lib;
 
 let
-    windowManager = if osConfig.WindowManager == "papersway" then
-      "sway"
-    else
-      osConfig.WindowManager;
+  windowManager = osConfig.WindowManager;
   deviceType = osConfig.DeviceType;
 in {
   imports = [ ./style.nix ];
@@ -17,11 +14,9 @@ in {
         position = "top";
         spacing = 0;
         height = 34;
-        modules-left = [ "${windowManager}/workspaces" ]
-          ++ optionals (windowManager != "niri") [
-            "${windowManager}/window"
-            "${windowManager}/mode"
-          ];
+        modules-left =
+          [ "${windowManager}/workspaces" "${windowManager}/window" ]
+          ++ optionals (windowManager != "niri") [ "${windowManager}/mode" ];
         modules-center = [ "clock" "custom/notification" "tray" ];
         modules-right = [ "cpu" "memory" "network" "pulseaudio" ]
           ++ optionals (deviceType == "laptop") [ "battery" ];
@@ -32,10 +27,19 @@ in {
 
         "${windowManager}/mode" =
           mkIf (windowManager != "niri") { format = "{}"; };
-
         "${windowManager}/workspaces" = if windowManager == "niri" then {
-          format = "{name}";
+          format = "{icon}";
           on-click = "activate";
+          format-icons = {
+            empty = "○"; # Cute empty circle for empty workspaces
+            focused = "󱄅"; # Filled circle for focused workspace
+            default = "◯"; # Default for numbered workspaces
+            "slack" = "";
+            "thunderbird" = "";
+            "signal" = "󱋊";
+            "steam" = "";
+            "spotify" = "";
+          };
         } else {
           "on-click" = "activate";
           format = "{name}";
