@@ -31,9 +31,8 @@ in {
           format = "{icon}";
           on-click = "activate";
           format-icons = {
-            empty = ""; # Cute empty circle for empty workspaces
-            focused = "󱄅"; # Filled circle for focused workspace
-            default = ""; # Default for numbered workspaces
+            focused = "";
+            default = "";
             "slack" = "";
             "thunderbird" = "";
             "signal" = "󰿌";
