@@ -8,7 +8,7 @@ in {
       excludes = [{ is-focused = true; }];
       shadow = {
         enable = true;
-        draw-behind-window = false;
+        draw-behind-window = true;
         inactive-color = "#${colors.base03}";
       };
     }];
