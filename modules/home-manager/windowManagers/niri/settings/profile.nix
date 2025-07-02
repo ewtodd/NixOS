@@ -77,7 +77,7 @@ in {
           open-on-output = secondaryMonitor;
         };
         workspaces."spotify" = {
-          name = "spotiy";
+          name = "spotify";
           open-on-output = primaryMonitor;
         };
 
