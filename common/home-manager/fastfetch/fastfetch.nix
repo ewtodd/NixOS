@@ -1,4 +1,10 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, osConfig, ... }:
+let
+  format = if osConfig.WindowManager == "sway" then
+    "{process-name} ({version} ({protocol-name})"
+  else
+    "{process-name} {version} ({protocol-name})";
+in {
   programs.fastfetch = {
     enable = true;
     settings = {
@@ -38,7 +44,7 @@
         {
           type = "wm";
           key = "  DE/WM";
-          format = "{process-name} ({version} ({protocol-name})";
+          format = "${format}";
           keyColor = "35";
         }
         {

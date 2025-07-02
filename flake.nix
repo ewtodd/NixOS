@@ -70,6 +70,7 @@
           system = "x86_64-linux";
         };
         modules = [
+          { nixpkgs.overlays = [ inputs.niri.overlays.niri ]; }
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {
@@ -96,6 +97,7 @@
           system = "x86_64-linux";
         };
         modules = [
+          { nixpkgs.overlays = [ inputs.niri.overlays.niri ]; }
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {

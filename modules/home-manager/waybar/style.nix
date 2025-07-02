@@ -9,6 +9,7 @@ let
   else
     "JetBrains Mono Nerd Font";
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
+  opacity = if osConfig.WindowManager == "niri" then "0.9" else "0.75";
   # Helper to convert hex to rgba
   hexToRgba = hex: alpha:
     let
@@ -67,7 +68,7 @@ in {
      }
 
      window#waybar {
-       background-color: ${hexToRgba colors.base00 "0.8"};
+       background-color: ${hexToRgba colors.base00 "${opacity}"};
        border-radius: 0 0 8px 8px;
      }
 

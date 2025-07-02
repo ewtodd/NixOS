@@ -205,7 +205,7 @@ in {
         blur_contrast 1.0
 
         smart_corner_radius on
-        corner_radius 15
+        corner_radius 10
 
         shadows enable
         shadows_on_csd enable
