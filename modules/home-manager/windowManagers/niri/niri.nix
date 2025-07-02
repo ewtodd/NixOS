@@ -1,6 +1,8 @@
 { config, lib, osConfig, pkgs, ... }:
 with lib;
-let deviceType = osConfig.DeviceType;
+let
+  deviceType = osConfig.DeviceType;
+  profile = config.Profile;
 in {
 
   imports = [
@@ -21,6 +23,7 @@ in {
       settings = {
         environment = { DISPLAY = ":0"; };
         prefer-no-csd = true;
+        cursor = { size = 18; };
         input = {
 
           focus-follows-mouse.enable = true;
@@ -66,6 +69,7 @@ in {
             "https://search.nixos.org/packages" "-new-tab" "-url"
             "https://search.nixos.org/options?" "-new-tab" "-url"
             "https://home-manager-options.extranix.com/";
+          "Alt+l".action.spawn = "swaylock";
 
           # Basic window management
           "Mod+Return".action.spawn = "kitty";
