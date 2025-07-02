@@ -71,7 +71,7 @@ in {
     layout = [
       {
         label = "logout";
-        action = "niri msg action quit";
+        action = "swaymsg exit";
         text = "Logout";
         keybind = "l";
       }
