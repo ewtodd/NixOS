@@ -42,27 +42,11 @@
       enable = true;
       displayManager.startx.enable = false;
       excludePackages = with pkgs; [ xterm ];
-    };
-
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = ''
-            ${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format "%c" --user-menu --greeting "Access is restricted to authorized personnel only. NO DOGS!" --cmd niri'';
-          user = "greeter";
-        };
+      displayManager.gdm = {
+        enable = true;
+        wayland = true;
+        autoSuspend = false;
       };
-    };
-
-    systemd.services.greetd.serviceConfig = {
-      Type = "idle";
-      StandardInput = "tty";
-      StandardOutput = "tty";
-      StandardError = "journal";
-      TTYReset = true;
-      TTYVHangup = true;
-      TTYVTDisallocate = true;
     };
 
   };
