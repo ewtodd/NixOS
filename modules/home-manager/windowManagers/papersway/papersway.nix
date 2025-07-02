@@ -28,8 +28,9 @@ in {
       package = null;
       wrapperFeatures.gtk = true;
       xwayland = true;
-
       config = {
+        workspaceLayout = "default";
+
         # Variables
         modifier = "Mod4";
         terminal = "kitty";
@@ -72,79 +73,67 @@ in {
           "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
           "Mod4+f" = "exec firefox";
           "Mod4+Shift+p" = "exec firefox --private-window";
-          "Mod4+n" =
+          "Mod1+n" =
             "exec firefox https://nix-community.github.io/nixvim/25.05/";
           "Mod4+p" =
             "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
           "Mod4+k+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
-          "Mod4+h" = "focus left";
+          "Mod4+h" = "exec papersway-msg focus left";
           "Mod4+j" = "focus down";
           "Mod4+k" = "focus up";
-          "Mod4+l" = "focus right";
-          "Mod4+Left" = "focus left";
+          "Mod4+l" = "exec papersway-msg focus right";
+          "Mod4+Left" = "exec papersway-msg focus left";
           "Mod4+Down" = "focus down";
           "Mod4+Up" = "focus up";
-          "Mod4+Right" = "focus right";
+          "Mod4+Right" = "exec papersway-msg focus right";
+          # Window management
+          "Mod1+f" = "exec papersway-msg width toggle";
+          "Mod4+o" = "exec papersway-msg other-column";
 
+          # Workspace management
+          "Mod4+a" = "exec papersway-msg fresh-workspace";
+          "Mod4+n" = "exec papersway-msg fresh-workspace send";
+          "Mod4+t" = "exec papersway-msg fresh-workspace take";
+          "Mod4+b" = "exec papersway-msg bury-workspace";
+
+          # Column operations
+          "Mod4+e" = "exec papersway-msg absorb-expel left";
+          "Mod4+r" = "exec papersway-msg absorb-expel right";
+          "Mod4+minus" = "exec papersway-msg cols decr";
+          "Mod4+equal" = "exec papersway-msg cols incr";
+
+          # Workspace navigation
+          "Mod4+u" = "exec papersway-msg workspace prev";
+          "Mod4+i" = "exec papersway-msg workspace next";
+          "Mod4+Shift+u" = "exec papersway-msg move-to-workspace prev";
+          "Mod4+Shift+i" = "exec papersway-msg move-to-workspace next";
+
+          # Caffeine mode (idle inhibition)
+          "Mod4+c" =
+            "[con_mark=caffeinated] inhibit_idle none; inhibit_idle open, mark caffeinated";
+          "Mod4+Mod1+c" =
+            "[con_mark=caffeinated] inhibit_idle none, mark --toggle caffeinated";
           # Move windows
-          "Mod4+Shift+h" = "move left";
+          "Mod4+Shift+h" = "exec papersway-msg move left";
           "Mod4+Shift+j" = "move down";
           "Mod4+Shift+k" = "move up";
-          "Mod4+Shift+l" = "move right";
-          "Mod4+Shift+Left" = "move left";
+          "Mod4+Shift+l" = "exec papersway-msg move right";
+          "Mod4+Shift+Left" = "exec papersway-msg move left";
           "Mod4+Shift+Down" = "move down";
           "Mod4+Shift+Up" = "move up";
-          "Mod4+Shift+Right" = "move right";
-
-          # Workspaces
-          "Mod4+1" = "workspace number 1";
-          "Mod4+2" = "workspace number 2";
-          "Mod4+3" = "workspace number 3";
-          "Mod4+4" = "workspace number 4";
-          "Mod4+5" = "workspace number 5";
-          "Mod4+6" = "workspace number 6";
-          "Mod4+7" = "workspace number 7";
-          "Mod4+8" = "workspace number 8";
-          "Mod4+9" = "workspace number 9";
-          "Mod4+0" = "workspace number 10";
-
-          # Move to workspaces
-          "Mod4+Shift+1" = "move container to workspace number 1";
-          "Mod4+Shift+2" = "move container to workspace number 2";
-          "Mod4+Shift+3" = "move container to workspace number 3";
-          "Mod4+Shift+4" = "move container to workspace number 4";
-          "Mod4+Shift+5" = "move container to workspace number 5";
-          "Mod4+Shift+6" = "move container to workspace number 6";
-          "Mod4+Shift+7" = "move container to workspace number 7";
-          "Mod4+Shift+8" = "move container to workspace number 8";
-          "Mod4+Shift+9" = "move container to workspace number 9";
-          "Mod4+Shift+0" = "move container to workspace number 10";
+          "Mod4+Shift+Right" = "exec papersway-msg move right";
 
           # Troubleshooting!
           "Mod4+Shift+Return" =
             "exec swaymsg -r -t get_outputs | jq '.[0].layer_shell_surfaces | .[] | .namespace' | xargs notify-send";
 
           # Layout management
-          "Mod4+b" = "splith";
-          "Mod4+v" = "splitv";
-          "Mod4+s" = "layout stacking";
-          "Mod4+w" = "layout tabbed";
-          "Mod4+e" = "layout toggle split";
-          "Mod4+Shift+f" = "fullscreen";
-          "Mod4+Shift+space" = "floating toggle";
-          "Mod4+space" = "focus mode_toggle";
-          "Mod4+a" = "focus parent";
-
-          # Scratchpad
-          "Mod4+Shift+minus" = "move scratchpad";
-          "Mod4+minus" = "scratchpad show";
 
           # System controls
           "Mod4+Shift+c" = "reload";
           "Mod4+Shift+e" = "exec swaync-client --close-all";
           "Mod4+m" =
             "exec ${pkgs.wlogout}/bin/wlogout -p layer-shell --buttons-per-row 2";
-          "Mod4+r" = "mode resize";
 
           # Notifications
           "Mod4+Shift+n" = "exec swaync-client -t -sw";
@@ -166,6 +155,9 @@ in {
 
           # Caps lock indicator
           "Caps_Lock" = "exec swayosd-client --caps-lock";
+
+          # papersway 
+          "Mod4 + a" = "exec papersway-msg fresh-workspace";
         };
 
         # Resize mode
@@ -184,8 +176,8 @@ in {
           };
         };
         bars = [{
-          position = "top";
-          command = "waybar";
+          position = "bottom";
+          statusCommand = "papersway --i3status";
         }];
 
         input = {
@@ -196,6 +188,11 @@ in {
           };
           "type:pointer" = { natural_scroll = "enabled"; };
         };
+        focus.wrapping = "no";
+        window.commands = [{
+          criteria = { con_mark = "caffeinated"; };
+          command = "inhibit_idle open";
+        }];
       };
 
       extraConfig = ''
@@ -228,6 +225,7 @@ in {
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable
 
+        exec waybar 
         exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'

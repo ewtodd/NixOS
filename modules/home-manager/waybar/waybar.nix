@@ -2,7 +2,10 @@
 with lib;
 
 let
-  windowManager = osConfig.WindowManager;
+    windowManager = if osConfig.WindowManager == "papersway" then
+      "sway"
+    else
+      osConfig.WindowManager;
   deviceType = osConfig.DeviceType;
 in {
   imports = [ ./style.nix ];
