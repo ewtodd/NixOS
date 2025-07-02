@@ -23,6 +23,9 @@ in {
             "-new-tab" "-url" "https://www.perplexity.ai/";
           "Mod+5".action.focus-workspace = "slack";
           "Mod+6".action.focus-workspace = "thunderbird";
+
+          "Mod+Shift+5".action.move-window-to-workspace = "slack";
+          "Mod+Shift+6".action.move-window-to-workspace = "thunderbird";
         };
 
         window-rules = [
@@ -82,10 +85,15 @@ in {
         binds = with config.lib.niri.actions; {
           "Mod+Shift+t".action =
             spawn "firefox" "--new-window" "https://monkeytype.com";
-          "Mod+5".action.focus-workspace = "signal";
-          "Mod+6".action.focus-workspace = "thunderbird";
-          "Mod+7".action.focus-workspace = "steam";
-          "Mod+8".action.focus-workspace = "spotify";
+          "mod+5".action.focus-workspace = "signal";
+          "mod+6".action.focus-workspace = "thunderbird";
+          "mod+7".action.focus-workspace = "steam";
+          "mod+8".action.focus-workspace = "spotify";
+          "mod+Shift+5".action.move-window-to-workspace = "signal";
+          "mod+Shift+6".action.move-window-to-workspace = "thunderbird";
+          "mod+Shift+7".action.move-window-to-workspace = "steam";
+          "mod+Shift+8".action.move-window-to-workspace = "spotify";
+
         };
         window-rules = [
           {
