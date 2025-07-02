@@ -13,6 +13,11 @@ with lib;
             "-new-tab" "-url" "https://www.perplexity.ai/";
         };
 
+        window-rules = {
+          "slack".open-on-workspace = "3";
+          "thunderbird".open-on-workspace = "2";
+        };
+
         # Work-specific startup applications
         spawn-at-startup = [
           {
@@ -63,7 +68,12 @@ with lib;
           "Mod+Shift+t".action =
             spawn "firefox" "--new-window" "https://monkeytype.com";
         };
-
+        window-rules = {
+          "steam".open-on-workspace = "2";
+          "spotify".open-on-workspace = "3";
+          "thunderbird".open-on-workspace = "4";
+          "signal-desktop".open-on-workspace = "5";
+        };
         # Play-specific startup applications
         spawn-at-startup = [
           { command = [ "steam" ]; }

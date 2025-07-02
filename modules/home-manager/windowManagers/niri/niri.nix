@@ -21,7 +21,6 @@ in {
     programs.niri = {
       settings = {
         environment.DISPLAY = ":0";
-        prefer-no-csd = true;
         input = {
 
           touchpad = mkIf (deviceType == "laptop") {
@@ -36,7 +35,6 @@ in {
         # Layout configuration
         layout = {
           gaps = 2;
-          center-focused-column = "never";
           preset-column-widths = [
             { proportion = 0.33333; }
             { proportion = 0.5; }
@@ -45,7 +43,11 @@ in {
           default-column-width = { proportion = 0.5; };
 
         };
-       
+        window-rules = {
+          clip-to-geometry = true;
+          geometry-corner-radius = 10;
+        };
+
         # Key bindings - converted from your Sway config
         binds = with config.lib.niri.actions; {
           # Basic window management
@@ -60,20 +62,20 @@ in {
 
           # Basic window management
           "Mod+Return".action.spawn = "kitty";
-          "Mod+Shift+q".action.close-window = { };
+          "Mod+Shift+q".action = close-window;
           "Mod+d".action.spawn = [ "rofi" "-show" "drun" "-matching" "fuzzy" ];
 
           # Focus management (vim-style)
-          "Mod+h".action.focus-column-left = { };
-          "Mod+j".action.focus-window-down = { };
-          "Mod+k".action.focus-window-up = { };
-          "Mod+l".action.focus-column-right = { };
+          "Mod+h".action = focus-column-left;
+          "Mod+j".action = focus-window-down;
+          "Mod+k".action = focus-window-up;
+          "Mod+l".action = focus-column-right;
 
           # Move windows
-          "Mod+Shift+h".action.move-column-left = { };
-          "Mod+Shift+j".action.move-window-down = { };
-          "Mod+Shift+k".action.move-window-up = { };
-          "Mod+Shift+l".action.move-column-right = { };
+          "Mod+Shift+h".action = move-column-left;
+          "Mod+Shift+j".action = move-window-down;
+          "Mod+Shift+k".action = move-window-up;
+          "Mod+Shift+l".action = move-column-right;
 
           # Workspaces
           "Mod+1".action.focus-workspace = 1;
@@ -100,9 +102,10 @@ in {
           "Mod+Shift+0".action.move-column-to-workspace = 10;
 
           # Layout management
-          "Mod+Shift+f".action.fullscreen-window = { };
-          "Mod+r".action.switch-preset-column-width = { };
-
+          "Mod+Shift+f".action = fullscreen-window;
+          "Mod+r".action = switch-preset-column-width;
+          "Mod+Comma".action = consume-or-expel-window-left;
+          "Mod+Period".action = consume-or-expel-window-right;
           # System controls
           "Mod+Shift+c".action.spawn =
             [ "niri" "msg" "action" "reload-config" ];
@@ -120,14 +123,13 @@ in {
           "XF86AudioMute".action.spawn =
             [ "swayosd-client" "--output-volume" "mute-toggle" ];
         };
-
+        hotkey-overlay = { skip-at-startup = true; };
         # Spawn programs on startup
         spawn-at-startup = [
           { command = [ "udiskie" "--tray" ]; }
           { command = [ "waybar" ]; }
           { command = [ "xwayland-satellite" ]; }
         ];
-
         # Animations (optional - Niri has nice animations)
         animations = {
           enable = true;

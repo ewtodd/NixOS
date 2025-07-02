@@ -11,7 +11,6 @@
     ];
 
     programs.waybar.enable = true;
-    wayland.windowManager.sway.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";
@@ -35,7 +34,6 @@
       files-home = "sftp e-work@ssh.ethanwtodd.com";
     };
     programs.waybar.enable = true;
-    wayland.windowManager.sway.enable = true;
     programs.git = {
       enable = true;
       userName = "Ethan Todd";

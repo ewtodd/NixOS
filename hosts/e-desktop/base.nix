@@ -11,7 +11,7 @@
     ../../modules/nixos/packages/starship.nix
   ];
 
-  WindowManager = "sway";
+  WindowManager = "niri";
   DeviceType = "desktop";
   environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
   users.users.e-play = {
