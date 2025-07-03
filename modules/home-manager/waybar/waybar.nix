@@ -43,17 +43,16 @@ in {
           "on-click" = "activate";
           format = "{icon}";
           format-icons = {
-            "1" = "󱄅";
-            "2" = if (profile == "play") then "" else "2";
-            "3" = if (profile == "play") then "" else "3";
-            "4" = "4";
-            "5" = if (profile == "work") then "" else "󰿌";
-            "6" = "";
-            "7" = "7";
-            "8" = "8";
-            "9" = "9";
-            "10" = "10";
-            default = "";
+            "1" = "󰇊";
+            "2" = "󰇋";
+            "3" = "󰇌";
+            "4" = "󰇍";
+            "5" = "󰇎";
+            "6" = "󰇏";
+            "7" = if (profile == "work") then "" else "󰿌";
+            "8" = "";
+            "9" = if (profile == "play") then "" else "";
+            "10" = if (profile == "play") then "" else "";
           };
         };
         cpu = {
