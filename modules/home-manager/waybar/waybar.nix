@@ -31,8 +31,7 @@ in {
           format = "{icon}";
           on-click = "activate";
           format-icons = {
-            focused = "";
-            default = "";
+            default = "";
             "slack" = "";
             "thunderbird" = "";
             "signal" = "󰿌";
