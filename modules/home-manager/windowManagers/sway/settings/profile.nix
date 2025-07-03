@@ -1,16 +1,42 @@
-{ config, lib, ... }:
+{ config, lib, osConfig, ... }:
 
 with lib;
-
-{
+let
+  primaryMonitor =
+    if osConfig.DeviceType == "desktop" then "HDMI-A-3" else "eDP-1";
+  secondaryMonitor = "HDMI-A-2";
+in {
   config = mkMerge [
     (mkIf (config.Profile == "work") {
       wayland.windowManager.sway = {
         config = {
           assigns = {
-            "2" = [{ app_id = "thunderbird"; }];
-            "3" = [{ app_id = "Slack"; }];
+            "5" = [{ app_id = "Slack"; }];
+            "6" = [{ app_id = "thunderbird"; }];
           };
+          workspaceOutputAssign = [
+            {
+              workspace = "1";
+              output = "${primaryMonitor}";
+            }
+            {
+              workspace = "2";
+              output = "${primaryMonitor}";
+            }
+            {
+              workspace = "3";
+              output = "${primaryMonitor}";
+            }
+            {
+              workspace = "5";
+              output = "${secondaryMonitor}";
+            }
+            {
+              workspace = "6";
+              output = "${secondaryMonitor}";
+            }
+
+          ];
 
           # Work-specific keybindings
           keybindings = {
@@ -42,9 +68,32 @@ with lib;
           assigns = {
             "2" = [{ class = "steam"; }];
             "3" = [{ app_id = "spotify"; }];
-            "4" = [{ app_id = "thunderbird"; }];
             "5" = [{ app_id = "signal"; }];
+            "6" = [{ app_id = "thunderbird"; }];
           };
+          workspaceOutputAssign = [
+            {
+              workspace = "1";
+              output = "${primaryMonitor}";
+            }
+            {
+              workspace = "2";
+              output = "${primaryMonitor}";
+            }
+            {
+              workspace = "3";
+              output = "${primaryMonitor}";
+            }
+            {
+              workspace = "5";
+              output = "${secondaryMonitor}";
+            }
+            {
+              workspace = "6";
+              output = "${secondaryMonitor}";
+            }
+
+          ];
 
           # Play-specific keybindings
           keybindings = {
