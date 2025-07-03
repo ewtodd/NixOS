@@ -13,33 +13,7 @@
           position = "-1920,0";
         };
       };
-
-      # Workspace output assignments
-      workspaceOutputAssign = [
-        {
-          workspace = "1";
-          output = "HDMI-A-3";
-        }
-        {
-          workspace = "2";
-          output = "HDMI-A-3";
-        }
-        {
-          workspace = "3";
-          output = "HDMI-A-3";
-        }
-        {
-          workspace = "4";
-          output = "HDMI-A-3";
-        }
-        {
-          workspace = "5";
-          output = "HDMI-A-2";
-        }
-      ];
     };
-    # extraConfig =
-    #   "exec . /etc/nixos/modules/home-manager/windowManagers/sway/scripts/startup-terminals.sh     ";
   };
 
 }
