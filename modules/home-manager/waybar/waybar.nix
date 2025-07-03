@@ -4,6 +4,7 @@ with lib;
 let
   windowManager = osConfig.WindowManager;
   deviceType = osConfig.DeviceType;
+  profile = config.Profile;
 in {
   imports = [ ./style.nix ];
 
@@ -40,13 +41,19 @@ in {
           };
         } else {
           "on-click" = "activate";
-          format = "{name}";
-          persistent_workspaces = {
-            "1" = [ ];
-            "2" = [ ];
-            "3" = [ ];
-            "4" = [ ];
-            "5" = [ ];
+          format = "{icon}";
+          format-icons = {
+            "1" = "󱄅";
+            "2" = if (profile == "play") then "" else "2";
+            "3" = if (profile == "play") then "" else "3";
+            "4" = "4";
+            "5" = if (profile == "work") then "" else "󰿌";
+            "6" = "";
+            "7" = "7";
+            "8" = "8";
+            "9" = "9";
+            "10" = "10";
+            default = "";
           };
         };
         cpu = {
@@ -73,7 +80,7 @@ in {
 
         clock = {
           interval = 1;
-          format = "{:%I:%M,%e %b %Y}";
+          format = "{:%I:%M, %d %b %Y}";
           "on-click" = "swaync-client -t -sw";
           "on-click-right" = "swaync-client -d -sw";
           tooltip = false;
