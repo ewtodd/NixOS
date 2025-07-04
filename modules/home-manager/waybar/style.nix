@@ -278,28 +278,5 @@ in {
        background-color: #${colors.base00};
        color: #${colors.base05};
      }
-  '' + lib.optionalString (windowManager == "sway") ''
-    #workspaces button#sway-workspace-1 {
-      padding-left: 9px;
-      padding-right: 12px;
-    }
-    #workspaces button#sway-workspace-6 {
-      padding-left: 7px;
-      padding-right: 13px;
-    }
-  '' + lib.optionalString (windowManager == "sway" && profile == "work") ''
-    #workspaces button#sway-workspace-5 {
-      padding-left: 10px;
-      padding-right: 12px;
-    }
-  '' + lib.optionalString (windowManager == "sway" && profile == "play") ''
-    #workspaces button#sway-workspace-2 {
-      padding-left: 7px;
-      padding-right: 10px;
-    }
-    #workspaces button#sway-workspace-3 {
-      padding-left: 6px;
-      padding-right: 11px;
-    }
   '';
 }

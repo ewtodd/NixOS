@@ -41,7 +41,7 @@ in {
           };
         } else {
           "on-click" = "activate";
-          format = "{icon}";
+          format = "{name}";
           format-icons = {
             "1" = "󰇊";
             "2" = "󰇋";
