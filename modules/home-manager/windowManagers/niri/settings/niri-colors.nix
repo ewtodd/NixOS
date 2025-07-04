@@ -3,6 +3,19 @@
 let colors = config.colorScheme.palette;
 in {
   programs.niri.settings = {
+    window-rules = [{
+      matches = [ { } ]; # Match all windows
+      excludes = [{ is-focused = true; }];
+      shadow = {
+        enable = true;
+        draw-behind-window = true;
+        inactive-color = "#${colors.base03}";
+      };
+    }];
+    overview = {
+      backdrop-color = "#${colors.base03}";
+      workspace-shadow.color = "#${colors.base00}99";
+    };
     layout = {
       focus-ring = {
         enable = true;
@@ -11,13 +24,10 @@ in {
         inactive.color = "#${colors.base03}";
         urgent.color = "#${colors.base08}";
       };
-
-      border = {
+      shadow = {
         enable = true;
-        width = 2;
-        active.color = "#${colors.base0D}";
-        inactive.color = "#${colors.base01}";
-        urgent.color = "#${colors.base08}";
+        color = "#${colors.base00}99";
+        inactive-color = "#${colors.base00}55";
       };
     };
   };

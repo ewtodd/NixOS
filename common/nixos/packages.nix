@@ -1,12 +1,12 @@
 { config, pkgs, inputs, system, ... }:
 let
   bottles = pkgs.bottles.override { removeWarningPopup = true; };
-  fancy-cat = pkgs.callPackage (pkgs.fetchFromGitHub {
-    owner = "freref";
-    repo = "fancy-cat-nix";
-    rev = "0c8e04a";
-    sha256 = "sha256-zem1jSbtQZNwE6wGE6fsG8/aHW/+brhh9f1QEtgk5oM=";
-  }) { };
+  # fancy-cat = pkgs.callPackage (pkgs.fetchFromGitHub {
+  #  owner = "freref";
+  # repo = "fancy-cat-nix";
+  #rev = "0c8e04a";
+  # sha256 = "sha256-zem1jSbtQZNwE6wGE6fsG8/aHW/+brhh9f1QEtgk5oM=";
+  # }) { };
 in {
 
   programs.appimage.enable = true;
@@ -18,6 +18,8 @@ in {
     vim = "nvim";
     ":q" = "exit";
     nrs = "sudo nixos-rebuild switch";
+    fix-nixos-git =
+      "sudo chown -R root:wheel /etc/nixos/* /etc/nixos/.* && sudo chmod -R g+rwx /etc/nixos/* /etc/nixos/.*";
   };
   environment.systemPackages = with pkgs; [
     git
@@ -26,8 +28,7 @@ in {
     firefox-wayland
     libreoffice
     tree
-    fancy-cat
-    texliveSmall
+    zathura
     htop
     nix-prefetch-github
     nixfmt-classic
@@ -48,6 +49,4 @@ in {
     fira-code-symbols
   ];
 
-  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
-  
 }

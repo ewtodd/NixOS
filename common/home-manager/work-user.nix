@@ -3,6 +3,7 @@
     ./system-options.nix
     ./xdg/xdg.nix
     ./kitty/kitty.nix
+    ./ranger/ranger.nix
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix
     ./nixvim/nixvim.nix
@@ -25,8 +26,8 @@
       rootbrowse = ''nix-shell -p root --run "rootbrowse --web=off"'';
       fix-clang = ". /etc/nixos/home/e-work/scripts/update-clang.sh";
       geant4-env = "nix-shell /etc/nixos/home/e-work/geant4.nix";
-      analysis-env =
-        "nix-shell /etc/nixos/modules/dev-environments/analysis.nix";
+      analysis-env = "nix develop /etc/nixos/modules/dev-environments/analysis";
+      latex-env = "nix develop /etc/nixos/modules/dev-environments/latex";
       cpp-env = "nix-shell /etc/nixos/home/e-work/cpp.nix";
       github-update =
         "git add . && git commit -m 'Automated commit.' && git push -u origin main";

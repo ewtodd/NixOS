@@ -3,8 +3,8 @@ with lib;
 
 let
   windowManager = osConfig.WindowManager;
+  deviceType = osConfig.DeviceType;
   profile = config.Profile;
-
 in {
   imports = [ ./style.nix ];
 
@@ -15,14 +15,12 @@ in {
         position = "top";
         spacing = 0;
         height = 34;
-        modules-left = [ "${windowManager}/workspaces" ]
-          ++ optionals (windowManager != "niri") [
-            "${windowManager}/window"
-            "${windowManager}/mode"
-          ];
+        modules-left =
+          [ "${windowManager}/workspaces" "${windowManager}/window" ]
+          ++ optionals (windowManager != "niri") [ "${windowManager}/mode" ];
         modules-center = [ "clock" "custom/notification" "tray" ];
-        modules-right = [ "cpu" "memory" "network" "pulseaudio" "battery" ];
-
+        modules-right = [ "cpu" "memory" "network" "pulseaudio" ]
+          ++ optionals (deviceType == "laptop") [ "battery" ];
         "${windowManager}/window" = mkIf (windowManager != "niri") {
           format = "";
           max-length = 0;
@@ -30,19 +28,31 @@ in {
 
         "${windowManager}/mode" =
           mkIf (windowManager != "niri") { format = "{}"; };
-
         "${windowManager}/workspaces" = if windowManager == "niri" then {
-          format = "{name}";
+          format = "{icon}";
           on-click = "activate";
+          format-icons = {
+            default = "";
+            "slack" = "";
+            "thunderbird" = "";
+            "signal" = "󰿌";
+            "steam" = "";
+            "spotify" = "";
+          };
         } else {
           "on-click" = "activate";
-          format = "{name}";
-          persistent_workspaces = {
-            "1" = [ ];
-            "2" = [ ];
-            "3" = [ ];
-            "4" = [ ];
-            "5" = [ ];
+          format = "{icon}";
+          format-icons = {
+            "1" = "󰇊";
+            "2" = "󰇋";
+            "3" = "󰇌";
+            "4" = "󰇍";
+            "5" = "󰇎";
+            "6" = "󰇏";
+            "7" = if (profile == "work") then "" else "󰿌";
+            "8" = "";
+            "9" = if (profile == "play") then "" else "";
+            "10" = if (profile == "play") then "" else "";
           };
         };
         cpu = {
@@ -69,7 +79,7 @@ in {
 
         clock = {
           interval = 1;
-          format = "{:%I:%M, %e %b %Y}";
+          format = "{:%I:%M, %d %b %Y}";
           "on-click" = "swaync-client -t -sw";
           "on-click-right" = "swaync-client -d -sw";
           tooltip = false;

@@ -10,7 +10,7 @@
       note = {
         language = "en";
         default-title = "untitled";
-        filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
+        filename = ''{{format-date now "%Y-%m-%d"}}-{{slug title}}'';
         extension = "md";
         template = "default.md";
         id-charset = "alphanum";
@@ -49,17 +49,11 @@
         tasks = {
           paths = [ "tasks/active" ];
           note = {
-            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
+            filename = ''{{format-date now "%Y-%m-%d"}}-{{slug title}}'';
             template = "task.md";
           };
         };
-        backlog = {
-          paths = [ "tasks/backlog" ];
-          note = {
-            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
-            template = "backlog.md";
-          };
-        };
+
         projects = {
           paths = [ "projects" ];
           note = {
@@ -70,7 +64,7 @@
         ideas = {
           paths = [ "ideas" ];
           note = {
-            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
+            filename = ''{{format-date now "%Y-%m-%d"}}-{{slug title}}'';
             template = "idea.md";
           };
         };
@@ -81,11 +75,11 @@
             template = "meeting.md";
           };
         };
-        research = {
-          paths = [ "research" ];
+        notes = {
+          paths = [ "notes" ];
           note = {
-            filename = ''{{format-date now "timestamp"}}-{{slug title}}'';
-            template = "research.md";
+            filename = ''{{format-date now "%Y-%m-%d"}}-{{slug title}}'';
+            template = "note.md";
           };
         };
         howtos = {
@@ -103,11 +97,11 @@
 
         # Use shell expansion to handle arguments properly
         task = ''zk new tasks/active --no-input --title "$@"'';
-        backlog = ''zk new tasks/backlog --no-input --title "$@"'';
+
         project = ''zk new projects --no-input --title "$@"'';
         idea = ''zk new ideas --no-input --title "$@"'';
         meeting = ''zk new meetings --no-input --title "$@"'';
-        research = ''zk new research --no-input --title "$@"'';
+        note = ''zk new notes --no-input --title "$@"'';
         howto = ''zk new howtos --no-input --title "$@"'';
         # Task management
         done = "zk edit  --tag task --tag active";
@@ -123,11 +117,11 @@
     # Create directory structure
     "${config.home.homeDirectory}/zettelkasten/daily/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/tasks/active/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/tasks/backlog/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/tasks/complete/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/projects/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/ideas/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/meetings/.keep".text = "";
-    "${config.home.homeDirectory}/zettelkasten/research/.keep".text = "";
+    "${config.home.homeDirectory}/zettelkasten/notes/.keep".text = "";
     "${config.home.homeDirectory}/zettelkasten/howtos/.keep".text = "";
   };
 

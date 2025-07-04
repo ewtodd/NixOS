@@ -24,6 +24,7 @@ in {
 
   in {
     wayland.windowManager.sway = {
+      enable = true;
       package = null;
       wrapperFeatures.gtk = true;
       xwayland = true;
@@ -204,7 +205,7 @@ in {
         blur_contrast 1.0
 
         smart_corner_radius on
-        corner_radius 15
+        corner_radius 10
 
         shadows enable
         shadows_on_csd enable
@@ -227,6 +228,7 @@ in {
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable
 
+        exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
       '' + lib.optionalString (profile == "play") ''

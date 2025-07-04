@@ -21,7 +21,7 @@ let
         done
       '';
     });
-  # Create kanagawa icon theme with inheritance
+  # Create tokyo-night icon theme with inheritance
   tokyonight-with-inheritance = pkgs.tokyonight-gtk-theme.overrideAttrs
     (oldAttrs: {
       postInstall = (oldAttrs.postInstall or "") + ''
