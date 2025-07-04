@@ -11,8 +11,8 @@ in {
       wayland.windowManager.sway = {
         config = {
           assigns = {
-            "5" = [{ app_id = "Slack"; }];
-            "6" = [{ app_id = "thunderbird"; }];
+            "3" = [{ app_id = "Slack"; }];
+            "2" = [{ app_id = "thunderbird"; }];
           };
           workspaceOutputAssign = [
             {
@@ -28,11 +28,11 @@ in {
               output = "${primaryMonitor}";
             }
             {
-              workspace = "5";
-              output = "${secondaryMonitor}";
+              workspace = "4";
+              output = "${primaryMonitor}";
             }
             {
-              workspace = "6";
+              workspace = "5";
               output = "${secondaryMonitor}";
             }
 
@@ -69,7 +69,7 @@ in {
             "2" = [{ class = "steam"; }];
             "3" = [{ app_id = "spotify"; }];
             "5" = [{ app_id = "signal"; }];
-            "6" = [{ app_id = "thunderbird"; }];
+            "4" = [{ app_id = "thunderbird"; }];
           };
           workspaceOutputAssign = [
             {
@@ -85,11 +85,11 @@ in {
               output = "${primaryMonitor}";
             }
             {
-              workspace = "5";
-              output = "${secondaryMonitor}";
+              workspace = "4";
+              output = "${primaryMonitor}";
             }
             {
-              workspace = "6";
+              workspace = "5";
               output = "${secondaryMonitor}";
             }
 
