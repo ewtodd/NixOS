@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, osConfig, ... }:
 
 with lib;
 
@@ -6,6 +6,7 @@ let
   colors = config.colorScheme.palette;
   profile = config.Profile;
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
+  opacity = if osConfig.WindowManager == "niri" then "0.9" else "0.75";
 in {
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {
@@ -24,7 +25,7 @@ in {
         initial_window_width = 700;
         initial_window_height = 500;
         remember_window_size = "no";
-        background_opacity = "0.75";
+        background_opacity = "${opacity}";
         cursor_shape = "block";
         cursor_blink_interval = 0;
         scrollback_lines = 1000;

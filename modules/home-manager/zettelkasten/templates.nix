@@ -32,28 +32,10 @@ in {
 
       - [ ] 
 
-      ## Related
+      ## Related Ideas
 
     '';
-    "${templatepath}/templates/backlog.md".text = ''
-      # {{title}}
 
-      **Created:** {{format-date now "full"}}
-      **Due:** 
-      **Priority:** medium
-      **Status:** backlog 
-      **Project:** [[]]
-      **Tags:** #task #backlog
-
-      ## Description
-
-      ## Acceptance Criteria
-
-      - [ ] 
-
-      ## Related
-
-    '';
     "${templatepath}/templates/project.md".text = ''
       # {{title}}
 
@@ -63,11 +45,15 @@ in {
 
       ## Overview
 
-      ## Current Tasks
+      ## Active Action Items 
+
+      - [ ]
+
+      ## Completed Action Items
+
+      - [ ]
 
       ## Related Ideas
-
-      ## Meeting Notes
 
     '';
 
@@ -83,61 +69,30 @@ in {
 
       ## Related Projects
 
-      ## Next Steps
+      ## Action Items 
 
       - [ ] 
-
-    '';
-
-    "${templatepath}/templates/brainstorm.md".text = ''
-      # {{title}}
-
-      **Created:** {{format-date now "full"}}
-      **Tags:** #brainstorm #idea
-
-      ## Problem/Challenge
-
-      ## Ideas
-
-      ## Related Projects
-
-      ## Action Items
-
-      - [ ] 
-
-    '';
-
-    "${templatepath}/templates/concept.md".text = ''
-      # {{title}}
-
-      **Created:** {{format-date now "full"}}
-      **Tags:** #concept #idea
-
-      ## Definition
-
-      ## Examples
-
-      ## Applications
-
-      ## Related Concepts
 
     '';
 
     "${templatepath}/templates/daily.md".text = ''
       # {{format-date now "full"}}
 
-      **Date:** {{format-date now "medium"}}
+      **Date:** {{format-date now "full"}}
       **Tags:** #daily
 
       ## Today's Focus
 
-      ## Tasks
-
-      - [ ] 
 
       ## Ideas & Insights
 
       ## Project Updates
+
+      ## Small Action Items 
+
+      - [ ]
+
+      ## Tomorrow's Focus
 
     '';
 
@@ -145,37 +100,39 @@ in {
       # {{title}}
 
       **Date:** {{format-date now "full"}}
-      **Attendees:** 
-      **Project:** [[]]
       **Tags:** #meeting
 
       ## Agenda
 
       ## Discussion
 
+      ## Related Projects
+
+      ## Related Ideas
+
       ## Action Items
 
       - [ ] 
 
-      ## Related Tasks
-
     '';
 
-    "${templatepath}/templates/research.md".text = ''
+    "${templatepath}/templates/note.md".text = ''
       # {{title}}
 
       **Created:** {{format-date now "full"}}
-      **Tags:** #research
+      **Tags:** #notes 
 
-      ## Research Question
+      ## Topic  
 
-      ## Findings
+      ## Thoughts
 
-      ## Related Projects
+      ## Related Howtos
 
-      ## Next Steps
+      ## Related Projects 
 
-      - [ ] 
+      ## Action Items
+
+      - [ ]
 
     '';
 
@@ -191,10 +148,11 @@ in {
 
       2. 
 
-      ## Tips
+      ## Notes 
 
       ## Related Projects
 
+      ## Related Ideas
     '';
 
   };

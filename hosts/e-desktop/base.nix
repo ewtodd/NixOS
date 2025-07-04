@@ -13,7 +13,7 @@
 
   WindowManager = "sway";
   DeviceType = "desktop";
-
+  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
   users.users.e-play = {
     isNormalUser = true;
     description = "ethan-play";

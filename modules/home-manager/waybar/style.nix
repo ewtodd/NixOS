@@ -1,13 +1,16 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, osConfig, ... }:
 
 let
+  deviceType = osConfig.DeviceType;
   colors = config.colorScheme.palette;
+  windowManager = osConfig.WindowManager;
   profile = config.Profile;
   fontFamily = if profile == "work" then
     "FiraCode Nerd Font"
   else
     "JetBrains Mono Nerd Font";
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
+  opacity = if osConfig.WindowManager == "niri" then "0.9" else "0.75";
   # Helper to convert hex to rgba
   hexToRgba = hex: alpha:
     let
@@ -66,7 +69,7 @@ in {
      }
 
      window#waybar {
-       background-color: ${hexToRgba colors.base00 "0.8"};
+       background-color: ${hexToRgba colors.base00 "${opacity}"};
        border-radius: 0 0 8px 8px;
      }
 
@@ -80,6 +83,12 @@ in {
        background: transparent;
        margin: 6px 0;
        font-size: 1.0rem;
+     }
+
+     #workspaces button:first-child:last-child {
+       border-radius: 8px;
+       margin-left: 3px;
+       border-right: none;
      }
 
      #workspaces button {
@@ -100,10 +109,15 @@ in {
 
      #workspaces button:last-child {
        border-radius: 0 8px 8px 0;
-       border-right: none;
      }
 
      #workspaces button.focused {
+       background-color: #${colors.base00};
+       color: #${accentColor};
+       border: 2px solid #${colors.base04};
+    }
+
+     #workspaces button.focused:first-child:last-child {
        background-color: #${colors.base00};
        color: #${accentColor};
        border: 2px solid #${colors.base04};
@@ -150,8 +164,7 @@ in {
        border-left: none;
      }
 
-     #memory,
-     #pulseaudio {
+     #memory {
        background-color: #${colors.base00};
        color: #${accentColor};
        padding: 8px 12px;
@@ -160,8 +173,8 @@ in {
        border-right: 1px solid #${colors.base03};
        border-left: none;
      }
-
-     #network {
+      
+      #network {
        background-color: #${colors.base00};
        color: #${accentColor};
        padding-top: 8px;
@@ -174,6 +187,23 @@ in {
        border-left: none;
      }
 
+
+     #pulseaudio {
+       background-color: #${colors.base00};
+       color: #${accentColor};
+       padding: 8px 12px;
+       border-radius: ${if deviceType == "desktop" then "0 8px 8px 0" else "0"};
+       margin: ${if deviceType == "desktop" then "6px 3px 6px 0" else "6px 0"};
+       border-right: ${
+         if deviceType == "desktop" then
+           "none"
+         else
+           "1px solid #${colors.base03}"
+       };
+       border-left: none;
+    }
+
+     
      #battery {
        background-color: #${colors.base00};
        color: #${accentColor};
@@ -248,5 +278,28 @@ in {
        background-color: #${colors.base00};
        color: #${colors.base05};
      }
+  '' + lib.optionalString (windowManager == "sway") ''
+    #workspaces button#sway-workspace-1 {
+      padding-left: 9px;
+      padding-right: 12px;
+    }
+    #workspaces button#sway-workspace-6 {
+      padding-left: 7px;
+      padding-right: 13px;
+    }
+  '' + lib.optionalString (windowManager == "sway" && profile == "work") ''
+    #workspaces button#sway-workspace-5 {
+      padding-left: 10px;
+      padding-right: 12px;
+    }
+  '' + lib.optionalString (windowManager == "sway" && profile == "play") ''
+    #workspaces button#sway-workspace-2 {
+      padding-left: 7px;
+      padding-right: 10px;
+    }
+    #workspaces button#sway-workspace-3 {
+      padding-left: 6px;
+      padding-right: 11px;
+    }
   '';
 }

@@ -118,8 +118,6 @@
       settings.highlight.enable = true;
       grammarPackages = (with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
         vim
-        java
-        latex
         nix
         python
         cpp
@@ -136,9 +134,12 @@
     vimtex = {
       enable = true;
       settings = {
-        view_method = "general";
-        general_viewer = "xdg-open";
+        view_method = "zathura";
+        quickfix_open_on_warning = 0;
+        compiler_callback_hooks = { };
+        quickfix_autoclose_after_keystrokes = 1;
       };
+      texlivePackage = null;
     };
 
     lsp = {
