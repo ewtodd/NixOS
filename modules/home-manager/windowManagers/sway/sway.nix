@@ -6,7 +6,7 @@ in {
     ./settings/sway-colors.nix
     ./settings/profile.nix
     ./services/swayidle.nix
-    ./services/mako.nix
+    ./services/notifications.nix
     ./services/swaylock.nix
     ./services/wlogout.nix
     ./services/swayosd.nix
@@ -227,8 +227,9 @@ in {
         layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
-        layer_effects "notifications" blur enable; blur_ignore_transparent enable
+        layer_effects "layer-shell" blur enable; blur_ignore_transparent enable
 
+        exec cosmic-notifications
         exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
