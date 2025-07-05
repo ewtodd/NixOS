@@ -42,6 +42,9 @@
     allowDiscards = true; # Enable TRIM (if using SSD)
   };
 
+  boot.initrd.luks.devices."games".device =
+    "/dev/disk/by-uuid/f9219808-ffc7-41c7-854e-aaaf3d45a675";
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/29FA-BB43";
     fsType = "vfat";
@@ -54,6 +57,13 @@
     options = [ "compress=zstd" "noatime" "subvol=@home" ];
     depends = [ "/dev/mapper/home" ];
   };
+
+  fileSystems."/games" = {
+    device = "/dev/mapper/games";
+    fsType = "btrfs";
+    depends = [ "/dev/mapper/games" ];
+  };
+
   swapDevices =
     [{ device = "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; }];
 

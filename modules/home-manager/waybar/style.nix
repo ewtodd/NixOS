@@ -241,9 +241,9 @@ in {
        border-left: none;
      }
 
+     
      #custom-notification {
        background-color: #${colors.base00};
-       /*font-size: 15px;*/
        color: #${accentColor};
        padding-top: 8px;
        padding-bottom: 8px;
@@ -254,6 +254,21 @@ in {
        border-right: 1px solid #${colors.base03};
        border-left: none;
        min-width: 24px;
+     }
+
+     #custom-notification.dnd {
+       background-color: #${colors.base08};
+       color: #${colors.base00};
+     }
+
+     #custom-notification.gaming {
+       background-color: #${colors.base0E};
+       color: #${colors.base00};
+     }
+
+     #custom-notification.default {
+       background-color: #${colors.base00};
+       color: #${accentColor};
      }
 
      #tray {
