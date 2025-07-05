@@ -6,7 +6,7 @@ in {
     ./settings/sway-colors.nix
     ./settings/profile.nix
     ./services/swayidle.nix
-    ./services/swaync.nix
+    ./services/mako.nix
     ./services/swaylock.nix
     ./services/wlogout.nix
     ./services/swayosd.nix
@@ -141,13 +141,14 @@ in {
 
           # System controls
           "Mod4+Shift+c" = "reload";
-          "Mod4+Shift+e" = "exec swaync-client --close-all";
           "Mod4+m" =
             "exec ${pkgs.wlogout}/bin/wlogout -p layer-shell --buttons-per-row 2";
           "Mod4+r" = "mode resize";
 
-          # Notifications
-          "Mod4+Shift+n" = "exec swaync-client -t -sw";
+          # Replace SwayNC keybindings with Mako
+          "Mod4+Shift+n" = "exec makoctl dismiss";
+          "Mod4+Shift+e" = "exec makoctl dismiss --all";
+          "Mod4+Control+n" = "exec makoctl restore";
 
           # Screenshots
           "Mod1+control+3" = "exec grimshot copy output";
@@ -222,11 +223,11 @@ in {
         for_window [class=".*"] inhibit_idle fullscreen
         for_window [app_id=".*"] inhibit_idle fullscreen
 
-        layer_effects "swaync-control-center" blur enable; shadows enable
         layer_effects "rofi" blur enable; shadows enable
         layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
-        layer_effects "logout_dialog" blur enable
+        layer_effects "logout_dialog" blur enable 
+        layer_effects "notifications" blur enable; blur_ignore_transparent enable
 
         exec swayrd
         exec udiskie --tray
