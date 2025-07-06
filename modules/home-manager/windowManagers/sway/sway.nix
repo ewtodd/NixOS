@@ -146,9 +146,8 @@ in {
           "Mod4+r" = "mode resize";
 
           # Replace SwayNC keybindings with Mako
-          "Mod4+Shift+n" = "exec makoctl dismiss";
-          "Mod4+Shift+e" = "exec makoctl dismiss --all";
-          "Mod4+Control+n" = "exec makoctl restore";
+          "Mod4+Shift+n" = "exec swaync-client -t";
+          "Mod4+Shift+e" = "exec swaync-client --close-all";
 
           # Screenshots
           "Mod1+control+3" = "exec grimshot copy output";
@@ -227,9 +226,8 @@ in {
         layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
-        layer_effects "layer-shell" blur enable; blur_ignore_transparent enable
+        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enable
 
-        exec cosmic-notifications
         exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'

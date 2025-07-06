@@ -1,7 +1,7 @@
 {
   description = "Python and ROOT environment with jupyter integration.";
 
-  inputs = { nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; };
+  inputs = { nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05"; };
 
   outputs = { self, nixpkgs }:
     let
@@ -12,12 +12,13 @@
         buildInputs = with pkgs; [
           root
           liberation_ttf
-          (python312.withPackages (python-pkgs:
+          (python3.withPackages (python-pkgs:
             with python-pkgs; [
               tensorflow
               matplotlib
               numpy
               pandas
+              tables
               seaborn
               scikit-learn
               mplhep
