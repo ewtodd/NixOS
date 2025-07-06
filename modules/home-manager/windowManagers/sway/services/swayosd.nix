@@ -67,7 +67,6 @@ let
       background-color: ${hexToRgba colors.base00 "0.95"};
       border-radius: 10px;
       border: 2px solid #${accentColor};
-     /* box-shadow: 0 8px 32px ${hexToRgba colors.base00 "0.8"}; */
     }
 
     #container {
@@ -104,31 +103,22 @@ let
     /* Specific styling for different OSD types */
     .osd-volume {
       background-color: ${hexToRgba colors.base00 "0.95"};
+      border: 2px solid #${accentColor};
       border-radius: 10px;
     }
 
     .osd-brightness {
       background-color: ${hexToRgba colors.base00 "0.95"};
+      border: 2px solid #${accentColor};
       border-radius: 10px;
-    }
-
-    .osd-caps-lock {
-      background-color: ${hexToRgba colors.base08 "0.95"};
-      border-color: #${colors.base08};
-      border-radius: 10px;
-    }
-
-    .osd-caps-lock label {
-      color: #${colors.base08};
     }
   '';
 
 in {
-  # Enable SwayOSD with custom styling
   services.swayosd = {
     enable = true;
     package = pkgs.swayosd;
     stylePath = swayosdStyle;
-    topMargin = 0.85; # Position near top but not at very edge
+    topMargin = 0.85;
   };
 }
