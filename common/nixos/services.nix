@@ -25,4 +25,9 @@
   };
   services.gnome.gnome-keyring.enable = true;
   security.rtkit.enable = true;
+  services.blueman.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
 }
