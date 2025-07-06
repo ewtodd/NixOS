@@ -228,6 +228,7 @@ in {
         layer_effects "logout_dialog" blur enable 
         layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enable
 
+        exec blueman-applet
         exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'

@@ -25,6 +25,8 @@ in {
     git
     gh
     wget
+    inkscape
+    ipe
     firefox-wayland
     libreoffice
     tree
