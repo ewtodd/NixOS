@@ -14,7 +14,11 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-  nix.settings.auto-optimise-store = true;
+
+  nix.settings = {
+    auto-optimise-store = true;
+    download-buffer-size = 524288000;
+  };
   nix.optimise.automatic = true;
   nix.gc = {
     automatic = true;

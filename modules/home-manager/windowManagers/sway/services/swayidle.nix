@@ -27,6 +27,25 @@
     ];
   };
   home.packages = with pkgs; [
+    (writeShellScriptBin "audio-check" ''
+      #!/bin/bash
+
+      # Check if audio is playing using pipewire/pulseaudio
+      if command -v pw-cli >/dev/null 2>&1; then
+        # PipeWire check
+        audio_playing=$(pw-cli info all | grep -E "state.*running" | grep -v "suspended")
+      else
+        # PulseAudio fallback
+        audio_playing=$(pactl list sink-inputs | grep -E "State: RUNNING")
+      fi
+
+      if [[ -n "$audio_playing" ]]; then
+        echo "audio_playing"
+      else
+        echo "audio_idle"
+      fi
+    '')
+
     (writeShellScriptBin "conditional-lock" ''
       #!/bin/bash
 

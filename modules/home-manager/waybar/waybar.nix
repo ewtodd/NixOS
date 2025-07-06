@@ -86,76 +86,26 @@ in {
 
         "custom/notification" = {
           tooltip = false;
-          format = "{icon} {text}";
+          format = "{icon}";
           format-icons = {
-            notification = "󰂚";
-            none = "󰂜";
-            dnd-notification = "󰂛";
-            dnd-none = "󰪑";
+            notification = "<span foreground='red'><sup></sup></span>";
+            none = "";
+            dnd-notification = "<span foreground='red'><sup></sup></span>";
+            dnd-none = "";
+            inhibited-notification =
+              "<span foreground='red'><sup></sup></span>";
+            inhibited-none = "";
+            dnd-inhibited-notification =
+              "<span foreground='red'><sup></sup></span>";
+            dnd-inhibited-none = "";
           };
-
           return-type = "json";
-          exec-if = "which makoctl";
-          exec = pkgs.writeShellScript "mako-waybar" ''
-            #!/bin/bash
-
-            # Get current pending notifications (for immediate display)
-            current_count=$(makoctl list | jq '.data | length' 2>/dev/null || echo "0")
-
-            # Get recent history count (last 10 notifications from today)
-            history_count=$(makoctl history | grep -c "Notification [0-9]*:" 2>/dev/null || echo "0")
-
-            # Use current count if there are pending notifications, otherwise show nothing
-            notification_count="$current_count"
-
-            # Get current mode
-            mode_output=$(makoctl mode 2>/dev/null || echo "")
-
-            # Check if DND mode is active
-            if echo "$mode_output" | grep -q "dnd"; then
-              mode="dnd"
-            else
-              mode="default"
-            fi
-
-            # Determine icon and text based on mode and count
-            if [[ "$mode" == "dnd" ]]; then
-              if [[ "$notification_count" -gt 0 ]]; then
-                icon="dnd-notification"
-                text="$notification_count (DND)"
-              else
-                icon="dnd-none"
-                text="DND"
-              fi
-            else
-              if [[ "$notification_count" -gt 0 ]]; then
-                icon="notification"
-                text="$notification_count"
-              else
-                icon="none"
-                text=""
-              fi
-            fi
-
-            # Get latest notification from current list, fallback to history
-            if [[ "$current_count" -gt 0 ]]; then
-              latest_summary=$(makoctl list | jq -r '.data[0].summary.data // "No notifications"' 2>/dev/null || echo "No notifications")
-            else
-              # Parse latest from history (text format)
-              latest_summary=$(makoctl history | head -20 | grep -A2 "Notification [0-9]*:" | head -1 | cut -d':' -f2- | xargs 2>/dev/null || echo "No recent notifications")
-            fi
-
-            # Output JSON for waybar
-            printf '{"text":"%s","icon":"%s","tooltip":"%s","class":"%s"}\n' \
-              "$text" "$icon" "$latest_summary" "$mode"
-          '';
-          on-click = "makoctl dismiss --all";
-          on-click-right = "makoctl mode -t dnd";
-          on-click-middle = "makoctl restore";
+          exec-if = "which swaync-client";
+          exec = "swaync-client -swb";
+          on-click = "swaync-client -t -sw";
+          on-click-right = "swaync-client -d -sw";
           escape = true;
-          interval = 2;
         };
-
         network = {
           "format-wifi" = "{icon}";
           format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
