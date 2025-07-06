@@ -1,7 +1,6 @@
 { config, pkgs, ... }: {
   wayland.windowManager.sway = {
     config = {
-      startup = [{ command = "blueman-applet"; }];
       # Output configuration
       output = {
         "eDP-1" = {
