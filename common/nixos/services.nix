@@ -15,7 +15,9 @@
     '';
   };
   services.printing.enable = true;
-  services.printing.drivers = [ pkgs.brlaser ];
+  services.avahi.enable = true;
+  services.avahi.nssmdns4 = true;
+  services.avahi.openFirewall = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;

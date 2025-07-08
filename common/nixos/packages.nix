@@ -17,13 +17,14 @@ in {
   environment.shellAliases = {
     vim = "nvim";
     ":q" = "exit";
-    nrs = "sudo nixos-rebuild switch";
+    nrs = "nh os switch /etc/nixos";
     fix-nixos-git =
       "sudo chown -R root:wheel /etc/nixos/* /etc/nixos/.* && sudo chmod -R g+rwx /etc/nixos/* /etc/nixos/.*";
   };
   environment.systemPackages = with pkgs; [
     git
     gh
+    nh
     wget
     inkscape
     ipe
