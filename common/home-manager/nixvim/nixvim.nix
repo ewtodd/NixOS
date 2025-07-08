@@ -2,7 +2,7 @@
 
 {
   imports =
-    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix  ];
+    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix ./split.nix ];
 
   config = let profile = config.Profile;
   in {
