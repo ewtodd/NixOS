@@ -25,13 +25,14 @@
       "gamemode"
       "render"
       "video"
+      "lp"
     ];
   };
 
   users.users.e-work = {
     isNormalUser = true;
     description = "ethan-work";
-    extraGroups = [ "networkmanager" "wheel" "plugdev" "dialout" "video" ];
+    extraGroups = [ "networkmanager" "wheel" "plugdev" "dialout" "video" "lp" ];
   };
 
 }
