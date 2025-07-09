@@ -6,7 +6,7 @@ let
   colors = config.colorScheme.palette;
   profile = config.Profile;
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
-  opacity = if osConfig.WindowManager == "niri" then "0.9" else "0.75";
+  opacity = "0.75";
 in {
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {
