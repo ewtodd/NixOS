@@ -6,7 +6,6 @@
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix
     ./nixvim/nixvim.nix
-    ./scripts/scripts.nix
   ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
 
@@ -32,5 +31,14 @@
       github-update =
         "git add . && git commit -m 'Automated commit.' && git push -u origin main";
     };
+  };
+  xdg.configFile = {
+    "clangd/config.yaml".text = ''
+      CompileFlags:
+        Add: [
+          "-I${pkgs.root}/include",
+          "-I${pkgs.geant4}/include/Geant4"
+        ]
+    '';
   };
 }
