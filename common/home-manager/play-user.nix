@@ -6,7 +6,6 @@
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix
     ./nixvim/nixvim.nix
-    ./scripts/scripts.nix
   ];
   home.packages = with pkgs; [
     signal-desktop
