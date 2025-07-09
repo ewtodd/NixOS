@@ -13,7 +13,6 @@
     ];
     extraConfigLua = ''
                   
-      -- In your split.nvim setup
       require('split').setup({
         keymaps = {
           ["gs"] = {
@@ -21,11 +20,10 @@
             operator_pending = true,
             interactive = false,
           },
-          -- Add a dedicated sentence splitting keymap
           ["g."] = {
             pattern = "[%.?!]%s+",
             operator_pending = true,
-            interactive = false,  -- This is key!
+            interactive = false,  
           },
         },
       })
@@ -33,7 +31,11 @@
       vim.api.nvim_create_autocmd("BufWritePost", {
         pattern = {"*.tex", "*.md", "*.markdown"},
         callback = function()
+        local cursor_pos = vim.api.nvim_win_get_cursor(0)
         vim.api.nvim_feedkeys("ggVGg.", "x", false)
+        vim.defer_fn(function()
+            vim.api.nvim_win_set_cursor(0, cursor_pos)
+          end, 10)
         end,
       })
     '';
