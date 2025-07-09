@@ -4,12 +4,13 @@
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/intel-graphics.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
-    # ../../modules/nixos/services/ssh.nix
+    ../../modules/nixos/services/ssh.nix
     #../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
+    ../../modules/nixos/packages/freecad.nix
   ];
 
   WindowManager = "sway";

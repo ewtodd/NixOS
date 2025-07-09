@@ -204,7 +204,34 @@
         ];
         snippet = { expand = "luasnip"; };
         mapping = {
-          "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+          # Fixed Tab mapping that handles both completion and snippet expansion
+          "<Tab>" = ''
+            cmp.mapping(function(fallback)
+              local luasnip = require("luasnip")
+              if cmp.visible() then
+                cmp.select_next_item()
+              elseif luasnip.expand_or_locally_jumpable() then
+                luasnip.expand_or_jump()
+              else
+                fallback()
+              end
+            end, {'i', 's'})
+          '';
+
+          # Shift-Tab for reverse navigation
+          "<S-Tab>" = ''
+            cmp.mapping(function(fallback)
+              local luasnip = require("luasnip")
+              if cmp.visible() then
+                cmp.select_prev_item()
+              elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+              else
+                fallback()
+              end
+            end, {'i', 's'})
+          '';
+
           "<A-j>" = "cmp.mapping.select_next_item()";
           "<A-k>" = "cmp.mapping.select_prev_item()";
           "<A-e>" = "cmp.mapping.abort()";

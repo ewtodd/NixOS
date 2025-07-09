@@ -1,8 +1,14 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix ./split.nix ];
+  imports = [
+    ./opts.nix
+    ./keymaps.nix
+    ./plugins.nix
+    ./performance.nix
+    ./split.nix
+    ./latex-luasnip.nix
+  ];
 
   config = let profile = config.Profile;
   in {

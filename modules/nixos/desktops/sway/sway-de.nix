@@ -12,6 +12,7 @@
         jq
         libnotify
         sway-contrib.grimshot
+        grim
         pavucontrol
         pulseaudio
         gthumb # keep gthumb for detailed image viewing
