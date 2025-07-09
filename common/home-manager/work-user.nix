@@ -23,7 +23,6 @@
       ls = "ls -vAF";
       ll = "ls -la";
       rootbrowse = ''nix-shell -p root --run "rootbrowse --web=off"'';
-      fix-clang = "update-clang";
       geant4-env = "nix-shell /etc/nixos/home/e-work/geant4.nix";
       analysis-env = "nix develop /etc/nixos/modules/dev-environments/analysis";
       latex-env = "nix develop /etc/nixos/modules/dev-environments/latex";
