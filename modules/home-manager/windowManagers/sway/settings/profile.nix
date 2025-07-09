@@ -47,7 +47,7 @@ in {
           startup = [
             {
               command =
-                "swaymsg 'workspace 1; exec firefox --new-instance --new-window -url https://github.com/ewtodd/ANSG-AnalysisFramework -new-tab -url https://github.com/ewtodd/ANSG-Analysis -new-tab -url perplexity.ai'";
+                "swaymsg 'workspace 5; exec firefox --new-instance --new-window -url https://github.com/ewtodd-new-tab -url perplexity.ai'";
             }
             { command = "swaymsg 'workspace 2; exec thunderbird'"; }
             { command = "swaymsg 'workspace 3; exec slack'"; }
