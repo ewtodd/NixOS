@@ -15,46 +15,23 @@ in {
         position = "top";
         spacing = 0;
         height = 34;
-        modules-left =
-          [ "${windowManager}/workspaces" "${windowManager}/window" ]
-          ++ optionals (windowManager != "niri") [ "${windowManager}/mode" ];
+        modules-left = [
+          "${windowManager}/workspaces"
+          "${windowManager}/window"
+          "${windowManager}/mode"
+        ];
         modules-center = [ "clock" "tray" ];
         modules-right = [ "cpu" "memory" "network" "pulseaudio" ]
           ++ optionals (deviceType == "laptop") [ "battery" ]
           ++ [ "custom/notification" ];
-        "${windowManager}/window" = mkIf (windowManager != "niri") {
+        "${windowManager}/window" = {
           format = "";
           max-length = 0;
         };
 
-        "${windowManager}/mode" =
-          mkIf (windowManager != "niri") { format = "{}"; };
-        "${windowManager}/workspaces" = if windowManager == "niri" then {
-          format = "{icon}";
-          on-click = "activate";
-          format-icons = {
-            default = "";
-            "slack" = "";
-            "thunderbird" = "";
-            "signal" = "󰿌";
-            "steam" = "";
-            "spotify" = "";
-          };
-        } else {
+        "${windowManager}/workspaces" = {
           "on-click" = "activate";
           format = "{name}";
-          format-icons = {
-            "1" = "󰇊";
-            "2" = "󰇋";
-            "3" = "󰇌";
-            "4" = "󰇍";
-            "5" = "󰇎";
-            "6" = "󰇏";
-            "7" = if (profile == "work") then "" else "󰿌";
-            "8" = "";
-            "9" = if (profile == "play") then "" else "";
-            "10" = if (profile == "play") then "" else "";
-          };
         };
         cpu = {
           interval = 5;

@@ -10,7 +10,7 @@ let
   else
     "JetBrains Mono Nerd Font";
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
-  opacity = if osConfig.WindowManager == "niri" then "0.9" else "0.75";
+  opacity = "0.75";
   # Helper to convert hex to rgba
   hexToRgba = hex: alpha:
     let

@@ -4,12 +4,12 @@ let
   windowManager = osConfig.WindowManager;
 
   # Standalone validation
-  _ = if windowManager == "cosmic" || windowManager == "hyprland" then
-    throw "Unsupported window manager: ${windowManager}"
+  _ = if windowManager == "cosmic" then
+    throw
+    "Unsupported window manager: ${windowManager}. You don't need any of these things."
   else
     null;
 in {
-  imports = [ ] ++ lib.optionals (windowManager == "sway") [ ./sway/sway.nix ]
-    ++ lib.optionals (windowManager == "niri") [ ./niri/niri.nix ];
+  imports = [ ] ++ lib.optionals (windowManager == "sway") [ ./sway/sway.nix ];
 
 }
