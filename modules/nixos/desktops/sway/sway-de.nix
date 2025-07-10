@@ -1,11 +1,9 @@
-{ pkgs, config, lib, inputs, ... }:
-let swayfx-with-animations = pkgs.callPackage ../../../../packages/swayfx { };
-in {
+{ pkgs, config, lib, inputs, ... }: {
   config = lib.mkIf (config.WindowManager == "sway") {
 
     programs.sway = {
       enable = true;
-      package = swayfx-with-animations;
+      package = pkgs.swayfx;
       extraPackages = with pkgs; [
         wlogout
         birdtray
