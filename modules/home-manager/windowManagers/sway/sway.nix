@@ -76,6 +76,8 @@ in {
             "exec firefox https://nix-community.github.io/nixvim/25.05/";
           "Mod4+p" =
             "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
+          "Mod4+Shift+g" =
+            "exec firefox --private-window https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1";
           "Mod4+k+l" = "exec conditional-lock";
           "Mod4+h" = "focus left";
           "Mod4+j" = "focus down";
