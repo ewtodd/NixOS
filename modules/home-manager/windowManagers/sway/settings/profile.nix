@@ -36,6 +36,10 @@ in {
               workspace = "5";
               output = "${secondaryMonitor}";
             }
+            {
+              workspace = "6";
+              output = "${secondaryMonitor}";
+            }
 
           ];
 
@@ -91,6 +95,10 @@ in {
             }
             {
               workspace = "5";
+              output = "${secondaryMonitor}";
+            }
+            {
+              workspace = "6";
               output = "${secondaryMonitor}";
             }
 
