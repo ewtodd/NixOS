@@ -238,6 +238,8 @@ in {
         exec gsettings set org.gnome.desktop.interface gtk-theme 'Tokyonight-dark-purple'
       '' + lib.optionalString (profile == "work") ''
         exec gsettings set org.gnome.desktop.interface gtk-theme 'Kanagawa-B-LB'
+      '' + lib.optionalString (deviceType == "desktop") ''
+        exec . /etc/nixos/modules/home-manager/windowManagers/sway/scripts/startup-terminals.sh
       '';
     };
   };
