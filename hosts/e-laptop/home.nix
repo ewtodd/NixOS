@@ -32,8 +32,8 @@
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
     programs.bash.shellAliases = {
-      phone-home = "ssh e-work@ssh.ethanwtodd.com";
-      files-home = "sftp e-work@ssh.ethanwtodd.com";
+      phone-home = "ssh e-work@ssh.ethanwtodd.com -p 2222";
+      files-home = "sftp e-work@ssh.ethanwtodd.com -p 2222";
     };
     programs.waybar.enable = true;
     programs.git = {
