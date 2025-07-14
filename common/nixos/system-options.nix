@@ -1,8 +1,6 @@
 { lib, ... }:
 
-with lib;
-
-{
+with lib; {
   options = {
 
     DeviceType = mkOption {
