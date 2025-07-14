@@ -13,6 +13,5 @@ in {
     port = 8080;
   };
 
-  # Open firewall port for web access
   networking.firewall.allowedTCPPorts = [ 8080 ];
 }
