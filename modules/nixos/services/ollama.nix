@@ -12,6 +12,15 @@ in {
     host = "0.0.0.0"; # Allow access from any IP
     port = 8080;
   };
+  services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+
+    virtualHosts."llm.ethanwtodd.com" = {
+      globalRedirect = "llm.ethanwtodd.com:8080";
+    };
+  };
 
   networking.firewall.allowedTCPPorts = [ 8080 ];
 }

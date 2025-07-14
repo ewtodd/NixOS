@@ -42,13 +42,13 @@ in {
           # Work-specific keybindings
           keybindings = {
             "Mod4+g" =
-              "exec firefox --new-window -url https://umgpt.umich.edu/ -new-tab -url https://www.perplexity.ai/";
+              "exec firefox --new-window -url https://umgpt.umich.edu/";
           };
 
           startup = [
             {
               command =
-                "swaymsg 'workspace 5; exec firefox --new-instance --new-window -url https://github.com/ewtodd -new-tab -url perplexity.ai'";
+                "swaymsg 'workspace 5; exec firefox --new-instance --new-window -url https://github.com/ewtodd -new-tab -url llm.ethanwtodd.com'";
             }
             { command = "swaymsg 'workspace 2; exec thunderbird'"; }
             { command = "swaymsg 'workspace 3; exec slack'"; }
