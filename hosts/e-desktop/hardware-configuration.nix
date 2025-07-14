@@ -10,7 +10,7 @@
 
   boot.initrd.availableKernelModules =
     [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ "dm_mod" "btrfs" ];
+  boot.initrd.kernelModules = [ "dm_mod" "btrfs" "amdgpu" ];
   boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
   boot.extraModulePackages = [
     (config.boot.kernelPackages.v4l2loopback.overrideAttrs (old: {
