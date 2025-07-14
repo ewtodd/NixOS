@@ -1,6 +1,7 @@
 { ... }: {
   services.openssh = {
     enable = true;
+    ports = [ 2222 ];
     settings = {
       PasswordAuthentication = true;
       KbdInteractiveAuthentication = true;
@@ -12,6 +13,6 @@
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 ];
+    allowedTCPPorts = [ 2222 ];
   };
 }
