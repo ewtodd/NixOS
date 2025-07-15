@@ -230,7 +230,6 @@ in {
         layer_effects "logout_dialog" blur enable 
         layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enable
 
-        exec protonvpn-app --start-minimized
         exec blueman-applet
         exec swayrd
         exec udiskie --tray
