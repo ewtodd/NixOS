@@ -20,7 +20,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, ... }: {
+  outputs = inputs@{ self, nixpkgs, unstable, ... }: {
     nixosConfigurations = {
       v-desktop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -67,6 +67,7 @@
         specialArgs = {
           inherit inputs;
           system = "x86_64-linux";
+          unstable = import unstable { system = "x86_64-linux"; };
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
