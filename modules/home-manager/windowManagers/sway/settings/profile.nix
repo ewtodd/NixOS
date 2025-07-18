@@ -120,7 +120,7 @@ in {
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/tokyonight.png
+          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/rose-pine.png
         '';
       };
     })

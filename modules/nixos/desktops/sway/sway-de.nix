@@ -13,9 +13,9 @@
         libnotify
         sway-contrib.grimshot
         grim
-        pavucontrol
+        lxqt.pavucontrol-qt
         pulseaudio
-        gthumb # keep gthumb for detailed image viewing
+        photoqt
         imagemagick # for kitty
         nautilus
         thunderbird-latest
