@@ -21,23 +21,6 @@ let
         done
       '';
     });
-  # Create tokyo-night icon theme with inheritance
-  tokyonight-with-inheritance = pkgs.tokyonight-gtk-theme.overrideAttrs
-    (oldAttrs: {
-      postInstall = (oldAttrs.postInstall or "") + ''
-        # Add inheritance to closest matching themes
-        for theme_dir in $out/share/icons/*/; do
-          if [ -f "$theme_dir/index.theme" ]; then
-            # Remove any existing Inherits line
-            sed -i '/^Inherits=/d' "$theme_dir/index.theme"
-            
-            # Add inheritance ordered by visual similarity to Kanagawa
-            echo "Inherits=Papirus-Dark,breeze-dark,Adwaita,breeze,hicolor" >> "$theme_dir/index.theme"
-          fi
-        done
-      '';
-    });
-
 in {
   config = mkIf config.gtk.enable {
     # Ensure fallback icon packages are available
@@ -50,20 +33,16 @@ in {
 
     gtk = {
       theme = if profile == "play" then {
-        package = pkgs.tokyonight-gtk-theme.override {
-          colorVariants = [ "dark" ];
-          themeVariants = [ "purple" ];
-          iconVariants = [ "Dark" ];
-        };
-        name = "Tokyonight-dark-purple";
+        package = pkgs.rose-pine-gtk-theme;
+        name = "rose-pine";
       } else {
         package = pkgs.kanagawa-gtk-theme;
         name = "Kanagawa-B-LB";
       };
 
       iconTheme = if profile == "play" then {
-        package = tokyonight-with-inheritance;
-        name = "Tokyonight-Dark";
+        package = pkgs.rose-pine-icon-theme;
+        name = "rose-pine";
       } else {
         package = kanagawa-with-inheritance;
         name = "Kanagawa";

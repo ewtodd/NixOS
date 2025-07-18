@@ -8,46 +8,7 @@
   in {
     programs.nixvim = {
       colorschemes = if (profile == "play") then {
-        tokyonight = {
-          enable = true;
-          settings = {
-            # Choose your preferred style: "night" (default), "storm", "moon", "day"
-            style = "night";
-            transparent = true;
-            terminalColors = true;
-            styles = {
-              sidebars = "transparent";
-              floats = "transparent";
-            };
-
-            # Optional: extra highlights for full transparency
-            on_highlights = ''
-              function(hl, c)
-                -- Make UI elements transparent
-                hl.Normal = { bg = "none" }
-                hl.NormalNC = { bg = "none" }
-                hl.NormalFloat = { bg = "none" }
-                hl.FloatBorder = { bg = "none" }
-                hl.Pmenu = { bg = "none" }
-                hl.PmenuSbar = { bg = "none" }
-                hl.PmenuThumb = { bg = "none" }
-                hl.StatusLine = { bg = "none" }
-                hl.StatusLineNC = { bg = "none" }
-                hl.TabLine = { bg = "none" }
-                hl.TabLineFill = { bg = "none" }
-                hl.TabLineSel = { bg = "none" }
-                hl.SignColumn = { bg = "none" }
-                hl.VertSplit = { bg = "none" }
-                hl.WinSeparator = { bg = "none" }
-                hl.NonText = { bg = "none" }
-                hl.EndOfBuffer = { bg = "none" }
-                -- Telescope transparency (see [3])
-                hl.TelescopeNormal = { bg = "none", fg = c.fg_dark }
-                hl.TelescopeBorder = { bg = "none", fg = c.bg_dark }
-              end
-            '';
-          };
-        };
+        rose-pine = { enable = true; };
       } else {
 
         kanagawa = {

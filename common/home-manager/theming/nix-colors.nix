@@ -7,6 +7,6 @@ in {
     colorScheme = if profile == "work" then
       inputs.nix-colors.colorSchemes.kanagawa
     else
-      inputs.nix-colors.colorSchemes.tokyo-night-dark;
+      inputs.nix-colors.colorSchemes.rose-pine;
   };
 }
