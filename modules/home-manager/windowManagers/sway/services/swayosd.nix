@@ -5,7 +5,7 @@ with lib;
 let
   colors = config.colorScheme.palette;
   profile = config.Profile;
-  accentColor = if profile == "work" then colors.base09 else colors.base0E;
+  accentColor =  colors.base0E;
   fontFamily = if profile == "work" then
     "FiraCode Nerd Font"
   else

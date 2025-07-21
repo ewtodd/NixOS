@@ -62,7 +62,7 @@ in {
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/kanagawa.png 
+          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/gruvbox-light.png 
         '';
       };
     })

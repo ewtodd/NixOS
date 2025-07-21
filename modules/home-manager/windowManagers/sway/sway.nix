@@ -127,11 +127,6 @@ in {
             "exec swaymsg -r -t get_outputs | jq '.[0].layer_shell_surfaces | .[] | .namespace' | xargs notify-send";
 
           # Layout management
-          "Mod4+b" = "splith";
-          "Mod4+v" = "splitv";
-          "Mod4+s" = "layout stacking";
-          "Mod4+w" = "layout tabbed";
-          "Mod4+e" = "layout toggle split";
           "Mod4+Shift+f" = "fullscreen";
           "Mod4+Shift+space" = "floating toggle";
           "Mod4+space" = "focus mode_toggle";
@@ -219,11 +214,6 @@ in {
         dim_inactive_colors.unfocused #${colors.base00}
         dim_inactive_colors.urgent #${colors.base08}
 
-        for_window [app_id="firefox"] saturation set 1.1
-        for_window [app_id="spotify"] saturation set 1.2
-        for_window [class=".*"] inhibit_idle fullscreen
-        for_window [app_id=".*"] inhibit_idle fullscreen
-
         layer_effects "rofi" blur enable; shadows enable
         layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
@@ -235,7 +225,7 @@ in {
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
       '' + lib.optionalString (profile == "play") ''
-        exec gsettings set org.gnome.desktop.interface gtk-theme 'Tokyonight-dark-purple'
+        exec gsettings set org.gnome.desktop.interface gtk-theme 'rose-pine'
       '' + lib.optionalString (profile == "work") ''
         exec gsettings set org.gnome.desktop.interface gtk-theme 'Kanagawa-B-LB'
       '' + lib.optionalString (deviceType == "desktop") ''

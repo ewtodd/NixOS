@@ -9,7 +9,7 @@ let
     "FiraCode Nerd Font"
   else
     "JetBrains Mono Nerd Font";
-  accentColor = if profile == "work" then colors.base09 else colors.base0E;
+  accentColor = colors.base0E;
   opacity = "0.75";
   # Helper to convert hex to rgba
   hexToRgba = hex: alpha:
