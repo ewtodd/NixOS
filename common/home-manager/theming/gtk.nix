@@ -1,8 +1,10 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 with lib;
 
-let profile = config.Profile;
+let
+  profile = config.Profile;
+  nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in {
   config = mkIf config.gtk.enable {
 
@@ -11,8 +13,9 @@ in {
         package = pkgs.rose-pine-gtk-theme;
         name = "rose-pine";
       } else {
-        package = pkgs.gruvbox-gtk-theme;
-        name = "Gruvbox-Dark";
+        package =
+          nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
+        name = "caroline";
       };
 
       iconTheme = if profile == "play" then {

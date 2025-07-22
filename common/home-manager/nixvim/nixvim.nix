@@ -8,7 +8,10 @@
   in {
     programs.nixvim = {
       colorschemes = if (profile == "play") then {
-        rose-pine = { enable = true; };
+        base16 = {
+          enable = true;
+          colorscheme = "caroline";
+        };
       } else {
         gruvbox = {
           enable = true;
