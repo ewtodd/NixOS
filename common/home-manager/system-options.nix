@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, inputs, ... }:
 
 with lib;
 
@@ -9,5 +9,6 @@ with lib;
       default = "play";
       description = "Profile for user (work/play)";
     };
+
   };
 }

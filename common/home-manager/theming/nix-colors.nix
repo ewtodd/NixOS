@@ -5,7 +5,7 @@ in {
   config = {
     # Set the colorScheme based on profile
     colorScheme = if profile == "work" then
-      inputs.nix-colors.colorSchemes.gruvbox-light-soft
+      inputs.nix-colors.colorSchemes.caroline
     else
       inputs.nix-colors.colorSchemes.rose-pine;
   };
