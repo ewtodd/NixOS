@@ -62,7 +62,7 @@ in {
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png 
+          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/rose-pine.png
         '';
       };
     })
@@ -120,7 +120,7 @@ in {
         };
 
         extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/rose-pine.png
+          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png 
         '';
       };
     })

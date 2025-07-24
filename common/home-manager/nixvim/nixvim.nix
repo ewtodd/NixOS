@@ -7,7 +7,7 @@
   config = let profile = config.Profile;
   in {
     programs.nixvim = {
-      colorschemes = if (profile == "work") then {
+      colorschemes = if (profile == "play") then {
         base16 = {
           enable = true;
           colorscheme = "eris";
