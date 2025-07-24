@@ -5,7 +5,7 @@ with lib;
 let
   colors = config.colorScheme.palette;
   profile = config.Profile;
-  accentColor =  colors.base0E;
+  accentColor = removePrefix "#" colors.base0E;
   fontFamily = if profile == "work" then
     "FiraCode Nerd Font"
   else
