@@ -9,7 +9,7 @@ in {
   config = mkIf config.gtk.enable {
 
     gtk = {
-      theme = if profile == "play" then {
+      theme = if profile == "work" then {
         package = pkgs.rose-pine-gtk-theme;
         name = "rose-pine";
       } else {
@@ -18,7 +18,7 @@ in {
         name = "eris";
       };
 
-      iconTheme = if profile == "play" then {
+      iconTheme = if profile == "work" then {
         package = pkgs.rose-pine-icon-theme;
         name = "rose-pine";
       } else {
