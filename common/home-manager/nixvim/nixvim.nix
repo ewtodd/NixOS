@@ -10,7 +10,7 @@
       colorschemes = if (profile == "work") then {
         base16 = {
           enable = true;
-          colorscheme = "caroline";
+          colorscheme = "eris";
         };
       } else {
         rose-pine = { enable = true; };

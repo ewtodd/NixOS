@@ -15,7 +15,7 @@ in {
       } else {
         package =
           nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
-        name = "caroline";
+        name = "eris";
       };
 
       iconTheme = if profile == "play" then {
