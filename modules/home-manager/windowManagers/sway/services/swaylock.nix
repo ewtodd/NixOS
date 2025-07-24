@@ -14,7 +14,7 @@ let
 
   # Logo selection based on profile
   logoPath = if profile == "work" then
-    "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos-caroline.png"
+    "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos-eris.png"
   else
     "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos_rose-pine.png";
 
