@@ -224,12 +224,6 @@ in {
         exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-      '' + lib.optionalString (profile == "play") ''
-        exec gsettings set org.gnome.desktop.interface gtk-theme 'rose-pine'
-      '' + lib.optionalString (profile == "work") ''
-        exec gsettings set org.gnome.desktop.interface gtk-theme 'Kanagawa-B-LB'
-      '' + lib.optionalString (deviceType == "desktop") ''
-        exec . /etc/nixos/modules/home-manager/windowManagers/sway/scripts/startup-terminals.sh
       '';
     };
   };
