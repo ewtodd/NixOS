@@ -7,17 +7,13 @@
   config = let profile = config.Profile;
   in {
     programs.nixvim = {
-      colorschemes = if (profile == "play") then {
+      colorschemes = if (profile == "work") then {
         base16 = {
           enable = true;
           colorscheme = "caroline";
         };
       } else {
-        gruvbox = {
-          enable = true;
-          settings.terminal_colors = true;
-          settings.transparent_mode = true;
-        };
+        rose-pine = { enable = true; };
       };
     };
   };

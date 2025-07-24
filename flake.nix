@@ -70,6 +70,18 @@
           unstable = import unstable { system = "x86_64-linux"; };
         };
         modules = [
+          {
+            nixpkgs.overlays = [
+              (final: prev:
+                let
+                  unstable = import inputs.unstable {
+                    system = prev.system;
+                    config.allowUnfree = true;
+                  };
+                in { open-webui = unstable.open-webui; })
+            ];
+
+          }
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {
