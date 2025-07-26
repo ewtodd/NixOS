@@ -25,6 +25,7 @@ in {
     options nvidia NVreg_PreserveVideoMemoryAllocations=1
     options nvidia NVreg_TemporaryFilePath=/var/tmp
   '';
+  boot = { kernelParams = [ "nvidia-drm.fbdev=1" ]; };
   systemd.services.systemd-suspend.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS =
     "false";
   environment.systemPackages = with pkgs; [ nvtopPackages.nvidia ];

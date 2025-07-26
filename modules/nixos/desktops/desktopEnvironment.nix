@@ -1,1 +1,1 @@
-{ lib, ... }: { imports = [ ./sway/sway-de.nix ./cosmic/cosmic-de.nix ]; }
+{ ... }: { imports = [ ./sway/sway-de.nix ./plasma/plasma-de.nix ]; }
