@@ -16,9 +16,9 @@
         userEmail = "157831739+vael3429@users.noreply.github.com";
         extraConfig = { init = { defaultBranch = "main"; }; };
       };
-      WallpaperPath = "/etc/nixos/hosts/v-desktop/play.jpg";
+      WallpaperPath = "/etc/nixos/hosts/v-desktop/play.png";
       colorScheme = nix-colors-lib.colorSchemeFromPicture {
-        path = "./play.jpg";
+        path = "./play.png";
         variant = "dark";
       };
     };
@@ -43,9 +43,9 @@
         userEmail = "157831739+vael3429@users.noreply.github.com";
         extraConfig = { init = { defaultBranch = "main"; }; };
       };
-      WallpaperPath = "/etc/nixos/hosts/v-desktop/work.jpg";
+      WallpaperPath = "/etc/nixos/hosts/v-desktop/work.png";
       colorScheme = nix-colors-lib.colorSchemeFromPicture {
-        path = "./work.jpg";
+        path = "./work.png";
         variant = "dark";
       };
     };
