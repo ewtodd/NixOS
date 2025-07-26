@@ -18,7 +18,7 @@
       };
       WallpaperPath = "/etc/nixos/hosts/v-desktop/play.png";
       colorScheme = nix-colors-lib.colorSchemeFromPicture {
-        path = "./play.png";
+        path = ./play.png;
         variant = "dark";
       };
     };
@@ -45,7 +45,7 @@
       };
       WallpaperPath = "/etc/nixos/hosts/v-desktop/work.png";
       colorScheme = nix-colors-lib.colorSchemeFromPicture {
-        path = "./work.png";
+        path = ./work.png;
         variant = "dark";
       };
     };
