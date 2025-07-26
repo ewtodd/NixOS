@@ -11,8 +11,7 @@
         swaybg
         jq
         libnotify
-        sway-contrib.grimshot
-        grim
+        grimblast
         lxqt.pavucontrol-qt
         pulseaudio
         photoqt
