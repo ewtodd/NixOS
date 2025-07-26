@@ -14,7 +14,7 @@
     ../../modules/nixos/services/tailscale.nix
   ];
 
-  WindowManager = "plasma";
+  WindowManager = "gnome";
   DeviceType = "desktop";
 
   users.users.v-play = {
