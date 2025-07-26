@@ -27,7 +27,6 @@ in {
     nh
     wget
     inkscape
-    ipe
     firefox-wayland
     libreoffice
     tree
