@@ -11,7 +11,12 @@ in {
     package = unstable.mesa;
   };
   powerManagement.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver = {
+    enable = true;
+    displayManager.startx.enable = false;
+    excludePackages = with pkgs; [ xterm ];
+    videoDrivers = [ "nvidia" ];
+  };
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = true;
@@ -25,7 +30,7 @@ in {
     options nvidia NVreg_PreserveVideoMemoryAllocations=1
     options nvidia NVreg_TemporaryFilePath=/var/tmp
   '';
-  boot = { kernelParams = [ "nvidia-drm.fbdev=1" ]; };
+  boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
   systemd.services.systemd-suspend.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS =
     "false";
   environment.systemPackages = with pkgs; [ nvtopPackages.nvidia ];
