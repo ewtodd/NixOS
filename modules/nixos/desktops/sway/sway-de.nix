@@ -4,7 +4,6 @@
     programs.sway = {
       enable = true;
       package = pkgs.swayfx;
-      extraOptions =["--unsupported-gpu"];
       extraPackages = with pkgs; [
         wlogout
         birdtray
@@ -44,12 +43,15 @@
 
     environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
 
-    services.displayManager.sddm = {
+    services.xserver = {
       enable = true;
-      settings = {
-        wayland.enable = true;
+      displayManager.startx.enable = false;
+      excludePackages = with pkgs; [ xterm ];
+      displayManager.gdm = {
+        enable = true;
+        wayland = true;
+        autoSuspend = false;
       };
     };
-
   };
 }

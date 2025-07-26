@@ -14,10 +14,6 @@
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
-    nixpkgs-cosmic-working = {
-      url = "github:NixOS/nixpkgs/4206c4cb56751df534751b058295ea61357bbbaa";
-      flake = false;
-    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -29,28 +25,13 @@
           system = "x86_64-linux";
         };
         modules = [
-          {
-            nixpkgs.overlays = [
-              (final: prev:
-                let
-                  workingCosmicPkgs = import inputs.nixpkgs-cosmic-working {
-                    system = prev.system;
-                  };
-                in {
-                  cosmic-greeter = workingCosmicPkgs.cosmic-greeter;
-                  cosmic-comp = workingCosmicPkgs.cosmic-comp;
-                  cosmic-session = workingCosmicPkgs.cosmic-session;
-                  cosmic-settings = workingCosmicPkgs.cosmic-settings;
-                })
-            ];
-          }
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              backupFileExtension = "backup";
+              backupFileExtension = "hm-backup";
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
@@ -88,7 +69,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              backupFileExtension = "backup";
+              backupFileExtension = "hm-backup";
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
@@ -113,7 +94,7 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              backupFileExtension = "backup";
+              backupFileExtension = "hm-backup";
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
