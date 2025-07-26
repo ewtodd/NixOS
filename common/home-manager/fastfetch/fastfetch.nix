@@ -1,4 +1,4 @@
-{ config, pkgs, osConfig, ... }:
+{ osConfig, ... }:
 let
   format = if osConfig.WindowManager == "sway" then
     "{process-name} ({version} ({protocol-name})"

@@ -1,5 +1,5 @@
 {
-  "e-play" = { pkgs, ... }:
+  "e-play" = { pkgs, inputs, ... }:
     let mtkclient = pkgs.callPackage ../../packages/mtkclient/default.nix { };
     in {
       home.username = "e-play";
@@ -19,9 +19,12 @@
         userEmail = "30243637+ewtodd@users.noreply.github.com";
         extraConfig = { init = { defaultBranch = "main"; }; };
       };
+      WallpaperPath =
+        "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
+      colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
 
-  "e-work" = { ... }: {
+  "e-work" = { inputs, ... }: {
     home.username = "e-work";
     home.homeDirectory = "/home/e-work";
     home.stateVersion = "25.05";
@@ -42,7 +45,9 @@
       userEmail = "30243637+ewtodd@users.noreply.github.com";
       extraConfig = { init = { defaultBranch = "main"; }; };
     };
-
+    WallpaperPath =
+      "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/rose-pine.png";
+    colorScheme = inputs.nix-colors.colorSchemes.rose-pine;
   };
   "root" = { ... }: {
     home.username = "root";

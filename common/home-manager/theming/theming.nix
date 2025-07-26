@@ -1,4 +1,4 @@
 { ... }: {
-  imports = [ ./nix-colors.nix ./gtk.nix ./qt.nix ];
+  imports = [ ./gtk.nix ./qt.nix ];
   gtk.enable = true;
 }

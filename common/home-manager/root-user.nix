@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   imports = [
     ./system-options.nix
     ./kitty/kitty.nix
@@ -6,7 +6,7 @@
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  Profile = "play";
+  colorScheme = inputs.nix-colors.colorSchemes.dracula;
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
   programs.bash = {

@@ -1,10 +1,9 @@
-{ config, pkgs, lib, osConfig, ... }:
+{ config, lib, osConfig, ... }:
 with lib;
 
 let
   windowManager = osConfig.WindowManager;
   deviceType = osConfig.DeviceType;
-  profile = config.Profile;
 in {
   imports = [ ./style.nix ];
 

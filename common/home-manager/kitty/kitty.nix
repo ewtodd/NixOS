@@ -1,20 +1,15 @@
-{ config, lib, pkgs, osConfig, ... }:
+{ config, lib, ... }:
 
 with lib;
 
 let
   colors = config.colorScheme.palette;
-  profile = config.Profile;
-  accentColor = if profile == "work" then colors.base09 else colors.base0E;
   opacity = "0.75";
 in {
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {
       font = {
-        name = if profile == "work" then
-          "FiraCode Nerd Font"
-        else
-          "JetBrains Mono Nerd Font";
+        name = "JetBrains Mono Nerd Font";
         size = 13.0;
       };
 
@@ -54,7 +49,7 @@ in {
         color2 = "#${colors.base0B}";
         color3 = "#${colors.base0A}";
         color4 = "#${colors.base0D}";
-        color5 = "#${accentColor}";
+        color5 = "#${colors.base0E}";
         color6 = "#${colors.base0C}";
         color7 = "#${colors.base05}";
         color8 = "#${colors.base03}";
@@ -62,7 +57,7 @@ in {
         color10 = "#${colors.base0B}";
         color11 = "#${colors.base0A}";
         color12 = "#${colors.base0D}";
-        color13 = "#${accentColor}";
+        color13 = "#${colors.base0E}";
         color14 = "#${colors.base0C}";
         color15 = "#${colors.base07}";
 

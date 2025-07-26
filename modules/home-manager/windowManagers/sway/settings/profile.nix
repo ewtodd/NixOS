@@ -60,10 +60,6 @@ in {
             { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
         };
-
-        extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/rose-pine.png
-        '';
       };
     })
 
@@ -118,10 +114,6 @@ in {
             { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
         };
-
-        extraConfig = ''
-          exec swaybg -i /etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png 
-        '';
       };
     })
   ];

@@ -1,14 +1,8 @@
 { config, lib, pkgs, osConfig, ... }:
 
 let
-  deviceType = osConfig.DeviceType;
   colors = config.colorScheme.palette;
-  windowManager = osConfig.WindowManager;
-  profile = config.Profile;
-  fontFamily = if profile == "work" then
-    "FiraCode Nerd Font"
-  else
-    "JetBrains Mono Nerd Font";
+  fontFamily = "JetBrains Mono Nerd Font";
   accentColor = colors.base0E;
   opacity = "0.75";
   # Helper to convert hex to rgba

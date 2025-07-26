@@ -3,35 +3,26 @@
 with lib;
 
 let
-  profile = config.Profile;
+  schemeName = config.colorScheme.slug;
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in {
   config = mkIf config.gtk.enable {
 
     gtk = {
-      theme = if profile == "work" then {
-        package = pkgs.rose-pine-gtk-theme;
-        name = "rose-pine";
-      } else {
+      theme = {
         package =
           nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
-        name = "eris";
+        name = schemeName;
       };
 
-      iconTheme = if profile == "work" then {
-        package = pkgs.rose-pine-icon-theme;
-        name = "rose-pine";
-      } else {
+      iconTheme = {
         package = pkgs.gruvbox-plus-icons;
         name = "Gruvbox-Pluse-Dark";
       };
 
-      font = if profile == "work" then {
-        name = "FiraCode";
-        size = 12;
-      } else {
+      font = {
         name = "JetBrainsMonoNF";
-        size = 12;
+        size = 13;
       };
       gtk3.extraCss = ''
         .nautilus-window placessidebar.sidebar,
