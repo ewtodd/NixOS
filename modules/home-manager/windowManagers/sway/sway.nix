@@ -146,10 +146,10 @@ in {
           "Mod4+Shift+e" = "exec swaync-client --close-all";
 
           # Screenshots
-          "Mod1+control+3" = "exec grimshot copy output";
-          "Mod1+control+4" = "exec grimshot copy area";
-          "Mod1+Shift+control+3" = "exec grimshot --notify save output";
-          "Mod1+Shift+control+4" = "exec grimshot --notify save area";
+          "Mod1+control+3" = "exec grimblast copy output";
+          "Mod1+control+4" = "exec grimblast copy area";
+          "Mod1+Shift+control+3" = "exec grimblast --notify save output";
+          "Mod1+Shift+control+4" = "exec grimblast --notify save area";
 
           "XF86AudioRaiseVolume" = "exec swayosd-client --output-volume raise";
           "XF86AudioLowerVolume" = "exec swayosd-client --output-volume lower";
