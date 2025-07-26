@@ -4,7 +4,7 @@ let
   windowManager = osConfig.WindowManager;
 
   # Standalone validation
-  _ = if windowManager == "cosmic" then
+  _ = if windowManager == "gnome" then
     throw
     "Unsupported window manager: ${windowManager}. You don't need any of these things."
   else

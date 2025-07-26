@@ -1,4 +1,4 @@
-{ lib, inputs, ... }:
+{ lib, ... }:
 
 with lib;
 
@@ -9,6 +9,11 @@ with lib;
       default = "play";
       description = "Profile for user (work/play)";
     };
-
+    WallpaperPath = mkOption {
+      type = types.str;
+      default =
+        "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
+      description = "Absolute path for wallpaper location";
+    };
   };
 }

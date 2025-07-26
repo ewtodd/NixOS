@@ -14,7 +14,7 @@
     ../../modules/nixos/services/tailscale.nix
   ];
 
-  WindowManager = "gnome";
+  WindowManager = "sway";
   DeviceType = "desktop";
 
   users.users.v-play = {

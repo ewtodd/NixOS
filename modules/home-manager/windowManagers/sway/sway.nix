@@ -1,6 +1,8 @@
 { config, pkgs, lib, osConfig, ... }:
 with lib;
-let deviceType = osConfig.DeviceType;
+let
+  deviceType = osConfig.DeviceType;
+  wallpaperPath = config.WallpaperPath;
 in {
   imports = [
     ./settings/sway-colors.nix
@@ -16,11 +18,7 @@ in {
 
   config = let
     colors = config.colorScheme.palette;
-    profile = config.Profile;
-    fontFamily = if profile == "work" then
-      "FiraCode Nerd Font"
-    else
-      "JetBrains Mono Nerd Font";
+    fontFamily = "JetBrains Mono Nerd Font";
 
   in {
     wayland.windowManager.sway = {
@@ -70,6 +68,7 @@ in {
           "Mod4+Shift+Tab" = "exec swayr switch-workspace";
           "Mod4+Delete" = "exec swayr quit-window";
           "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
+
           "Mod4+f" = "exec firefox";
           "Mod4+Shift+p" = "exec firefox --private-window";
           "Mod4+n" =
@@ -218,8 +217,7 @@ in {
         layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
-        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enable
-
+        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enabled        exec swaybg -i ${wallpaperPath}
         exec blueman-applet
         exec swayrd
         exec udiskie --tray
