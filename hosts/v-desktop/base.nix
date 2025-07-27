@@ -16,6 +16,7 @@
 
   WindowManager = "sway";
   DeviceType = "desktop";
+  programs.sway.extraOptions = [ "--unsupported-gpu" ];
 
   users.users.v-play = {
     isNormalUser = true;
