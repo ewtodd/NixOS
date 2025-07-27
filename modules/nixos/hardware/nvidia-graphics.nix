@@ -1,11 +1,6 @@
 { config, pkgs, inputs, ... }:
-let
-  unstable = import inputs.unstable {
-    system = "x86_64-linux";
-    config.allowUnfree = true;
-  };
+let unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
-  nixpkgs.config.allowUnfree = true;
   hardware.graphics = {
     enable = true;
     package = unstable.mesa;
@@ -21,8 +16,7 @@ in {
     modesetting.enable = true;
     powerManagement.enable = true;
     powerManagement.finegrained = false;
-    package = pkgs.linuxPackages_cachyos.nvidiaPackages.latest;
-    nvidiaSettings = true;
+    package = pkgs.linuxPackages.nvidiaPackages.vulkan_beta;
     open = true;
   };
   boot.extraModprobeConfig = ''
