@@ -1,16 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, ... }:
 
 let
   colors = config.colorScheme.palette;
-  profile = config.Profile;
-  accentColor = if profile == "work" then colors.base09 else colors.base0E;
-  # Font selection based on profile
-  fontFamily = if profile == "work" then
-    "FiraCode Nerd Font"
-  else
-    "JetBrains Mono Nerd Font";
 
-  # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
     if d == "0" then
       0
@@ -93,7 +85,7 @@ in {
       hide-on-clear = true;
       hide-on-action = true;
       script-fail-notify = true;
-      widgets = [ "title" "dnd" "notifications" ];
+      widgets = [ "title" "dnd" "backlight" "volume" "mpris" "notifications" ];
       widget-config = {
         title = {
           text = "Notifications";
@@ -101,6 +93,12 @@ in {
           button-text = "Clear All";
         };
         dnd = { text = "Do Not Disturb"; };
+        volume = { label = " "; };
+        backlight = { label = "󰃞"; };
+        mpris = {
+          image-size = 150;
+          image-radius = 8;
+        };
       };
     };
 
@@ -182,6 +180,25 @@ in {
         padding: 8px;
         color: #${colors.base05};
       }
+
+      .widget-volume {
+        background-color: ${hexToRgba colors.base01 "0.9"};
+        border: 1px solid ${hexToRgba colors.base05 "0.1"};
+        border-radius: 8px;
+        margin: 6px 0;
+        padding: 8px;
+        color: #${colors.base05};
+      }
+
+      .widget-mpris {
+        background-color: ${hexToRgba colors.base01 "0.9"};
+        border: 1px solid ${hexToRgba colors.base05 "0.1"};
+        border-radius: 8px;
+        margin: 6px 0;
+        padding: 8px;
+        color: #${colors.base05};
+      }
+
 
       .widget-dnd > switch {
         background-color: #${colors.base02};

@@ -21,6 +21,7 @@
         udiskie
         glib
         gnome-themes-extra
+        brightnessctl
       ];
     };
     environment.shellAliases = {
