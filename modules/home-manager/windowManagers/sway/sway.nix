@@ -16,10 +16,7 @@ in {
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
-  config = let
-    colors = config.colorScheme.palette;
-    fontFamily = "JetBrains Mono Nerd Font";
-
+  config = let colors = config.colorScheme.palette;
   in {
     wayland.windowManager.sway = {
       enable = true;
@@ -52,7 +49,7 @@ in {
         };
 
         fonts = {
-          names = [ fontFamily ];
+          names = [ "JetBrains Mono Nerd Font" ];
           size = 12.0;
         };
 
@@ -219,7 +216,6 @@ in {
         layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enabled        
         exec swaybg -i ${wallpaperPath}
         exec blueman-applet
-        exec swayrd
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
       '';
