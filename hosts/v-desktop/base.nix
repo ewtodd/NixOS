@@ -16,19 +16,6 @@
 
   WindowManager = "sway";
   DeviceType = "desktop";
-  environment.etc."sway-wrapper.sh".text = ''
-    #!/bin/sh
-    export WLR_DRM_DEVICES=/dev/dri/by-path/pci-0000:00:02.0-card
-    exec sway "$@"
-  '';
-  environment.etc."sway-wrapper.sh".mode = "0755";
-  environment.etc."xdg/wayland-sessions/sway.desktop".text = ''
-    [Desktop Entry]
-    Name=Sway (Intel Only)
-    Comment=An i3-compatible Wayland compositor
-    Exec=/etc/sway-wrapper.sh
-    Type=Application
-  '';
 
   users.users.v-play = {
     isNormalUser = true;
