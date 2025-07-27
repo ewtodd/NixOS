@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig, ... }:
+{ config, ... }:
 
 let
   colors = config.colorScheme.palette;
