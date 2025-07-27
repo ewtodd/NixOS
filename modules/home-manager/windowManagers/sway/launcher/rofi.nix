@@ -4,20 +4,8 @@ with lib;
 
 let
   colors = config.colorScheme.palette;
-  profile = config.Profile;
-
-  # Font selection based on profile
-  fontFamily = if profile == "work" then
-    "FiraCode Nerd Font"
-  else
-    "JetBrains Mono Nerd Font";
-  fontSize = "14";
-  accentColor = if profile == "work" then colors.base09 else colors.base0E;
-  iconThemeName = if profile == "play" then "Tokyonight-Dark" else "Kanagawa";
   inherit (config.lib.formats.rasi) mkLiteral;
 in {
-
-  imports = [ ./swayr.nix ];
 
   programs.rofi = {
     enable = true;
@@ -29,8 +17,6 @@ in {
       show-icons = true;
       display-drun = " ";
       drun-display-format = "{name}";
-      font = "${fontFamily}:weight=bold:size=${fontSize}";
-      icon-theme = iconThemeName;
     };
   };
 
@@ -91,7 +77,7 @@ in {
     prompt = {
       enabled = true;
       background-color = mkLiteral "transparent";
-      text-color = mkLiteral "#${accentColor}";
+      text-color = mkLiteral "#${colors.base09}";
     };
 
     entry = {
