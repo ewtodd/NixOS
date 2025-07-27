@@ -1,9 +1,12 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, config, lib, ... }:
+let isNvidia = lib.strings.hasPrefix "${config.networking.hostName}" "v";
+in {
   config = lib.mkIf (config.WindowManager == "sway") {
 
     programs.sway = {
       enable = true;
       package = pkgs.swayfx;
+      extraOptions = [ ] ++ lib.optionals isNvidia [ "--unsupported-gpu" ];
       extraPackages = with pkgs; [
         wlogout
         birdtray
@@ -11,7 +14,6 @@
         swaybg
         jq
         libnotify
-        grimblast
         lxqt.pavucontrol-qt
         pulseaudio
         photoqt
