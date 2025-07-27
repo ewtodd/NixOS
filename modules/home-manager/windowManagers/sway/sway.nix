@@ -58,11 +58,6 @@ in {
           "Mod4+Return" =
             "exec ${config.wayland.windowManager.sway.config.terminal}";
           "Mod4+Shift+q" = "kill";
-          "Mod4+Tab" = "exec swayr switch-window";
-          "Mod4+grave" =
-            "exec swayr switch-to-urgent-or-lru-window"; # backtick key
-          "Mod4+Shift+Tab" = "exec swayr switch-workspace";
-          "Mod4+Delete" = "exec swayr quit-window";
           "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
 
           "Mod4+f" = "exec firefox";

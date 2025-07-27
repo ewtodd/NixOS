@@ -1,17 +1,11 @@
-{ config, pkgs, lib, deviceType, ... }:
+{ config, pkgs, lib, ... }:
 
 with lib;
 
 let
   colors = config.colorScheme.palette;
-  profile = config.Profile;
-  accentColor = removePrefix "#" colors.base0E;
-  fontFamily = if profile == "work" then
-    "FiraCode Nerd Font"
-  else
-    "JetBrains Mono Nerd Font";
+  fontFamily = "JetBrains Mono Nerd Font";
 
-  # Helper functions (same as your other files)
   hexDigitToInt = d:
     if d == "0" then
       0
@@ -66,7 +60,6 @@ let
     window {
       background-color: ${hexToRgba colors.base00 "0.95"};
       border-radius: 10px;
-      border: 2px solid #${accentColor};
     }
 
     #container {
@@ -75,7 +68,7 @@ let
     }
 
     image {
-      color: #${accentColor};
+      color: #${colors.base0E};
       margin-right: 12px;
     }
 
@@ -86,13 +79,7 @@ let
       min-width: 200px;
     }
 
-    progressbar progress {
-      background-color: #${accentColor};
-      border-radius: 10px;
-      min-height: 8px;
-    }
-
-    label {
+      label {
       color: #${colors.base05};
       font-family: "${fontFamily}";
       font-size: 16px;
@@ -100,18 +87,6 @@ let
       margin-left: 8px;
     }
 
-    /* Specific styling for different OSD types */
-    .osd-volume {
-      background-color: ${hexToRgba colors.base00 "0.95"};
-      border: 2px solid #${accentColor};
-      border-radius: 10px;
-    }
-
-    .osd-brightness {
-      background-color: ${hexToRgba colors.base00 "0.95"};
-      border: 2px solid #${accentColor};
-      border-radius: 10px;
-    }
   '';
 
 in {
