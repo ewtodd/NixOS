@@ -9,6 +9,7 @@
         birdtray
         wl-clipboard
         swaybg
+        sway-contrib.grimshot
         jq
         libnotify
         lxqt.pavucontrol-qt

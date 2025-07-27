@@ -21,8 +21,6 @@ in {
     fontFamily = "JetBrains Mono Nerd Font";
 
   in {
-    home.packages = with pkgs; [ grim sway-contrib.grimshot ];
-
     wayland.windowManager.sway = {
       enable = true;
       package = null;
@@ -53,7 +51,6 @@ in {
           smartBorders = "on";
         };
 
-        # Font - now dynamic based on profile
         fonts = {
           names = [ fontFamily ];
           size = 12.0;
@@ -148,14 +145,10 @@ in {
           "Mod4+Shift+e" = "exec swaync-client --close-all";
 
           # Screenshots
-          "Mod1+control+3" =
-            "exec ${pkgs.sway-contrib.grimshot}/bin/grimshot copy output";
-          "Mod1+control+4" =
-            "exec ${pkgs.sway-contrib.grimshot}/bin/grimshot copy area";
-          "Mod1+Shift+control+3" =
-            "exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save output";
-          "Mod1+Shift+control+4" =
-            "exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area";
+          "Mod1+control+3" = "exec grimshot copy output";
+          "Mod1+control+4" = "exec grimshot copy area";
+          "Mod1+Shift+control+3" = "exec grimshot --notify save output";
+          "Mod1+Shift+control+4" = "exec grimshot --notify save area";
 
           "XF86AudioRaiseVolume" = "exec swayosd-client --output-volume raise";
           "XF86AudioLowerVolume" = "exec swayosd-client --output-volume lower";
@@ -223,7 +216,8 @@ in {
         layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
-        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enabled        exec swaybg -i ${wallpaperPath}
+        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enabled        
+        exec swaybg -i ${wallpaperPath}
         exec blueman-applet
         exec swayrd
         exec udiskie --tray
