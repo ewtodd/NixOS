@@ -10,7 +10,7 @@ in {
     enable = true;
     displayManager.startx.enable = false;
     excludePackages = with pkgs; [ xterm ];
-    videoDrivers = [ "nvidia" ];
+    videoDrivers = [ "nvidia" "intel" ];
   };
   hardware.nvidia = {
     modesetting.enable = true;
