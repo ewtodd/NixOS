@@ -11,7 +11,6 @@ in {
     ./services/notifications.nix
     ./services/swaylock.nix
     ./services/wlogout.nix
-    ./services/swayosd.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
@@ -142,17 +141,18 @@ in {
           "Mod1+Shift+control+3" = "exec grimshot --notify save output";
           "Mod1+Shift+control+4" = "exec grimshot --notify save area";
 
-          "XF86AudioRaiseVolume" = "exec swayosd-client --output-volume raise";
-          "XF86AudioLowerVolume" = "exec swayosd-client --output-volume lower";
-          "XF86AudioMute" = "exec swayosd-client --output-volume mute-toggle";
-          "XF86AudioMicMute" = "exec swayosd-client --input-volume mute-toggle";
-
+          # Audio controls
+          "XF86AudioRaiseVolume" =
+            "exec pactl set-sink-volume @DEFAULT_SINK@ +5%";
+          "XF86AudioLowerVolume" =
+            "exec pactl set-sink-volume @DEFAULT_SINK@ -5%";
+          "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          "XF86AudioMicMute" =
+            "exec pactl set-source-mute @DEFAULT_SOURCE@ toggle";
           # Brightness controls with SwayOSD (for laptops)
-          "XF86MonBrightnessUp" = "exec swayosd-client --brightness raise";
-          "XF86MonBrightnessDown" = "exec swayosd-client --brightness lower";
+          "XF86MonBrightnessUp" = "exec brightnessctl set 5%+";
+          "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
 
-          # Caps lock indicator
-          "Caps_Lock" = "exec swayosd-client --caps-lock";
         };
 
         # Resize mode
