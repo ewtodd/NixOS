@@ -1,12 +1,9 @@
-{ pkgs, config, lib, ... }:
-let isNvidia = lib.strings.hasPrefix "${config.networking.hostName}" "v";
-in {
+{ pkgs, config, lib, ... }: {
   config = lib.mkIf (config.WindowManager == "sway") {
 
     programs.sway = {
       enable = true;
       package = pkgs.swayfx;
-      extraOptions = [ ] ++ lib.optionals isNvidia [ "--unsupported-gpu" ];
       extraPackages = with pkgs; [
         wlogout
         birdtray
