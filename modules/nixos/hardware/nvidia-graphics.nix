@@ -16,7 +16,7 @@ in {
     modesetting.enable = true;
     powerManagement.enable = true;
     powerManagement.finegrained = false;
-    package = pkgs.linuxPackages.nvidiaPackages.vulkan_beta;
+    package = pkgs.linuxPackages_6_13.nvidiaPackages.vulkan_beta;
     open = true;
   };
   boot.extraModprobeConfig = ''

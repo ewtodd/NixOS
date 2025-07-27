@@ -14,6 +14,7 @@
     lutris
     spotify
     android-tools
+    mumble
   ];
   Profile = "play";
   programs.nixvim.enable = true;
