@@ -13,6 +13,7 @@
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
+    ../../modules/nixos/packages/nix-mineral.nix
   ];
 
   WindowManager = "sway";
