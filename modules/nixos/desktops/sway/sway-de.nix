@@ -53,5 +53,6 @@
         autoSuspend = false;
       };
     };
+    programs.ssh.enableAskPassword = false;
   };
 }

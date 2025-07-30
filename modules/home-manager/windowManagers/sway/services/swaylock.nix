@@ -16,7 +16,7 @@ let
   logoPath = if profile == "play" then
     "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos-eris.png"
   else
-    "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos-rose-pine.png";
+    "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos_kanagawa.png";
 
 in {
   programs.swaylock = {

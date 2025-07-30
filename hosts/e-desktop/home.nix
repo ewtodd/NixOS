@@ -42,8 +42,8 @@
       extraConfig = { init = { defaultBranch = "main"; }; };
     };
     WallpaperPath =
-      "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/rose-pine.png";
-    colorScheme = inputs.nix-colors.colorSchemes.rose-pine;
+      "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/kanagawa.png";
+    colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
   };
 
   "root" = { ... }: {

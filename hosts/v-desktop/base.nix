@@ -2,7 +2,7 @@
 
   imports = [
     ../../common/nixos/base.nix
-    ../../modules/nixos/hardware/nvidia-graphics.nix
+    ../../modules/nixos/hardware/amd-graphics.nix
     ../../modules/nixos/hardware/openrgb.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
     ../../modules/nixos/packages/obs.nix
