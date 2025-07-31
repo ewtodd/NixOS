@@ -6,7 +6,6 @@ let
 in {
   imports = [
     ./settings/sway-colors.nix
-    ./settings/profile.nix
     ./services/swayidle.nix
     ./services/notifications.nix
     ./services/swaylock.nix
@@ -205,7 +204,6 @@ in {
         dim_inactive_colors.urgent #${colors.base08}
 
         layer_effects "rofi" blur enable; shadows enable
-        layer_effects "waybar" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
         layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enabled        
