@@ -10,6 +10,7 @@
         ../../modules/home-manager/waybar/waybar.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
       ];
+      programs.waybar.enable = true;
       programs.git = {
         enable = true;
         userName = "Valarie Milton";
@@ -37,6 +38,7 @@
         ../../modules/home-manager/windowManagers/windowManager.nix
       ];
       home.packages = [ lisepp ];
+      programs.waybar.enable = true;
       programs.git = {
         enable = true;
         userName = "Valarie Milton";
