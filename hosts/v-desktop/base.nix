@@ -14,6 +14,8 @@
     ../../modules/nixos/services/tailscale.nix
   ];
 
+  nixpkgs.config.rocmTargets = [ "gfx1201" ];
+
   WindowManager = "sway";
   DeviceType = "desktop";
 
