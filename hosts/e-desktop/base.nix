@@ -16,6 +16,9 @@
     ../../modules/nixos/packages/nix-mineral.nix
   ];
 
+  # Configure ROCm targets for RX 7900 XTX
+  nixpkgs.config.rocmTargets = [ "gfx1100" ];
+
   WindowManager = "sway";
   DeviceType = "desktop";
   environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
