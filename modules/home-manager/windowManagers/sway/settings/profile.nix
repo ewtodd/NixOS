@@ -59,10 +59,10 @@ in {
             { command = "swaymsg 'workspace 1'"; }
             { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
-          extraConfig = ''
-            layer_effects "waybar" blur enable; shadows enable
-          '';
         };
+        extraConfig = ''
+          layer_effects "waybar" blur enable; shadows enable
+        '';
       };
     })
 
@@ -116,10 +116,10 @@ in {
             { command = "thunderbird"; }
             { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
-          extraConfig = ''
-            layer_effects "waybar" blur enable; shadows enable
-          '';
         };
+        extraConfig = ''
+          layer_effects "waybar" blur enable; shadows enable
+        '';
       };
     })
   ];
