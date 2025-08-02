@@ -3,6 +3,9 @@ with lib;
 let
   deviceType = osConfig.DeviceType;
   wallpaperPath = config.WallpaperPath;
+  primaryMonitor = if osConfig.DeviceType == "desktop" then "DP-3" else "eDP-1";
+  secondaryMonitor =
+    if osConfig.DeviceType == "desktop" then "HDMI-A-1" else "HDMI-A-2";
 in {
   imports = [
     ./settings/sway-colors.nix
@@ -76,6 +79,7 @@ in {
           "Mod4+Down" = "focus down";
           "Mod4+Up" = "focus up";
           "Mod4+Right" = "focus right";
+          "Mod4+Shift+V" = "output ${secondaryMonitor} transform 90";
 
           # Move windows
           "Mod4+Shift+h" = "move left";
