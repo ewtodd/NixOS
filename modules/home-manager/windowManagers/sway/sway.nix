@@ -79,7 +79,8 @@ in {
           "Mod4+Down" = "focus down";
           "Mod4+Up" = "focus up";
           "Mod4+Right" = "focus right";
-          "Mod4+Shift+V" = "output ${secondaryMonitor} transform 90";
+          "Mod4+Shift+V" =
+            "output ${secondaryMonitor} transform 90 position -1080 0";
 
           # Move windows
           "Mod4+Shift+h" = "move left";
