@@ -6,11 +6,11 @@
       output = {
         "HDMI-A-1" = {
           mode = "1920x1080@74.973Hz";
-          position = "0,0";
+          position = "-1920,0";
         };
         "DP-3" = {
-          resolution = "1920x1080";
-          position = "-1920,0";
+          resolution = "3440x1440@180.000Hz";
+          position = "0,0";
         };
       };
     };
