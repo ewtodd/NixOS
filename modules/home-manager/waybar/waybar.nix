@@ -20,7 +20,10 @@ in {
           "${windowManager}/mode"
         ];
         modules-center = [ "clock" "tray" ];
-        modules-right = [ "cpu" "memory" "network" "pulseaudio" ]
+        modules-right = [ "cpu" ] ++ optionals (deviceType == "desktop") [
+          "custom/gpu"
+          "custom/gpumemory"
+        ] ++ [ "memory" "network" "pulseaudio" ]
           ++ optionals (deviceType == "laptop") [ "battery" ]
           ++ [ "custom/notification" ];
         "${windowManager}/window" = {
@@ -42,10 +45,19 @@ in {
           };
         };
 
+        "custom/gpu" = {
+          interval = 5;
+          exec = ''echo " $(nvtop -s 2>/dev/null | jq -r ".[0].gpu_util")"'';
+        };
+        "custom/gpumemory" = {
+          interval = 5;
+          exec = ''echo "󰘚 $(nvtop -s 2>/dev/null | jq -r ".[0].mem_util")"'';
+        };
+
         memory = {
           interval = 5;
           format = "{icon} {}%";
-          format-icons = "";
+          format-icons = "";
           states = {
             warning = 70;
             critical = 90;

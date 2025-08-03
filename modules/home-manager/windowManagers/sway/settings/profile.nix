@@ -11,8 +11,13 @@ in {
       wayland.windowManager.sway = {
         config = {
           assigns = {
-            "3" = [{ app_id = "Slack"; }];
-            "2" = [{ app_id = "thunderbird"; }];
+            "3" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
+              app_id = "Slack";
+            }];
+            "2" = [{ app_id = "thunderbird"; }]
+              ++ optionals (osConfig.DeviceType == "desktop") [{
+                app_id = "Slack";
+              }];
           };
           workspaceOutputAssign = [
             {
