@@ -1,51 +1,48 @@
 {
-  "v-play" = { pkgs, inputs, ... }:
-    let nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
-    in {
-      home.username = "v-play";
-      home.homeDirectory = "/home/v-play";
-      home.stateVersion = "25.05";
-      imports = [
-        ../../common/home-manager/play-user.nix
-        ../../modules/home-manager/waybar/waybar.nix
-        ../../modules/home-manager/windowManagers/windowManager.nix
-      ];
-      programs.waybar.enable = true;
-      programs.git = {
-        enable = true;
-        userName = "Valarie Milton";
-        userEmail = "157831739+vael3429@users.noreply.github.com";
-        extraConfig = { init = { defaultBranch = "main"; }; };
-      };
-      WallpaperPath = "/etc/nixos/hosts/v-desktop/play.png";
-      colorScheme = {
-        slug = "play";
-        name = "Play";
-        palette = {
-          base00 = "#604860";
-          base01 = "#003030";
-          base02 = "#486090";
-          base03 = "#786060";
-          base04 = "#C0A8D8";
-          base05 = "#FFC0C0";
-          base06 = "#FFD8D8";
-          base07 = "#F0A890";
-          base08 = "#486090";
-          base09 = "#7878A8";
-          base0A = "#C07878";
-          base0B = "#F09078";
-          base0C = "#FFA8A8 ";
-          base0D = "#F0C0C0";
-          base0E = "#A890C0";
-          base0F = "#FFC0C0";
-        };
+  "v-play" = { pkgs, inputs, ... }: {
+    home.username = "v-play";
+    home.homeDirectory = "/home/v-play";
+    home.stateVersion = "25.05";
+    imports = [
+      ../../common/home-manager/play-user.nix
+      ../../modules/home-manager/waybar/waybar.nix
+      ../../modules/home-manager/windowManagers/windowManager.nix
+    ];
+    programs.waybar.enable = true;
+    programs.git = {
+      enable = true;
+      userName = "Valarie Milton";
+      userEmail = "157831739+vael3429@users.noreply.github.com";
+      extraConfig = { init = { defaultBranch = "main"; }; };
+    };
+    WallpaperPath = "/etc/nixos/hosts/v-desktop/play.png";
+    colorScheme = {
+      slug = "play-dark";
+      name = "Generated";
+      author = "nix-colors";
+      palette = {
+        base00 = "1a2737";
+        base01 = "434c5a";
+        base02 = "6b717e";
+        base03 = "9397a2";
+        base04 = "bbbcc5";
+        base05 = "e3e1e9";
+        base06 = "e7e5ec";
+        base07 = "ebeaef";
+        base08 = "2880ae";
+        base09 = "81757f";
+        base0A = "577aab";
+        base0B = "b4a3dc";
+        base0C = "6a76a6";
+        base0D = "d97a5e";
+        base0E = "c1565e";
+        base0F = "82738e";
       };
     };
+  };
 
   "v-work" = { pkgs, inputs, ... }:
-    let
-      nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
-      lisepp = pkgs.callPackage ../../packages/LISE++/default.nix { };
+    let lisepp = pkgs.callPackage ../../packages/LISE++/default.nix { };
     in {
       home.username = "v-work";
       home.homeDirectory = "/home/v-work";
