@@ -158,7 +158,7 @@ in {
         border-left: none;
       }
 
-      #memory {
+      #memory, #custom-gpu, #custom-gpumemory {
         background-color: #${colors.base00};
         color: #${accentColor};
         padding: 8px 12px;

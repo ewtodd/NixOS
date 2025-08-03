@@ -28,6 +28,7 @@
               cairosvg
               plotly
               kaleido
+              pyarrow
             ]))
         ];
         shellHook = ''
