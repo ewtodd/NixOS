@@ -20,10 +20,11 @@ in {
           "${windowManager}/mode"
         ];
         modules-center = [ "clock" "tray" ];
-        modules-right = [ "cpu" ] ++ optionals (deviceType == "desktop") [
-          "custom/gpu"
-          "custom/gpumemory"
-        ] ++ [ "memory" "network" "pulseaudio" ]
+        modules-right = [ "cpu" "memory" ]
+          ++ optionals (deviceType == "desktop") [
+            "custom/gpu"
+            "custom/gpumemory"
+          ] ++ [ "network" "pulseaudio" ]
           ++ optionals (deviceType == "laptop") [ "battery" ]
           ++ [ "custom/notification" ];
         "${windowManager}/window" = {
