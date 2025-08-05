@@ -1,5 +1,5 @@
     {
-      slug = "play-dark";
+      slug = "work-dark";
       name = "Generated";
       author = "nix-colors";
       palette = {
