@@ -22,7 +22,8 @@
       }
       {
         event = "after-resume";
-        command = "${pkgs.sway}/bin/swaymsg 'output * power on'";
+        command =
+          "${pkgs.swayfx}/bin/swaymsg 'output * power on' && ${pkgs.swayfx}/bin/swaymsg 'workspace 1'";
       }
     ];
   };
