@@ -216,6 +216,7 @@ in {
         exec blueman-applet
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+        exec swaymsg workspace 1
       '';
     };
   };
