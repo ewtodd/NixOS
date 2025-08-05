@@ -5,8 +5,8 @@
     settings = {
       PasswordAuthentication = true;
       KbdInteractiveAuthentication = true;
-      AuthenticationMethods = "publickey,password";
-      PermitRootLogin = "prohibit-password";
+      AuthenticationMethods = "password";
+      #PermitRootLogin = "prohibit-password";
       AllowUsers = [ "e-work" "e-play" "v-work" "v-play" ];
     };
   };

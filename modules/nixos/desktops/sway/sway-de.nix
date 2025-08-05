@@ -14,7 +14,7 @@
         libnotify
         lxqt.pavucontrol-qt
         pulseaudio
-        photoqt
+        gthumb
         imagemagick # for kitty
         nautilus
         thunderbird-latest

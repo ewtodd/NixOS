@@ -1,6 +1,6 @@
 export template=$(cat <<-END
     {
-      slug = "$(basename ./play.png | cut -d '.' -f1)-dark";
+      slug = "$(basename ./work.png | cut -d '.' -f1)-dark";
       name = "Generated";
       author = "nix-colors";
       palette = {
@@ -26,5 +26,5 @@ END
 )
 
 flavours generate "dark" "./play.png" --stdout | \
-flavours build <( tee ) <( echo "$template" ) > default.nix
+flavours build <( tee ) <( echo "$template" ) > colorscheme.nix
  
