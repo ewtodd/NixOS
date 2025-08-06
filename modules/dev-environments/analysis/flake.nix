@@ -12,9 +12,9 @@
         buildInputs = with pkgs; [
           root
           liberation_ttf
+          docker
           (python3.withPackages (python-pkgs:
             with python-pkgs; [
-              tensorflow
               matplotlib
               numpy
               pandas
