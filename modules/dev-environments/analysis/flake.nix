@@ -29,6 +29,7 @@
               plotly
               kaleido
               pyarrow
+              uproot
             ]))
         ];
         shellHook = ''
