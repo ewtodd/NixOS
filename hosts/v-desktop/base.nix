@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{ ... }: {
 
   imports = [
     ../../common/nixos/base.nix
@@ -12,6 +12,7 @@
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
+    ../../modules/nixos/packages/docker.nix
   ];
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];
@@ -22,11 +23,11 @@
   users.users.v-play = {
     isNormalUser = true;
     description = "v-play";
-    extraGroups = [ "networkmanager" "wheel" "i2c" ];
+    extraGroups = [ "networkmanager" "wheel" "i2c" "docker" ];
   };
   users.users.v-work = {
     isNormalUser = true;
     description = "v-work";
-    extraGroups = [ "networkmanager" "wheel" "i2c" ];
+    extraGroups = [ "networkmanager" "wheel" "i2c" "docker" ];
   };
 }

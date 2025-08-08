@@ -30,6 +30,7 @@
               kaleido
               pyarrow
               uproot
+              h5py
             ]))
         ];
         shellHook = ''
