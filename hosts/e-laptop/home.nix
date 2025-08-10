@@ -7,7 +7,6 @@
       home.stateVersion = "25.05";
       imports = [
         ../../common/home-manager/play-user.nix
-        ../../modules/home-manager/zettelkasten/zk.nix
         ../../modules/home-manager/waybar/waybar.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
         ../../modules/home-manager/windowManagers/sway/settings/profile.nix
@@ -31,14 +30,13 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/work-user.nix
-      ../../modules/home-manager/zettelkasten/zk.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
       ../../modules/home-manager/windowManagers/sway/settings/profile.nix
     ];
     programs.bash.shellAliases = {
       phone-home = "ssh e-work@ssh.ethanwtodd.com -p 2222";
-      files-home = "sftp e-work@ssh.ethanwtodd.com -p 2222";
+      files-home = "sftp -P 2222 e-work@ssh.ethanwtodd.com";
     };
     programs.waybar.enable = true;
     programs.git = {
