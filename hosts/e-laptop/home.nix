@@ -7,7 +7,6 @@
       home.stateVersion = "25.05";
       imports = [
         ../../common/home-manager/play-user.nix
-        ../../modules/home-manager/zettelkasten/zk.nix
         ../../modules/home-manager/waybar/waybar.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
         ../../modules/home-manager/windowManagers/sway/settings/profile.nix
@@ -20,6 +19,11 @@
         userEmail = "30243637+ewtodd@users.noreply.github.com";
         extraConfig = { init = { defaultBranch = "main"; }; };
       };
+      xdg.desktopEntries.todoist-electron = {
+        name = "Todoist";
+        noDisplay = true;
+      };
+
       WallpaperPath =
         "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
@@ -31,14 +35,13 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/work-user.nix
-      ../../modules/home-manager/zettelkasten/zk.nix
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
       ../../modules/home-manager/windowManagers/sway/settings/profile.nix
     ];
     programs.bash.shellAliases = {
       phone-home = "ssh e-work@ssh.ethanwtodd.com -p 2222";
-      files-home = "sftp e-work@ssh.ethanwtodd.com -p 2222";
+      files-home = "sftp -P 2222 e-work@ssh.ethanwtodd.com";
     };
     programs.waybar.enable = true;
     programs.git = {

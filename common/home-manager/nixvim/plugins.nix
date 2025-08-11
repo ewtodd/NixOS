@@ -11,35 +11,6 @@
 
     };
 
-    zk = {
-      enable = true;
-      settings = {
-        picker = "telescope";
-        lsp = { auto_attach.enabled = false; };
-      };
-    };
-
-    render-markdown = {
-      enable = true;
-      settings = {
-        file_types = [ "markdown" ];
-        render_modes = true;
-        # Remove image icons
-        link = {
-          enabled = true;
-          image = ""; # No image icon
-          email = "󰀓 ";
-          hyperlink = "󰌹 ";
-        };
-
-        # Clean bullets
-        bullet = {
-          icons = [ "●" "○" "◆" "◇" ];
-          highlight = "Normal";
-        };
-      };
-    };
-
     wilder = { enable = true; };
 
     which-key = {
@@ -79,6 +50,7 @@
         };
       };
     };
+
     molten = {
       enable = true;
       settings = {
@@ -153,10 +125,6 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
-        zk = {
-          enable = true;
-          rootMarkers = [ ".zk" ];
-        };
       };
     };
 
