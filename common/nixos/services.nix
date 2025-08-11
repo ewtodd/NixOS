@@ -6,14 +6,34 @@
   };
   services.interception-tools = {
     enable = true;
-    plugins = with pkgs; [ interception-tools-plugins.caps2esc ];
+    plugins = with pkgs.interception-tools-plugins; [
+      caps2esc
+      dual-function-keys
+    ];
     udevmonConfig = ''
       - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.caps2esc}/bin/caps2esc -m 1 | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
         DEVICE:
           EVENTS:
-            EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+          EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+
+
+      - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.dual-function-keys}/bin/dual-function-keys -c /etc/space-debounce.yaml | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
+        DEVICE:
+          EVENTS:
+          EV_KEY: [KEY_SPACE]
     '';
   };
+
+  environment.etc."space-debounce.yaml".text = ''
+    TIMING:
+      TAP_MILLISEC: 500
+
+    MAPPINGS:
+      - KEY: KEY_SPACE
+        TAP: KEY_SPACE
+        HOLD: KEY_SPACE
+  '';
+
   services.printing.enable = true;
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
