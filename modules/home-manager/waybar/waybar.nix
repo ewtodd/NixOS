@@ -19,7 +19,7 @@ in {
           "${windowManager}/window"
           "${windowManager}/mode"
         ];
-        modules-center = [ "clock" "tray" ];
+        modules-center = [ "group/center" ];
         modules-right = [ "cpu" "memory" ]
           ++ optionals (deviceType == "desktop") [
             "custom/gpu"
@@ -63,6 +63,12 @@ in {
             warning = 70;
             critical = 90;
           };
+        };
+
+        "group/center" = {
+          orientation = "inherit";
+          drawer = { };
+          modules = [ "clock" "tray" ];
         };
 
         tray = { spacing = 10; };
