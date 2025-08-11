@@ -14,9 +14,13 @@ in {
             "3" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
               app_id = "Slack";
             }];
+            "4" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
+              class = "Todoist";
+            }];
             "2" = [{ app_id = "thunderbird"; }]
               ++ optionals (osConfig.DeviceType == "desktop") [{
                 app_id = "Slack";
+                class = "Todoist";
               }];
           };
           workspaceOutputAssign = [
@@ -58,8 +62,9 @@ in {
               command =
                 "swaymsg 'workspace 5; exec firefox --new-instance --new-window -url https://github.com/ewtodd -new-tab -url llm.ethanwtodd.com'";
             }
-            { command = "swaymsg 'workspace 2; exec thunderbird'"; }
-            { command = "swaymsg 'workspace 3; exec slack'"; }
+            { command = "exec thunderbird"; }
+            { command = "exec slack"; }
+            { command = "exec todoist-electron"; }
             { command = "swaymsg 'workspace 1'"; }
             { command = "sh -c 'sleep 10 && birdtray'"; }
           ];

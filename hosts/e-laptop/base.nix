@@ -7,6 +7,7 @@
     ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/tailscale.nix
     #../../modules/nixos/services/protonvpn.nix
+    ../../modules/nixos/packages/todoist.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/starship.nix
@@ -16,7 +17,6 @@
 
   WindowManager = "sway";
   DeviceType = "laptop";
-  environment.sessionVariables = { ZK_NOTEBOOK_DIR = "$HOME/zettelkasten"; };
   users.users.e-play = {
     isNormalUser = true;
     description = "ethan-play";

@@ -19,6 +19,10 @@
         userEmail = "30243637+ewtodd@users.noreply.github.com";
         extraConfig = { init = { defaultBranch = "main"; }; };
       };
+      xdg.desktopEntries.todoist-electron = {
+        name = "Todoist";
+        noDisplay = true;
+      };
       WallpaperPath =
         "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
