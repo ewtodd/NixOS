@@ -20,6 +20,7 @@ in {
             "2" = [{ app_id = "thunderbird"; }]
               ++ optionals (osConfig.DeviceType == "desktop") [{
                 app_id = "Slack";
+              }] ++ optionals (osConfig.DeviceType == "desktop") [{
                 class = "Todoist";
               }];
           };
@@ -62,9 +63,9 @@ in {
               command =
                 "swaymsg 'workspace 5; exec firefox --new-instance --new-window -url https://github.com/ewtodd -new-tab -url llm.ethanwtodd.com'";
             }
-            { command = "exec thunderbird"; }
-            { command = "exec slack"; }
-            { command = "exec todoist-electron"; }
+            { command = "thunderbird"; }
+            { command = "slack"; }
+            { command = "todoist-electron"; }
             { command = "swaymsg 'workspace 1'"; }
             { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
