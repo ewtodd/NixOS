@@ -7,8 +7,18 @@
     [ "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
-  boot.extraModulePackages = with config.boot.kernelPackages;
-    [ v4l2loopback.out ];
+  boot.extraModulePackages = [
+    (config.boot.kernelPackages.v4l2loopback.overrideAttrs (old: {
+      version = "0.15.1";
+      src = pkgs.fetchFromGitHub {
+        owner = "umlaeute";
+        repo = "v4l2loopback";
+        rev = "v0.15.1";
+        sha256 =
+          "sha256-uokj0MB6bw4I8q5dVmSO9XMDvh4T7YODBoCCHvEf4v4="; # You'll need to get the correct hash
+      };
+    }))
+  ];
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
   '';
