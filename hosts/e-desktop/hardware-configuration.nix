@@ -14,12 +14,13 @@
   boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
   boot.extraModulePackages = [
     (config.boot.kernelPackages.v4l2loopback.overrideAttrs (old: {
-      version = "0.15.0";
+      version = "0.15.1";
       src = pkgs.fetchFromGitHub {
         owner = "umlaeute";
         repo = "v4l2loopback";
-        rev = "v0.15.0";
-        sha256 = "sha256-fa3f8GDoQTkPppAysrkA7kHuU5z2P2pqI8dKhuKYh04=";
+        rev = "v0.15.1";
+        sha256 =
+          "sha256-uokj0MB6bw4I8q5dVmSO9XMDvh4T7YODBoCCHvEf4v4="; # You'll need to get the correct hash
       };
     }))
   ];

@@ -67,7 +67,7 @@ in {
 
         "group/center" = {
           orientation = "inherit";
-          drawer = { };
+          drawer = { transition-duration = 200; };
           modules = [ "clock" "tray" ];
         };
 
