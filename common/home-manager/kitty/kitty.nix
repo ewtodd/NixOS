@@ -38,7 +38,7 @@ in {
         input_delay = 1;
         sync_to_monitor = "yes";
         confirm_os_window_close = "-1";
-        notify_on_cmd_finish = "unfocused 1.0 notify";
+        notify_on_cmd_finish = "unfocused 90.0 notify";
         # Use nix-colors palette
         background = "#${colors.base00}";
         foreground = "#${colors.base05}";
