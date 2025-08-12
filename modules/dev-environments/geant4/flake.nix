@@ -32,6 +32,10 @@
           (python3.withPackages
             (python-pkgs: with python-pkgs; [ matplotlib numpy mplhep ]))
         ];
+        shellHook = ''
+          export QT_QPA_PLATFORM="xcb";
+          export LIBGL_ALWAYS_SOFTWARE=1
+        '';
       };
     };
 }
