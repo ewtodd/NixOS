@@ -1,6 +1,10 @@
 { config, pkgs, lib, inputs, ... }: {
   programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
-
+  programs.nixvim.extraConfigLua = ''
+    -- Prevent automatic window splitting
+    vim.o.splitbelow = false
+    vim.o.splitright = false
+  '';
   programs.nixvim.plugins = {
     web-devicons = { enable = true; };
     lualine = { enable = true; };
@@ -110,6 +114,7 @@
         quickfix_open_on_warning = 0;
         compiler_callback_hooks = { };
         quickfix_autoclose_after_keystrokes = 1;
+        syntax_conceal_disable = true;
       };
       texlivePackage = null;
     };

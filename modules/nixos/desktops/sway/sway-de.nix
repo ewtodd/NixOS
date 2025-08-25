@@ -15,7 +15,6 @@
         lxqt.pavucontrol-qt
         pulseaudio
         gthumb
-        imagemagick # for kitty
         nautilus
         thunderbird-latest
         udiskie

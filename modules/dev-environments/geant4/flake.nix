@@ -7,13 +7,17 @@
     let
       system = "x86_64-linux"; # Change to your system
       pkgs = nixpkgs.legacyPackages.${system};
-      geant4WithQt = pkgs.geant4.override { enableQt = true; };
+      geant4custom = pkgs.geant4.override {
+        enableQt = true;
+        enableOpenGLX11 = true;
+        enableRaytracerX11 = true;
+      };
     in {
       devShells.${system}.default = pkgs.mkShell {
         buildInputs = with pkgs; [
           root
           liberation_ttf
-          geant4WithQt
+          geant4custom
           cmake
           libsForQt5.full
           xorg.libXinerama
@@ -30,7 +34,7 @@
           geant4.data.G4TENDL
           geant4.data.G4RadioactiveDecay
           (python3.withPackages
-            (python-pkgs: with python-pkgs; [ matplotlib numpy mplhep ]))
+            (python-pkgs: with python-pkgs; [ matplotlib numpy mplhep uproot]))
         ];
         shellHook = ''
           export QT_QPA_PLATFORM="xcb";
