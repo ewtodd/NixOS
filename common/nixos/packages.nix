@@ -36,6 +36,8 @@ in {
     bottles
     zip
     gearlever
+    imagemagick
+    ghostscript
   ];
 
   fonts.packages = with pkgs; [

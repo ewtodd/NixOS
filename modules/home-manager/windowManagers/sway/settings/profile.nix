@@ -13,6 +13,8 @@ in {
           assigns = {
             "3" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
               app_id = "Slack";
+            }] ++ optionals (osConfig.DeviceType == "desktop") [{
+              class = "Todoist";
             }];
             "4" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
               class = "Todoist";
@@ -20,8 +22,6 @@ in {
             "2" = [{ app_id = "thunderbird"; }]
               ++ optionals (osConfig.DeviceType == "desktop") [{
                 app_id = "Slack";
-              }] ++ optionals (osConfig.DeviceType == "desktop") [{
-                class = "Todoist";
               }];
           };
           workspaceOutputAssign = [
@@ -83,7 +83,6 @@ in {
             "2" = [{ class = "steam"; }];
             "3" = [{ app_id = "spotify"; }];
             "5" = [{ app_id = "signal"; }];
-            "4" = [{ app_id = "thunderbird"; }];
           };
           workspaceOutputAssign = [
             {
@@ -123,8 +122,6 @@ in {
             { command = "steam"; }
             { command = "spotify"; }
             { command = "sh -c 'sleep 2 && signal-desktop --use-tray-icon'"; }
-            { command = "thunderbird"; }
-            { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
         };
         extraConfig = ''

@@ -211,7 +211,6 @@ in {
         layer_effects "rofi" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
-        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enabled        
         exec swaybg -i ${wallpaperPath}
         exec blueman-applet
         exec udiskie --tray
