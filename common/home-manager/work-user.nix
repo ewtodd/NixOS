@@ -7,7 +7,7 @@
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages = [ pkgs.clang-tools pkgs.slack ];
+  home.packages = [ pkgs.clang-tools pkgs.slack pkgs.samba];
 
   xdg.desktopEntries.steam = {
     name = "Steam";
