@@ -15,26 +15,10 @@
         DEVICE:
           EVENTS:
           EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
-
-
-      - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.dual-function-keys}/bin/dual-function-keys -c /etc/space-debounce.yaml | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
-        DEVICE:
-          EVENTS:
-          EV_KEY: [KEY_SPACE]
-    '';
+          '';
   };
 
-  environment.etc."space-debounce.yaml".text = ''
-    TIMING:
-      TAP_MILLISEC: 500
-
-    MAPPINGS:
-      - KEY: KEY_SPACE
-        TAP: KEY_SPACE
-        HOLD: KEY_SPACE
-  '';
-
-  services.printing.enable = true;
+    services.printing.enable = true;
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
   services.avahi.openFirewall = true;
