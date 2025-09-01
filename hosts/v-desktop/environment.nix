@@ -5,5 +5,5 @@
 
   boot.kernelPackages = pkgs.linuxPackages_cachyos;
   services.scx.enable = true;
-
+  boot.kernelParams = [ "quiet" "splash" "video=1920x1080" ];
 }
