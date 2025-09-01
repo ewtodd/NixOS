@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
   config = lib.mkIf (config.WindowManager == "sway") {
 
     programs.sway = {
@@ -41,17 +41,6 @@
     };
 
     environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
-
-    services.xserver = {
-      enable = true;
-      displayManager.startx.enable = false;
-      excludePackages = with pkgs; [ xterm ];
-      displayManager.gdm = {
-        enable = true;
-        wayland = true;
-        autoSuspend = false;
-      };
-    };
     programs.ssh.enableAskPassword = false;
   };
 }

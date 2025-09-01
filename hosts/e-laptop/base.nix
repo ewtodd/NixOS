@@ -3,6 +3,7 @@
   imports = [
     ../../common/nixos/base.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
+    ../../modules/nixos/desktops/regreet-dracula.nix
     ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/tailscale.nix

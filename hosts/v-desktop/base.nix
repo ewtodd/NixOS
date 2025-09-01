@@ -5,6 +5,7 @@
     ../../modules/nixos/hardware/amd-graphics.nix
     ../../modules/nixos/hardware/openrgb.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
+    ../../modules/nixos/desktops/regreet-heetch.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/quickemu.nix
