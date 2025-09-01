@@ -4,7 +4,6 @@
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/amd-graphics.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
-    ../../modules/nixos/desktops/regreet-dracula.nix
     ../../modules/nixos/services/ollama.nix
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
