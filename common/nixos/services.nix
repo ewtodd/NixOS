@@ -15,10 +15,10 @@
         DEVICE:
           EVENTS:
           EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
-          '';
+    '';
   };
 
-    services.printing.enable = true;
+  services.printing.enable = true;
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
   services.avahi.openFirewall = true;
@@ -30,6 +30,23 @@
     jack.enable = true;
   };
   services.gnome.gnome-keyring.enable = true;
+  security.polkit = { enable = true; };
+  environment.systemPackages = with pkgs; [ polkit_gnome ];
+
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    description = "polkit-gnome-authentication-agent-1";
+    wantedBy = [ "graphical-session.target" ];
+    wants = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart =
+        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
+    };
+  };
   security.rtkit.enable = true;
   services.blueman.enable = true;
   hardware.bluetooth = {
