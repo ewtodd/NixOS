@@ -25,7 +25,7 @@ in {
             "custom/gpu"
             "custom/gpumemory"
           ] ++ [ "network" "pulseaudio" ]
-          ++ optionals (deviceType == "laptop") [ "battery" ]
+          ++ optionals (deviceType != "desktop") [ "battery" ]
           ++ [ "custom/notification" ];
         "${windowManager}/window" = {
           format = "";
