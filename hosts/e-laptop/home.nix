@@ -42,6 +42,8 @@
     programs.bash.shellAliases = {
       phone-home = "ssh e-work@ssh.ethanwtodd.com -p 2222";
       files-home = "sftp -P 2222 e-work@ssh.ethanwtodd.com";
+      vpn = ''
+        sudo openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
     };
     programs.waybar.enable = true;
     programs.git = {

@@ -18,6 +18,7 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
+    
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
