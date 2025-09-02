@@ -16,8 +16,8 @@ in {
       };
 
       iconTheme = {
-        package = pkgs.gruvbox-plus-icons;
-        name = "Gruvbox-Pluse-Dark";
+        package = pkgs.adwaita-icon-theme;
+        name = "Adwaita";
       };
 
       font = {
