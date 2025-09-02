@@ -16,6 +16,7 @@ in {
     ./services/wlogout.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+    ++ optionals (deviceType == "framework") [ ./settings/framework.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   config = let colors = config.colorScheme.palette;
@@ -178,7 +179,7 @@ in {
         }];
 
         input = {
-          "type:touchpad" = mkIf (deviceType == "laptop") {
+          "type:touchpad" = mkIf (deviceType != "desktop") {
             tap = "enabled";
             natural_scroll = "enabled";
             tap_button_map = "lrm";
