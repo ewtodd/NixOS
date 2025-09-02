@@ -17,6 +17,6 @@
         "Mod4+Shift+V" = "output HDMI-A-2 mode 2560x1440 position -2560 0";
       };
     };
-
   };
+  home.pointerCursor = { size = 48; };
 }
