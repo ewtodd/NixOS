@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{  ... }: {
 
   imports = [
     ../../common/nixos/base.nix
@@ -7,6 +7,7 @@
     ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/tailscale.nix
     #../../modules/nixos/services/protonvpn.nix
+    ../../modules/nixos/packages/moonlight.nix
     ../../modules/nixos/packages/todoist.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
@@ -14,7 +15,6 @@
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
     ../../modules/nixos/packages/nix-mineral.nix
   ];
-
   WindowManager = "sway";
   DeviceType = "laptop";
   users.users.e-play = {

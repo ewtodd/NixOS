@@ -28,6 +28,7 @@ in {
     htop
     nix-prefetch-github
     nixfmt-classic
+    openconnect
     tree
     usbutils
     pciutils
