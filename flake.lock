@@ -247,11 +247,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1753552563,
-        "narHash": "sha256-/I/G/gfRniQCSVtWK+MY/kZAEUt+U0sTLY+OSlCb02E=",
+        "lastModified": 1756845127,
+        "narHash": "sha256-UDtD1cphBOliV3ghKhTNnhkDHLrke8vh+BD7hB4NbMA=",
         "owner": "ewtodd",
         "repo": "nix-proton-cachyos",
-        "rev": "67c43aa80d3c23b640787b4dbdd6dec3ce0049cf",
+        "rev": "577f62d790f3fbb4bd2ff18f4031fa0d8afc6da9",
         "type": "github"
       },
       "original": {

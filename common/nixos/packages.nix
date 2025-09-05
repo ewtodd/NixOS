@@ -35,6 +35,8 @@ in {
     unzip
     paprefs
     bottles
+    wineWowPackages.stable
+    winetricks
     zip
     gearlever
     imagemagick
