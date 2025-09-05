@@ -1,6 +1,6 @@
 { pkgs, inputs, ... }:
 let
-  colorScheme = inputs.nix-colors.colorSchemes.darkviolet;
+  colorScheme = inputs.nix-colors.colorSchemes.grayscale-dark;
   schemeName = colorScheme.slug;
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in {
@@ -8,9 +8,12 @@ in {
   programs.regreet = {
     enable = true;
     settings = {
-      background = { path = ./darkviolet.png; };
+      background = {
+        path = ./grayscale-dark.png;
+        fit = "Cover";
+      };
       widget.clock = { format = "%I:%M, %d %b %Y"; };
-      appearance = { greeting_msg = "Hey there lil mama!"; };
+      appearance = { greeting_msg = "NO DOGS!"; };
     };
     theme = {
       package = nix-colors-lib.gtkThemeFromScheme { scheme = colorScheme; };
@@ -49,25 +52,7 @@ in {
         all: unset;
       }
       picture {
-        filter: blur(1rem);
-      }
-      frame.background {
-        background: alpha(@surface, .92);
-        color: @on_surface;
-        border-radius: 24px;
-        box-shadow: 0 0 12px 2px alpha(@shadow, .9);
-      }
-      frame.background>grid>label:first-child {
-        font-size: 1.2rem;
-        padding: 6px;
-      }
-      frame.background.top {
-        font-size: 1.2rem;
-        padding: 8px;
-        background: @surface;
-        border-radius: 0;
-        border-bottom-left-radius: 24px;
-        border-bottom-right-radius: 24px;
+        filter: blur(0.1rem);
       }
       box.horizontal>button.default.suggested-action.text-button {
         background: @primary_container;
@@ -169,6 +154,14 @@ in {
         padding: 12px;
         border-radius: 12px;
       }
+      frame.background.top {
+        font-size: 1.2rem;
+        padding: 8px;
+        background: @surface;
+        margin-top: 15px; 
+        border--radius: 12px;
+      }
+
     '';
     mode = "0644";
   };

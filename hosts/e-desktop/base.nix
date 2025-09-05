@@ -3,7 +3,7 @@
   imports = [
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/amd-graphics.nix
-    ../../modules/nixos/desktops/desktopEnvironment.nix
+    ../../modules/nixos/desktops/desktopEnvironment-grayscale-dark.nix
     ../../modules/nixos/services/ollama.nix
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
