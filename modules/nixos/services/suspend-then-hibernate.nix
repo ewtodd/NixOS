@@ -5,6 +5,7 @@ let
     HIBERNATE_LOCK = "/var/run/autohibernate.lock";
   };
 in {
+  powerManagement.enable = true;
 
   systemd.services."awake-after-suspend-for-a-time" = {
     description =
