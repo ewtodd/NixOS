@@ -27,6 +27,7 @@ in {
       package = pkgs.nerd-fonts.fira-code;
       name = "Fira Code";
     };
+    cageArgs = [ "-s" "-m" "last" ];
   };
 
   # Custom CSS styling that creates the beautiful look from your image
