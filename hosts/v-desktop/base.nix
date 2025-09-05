@@ -10,9 +10,10 @@
     ../../modules/nixos/packages/quickemu.nix
     ../../modules/nixos/packages/zoom.nix
     ../../modules/nixos/packages/starship.nix
-    ../../modules/nixos/services/ssh.nix
-    ../../modules/nixos/services/tailscale.nix
     ../../modules/nixos/packages/docker.nix
+    ../../modules/nixos/services/ssh.nix
+    ../../modules/nixos/services/sunshine.nix
+    ../../modules/nixos/services/tailscale.nix
   ];
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];

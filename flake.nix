@@ -18,7 +18,7 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
-    
+
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -111,6 +111,32 @@
           ./hosts/e-laptop/configuration.nix
         ];
       };
+      v-framework = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          system = "x86_64-linux";
+        };
+        modules = [
+          inputs.home-manager.nixosModules.home-manager
+          inputs.chaotic.nixosModules.default
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; };
+              users = import ./hosts/v-framework/home.nix;
+            };
+          }
+          ./hosts/v-framework/configuration.nix
+        ];
+      };
+
     };
   };
 }
