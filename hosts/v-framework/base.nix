@@ -10,9 +10,8 @@
     ../../modules/nixos/packages/zoom.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/services/tailscale.nix
-    ../../modules/nixos/services/suspend-then-hibernate.nix
-    ../../modules/nixos/services/laptop-power.nix
-    ../../modules/nixos/services/fingerprint.nix
+    ../../modules/nixos/services/laptop-power.nix 
+    ../../modules/nixos/services/suspend-then-hibernate.nix 
     ../../modules/nixos/packages/docker.nix
     ../../modules/nixos/packages/moonlight.nix
   ];
