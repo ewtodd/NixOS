@@ -1,8 +1,0 @@
-NAME                                          FSTYPE      FSVER LABEL UUID                                 FSAVAIL FSUSE% MOUNTPOINTS
-nvme0n1                                                                                                                   
-├─nvme0n1p1                                   vfat        FAT32       F5C0-91AE                             944.8M     8% /boot
-├─nvme0n1p2                                   crypto_LUKS 2           650e7622-e9c2-4724-a220-49fac5683a85                
-│ └─luks-650e7622-e9c2-4724-a220-49fac5683a85 ext4        1.0         09bd8c33-5f03-44b9-a40e-5488dc414cf2  807.7G     4% /nix/store
-│                                                                                                                         /
-└─nvme0n1p3                                   crypto_LUKS 2           83f69c4f-16a7-49ab-89c7-a20fdc64b75f                
-  └─luks-83f69c4f-16a7-49ab-89c7-a20fdc64b75f swap        1     swap  061be41a-c343-4439-b3a7-6beca06982e8                [SWAP]
