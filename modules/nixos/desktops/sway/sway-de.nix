@@ -5,7 +5,6 @@
       enable = true;
       package = pkgs.swayfx;
       extraPackages = with pkgs; [
-        autotiling
         wlogout
         birdtray
         wl-clipboard
