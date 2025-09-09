@@ -2,7 +2,7 @@
   boot.kernelPackages = pkgs.linuxPackages_zen;
   services.scx = {
     enable = true;
-    scheduler = "scx_rusty";
+    scheduler = "scx_bpfland";
   };
   boot.loader.grub = {
     enable = true;
