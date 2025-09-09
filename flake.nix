@@ -11,7 +11,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
     nix-mineral = {
@@ -31,7 +30,6 @@
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
-          inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -56,20 +54,7 @@
           unstable = import unstable { system = "x86_64-linux"; };
         };
         modules = [
-          {
-            nixpkgs.overlays = [
-              (final: prev:
-                let
-                  unstable = import inputs.unstable {
-                    system = prev.system;
-                    config.allowUnfree = true;
-                  };
-                in { open-webui = unstable.open-webui; })
-            ];
-
-          }
-          inputs.home-manager.nixosModules.home-manager
-          inputs.chaotic.nixosModules.default
+                    inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -94,7 +79,6 @@
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
-          inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -119,7 +103,6 @@
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
-          inputs.chaotic.nixosModules.default
           {
             home-manager = {
               useGlobalPkgs = true;

@@ -1,7 +1,9 @@
-{ config, pkgs, ... }: {
-  boot.kernelPackages = pkgs.linuxPackages_cachyos;
-  services.scx.enable = true;
-
+{ pkgs, ... }: {
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  services.scx = {
+    enable = true;
+    scheduler = "scx_rusty";
+  };
   boot.loader.grub = {
     enable = true;
     device = "/dev/nvme0n1";
