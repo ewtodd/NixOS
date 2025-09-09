@@ -12,6 +12,10 @@
           resolution = "1920x1080";
           position = "-1920,0";
         };
+        "DP-4" = {
+          resolution = "1920x1080";
+          position = "-1920,0";
+        };
       };
       keybindings = {
         "Mod4+Shift+V" = "output HDMI-A-2 mode 2560x1440 position -2560 0";
