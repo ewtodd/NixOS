@@ -1,7 +1,4 @@
-{ config, pkgs, inputs, ... }:
-let unstable = inputs.unstable.legacyPackages.${pkgs.system};
-in {
-  # Bootloader.
+{ pkgs, ... }: {
   boot.loader.systemd-boot = {
     enable = true;
     configurationLimit = 5;
@@ -11,8 +8,11 @@ in {
   boot.initrd.luks.devices."luks-0c8c96c9-7128-4635-8958-2e2cead680a0".device =
     "/dev/disk/by-uuid/0c8c96c9-7128-4635-8958-2e2cead680a0";
 
-  boot.kernelPackages = pkgs.linuxPackages_cachyos;
-  services.scx.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  services.scx = {
+    enable = true;
+    scheduler = "scx_rusty";
+  };
 
   boot.resumeDevice =
     "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; # Your swap partition UUID
