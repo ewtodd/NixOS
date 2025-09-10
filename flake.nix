@@ -11,7 +11,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-proton-cachyos.url = "github:ewtodd/nix-proton-cachyos";
     nix-colors.url = "github:misterio77/nix-colors";
     nix-mineral = {
       url = "github:cynicsketch/nix-mineral";
@@ -119,7 +118,30 @@
           ./hosts/v-framework/configuration.nix
         ];
       };
-
+e-framework = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          system = "x86_64-linux";
+        };
+        modules = [
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; };
+              users = import ./hosts/e-framework/home.nix;
+            };
+          }
+          ./hosts/e-framework/configuration.nix
+        ];
+      };
     };
   };
 }

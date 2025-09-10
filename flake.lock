@@ -139,36 +139,18 @@
         "type": "github"
       }
     },
-    "nix-proton-cachyos": {
-      "inputs": {
-        "nixpkgs": "nixpkgs"
-      },
-      "locked": {
-        "lastModified": 1756845127,
-        "narHash": "sha256-UDtD1cphBOliV3ghKhTNnhkDHLrke8vh+BD7hB4NbMA=",
-        "owner": "ewtodd",
-        "repo": "nix-proton-cachyos",
-        "rev": "577f62d790f3fbb4bd2ff18f4031fa0d8afc6da9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ewtodd",
-        "repo": "nix-proton-cachyos",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1753432016,
-        "narHash": "sha256-cnL5WWn/xkZoyH/03NNUS7QgW5vI7D1i74g48qplCvg=",
-        "owner": "nixos",
+        "lastModified": 1757341549,
+        "narHash": "sha256-fRnT+bwP1sB6ne7BLw4aXkVYjr+QCZZ+e4MhbokHyd4=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6027c30c8e9810896b92429f0092f624f7b1aace",
+        "rev": "9d1fa9fa266631335618373f8faad570df6f9ede",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixpkgs-unstable",
+        "owner": "NixOS",
+        "ref": "nixos-25.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -185,22 +167,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixpkgs.lib",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1757341549,
-        "narHash": "sha256-fRnT+bwP1sB6ne7BLw4aXkVYjr+QCZZ+e4MhbokHyd4=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "9d1fa9fa266631335618373f8faad570df6f9ede",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-25.05",
-        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -255,8 +221,7 @@
         "home-manager": "home-manager",
         "nix-colors": "nix-colors",
         "nix-mineral": "nix-mineral",
-        "nix-proton-cachyos": "nix-proton-cachyos",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "unstable": "unstable"
       }
