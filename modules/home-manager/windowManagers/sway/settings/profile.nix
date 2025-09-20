@@ -59,10 +59,6 @@ in {
           };
 
           startup = [
-            {
-              command =
-                "swaymsg 'workspace 5; exec firefox --new-instance --new-window -url https://github.com/ewtodd -new-tab -url llm.ethanwtodd.com'";
-            }
             { command = "thunderbird"; }
             { command = "slack"; }
             { command = "todoist-electron"; }

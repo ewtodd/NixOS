@@ -3,6 +3,7 @@
   imports = [
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/amd-graphics.nix
+    ../../modules/nixos/hardware/suzyqable.nix
     ../../modules/nixos/desktops/desktopEnvironment-grayscale-dark.nix
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
@@ -13,6 +14,7 @@
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/starship.nix
+    ../../modules/nixos/packages/docker.nix
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
     ../../modules/nixos/packages/nix-mineral.nix
   ];
@@ -34,6 +36,8 @@
       "render"
       "video"
       "lp"
+      "tty"
+      "docker"
     ];
   };
 
