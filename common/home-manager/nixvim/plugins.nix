@@ -115,7 +115,7 @@
         compiler_callback_hooks = { };
         quickfix_autoclose_after_keystrokes = 1;
         syntax_conceal_disable = true;
-      };
+              };
       texlivePackage = null;
     };
 
