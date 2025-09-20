@@ -16,7 +16,7 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
-
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -53,7 +53,7 @@
           unstable = import unstable { system = "x86_64-linux"; };
         };
         modules = [
-                    inputs.home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -101,6 +101,7 @@
           system = "x86_64-linux";
         };
         modules = [
+          inputs.nixos-hardware.nixosModules.framework-11th-gen-intel
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -118,13 +119,14 @@
           ./hosts/v-framework/configuration.nix
         ];
       };
-e-framework = nixpkgs.lib.nixosSystem {
+      e-framework = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
           system = "x86_64-linux";
         };
         modules = [
+          inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {

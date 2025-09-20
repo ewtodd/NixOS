@@ -15,7 +15,7 @@
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
-    ../../modules/nixos/packages/nix-mineral.nix
+    #    ../../modules/nixos/packages/nix-mineral.nix
   ];
   WindowManager = "sway";
   DeviceType = "framework";
