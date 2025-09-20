@@ -1,11 +1,17 @@
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [
-    # Core debugging tools
-    openocd
-    gdb
-    minicom
-    screen
+{ pkgs, ... }:
+let
+  vboot-ref = pkgs.vboot_reference.overrideAttrs (oldAttrs: {
+    buildInputs = oldAttrs.buildInputs ++ [ pkgs.flashrom ];
 
+    makeFlags = builtins.map
+      (flag: if flag == "USE_FLASHROM=0" then "USE_FLASHROM=1" else flag)
+      oldAttrs.makeFlags;
+  });
+in {
+  environment.systemPackages = with pkgs; [
+    openocd
+    screen
+    vboot-ref
     usbutils
     libusb1
 
