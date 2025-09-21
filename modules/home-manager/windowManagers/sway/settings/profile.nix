@@ -11,12 +11,12 @@ in {
       wayland.windowManager.sway = {
         config = {
           assigns = {
-            "3" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
+            "3" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
               app_id = "Slack";
             }] ++ optionals (osConfig.DeviceType == "desktop") [{
               class = "Todoist";
             }];
-            "4" = [ ] ++ optionals (osConfig.DeviceType == "laptop") [{
+            "4" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
               class = "Todoist";
             }];
             "2" = [{ app_id = "thunderbird"; }]
