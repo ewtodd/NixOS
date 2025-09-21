@@ -153,6 +153,8 @@ in {
           # Brightness controls with SwayOSD (for laptops)
           "XF86MonBrightnessUp" = "exec swayosd-client --brightness raise";
           "XF86MonBrightnessDown" = "exec swayosd-client --brightness lower";
+          "F8" = "exec swayosd-client --brightness raise";
+          "F7" = "exec swayosd-client --brightness lower";
 
           # Caps lock indicator
           "Caps_Lock" = "exec swayosd-client --caps-lock";
