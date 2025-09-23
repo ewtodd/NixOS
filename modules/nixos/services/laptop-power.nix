@@ -14,6 +14,17 @@
       START_CHARGE_THRESH_BAT0 = 40;
       STOP_CHARGE_THRESH_BAT0 = 95;
       DEVICES_TO_DISABLE_ON_STARTUP = "bluetooth";
+      RESTORE_DEVICE_STATE_ON_STARTUP = 0;
+      # Don't interfere with runtime PM
+      RUNTIME_PM_ON_AC = "auto";
+      RUNTIME_PM_ON_BAT = "auto";
+
+      # Don't block USB suspend
+      USB_AUTOSUSPEND = 1;
+
+      # Let kernel handle these
+      SOUND_POWER_SAVE_ON_AC = 0;
+      SOUND_POWER_SAVE_ON_BAT = 0;
     };
   };
 }
