@@ -4,6 +4,7 @@
     ../../common/nixos/base.nix
     ../../modules/nixos/desktops/desktopEnvironment-grayscale-dark.nix
     ../../modules/nixos/hardware/suzyqable.nix
+    ../../modules/nixos/hardware/chromebook-audio.nix
     #  ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/tailscale.nix
@@ -22,22 +23,14 @@
   users.users.e-play = {
     isNormalUser = true;
     description = "ethan-play";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "plugdev"
-      "dialout"
-      "gamemode"
-      "render"
-      "video"
-      "lp"
-    ];
+    extraGroups =
+      [ "networkmanager" "wheel" "dialout" "gamemode" "render" "video" "lp" ];
   };
 
   users.users.e-work = {
     isNormalUser = true;
     description = "ethan-work";
-    extraGroups = [ "networkmanager" "wheel" "plugdev" "dialout" "video" "lp" ];
+    extraGroups = [ "networkmanager" "wheel" "dialout" "video" "lp" ];
   };
 
 }
