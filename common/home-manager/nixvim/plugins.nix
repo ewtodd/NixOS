@@ -122,6 +122,7 @@
     lsp = {
       enable = true;
       servers = {
+        dockerls.enable = false;
         clangd.enable = true;
         nixd.enable = true;
         pylsp.enable = true;

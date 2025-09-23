@@ -16,7 +16,6 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -101,7 +100,6 @@
           system = "x86_64-linux";
         };
         modules = [
-          inputs.nixos-hardware.nixosModules.framework-11th-gen-intel
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -126,7 +124,6 @@
           system = "x86_64-linux";
         };
         modules = [
-          inputs.nixos-hardware.nixosModules.framework-12th-gen-intel
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
