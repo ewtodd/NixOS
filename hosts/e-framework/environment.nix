@@ -10,15 +10,12 @@
 
   boot.kernelParams = [
     "resume=/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"
-    "snd-intel-dspcfg.dsp_driver=1"
     "mem_sleep_default=s2idle"
     "no_console_suspend"
-    "i915.enable_guc=0"
-    "i915.max_vfs=0"
-    "nvme_core.default_ps_max_latency_us=0"
-    "nvme.noacpi=1"
-    "pcie_aspm=force"
   ];
+  boot.extraModprobeConfig = ''
+    options snd-intel-dspcfg dsp_driver=3
+  '';
 
   systemd.services.disable-all-wakeups = {
     description = "Disable all ACPI wakeup sources";
@@ -36,13 +33,8 @@
     };
   };
 
-  boot.blacklistedKernelModules = [
-    "snd_sof_pci_intel_tgl"
-    "snd_sof_intel_hda_common"
-    "snd_sof_intel_hda"
-    "snd_sof_pci"
-    "snd_sof"
-  ];
+  boot.blacklistedKernelModules =
+    [ "mei_hdcp" "mei_pxp" "mei" "cros_kbd_led_backlight" ];
 
   boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 
