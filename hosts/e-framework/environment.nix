@@ -15,10 +15,9 @@
     "pm_debug_messages"
     "initcall_debug"
     "acpi.ec_no_wakeup=1"
-    "i915.enable_guc=0"
-    "i915.enable_dc=0"
-    "i915.enable_psr=0"
     "xe.force_probe=46a6"
+    "xe.modeset=1"
+    "xe.enable_display_power_well=0"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
