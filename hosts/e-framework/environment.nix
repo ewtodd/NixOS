@@ -24,6 +24,30 @@
     options snd-intel-dspcfg dsp_driver=3
   '';
 
+  systemd.services.mod-pre-sleep = {
+    description = "Unload problematic modules before hibernate";
+    wantedBy = [ "hibernate.target" ];
+    before = [ "hibernate.target" ];
+    serviceConfig.Type = "oneshot";
+    path = [ pkgs.kmod ];
+    script = ''
+      rmmod intel_hid 2>/dev/null || true
+      rmmod i8042 2>/dev/null || true
+    '';
+  };
+
+  systemd.services.mod-resume = {
+    description = "Reload modules after resume";
+    wantedBy = [ "post-resume.target" ];
+    after = [ "post-resume.target" ];
+    serviceConfig.Type = "oneshot";
+    path = [ pkgs.kmod ];
+    script = ''
+      modprobe i8042 2>/dev/null || true
+      modprobe intel_hid 2>/dev/null || true
+    '';
+  };
+
   systemd.services.disable-all-wakeups = {
     description = "Disable Framework-specific wakeup sources";
     wantedBy = [ "multi-user.target" ];
