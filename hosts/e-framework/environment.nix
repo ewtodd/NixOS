@@ -15,17 +15,14 @@
     "pm_debug_messages"
     "initcall_debug"
     "acpi.ec_no_wakeup=1"
-    "pcie_pm_pme=off"
-    "nvme_core.default_ps_max_latency_us=0"
-    "peci_aspm=off"
+    "i915.enable_guc=0"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
   '';
 
-  # Pre-suspend/hibernate: unload i8042 (equivalent to case pre/* -> rmmod i8042)
-  systemd.services.i8042-sleep-pre = {
-    description = "Unload i8042 before suspend/hibernate";
+  systemd.services.mod-pre-sleep = {
+    description = "Unload kernel modules before suspend/hibernate";
     wantedBy = [
       "suspend.target"
       "hibernate.target"
@@ -42,20 +39,18 @@
     # Ensure rmmod exists at runtime
     path = [ pkgs.kmod ];
     script = ''
-      rmmod i8042 || true
+      rmmod intel_hid
     '';
   };
 
-  # Post-resume: reload i8042 with reset=1 (equivalent to case post/* -> modprobe i8042 reset=1)
-  # post-resume.target is provided by NixOS for resume hooks
-  systemd.services.i8042-resume = {
-    description = "Reload i8042 with reset=1 after resume";
+  systemd.services.mod-resume = {
+    description = "Reload kernel modules with reset=1 after resume";
     wantedBy = [ "post-resume.target" ];
     after = [ "post-resume.target" ];
     serviceConfig.Type = "oneshot";
     path = [ pkgs.kmod ];
     script = ''
-      modprobe i8042 reset=1
+      modprobe intel_hid 
     '';
   };
 
