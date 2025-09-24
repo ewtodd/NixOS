@@ -16,42 +16,46 @@
     "initcall_debug"
     "acpi.ec_no_wakeup=1"
     "xe.force_probe=46a6"
-    "xe.modeset=1"
-    "xe.enable_display_power_well=0"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
   '';
 
   systemd.services.mod-pre-sleep = {
-    description = "Unload problematic modules before hibernate";
+    description = "Remove wake-causing modules before hibernate";
     wantedBy = [ "hibernate.target" ];
     before = [ "hibernate.target" ];
     serviceConfig.Type = "oneshot";
-    path = [ pkgs.kmod ];
+    path = [ pkgs.kmod pkgs.util-linux ];
     script = ''
+      # Remove Chrome EC modules (Framework-specific)
+      rmmod cros_ec_lpcs 2>/dev/null || true
+      rmmod cros_ec_dev 2>/dev/null || true  
+      rmmod cros_ec 2>/dev/null || true
+
+      # Remove HID modules  
       rmmod intel_hid 2>/dev/null || true
-      rmmod i8042 2>/dev/null || true 
-      echo 0 > /dev/cpu_dma_latency || true 
-      cat /sys/module/intel_idle/parameters/max_cstate > /tmp/original_cstate 2>/dev/null || echo "8" > /tmp/original_cstate
+      rmmod i8042 2>/dev/null || true
+
+      # Store what we removed
+      echo "i8042 intel_hid cros_ec cros_ec_dev cros_ec_lpcs" > /tmp/hibernation-modules
     '';
   };
 
   systemd.services.mod-resume = {
-    description = "Reload modules after resume";
+    description = "Restore modules after resume";
     wantedBy = [ "post-resume.target" ];
     after = [ "post-resume.target" ];
     serviceConfig.Type = "oneshot";
     path = [ pkgs.kmod ];
     script = ''
-      modprobe i8042 2>/dev/null || true
-      modprobe intel_hid 2>/dev/null || true
-      if [ -f /tmp/original_cstate ]; then
-      cat /tmp/original_cstate > /sys/module/intel_idle/parameters/max_cstate 2>/dev/null || true
-      rm -f /tmp/original_cstate
-      fi 
-      # Remove DMA latency constraint
-      echo 2000000000 > /dev/cpu_dma_latency || true
+      # Reload modules in proper order
+      if [ -f /tmp/hibernation-modules ]; then
+        for module in $(cat /tmp/hibernation-modules); do
+          modprobe "$module" 2>/dev/null || true
+        done
+        rm -f /tmp/hibernation-modules
+      fi
     '';
   };
 
