@@ -16,43 +16,13 @@
     "initcall_debug"
     "acpi.ec_no_wakeup=1"
     "i915.enable_guc=0"
+    "i915.enable_dc=0"
+    "i915.enable_psr=0"
+    "i915.enable_fbc=0"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
   '';
-
-  systemd.services.mod-pre-sleep = {
-    description = "Unload kernel modules before suspend/hibernate";
-    wantedBy = [
-      "suspend.target"
-      "hibernate.target"
-      "hybrid-sleep.target"
-      "suspend-then-hibernate.target"
-    ];
-    before = [
-      "suspend.target"
-      "hibernate.target"
-      "hybrid-sleep.target"
-      "suspend-then-hibernate.target"
-    ];
-    serviceConfig.Type = "oneshot";
-    # Ensure rmmod exists at runtime
-    path = [ pkgs.kmod ];
-    script = ''
-      rmmod intel_hid
-    '';
-  };
-
-  systemd.services.mod-resume = {
-    description = "Reload kernel modules with reset=1 after resume";
-    wantedBy = [ "post-resume.target" ];
-    after = [ "post-resume.target" ];
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.kmod ];
-    script = ''
-      modprobe intel_hid 
-    '';
-  };
 
   systemd.services.disable-all-wakeups = {
     description = "Disable Framework-specific wakeup sources";
