@@ -24,40 +24,37 @@
   systemd.services.mod-pre-sleep = {
     description = "Remove wake-causing modules before hibernate";
     wantedBy = [ "hibernate.target" ];
-    before = [ "hibernate.target" ];
+    before = [ "systemd-hibernate.service" ];
     serviceConfig.Type = "oneshot";
-    path = [ pkgs.kmod pkgs.util-linux ];
+    path = [ pkgs.util-linux ];
     script = ''
-      # Remove Chrome EC modules (Framework-specific)
-      rmmod cros_ec_lpcs 2>/dev/null || true
-      rmmod cros_ec_dev 2>/dev/null || true  
-      rmmod cros_ec 2>/dev/null || true
-
-      # Remove HID modules  
-      rmmod intel_hid 2>/dev/null || true
-      rmmod i8042 2>/dev/null || true
-
-      # Store what we removed
-      echo "i8042 intel_hid cros_ec cros_ec_dev cros_ec_lpcs" > /tmp/hibernation-modules
+      echo "shutdown" > /sys/power/disk
     '';
   };
+  #  systemd.services.mod-ec-hibernate = {
+  #    description = "Remove wake-causing modules before hibernate";
+  #    wantedBy = [ "hibernate.target" ];
+  #    after = [ "hibernate.target" ];
+  #    serviceConfig.Type = "oneshot";
+  #    path = [ pkgs.systemd pkgs.util-linux ];
+  #    script = ''
+  #      sleep 4
+  #      echo "hibernate" > /sys/class/chromeos/cros_ec/reboot
+  #    '';
+  #  };
 
-  systemd.services.mod-resume = {
-    description = "Restore modules after resume";
-    wantedBy = [ "post-resume.target" ];
-    after = [ "post-resume.target" ];
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.kmod ];
-    script = ''
-      # Reload modules in proper order
-      if [ -f /tmp/hibernation-modules ]; then
-        for module in $(cat /tmp/hibernation-modules); do
-          modprobe "$module" 2>/dev/null || true
-        done
-        rm -f /tmp/hibernation-modules
-      fi
+  environment.etc."systemd/system-sleep/chromebook-ec".source =
+    pkgs.writeScript "chromebook-ec" ''
+      case $1/$2 in
+        pre/hibernate)
+          echo "shutdown" > /sys/power/disk
+          ;;
+        post/hibernate)
+          sleep 2
+          echo "hibernate" > /sys/class/chromeos/cros_ec/reboot
+          ;;
+      esac
     '';
-  };
 
   systemd.services.disable-all-wakeups = {
     description = "Disable Framework-specific wakeup sources";

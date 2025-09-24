@@ -1,7 +1,6 @@
-{ config, pkgs, lib, inputs, ... }: {
+{ pkgs, ... }: {
   programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
   programs.nixvim.extraConfigLua = ''
-    -- Prevent automatic window splitting
     vim.o.splitbelow = false
     vim.o.splitright = false
   '';
@@ -55,19 +54,6 @@
       };
     };
 
-    molten = {
-      enable = true;
-      settings = {
-        auto_open_output = true;
-        image_provider = "image.nvim";
-        wrap_output = true;
-        virt_text_output = true;
-        virt_lines_off_by_1 = true;
-        output_show_more = true;
-        cell_marker = "# %%";
-      };
-    };
-
     image = {
       enable = true;
       settings = {
@@ -115,7 +101,7 @@
         compiler_callback_hooks = { };
         quickfix_autoclose_after_keystrokes = 1;
         syntax_conceal_disable = true;
-              };
+      };
       texlivePackage = null;
     };
 

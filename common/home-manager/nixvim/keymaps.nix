@@ -115,52 +115,5 @@
       mode = [ "n" "i" "v" ];
       options = { nowait = true; };
     }
-    {
-      key = "<C-e>";
-      action = ":MoltenEvaluateOperator<CR>";
-      mode = [ "n" "i" "v" ];
-      options.nowait = true;
-      options.desc = "Evaluate current cell";
-    }
-
-    # Initialize molten
-    {
-      key = "<C-p>";
-      action = "<cmd>MoltenInit nix-python<CR>";
-      mode = [ "n" "i" "v" ];
-      options.nowait = true;
-      options.desc = "Initialize Molten for Python";
-    }
-
-    # Evaluate line
-    {
-      key = "<localleader>rl";
-      action = ":MoltenEvaluateLine<CR>";
-      mode = "n";
-      options.desc = "Evaluate line";
-    }
-
-    # Re-evaluate cell
-    {
-      key = "<localleader>rr";
-      action = ":MoltenReevaluateCell<CR>";
-      mode = "n";
-      options.desc = "Re-evaluate cell";
-    }
-
-    # Evaluate visual selection
-    {
-      key = "<localleader>r";
-      action = ":<C-u>MoltenEvaluateVisual<CR>gv";
-      mode = "v";
-      options.desc = "Evaluate visual selection";
-    }
-
-    {
-      key = "<localleader>md";
-      action = ":MoltenDelete<CR>";
-      mode = "n";
-      options.desc = "Delete cell";
-    }
   ];
 }
