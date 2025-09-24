@@ -4,32 +4,32 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules =
+    [ "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-intel" "xe" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/a5724f92-6495-4da7-b039-d5df45b80769";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/a5724f92-6495-4da7-b039-d5df45b80769";
+    fsType = "ext4";
+  };
 
-  boot.initrd.luks.devices."luks-e09bf1f0-f1db-4013-858f-a5e8b42156f6".device = "/dev/disk/by-uuid/e09bf1f0-f1db-4013-858f-a5e8b42156f6";
-  boot.initrd.luks.devices."luks-4c2fd110-fc21-4d34-b0d5-82fb7d9fd4c1".device = "/dev/disk/by-uuid/4c2fd110-fc21-4d34-b0d5-82fb7d9fd4c1";
+  boot.initrd.luks.devices."luks-e09bf1f0-f1db-4013-858f-a5e8b42156f6".device =
+    "/dev/disk/by-uuid/e09bf1f0-f1db-4013-858f-a5e8b42156f6";
+  boot.initrd.luks.devices."luks-4c2fd110-fc21-4d34-b0d5-82fb7d9fd4c1".device =
+    "/dev/disk/by-uuid/4c2fd110-fc21-4d34-b0d5-82fb7d9fd4c1";
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1D46-8C41";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/1D46-8C41";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -39,5 +39,6 @@
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

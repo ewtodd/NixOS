@@ -18,7 +18,7 @@
     "i915.enable_guc=0"
     "i915.enable_dc=0"
     "i915.enable_psr=0"
-    "i915.enable_fbc=0"
+    "xe.force_probe=46a6"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
@@ -77,7 +77,7 @@
   };
 
   boot.blacklistedKernelModules =
-    [ "mei_hdcp" "mei_pxp" "mei" "cros_kbd_led_backlight" ];
+    [ "mei_hdcp" "mei_pxp" "mei" "cros_kbd_led_backlight" "i915" ];
 
   boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 
