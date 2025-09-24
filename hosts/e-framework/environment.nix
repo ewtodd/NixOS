@@ -31,7 +31,9 @@
     path = [ pkgs.kmod ];
     script = ''
       rmmod intel_hid 2>/dev/null || true
-      rmmod i8042 2>/dev/null || true
+      rmmod i8042 2>/dev/null || true 
+      echo 0 > /dev/cpu_dma_latency || true 
+      cat /sys/module/intel_idle/parameters/max_cstate > /tmp/original_cstate 2>/dev/null || echo "8" > /tmp/original_cstate
     '';
   };
 
@@ -44,6 +46,12 @@
     script = ''
       modprobe i8042 2>/dev/null || true
       modprobe intel_hid 2>/dev/null || true
+      if [ -f /tmp/original_cstate ]; then
+      cat /tmp/original_cstate > /sys/module/intel_idle/parameters/max_cstate 2>/dev/null || true
+      rm -f /tmp/original_cstate
+      fi 
+      # Remove DMA latency constraint
+      echo 2000000000 > /dev/cpu_dma_latency || true
     '';
   };
 
