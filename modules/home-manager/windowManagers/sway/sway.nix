@@ -10,7 +10,7 @@ in {
   imports = [
     ./settings/sway-colors.nix
     ./services/swayidle.nix
-    ./services/notifications.nix
+    ./services/swaync.nix
     ./services/swaylock.nix
     ./services/swayosd.nix
     ./services/wlogout.nix
@@ -212,6 +212,7 @@ in {
         layer_effects "rofi" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
         layer_effects "logout_dialog" blur enable 
+        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enable
         exec swaybg -i ${wallpaperPath}
         exec blueman-applet
         exec udiskie --tray

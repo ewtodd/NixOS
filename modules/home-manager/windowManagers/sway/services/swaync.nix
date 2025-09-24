@@ -66,7 +66,7 @@ in {
   services.swaync = {
     enable = true;
     settings = {
-      positionX = "center";
+      positionX = "right";
       positionY = "top";
       layer = "overlay";
       control-center-layer = "top";
@@ -85,16 +85,15 @@ in {
       timeout-low = 5;
       timeout-critical = 0;
       fit-to-screen = true;
-      control-center-width = 600;
-      control-center-height = 700;
+      control-center-width = 500;
       notification-window-width = 500;
       keyboard-shortcuts = true;
       image-visibility = "when-available";
       transition-time = 200;
-      hide-on-clear = false;
+      hide-on-clear = true;
       hide-on-action = true;
       script-fail-notify = true;
-      widgets = [ "title"  "dnd" "notifications" ];
+      widgets = [ "title" "dnd" "backlight" "volume" "notifications" ];
       widget-config = {
         title = {
           text = "Notifications";
@@ -103,16 +102,16 @@ in {
         };
         dnd = { text = "Do Not Disturb"; };
         volume = {
-          label = "  Volume";
+          label = " ";
           show-per-app = false;
         };
-        #backlight = { label = " Brightness"; };
+        backlight = { label = " "; };
       };
     };
 
     style = ''
       .control-center {
-        background-color: ${hexToRgba colors.base00 "0.75"};
+        background-color: ${hexToRgba colors.base00 "0.45"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
         border-radius: 12px;
         margin: 18px;
@@ -124,7 +123,7 @@ in {
       }
 
       .notification {
-        background-color: ${hexToRgba colors.base01 "0.75"};
+        background-color: ${hexToRgba colors.base01 "0.9"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
         border-radius: 8px;
         margin: 6px 0;
@@ -135,26 +134,6 @@ in {
         background-color: transparent;
         padding: 6px;
         border-radius: 8px;
-      }
-
-      .summary {
-        font-size: 14px;
-        font-weight: bold;
-        color: #${colors.base05};
-        background-color: transparent;
-      }
-
-      .time {
-        font-size: 12px;
-        color: #${colors.base04};
-        margin-right: 18px;
-        background-color: transparent;
-      }
-
-      .body {
-        font-size: 13px;
-        color: #${colors.base05};
-        background-color: transparent;
       }
 
       .widget-title {
@@ -211,38 +190,9 @@ in {
       .widget-volume > label {
         font-size: 14px;
         font-weight: bold;
-        color: #${accentColor};
         margin-bottom: 8px;
-        display: block;
       }
 
-      .widget-volume > scale {
-        min-height: 20px;
-        margin: 8px 0;
-      }
-
-      .widget-volume > scale trough {
-        background-color: ${hexToRgba colors.base02 "0.8"};
-        border-radius: 10px;
-        min-height: 6px;
-      }
-
-      .widget-volume > scale highlight {
-        background-color: #${accentColor};
-        border-radius: 10px;
-        min-height: 6px;
-      }
-
-      .widget-volume > scale slider {
-        background-color: #${colors.base05};
-        border: 2px solid #${accentColor};
-        border-radius: 50%;
-        min-width: 16px;
-        min-height: 16px;
-        margin: -8px;
-      }
-
-      /* Brightness widget styling */
       .widget-backlight {
         background-color: ${hexToRgba colors.base01 "0.9"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
@@ -253,38 +203,9 @@ in {
       }
 
       .widget-backlight > label {
-        font-size: 14px;
-        font-weight: bold;
-        color: #${accentColor};
-        margin-bottom: 8px;
-        display: block;
+        font-size: 15px;
       }
 
-      .widget-backlight > scale {
-        min-height: 20px;
-        margin: 8px 0;
-      }
-
-      .widget-backlight > scale trough {
-        background-color: ${hexToRgba colors.base02 "0.8"};
-        border-radius: 10px;
-        min-height: 6px;
-      }
-
-      .widget-backlight > scale highlight {
-        background-color: #${accentColor};
-        border-radius: 10px;
-        min-height: 6px;
-      }
-
-      .widget-backlight > scale slider {
-        background-color: #${colors.base05};
-        border: 2px solid #${accentColor};
-        border-radius: 50%;
-        min-width: 16px;
-        min-height: 16px;
-        margin: -8px;
-      }
     '';
   };
 }
