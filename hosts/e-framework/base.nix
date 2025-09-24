@@ -5,10 +5,9 @@
     ../../modules/nixos/desktops/desktopEnvironment-grayscale-dark.nix
     ../../modules/nixos/hardware/suzyqable.nix
     ../../modules/nixos/hardware/chromebook-audio.nix
-    #  ../../modules/nixos/services/suspend-then-hibernate.nix
+    ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/tailscale.nix
-    ../../modules/nixos/services/fingerprint.nix
     #../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/moonlight.nix
     ../../modules/nixos/packages/todoist.nix
@@ -16,7 +15,7 @@
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
-    #    ../../modules/nixos/packages/nix-mineral.nix
+    ../../modules/nixos/packages/nix-mineral.nix
   ];
   WindowManager = "sway";
   DeviceType = "framework";
