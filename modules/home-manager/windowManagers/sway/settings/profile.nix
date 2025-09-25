@@ -3,8 +3,10 @@
 with lib;
 let
   primaryMonitor = if osConfig.DeviceType == "desktop" then "DP-3" else "eDP-1";
-  secondaryMonitor =
-    if osConfig.DeviceType == "desktop" then "HDMI-A-1" else "HDMI-A-2";
+  secondaryMonitor = if osConfig.DeviceType == "desktop" then
+    "HDMI-A-1"
+  else
+    (if osConfig.DeviceType == "laptop" then "HDMI-A-2" else "DP-3");
 in {
   config = mkMerge [
     (mkIf (config.Profile == "work") {

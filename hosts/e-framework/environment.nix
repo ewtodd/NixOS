@@ -31,30 +31,30 @@
       echo "shutdown" > /sys/power/disk
     '';
   };
-  #  systemd.services.mod-ec-hibernate = {
-  #    description = "Remove wake-causing modules before hibernate";
-  #    wantedBy = [ "hibernate.target" ];
-  #    after = [ "hibernate.target" ];
-  #    serviceConfig.Type = "oneshot";
-  #    path = [ pkgs.systemd pkgs.util-linux ];
-  #    script = ''
-  #      sleep 4
-  #      echo "hibernate" > /sys/class/chromeos/cros_ec/reboot
-  #    '';
-  #  };
-
-  environment.etc."systemd/system-sleep/chromebook-ec".source =
-    pkgs.writeScript "chromebook-ec" ''
-      case $1/$2 in
-        pre/hibernate)
-          echo "shutdown" > /sys/power/disk
-          ;;
-        post/hibernate)
-          sleep 2
-          echo "hibernate" > /sys/class/chromeos/cros_ec/reboot
-          ;;
-      esac
-    '';
+  # systemd.services.mod-ec-hibernate = {
+  #   description = "Force EC power state for hibernate";
+  #   wantedBy = [ "hibernate.target" ];
+  #   after = [ "hibernate.target" ];
+  #   serviceConfig.Type = "oneshot";
+  #   path = [ pkgs.systemd pkgs.util-linux ];
+  #   script = ''
+  #     sleep 2 
+  #     echo "hibernate" > /sys/class/chromeos/cros_ec/reboot
+  #   '';
+  # };
+  systemd.services.mod-ec-talk = {
+    description = "Talk to EC during hibernate attempt";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "local-fs.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart =
+        "${pkgs.coreutils}/bin/cat /sys/kernel/debug/cros_ec/console_log";
+      Restart = "on-failure";
+      RestartSec = 5;
+      TimeoutStopSec = 10;
+    };
+  };
 
   systemd.services.disable-all-wakeups = {
     description = "Disable Framework-specific wakeup sources";
