@@ -4,7 +4,7 @@
       # Output configuration
       output = {
         "eDP-1" = {
-          resolution = "3000x2000";
+          resolution = "2256x1504";
           scale = "1.35";
           position = "0,0";
         };
