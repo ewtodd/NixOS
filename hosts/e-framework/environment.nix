@@ -15,61 +15,19 @@
     "pm_debug_messages"
     "initcall_debug"
     "acpi.ec_no_wakeup=1"
-    "ec_intr=0"
     "xe.force_probe=46a6"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
   '';
 
-  systemd.services.mod-pre-sleep = {
-    description = "Make sure we hibernate in the right mode!";
-    wantedBy = [ "hibernate.target" ];
-    before = [ "systemd-hibernate.service" ];
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.util-linux ];
-    script = ''
-      echo "shutdown" > /sys/power/disk
-    '';
-  };
-
-  #  systemd.services.fix-pre = {
-  #    description = "Bluetooth is the last thing blocking me?";
-  #    path = [ pkgs.kmod pkgs.bluez ];
-  #    wantedBy = [ "suspend.target" "hibernate.target" ];
-  #    before = [ "systemd-suspend.service" "systemd-hibernate.service" ];
-  #    serviceConfig.Type = "oneshot";
-  #    script = ''
-  #      rmmod btusb
-  #      rmmod atkbd
-  #      rmmod cros-ec-keyb
-  #      rmmod i2c_hid_acpi
-  #      rmmod i2c_hid
-  #    '';
-  #  };
-  #
-  #  systemd.services.fix-post = {
-  #    description = "Bluetooth is the last thing blocking me?";
-  #    path = [ pkgs.kmod pkgs.bluez ];
-  #    wantedBy = [ "suspend.target" "hibernate.target" ];
-  #    after = [ "systemd-suspend.service" "systemd-hibernate.service" ];
-  #    serviceConfig.Type = "oneshot";
-  #    script = ''
-  #      modprobe i2c_hid_acpi
-  #      modprobe i2c_hid
-  #      modprobe atkbd
-  #      modprobe cros-ec-keyb
-  #      modprobe btusb
-  #    '';
-  #  };
-
   systemd.services.disable-all-wakeups = {
-    description = "Disable wakeup sources before suspend/hibernate";
-    wantedBy = [ "suspend.target" "hibernate.target" ];
-    before = [ "systemd-suspend.service" "systemd-hibernate.service" ];
+    description = "Disable wakeup sources before suspend";
+    wantedBy = [ "suspend.target"  ];
+    before = [ "systemd-suspend.service"  ];
     path = [ pkgs.util-linux pkgs.findutils pkgs.coreutils ];
     serviceConfig = {
-      Type = "oneshot"; # Fixed typo
+      Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
@@ -106,16 +64,8 @@
     '';
   };
 
-  boot.blacklistedKernelModules = [
-    "mei_hdcp"
-    "mei_pxp"
-    "mei"
-    "vivaldi_fmap"
-    "cros_kbd_led_backlight"
-    "cros_ec_keyb"
-    "cros_ec_light"
-    "i915"
-  ];
+  boot.blacklistedKernelModules =
+    [ "mei_hdcp" "mei_pxp" "mei" "cros_kbd_led_backlight" "i915" ];
 
   boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 
