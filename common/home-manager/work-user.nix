@@ -20,7 +20,6 @@
     enable = true;
     enableCompletion = true;
     shellAliases = {
-      ls = "ls -vAF";
       ll = "ls -la";
       rootbrowse = ''nix-shell -p root --run "rootbrowse --web=off"'';
       geant4-env = "nix develop /etc/nixos/modules/dev-environments/geant4";

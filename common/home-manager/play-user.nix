@@ -23,10 +23,7 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    shellAliases = {
-      ls = "ls -vAF";
-      ll = "ls -l";
-    };
+    shellAliases = { ll = "ls -l"; };
   };
   home.sessionVariables = { VKD3D_CONFIG = "no_upload_hvv"; };
 }
