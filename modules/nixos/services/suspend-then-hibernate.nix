@@ -5,6 +5,6 @@
   services.logind.powerKeyLongPress = "poweroff";
 
   systemd.sleep.extraConfig = ''
-    HibernateDelaySec=20m
+    HibernateDelaySec=1m
   '';
 }
