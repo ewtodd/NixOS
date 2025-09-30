@@ -16,6 +16,10 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
+    caelestia-shell = {
+      url = "github:ewtodd/HyprlandShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
