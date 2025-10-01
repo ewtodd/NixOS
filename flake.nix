@@ -16,10 +16,10 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
-    hyprshell = {
-      url = "github:ewtodd/hyprshell";
-      inputs.nixpkgs.follows = "unstable";
-    };
+    # hyprshell = {
+    #   url = "github:ewtodd/hyprshell";
+    #   inputs.nixpkgs.follows = "unstable";
+    # };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -137,7 +137,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.hyprshell.homeManagerModules.default
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-framework/home.nix;
