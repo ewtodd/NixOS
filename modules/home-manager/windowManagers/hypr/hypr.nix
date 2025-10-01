@@ -45,6 +45,9 @@ in {
           "waybar"
         ];
 
+        layerrule =
+          [ "blur, waybar" "blur, swaync-control-center" "blur, rofi" ];
+
         # General settings
         general = {
           gaps_in = 5;
