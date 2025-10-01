@@ -2,34 +2,32 @@
 
 let colors = config.colorScheme.palette;
 in {
-  wayland.windowManager.sway.config.colors = {
-    focused = {
-      border = "#${colors.base0D}";
-      background = "#${colors.base0D}";
-      text = "#${colors.base00}";
-      indicator = "#${colors.base0D}";
-      childBorder = "#${colors.base0D}";
-    };
-    focusedInactive = {
-      border = "#${colors.base03}";
-      background = "#${colors.base03}";
-      text = "#${colors.base05}";
-      indicator = "#${colors.base03}";
-      childBorder = "#${colors.base03}";
-    };
-    unfocused = {
-      border = "#${colors.base01}";
-      background = "#${colors.base01}";
-      text = "#${colors.base05}";
-      indicator = "#${colors.base01}";
-      childBorder = "#${colors.base01}";
-    };
-    urgent = {
-      border = "#${colors.base03}";
-      background = "#${colors.base08}";
-      text = "#${colors.base00}";
-      indicator = "#${colors.base08}";
-      childBorder = "#${colors.base08}";
+  wayland.windowManager.hyprland = {
+    settings = {
+      general = {
+        "col.active_border" =
+          "rgba(${colors.base0D}ee) rgba(${colors.base0E}ee) 45deg";
+        "col.inactive_border" = "rgba(${colors.base01}aa)";
+      };
+
+      # Decoration settings with nix-colors
+      decoration = { shadow = { color = "rgba(${colors.base00}ee)"; }; };
+
+      # Group colors (for window grouping)
+      group = {
+        "col.border_active" = "rgba(${colors.base0D}ee)";
+        "col.border_inactive" = "rgba(${colors.base01}aa)";
+        "col.border_locked_active" = "rgba(${colors.base08}ee)";
+        "col.border_locked_inactive" = "rgba(${colors.base03}aa)";
+      };
+
+      # Misc settings with colors
+      misc = {
+        force_default_wallpaper = -1;
+        disable_hyprland_logo = false;
+        # Background color fallback
+        background_color = "rgba(${colors.base00}ff)";
+      };
     };
   };
 }

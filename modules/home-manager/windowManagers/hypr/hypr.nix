@@ -1,20 +1,21 @@
-{ config, pkgs, lib, osConfig, ... }:
+{ config, lib, osConfig, ... }:
 with lib;
-let
-  deviceType = osConfig.DeviceType;
-  wallpaperPath = config.WallpaperPath;
-  primaryMonitor = if osConfig.DeviceType == "desktop" then "DP-3" else "eDP-1";
-  secondaryMonitor =
-    if osConfig.DeviceType == "desktop" then "HDMI-A-1" else "HDMI-A-2";
+let deviceType = osConfig.DeviceType;
 in {
-  imports =
-    [ ./settings/colors.nix ./services/hypridle.nix ./services/hyprlock.nix ];
+  imports = [
+    ./hyprshell.nix
+    ./settings/colors.nix
+    ./services/hypridle.nix
+    ./services/hyprlock.nix
+  ]
   # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
-  # ++ optionals (deviceType == "framework") [ ./settings/framework.nix ]
-  # ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
+    ++ optionals (deviceType == "framework") [
+      ./settings/framework.nix
+    ]
+    # ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ]
+  ;
 
-  config = let colors = config.colorScheme.palette;
-  in {
+  config = {
     wayland.windowManager.hyprland = {
       enable = true;
       package = null;
@@ -28,39 +29,29 @@ in {
         "$up" = "k";
         "$right" = "l";
 
-        # Monitor configuration
-        monitor = "eDP-1,2256x1504@59.999,0x0,1.333333";
-        # Program variables
         "$terminal" = "kitty";
         "$fileManager" = "dolphin";
         "$menu" = "wofi --show drun";
         "$mainMod" = "SUPER";
 
-        # Environment variables
-        env = [ "XCURSOR_SIZE,24" "HYPRCURSOR_SIZE,24" ];
-
-        # Autostart programs (uncomment as needed)
-        # exec-once = [
-        #   "$terminal"
-        #   "nm-applet &"
-        #   "waybar & hyprpaper & firefox"
-        # ];
+        exec-once = [
+          "blueman-applet"
+          "udiskie --tray"
+          "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
+        ];
 
         # General settings
         general = {
           gaps_in = 5;
-          gaps_out = 20;
-          border_size = 2;
-          "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-          "col.inactive_border" = "rgba(595959aa)";
+          gaps_out = 10;
+          border_size = 3;
           resize_on_border = false;
           allow_tearing = false;
           layout = "dwindle";
         };
 
-        # Decoration settings
         decoration = {
-          rounding = 10;
+          rounding = 8;
           rounding_power = 2;
           active_opacity = 1.0;
           inactive_opacity = 1.0;
@@ -69,13 +60,12 @@ in {
             enabled = true;
             range = 4;
             render_power = 3;
-            color = "rgba(1a1a1aee)";
           };
 
           blur = {
             enabled = true;
             size = 3;
-            passes = 1;
+            passes = 2;
             vibrancy = 0.1696;
           };
         };
@@ -113,10 +103,10 @@ in {
           ];
         };
 
-        # Layout settings
         dwindle = {
           pseudotile = true;
           preserve_split = true;
+          force_split = 2;
         };
 
         master = { new_status = "master"; };
@@ -222,28 +212,15 @@ in {
           "SUPER SHIFT, minus, movetoworkspace, special:scratchpad"
           "SUPER, minus, togglespecialworkspace, scratchpad"
 
-          # System controls
-          "SUPER SHIFT, c, exec, hyprctl reload"
-          "SUPER, m, exec, wlogout -p layer-shell --buttons-per-row 2"
-          "SUPER, r, submap, resize" # Enter resize mode
-
           # Notifications (using mako/dunst instead of swaync)
-          "SUPER SHIFT, n, exec, makoctl dismiss"
-          "SUPER SHIFT, e, exec, makoctl dismiss --all"
+          #"SUPER SHIFT, n, exec, "
+          #"SUPER SHIFT, e, exec, "
 
           # Screenshots (using grimshot or grim + slurp)
           "ALT CTRL, 3, exec, grimshot copy output"
           "ALT CTRL, 4, exec, grimshot copy area"
           "ALT SHIFT CTRL, 3, exec, grimshot --notify save output"
           "ALT SHIFT CTRL, 4, exec, grimshot --notify save area"
-
-          # Workspace scrolling
-          "SUPER, mouse_down, workspace, e+1"
-          "SUPER, mouse_up, workspace, e-1"
-
-          # Troubleshooting (Hyprland equivalent)
-          ''
-            SUPER SHIFT, Return, exec, notify-send "$(hyprctl clients -j | jq '.[].class' | head -5)"''
         ];
 
         # Mouse bindings

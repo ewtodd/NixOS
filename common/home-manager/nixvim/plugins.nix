@@ -11,7 +11,6 @@
     telescope = {
       enable = true;
       extensions.file-browser.enable = true;
-
     };
 
     wilder = { enable = true; };
@@ -78,17 +77,6 @@
       enable = true;
       nixvimInjections = true;
       settings.highlight.enable = true;
-      grammarPackages = (with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-        vim
-        nix
-        python
-        cpp
-        c
-        bash
-        yaml
-        cmake
-        markdown
-      ]);
     };
 
     nix.enable = true;
