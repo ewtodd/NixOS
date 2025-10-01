@@ -23,9 +23,6 @@ in {
 
       # Misc settings with colors
       misc = {
-        force_default_wallpaper = -1;
-        disable_hyprland_logo = false;
-        # Background color fallback
         background_color = "rgba(${colors.base00}ff)";
       };
     };
