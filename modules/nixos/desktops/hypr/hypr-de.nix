@@ -9,6 +9,7 @@ in {
       withUWSM = true;
       package = unstable.hyprland;
     };
+
     programs.uwsm = {
       enable = true;
       waylandCompositors.hyprland = {
@@ -19,17 +20,15 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
+      thunderbird-latest 
+      gthumb
       wlogout
       wl-clipboard
       sway-contrib.grimshot
-      lxqt.pavucontrol-qt
+      pavucontrol
       pulseaudio
-      gthumb
-      nautilus
-      thunderbird-latest
       udiskie
       glib
-      gnome-themes-extra
       brightnessctl
       playerctl
     ];
@@ -38,10 +37,10 @@ in {
 
     security.pam.services.hyprlock = { };
     services.udisks2.enable = true;
+    services.gnome.gnome-online-accounts.enable = true;
     services.gvfs.enable = true;
     programs.dconf.enable = true;
     programs.gnome-disks = { enable = true; };
-
     programs.nautilus-open-any-terminal = {
       enable = true;
       terminal = "kitty";

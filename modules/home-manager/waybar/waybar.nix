@@ -129,7 +129,7 @@ in {
             headphone = "";
             default = [ "󰖀" "󰕾" " " ];
           };
-          "on-click" = "pavucontrol-qt";
+          "on-click" = "pavucontrol";
           "on-scroll-up" = "pactl set-sink-volume @DEFAULT_SINK@ +2%";
           "on-scroll-down" = "pactl set-sink-volume @DEFAULT_SINK@ -2%";
         };

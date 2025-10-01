@@ -111,9 +111,9 @@ in {
 
     style = ''
       .control-center {
-        background-color: ${hexToRgba colors.base00 "1"};
+        background-color: ${hexToRgba colors.base00 "0.75"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
-        border-radius: 12px;
+        border-radius: 8px;
         margin: 18px;
         padding: 12px;
       }
