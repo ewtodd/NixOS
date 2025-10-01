@@ -3,8 +3,7 @@
 let
   colors = config.colorScheme.palette;
   fontFamily = "JetBrains Mono Nerd Font";
-  accentColor = colors.base0E;
-  opacity = "0.75";
+  accentColor = colors.base01;
   # Helper to convert hex to rgba
   hexToRgba = hex: alpha:
     let
@@ -63,9 +62,7 @@ in {
                           }
 
                           window#waybar {
-                            background-color: ${
-                              hexToRgba colors.base00 "${opacity}"
-                            };
+                            background-color: ${hexToRgba colors.base00 "1.0"};
                             border-radius: 0 0 8px 8px;
                           }
 
@@ -93,7 +90,7 @@ in {
                             padding: 8px 12px;
                             margin: 0;
                             border-radius: 0;
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             transition: background 0.2s, color 0.2s;
                             border-left: none;
@@ -107,26 +104,26 @@ in {
                             border-radius: 0 8px 8px 0;
                           }
 
-                          #workspaces button.focused {
-                            background-color: #${colors.base00};
+                          #workspaces button.active {
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
-                            border: 2px solid #${colors.base04};
+                            border: 3px solid #${colors.base08};
                          }
 
-                          #workspaces button.focused:first-child:last-child {
-                            background-color: #${colors.base00};
+                          #workspaces button.active:first-child:last-child {
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
-                            border: 2px solid #${colors.base04};
+                            border: 3px solid #${colors.base08};
                          }
 
                           #workspaces button:hover {
-                            color: #${colors.base00};
+                            color: #${colors.base0E};
                             background-color: #${accentColor};
                           }
 
                           #workspaces button.urgent {
-                            background-color: #${colors.base08};
-                            color: #${colors.base00};
+                            background-color: #${colors.base09};
+                            color: #${colors.base0E};
                           }
 
                           /* Hidden window module - just for state detection */
@@ -144,14 +141,14 @@ in {
                             padding: 8px 18px;
                             margin: 6px 3px;
                             border-radius: 8px;
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${colors.base0C};
                             border: none;
                           }
 
                           /* Group 2: Individual modules grouped together */
                           #cpu {
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             padding: 8px 12px;
                             border-radius: 8px 0 0 8px;
@@ -161,7 +158,7 @@ in {
                           }
 
                           #memory, #custom-gpu, #custom-gpumemory {
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             padding: 8px 12px;
                             border-radius: 0;
@@ -171,7 +168,7 @@ in {
                           }
                            
                            #network {
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             padding-top: 8px;
                             padding-bottom: 8px;
@@ -185,7 +182,7 @@ in {
 
 
                           #pulseaudio {
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             padding: 8px 12px;
                             border-radius: 0;
@@ -195,7 +192,7 @@ in {
                          }
 
                         #battery {
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             padding: 8px 12px;
                             border-radius: 0;  /* No longer rounded on right */ 
@@ -209,20 +206,20 @@ in {
                           #battery.critical,
                           #battery.urgent {
                             background-color: #${colors.base09};
-                            color: #${colors.base00};
+                            color: #${accentColor};
                             border-radius: 0;  /* No longer rounded on right */ 
                             margin: 6px 0;     /* No longer has right margin */ 
                             border-right: 1px solid #${colors.base03};  /* Now has right border */ 
                           } 
                           #battery.charging { 
                             background-color: #${colors.base0B}; 
-                            color: #${colors.base00}; 
+                            color: #${accentColor}; 
                             border-radius: 0;  /* No longer rounded on right */ 
                             margin: 6px 0;     /* No longer has right margin */ 
                             border-right: 1px solid #${colors.base03};  /* Now has right border */ 
                           }
                           #custom-notification {
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${accentColor};
                             padding-top: 8px;
                             padding-bottom: 8px;
@@ -238,7 +235,7 @@ in {
             
           
     #clock {
-      background-color: #${colors.base00};
+      background-color: #${colors.base0E};
       color: #${accentColor};
       padding: 8px 12px;
       border-radius: 8px;
@@ -253,7 +250,7 @@ in {
     }
           
           #tray {
-            background-color: #${colors.base00};
+            background-color: #${colors.base0E};
             color: #${accentColor};
             padding: 8px 12px;
             border-radius: 0 8px 8px 0;
@@ -265,12 +262,12 @@ in {
                           tooltip {
                             border-radius: 8px;
                             padding: 15px;
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                           }
 
                           tooltip label {
                             padding: 5px;
-                            background-color: #${colors.base00};
+                            background-color: #${colors.base0E};
                             color: #${colors.base05};
                           }
   '';

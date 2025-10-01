@@ -111,7 +111,7 @@ in {
 
     style = ''
       .control-center {
-        background-color: ${hexToRgba colors.base00 "0.45"};
+        background-color: ${hexToRgba colors.base00 "1"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
         border-radius: 12px;
         margin: 18px;
@@ -123,7 +123,7 @@ in {
       }
 
       .notification {
-        background-color: ${hexToRgba colors.base01 "0.9"};
+        background-color: ${hexToRgba colors.base00 "1"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
         border-radius: 8px;
         margin: 6px 0;

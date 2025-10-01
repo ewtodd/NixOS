@@ -7,7 +7,7 @@
     timeouts = [
       {
         timeout = 600;
-        command = "${pkgs.swaylock-effects}/bin/swaylock";
+        command = "hyprlock";
       }
       {
         timeout = 660;
@@ -18,7 +18,7 @@
     events = [
       {
         event = "before-sleep";
-        command = "${pkgs.swaylock-effects}/bin/swaylock";
+        command = "hyprlock";
       }
       {
         event = "after-resume";

@@ -20,8 +20,8 @@ in {
 
     environment.systemPackages = with pkgs; [
       wlogout
-      birdtray
       wl-clipboard
+      sway-contrib.grimshot
       lxqt.pavucontrol-qt
       pulseaudio
       gthumb

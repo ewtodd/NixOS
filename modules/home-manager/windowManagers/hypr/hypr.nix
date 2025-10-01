@@ -40,7 +40,6 @@ in {
 
         exec-once = [
           "blueman-applet"
-          "birdtray"
           "udiskie --tray"
           "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
           "waybar"
@@ -152,6 +151,9 @@ in {
           "SUPER SHIFT, q, killactive,"
           "SUPER, d, exec, $menu"
 
+          # waybar
+          "SUPER SHIFT, c, exec, pkill waybar && hyprctl dispatch exec waybar"
+
           # Firefox shortcuts
           "SUPER, f, exec, firefox"
           "SUPER SHIFT, p, exec, firefox --private-window"
@@ -159,7 +161,8 @@ in {
           "SUPER, p, exec, firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/"
           "SUPER SHIFT, g, exec, firefox --private-window https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"
 
-          # Lock screen (using swaylock or similar)
+          # Lock screen 
+          "ALT, l, exec, hyprlock"
           "SUPER, m, exec, wlogout -p layer-shell --buttons-per-row 2"
 
           # Focus movement (hjkl keys)
@@ -220,9 +223,9 @@ in {
           "SUPER SHIFT, minus, movetoworkspace, special:scratchpad"
           "SUPER, minus, togglespecialworkspace, scratchpad"
 
-          # Notifications (using mako/dunst instead of swaync)
-          #"SUPER SHIFT, n, exec, "
-          #"SUPER SHIFT, e, exec, "
+          # Notifications
+          "SUPER SHIFT, n, exec, swaync-client -t"
+          "SUPER SHIFT, e, exec, swaync-client --close-all"
 
           # Screenshots (using grimshot or grim + slurp)
           "ALT CTRL, 3, exec, grimshot copy output"
