@@ -19,10 +19,10 @@
     "caelestia-cli": {
       "inputs": {
         "caelestia-shell": [
-          "caelestia-shell"
+          "hyprshell"
         ],
         "nixpkgs": [
-          "caelestia-shell",
+          "hyprshell",
           "nixpkgs"
         ]
       },
@@ -37,28 +37,6 @@
       "original": {
         "owner": "caelestia-dots",
         "repo": "cli",
-        "type": "github"
-      }
-    },
-    "caelestia-shell": {
-      "inputs": {
-        "caelestia-cli": "caelestia-cli",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "quickshell": "quickshell"
-      },
-      "locked": {
-        "lastModified": 1759273140,
-        "narHash": "sha256-vsGCVp6HCwnJ2Ki5X+q0jLfXsshRRloDyS9fwyDJQZ8=",
-        "owner": "ewtodd",
-        "repo": "HyprlandShell",
-        "rev": "5d3260184c0eb30656207d8a11e9aa5843a4f1de",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ewtodd",
-        "repo": "HyprlandShell",
         "type": "github"
       }
     },
@@ -119,6 +97,28 @@
         "owner": "nix-community",
         "ref": "release-25.05",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "hyprshell": {
+      "inputs": {
+        "caelestia-cli": "caelestia-cli",
+        "nixpkgs": [
+          "unstable"
+        ],
+        "quickshell": "quickshell"
+      },
+      "locked": {
+        "lastModified": 1759273140,
+        "narHash": "sha256-vsGCVp6HCwnJ2Ki5X+q0jLfXsshRRloDyS9fwyDJQZ8=",
+        "owner": "ewtodd",
+        "repo": "hyprshell",
+        "rev": "5d3260184c0eb30656207d8a11e9aa5843a4f1de",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "hyprshell",
         "type": "github"
       }
     },
@@ -265,7 +265,7 @@
     "quickshell": {
       "inputs": {
         "nixpkgs": [
-          "caelestia-shell",
+          "hyprshell",
           "nixpkgs"
         ]
       },
@@ -285,8 +285,8 @@
     },
     "root": {
       "inputs": {
-        "caelestia-shell": "caelestia-shell",
         "home-manager": "home-manager",
+        "hyprshell": "hyprshell",
         "nix-colors": "nix-colors",
         "nix-mineral": "nix-mineral",
         "nixpkgs": "nixpkgs",
