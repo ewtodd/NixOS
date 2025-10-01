@@ -1,11 +1,15 @@
-{ config, lib, osConfig, ... }:
+{ lib, osConfig, ... }:
 with lib;
 let deviceType = osConfig.DeviceType;
 in {
   imports = [
-    ./hyprshell.nix
+    #  ./hyprshell.nix
+    ./launcher/rofi.nix
     ./settings/colors.nix
+    ./services/swaync.nix
+    ./services/wlogout.nix
     ./services/hypridle.nix
+    ./services/hyprpaper.nix
     ./services/hyprlock.nix
   ]
   # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
@@ -31,13 +35,15 @@ in {
 
         "$terminal" = "kitty";
         "$fileManager" = "dolphin";
-        "$menu" = "wofi --show drun";
+        "$menu" = "rofi -show drun -matching fuzzy | xargs swaymsg exec --";
         "$mainMod" = "SUPER";
 
         exec-once = [
           "blueman-applet"
+          "birdtray"
           "udiskie --tray"
           "gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'"
+          "waybar"
         ];
 
         # General settings
@@ -114,7 +120,8 @@ in {
         # Miscellaneous settings
         misc = {
           force_default_wallpaper = -1;
-          disable_hyprland_logo = false;
+          disable_splash_rendering = true;
+          disable_hyprland_logo = true;
         };
 
         # Input settings
@@ -153,6 +160,7 @@ in {
           "SUPER SHIFT, g, exec, firefox --private-window https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"
 
           # Lock screen (using swaylock or similar)
+          "SUPER, m, exec, wlogout -p layer-shell --buttons-per-row 2"
 
           # Focus movement (hjkl keys)
           "SUPER, h, movefocus, l"
