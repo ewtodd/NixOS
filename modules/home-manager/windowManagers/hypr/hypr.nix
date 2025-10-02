@@ -14,6 +14,7 @@ in {
     ./services/hyprpaper.nix
     ./services/hyprsunset.nix
     ./services/hyprlock.nix
+    ./services/avizo.nix
   ]
   # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "framework") [ ./settings/framework.nix ]
@@ -37,8 +38,12 @@ in {
           "waybar"
         ];
 
-        layerrule =
-          [ "blur, waybar" "blur, swaync-control-center" "blur, rofi" ];
+        layerrule = [
+          "blur, waybar"
+          "blur, swaync-control-center"
+          "blur, rofi"
+          "blur, avizo"
+        ];
 
         windowrule = [
           "float, class:(thunderbird), title:^Write:.*"
@@ -242,14 +247,13 @@ in {
 
         # Volume and brightness controls using brightnessctl
         bindel = [
-          ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
-          ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-          ",XF86MonBrightnessUp, exec, brightnessctl set 5%+"
-          ",XF86MonBrightnessDown, exec, brightnessctl set 5%-"
-          ",F8, exec, brightnessctl set 5%+"
-          ",F7, exec, brightnessctl set 5%-"
+          ",XF86AudioRaiseVolume, exec, volumectl -u up"
+          ",XF86AudioLowerVolume, exec, volumectl -u down"
+          ",XF86AudioMute, exec, volumectl toggle-mute"
+          ",XF86MonBrightnessUp, exec, lightctl up"
+          ",XF86MonBrightnessDown, exec, lightctl down"
+          ",F8, exec, lightctl up"
+          ",F7, exec, lightctl down"
         ];
 
         # Media controls (requires playerctl)
