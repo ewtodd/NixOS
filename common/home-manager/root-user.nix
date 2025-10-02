@@ -6,6 +6,7 @@
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
+  xdg.portal.config.common.default = "*";
   colorScheme = inputs.nix-colors.colorSchemes.dracula;
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };

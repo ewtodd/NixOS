@@ -143,7 +143,10 @@ in {
           sensitivity = 0;
 
           natural_scroll = true;
-          touchpad = { natural_scroll = true; };
+          touchpad = {
+            natural_scroll = true;
+            clickfinger_behavior = true;
+          };
         };
 
         # Gestures
@@ -224,14 +227,9 @@ in {
           "SUPER SHIFT, 0, movetoworkspace, 10"
 
           # Layout management
-          "SUPER SHIFT, f, fullscreen,"
-          "SUPER SHIFT, space, togglefloating,"
-          "SUPER, space, focusurgentorlast," # Closest equivalent to focus mode_toggle
-          "SUPER, a, focusmonitor, +1" # Focus parent equivalent (focus next monitor)
-
-          # Scratchpad (special workspace in Hyprland)
-          "SUPER SHIFT, minus, movetoworkspace, special:scratchpad"
-          "SUPER, minus, togglespecialworkspace, scratchpad"
+          "SUPER SHIFT, f, fullscreen"
+          "SUPER, space, togglefloating"
+          "SUPER SHIFT, space, centerwindow"
 
           # Notifications
           "SUPER SHIFT, n, exec, swaync-client -t"
