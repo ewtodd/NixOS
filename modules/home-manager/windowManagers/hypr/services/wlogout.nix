@@ -71,7 +71,7 @@ in {
     layout = [
       {
         label = "logout";
-        action = "hyprctl dispatch exit";
+        action = "uwsm stop";
         text = "Logout";
         keybind = "l";
       }

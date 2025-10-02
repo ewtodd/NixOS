@@ -1,29 +1,31 @@
-{ pkgs, ... }: {
-  services.swayidle = {
+{ inputs, pkgs, ... }:
+let unstable = import inputs.unstable { system = "x86_64-linux"; };
+in {
+  services.hypridle = {
     enable = true;
-    package = pkgs.swayidle;
-    extraArgs = [ "-w" ];
+    package = unstable.hypridle;
+    settings = {
+      general = {
+        after_sleep_cmd = "hyprctl dispatch dpms on";
+        ignore_dbus_inhibit = false;
+        lock_cmd = "hyprlock";
+      };
 
-    timeouts = [
-      {
-        timeout = 600;
-        command = "${pkgs.hyprlock}/bin/hyprlock";
-      }
-      {
-        timeout = 660;
-        command = "${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
-      }
-    ];
-
-    events = [
-      {
-        event = "before-sleep";
-        command = "${pkgs.hyprlock}/bin/hyprlock";
-      }
-      {
-        event = "after-resume";
-        command = "${pkgs.swayfx}/bin/swaymsg 'output * power on'";
-      }
-    ];
+      listener = [
+        {
+          timeout = 600;
+          on-timeout = "hyprlock";
+        }
+        {
+          timeout = 660;
+          on-timeout = "hyprctl dispatch dpms off && ";
+          on-resume = "hyprctl dispatch dpms on";
+        }
+        {
+          timeout = 900;
+          on-timeout = "${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
+        }
+      ];
+    };
   };
 }
