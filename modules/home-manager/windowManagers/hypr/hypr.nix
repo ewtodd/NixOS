@@ -4,6 +4,7 @@ let deviceType = osConfig.DeviceType;
 in {
   imports = [
     #  ./hyprshell.nix
+    ./plugins.nix
     ./launcher/rofi.nix
     ./settings/colors.nix
     ./settings/profile.nix
@@ -46,7 +47,10 @@ in {
         layerrule =
           [ "blur, waybar" "blur, swaync-control-center" "blur, rofi" ];
 
-        windowrule = [ "float, class:(thunderbird), title:^Write:.*" ];
+        windowrule = [
+          "float, class:(thunderbird), title:^Write:.*"
+          "float, class:(org.pulseaudio.pavucontrol), title:Volume Control"
+        ];
 
         ecosystem = { no_update_news = true; };
 
