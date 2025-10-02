@@ -34,11 +34,10 @@
           geant4.data.G4TENDL
           geant4.data.G4RadioactiveDecay
           (python3.withPackages
-            (python-pkgs: with python-pkgs; [ matplotlib numpy mplhep uproot]))
+            (python-pkgs: with python-pkgs; [ matplotlib numpy mplhep uproot ]))
         ];
         shellHook = ''
           export QT_QPA_PLATFORM="xcb";
-          export LIBGL_ALWAYS_SOFTWARE=1
         '';
       };
     };
