@@ -16,10 +16,6 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
-    # hyprshell = {
-    #   url = "github:ewtodd/hyprshell";
-    #   inputs.nixpkgs.follows = "unstable";
-    # };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {

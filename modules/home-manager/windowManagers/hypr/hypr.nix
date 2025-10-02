@@ -6,6 +6,7 @@ in {
     #  ./hyprshell.nix
     ./launcher/rofi.nix
     ./settings/colors.nix
+    ./settings/profile.nix
     ./services/swaync.nix
     ./services/wlogout.nix
     ./services/hypridle.nix
@@ -13,11 +14,8 @@ in {
     ./services/hyprlock.nix
   ]
   # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
-    ++ optionals (deviceType == "framework") [
-      ./settings/framework.nix
-    ]
-    # ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ]
-  ;
+    ++ optionals (deviceType == "framework") [ ./settings/framework.nix ]
+    ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   config = {
     wayland.windowManager.hyprland = {
@@ -47,6 +45,10 @@ in {
 
         layerrule =
           [ "blur, waybar" "blur, swaync-control-center" "blur, rofi" ];
+
+        windowrule = [ "float, class:(thunderbird), title:^Write:.*" ];
+
+        ecosystem = { no_update_news = true; };
 
         # General settings
         general = {
@@ -136,6 +138,7 @@ in {
           follow_mouse = 1;
           sensitivity = 0;
 
+          natural_scroll = true;
           touchpad = { natural_scroll = true; };
         };
 
