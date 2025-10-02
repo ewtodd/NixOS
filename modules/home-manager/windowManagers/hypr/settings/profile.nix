@@ -29,11 +29,11 @@ in {
 
           # Workspace monitor assignments
           workspace = [
-            "1, monitor:${primaryMonitor}"
+            "1, monitor:${primaryMonitor}, default:true"
             "2, monitor:${primaryMonitor}"
             "3, monitor:${primaryMonitor}"
             "4, monitor:${primaryMonitor}"
-            "5, monitor:${secondaryMonitor}"
+            "5, monitor:${secondaryMonitor}, default:true"
             "6, monitor:${secondaryMonitor}"
           ];
 
@@ -64,11 +64,11 @@ in {
 
           # Workspace monitor assignments  
           workspace = [
-            "1, monitor:${primaryMonitor}"
+            "1, monitor:${primaryMonitor}, default:true"
             "2, monitor:${primaryMonitor}"
             "3, monitor:${primaryMonitor}"
             "4, monitor:${primaryMonitor}"
-            "5, monitor:${secondaryMonitor}"
+            "5, monitor:${secondaryMonitor}, default:true"
             "6, monitor:${secondaryMonitor}"
           ];
 

@@ -12,6 +12,7 @@ in {
     ./services/wlogout.nix
     ./services/hypridle.nix
     ./services/hyprpaper.nix
+    ./services/hyprsunset.nix
     ./services/hyprlock.nix
   ]
   # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
@@ -21,22 +22,14 @@ in {
   config = {
     wayland.windowManager.hyprland = {
       enable = true;
-      package = null;
+      package = osConfig.programs.hyprland.package;
       xwayland.enable = true;
       systemd.enable = false;
 
       settings = {
 
-        "$left" = "h";
-        "$down" = "j";
-        "$up" = "k";
-        "$right" = "l";
-
         "$terminal" = "kitty";
-        "$fileManager" = "dolphin";
         "$menu" = "rofi -show drun -matching fuzzy | xargs swaymsg exec --";
-        "$mainMod" = "SUPER";
-
         exec-once = [
           "blueman-applet"
           "udiskie --tray"
@@ -229,6 +222,7 @@ in {
           # Layout management
           "SUPER SHIFT, f, fullscreen"
           "SUPER, space, togglefloating"
+          "SUPER, space, centerwindow"
           "SUPER SHIFT, space, centerwindow"
 
           # Notifications
