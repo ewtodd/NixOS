@@ -4,7 +4,7 @@
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/amd-graphics.nix
     ../../modules/nixos/hardware/suzyqable.nix
-    ../../modules/nixos/desktops/desktopEnvironment-grayscale-dark.nix
+    ../../modules/nixos/desktops/desktopEnvironment.nix
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
     ../../modules/nixos/services/sunshine.nix
@@ -22,7 +22,7 @@
   # Configure ROCm targets for RX 7900 XTX
   nixpkgs.config.rocmTargets = [ "gfx1100" ];
 
-  WindowManager = "sway";
+  WindowManager = "hyprland";
   DeviceType = "desktop";
   users.users.e-play = {
     isNormalUser = true;

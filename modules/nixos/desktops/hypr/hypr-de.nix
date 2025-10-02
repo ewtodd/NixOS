@@ -30,6 +30,8 @@ in {
       udiskie
       glib
       brightnessctl
+      jq
+      nautilus
       playerctl
     ];
 

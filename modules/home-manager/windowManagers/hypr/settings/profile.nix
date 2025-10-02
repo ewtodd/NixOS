@@ -10,121 +10,81 @@ let
 in {
   config = mkMerge [
     (mkIf (config.Profile == "work") {
-      wayland.windowManager.sway = {
-        config = {
-          assigns = {
-            "3" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
-              app_id = "Slack";
-            }] ++ optionals (osConfig.DeviceType == "desktop") [{
-              class = "Todoist";
-            }];
-            "4" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
-              class = "Todoist";
-            }];
-            "2" = [{ app_id = "thunderbird"; }]
-              ++ optionals (osConfig.DeviceType == "desktop") [{
-                app_id = "Slack";
-              }];
-          };
-          workspaceOutputAssign = [
-            {
-              workspace = "1";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "2";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "3";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "4";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "5";
-              output = "${secondaryMonitor}";
-            }
-            {
-              workspace = "6";
-              output = "${secondaryMonitor}";
-            }
+      wayland.windowManager.hyprland = {
+        settings = {
+          # Window rules for assigns (equivalent to sway assigns)
+          windowrulev2 = [
+            # Workspace 3 assignments
+          ] ++ optionals (osConfig.DeviceType != "desktop")
+            [ "workspace 3, class:(Slack)" ]
+            ++ optionals (osConfig.DeviceType == "desktop")
+            [ "workspace 3, class:(Todoist)" ] ++ [
+              # Workspace 4 assignments  
+            ] ++ optionals (osConfig.DeviceType != "desktop")
+            [ "workspace 4, class:(Todoist)" ] ++ [
+              # Workspace 2 assignments
+              "workspace 2, class:(thunderbird)"
+            ] ++ optionals (osConfig.DeviceType == "desktop")
+            [ "workspace 2, class:(Slack)" ];
 
+          # Workspace monitor assignments
+          workspace = [
+            "1, monitor:${primaryMonitor}"
+            "2, monitor:${primaryMonitor}"
+            "3, monitor:${primaryMonitor}"
+            "4, monitor:${primaryMonitor}"
+            "5, monitor:${secondaryMonitor}"
+            "6, monitor:${secondaryMonitor}"
           ];
 
           # Work-specific keybindings
-          keybindings = {
-            "Mod4+g" =
-              "exec firefox --new-window -url https://umgpt.umich.edu/";
-          };
+          bind =
+            [ "SUPER, g, exec, firefox --new-window https://umgpt.umich.edu/" ];
 
-          startup = [
-            { command = "thunderbird"; }
-            { command = "slack"; }
-            { command = "todoist-electron"; }
-            { command = "swaymsg 'workspace 1'"; }
-            { command = "sh -c 'sleep 10 && birdtray'"; }
+          # Startup applications
+          exec-once = [
+            "thunderbird"
+            "slack"
+            "todoist-electron"
+            "sleep 2 && hyprctl dispatch workspace 1"
           ];
         };
-        extraConfig = ''
-          layer_effects "waybar" blur enable; shadows enable
-        '';
       };
     })
 
     (mkIf (config.Profile == "play") {
-      wayland.windowManager.sway = {
-        config = {
-          assigns = {
-            "2" = [{ class = "steam"; }];
-            "3" = [{ app_id = "spotify"; }];
-            "5" = [{ app_id = "signal"; }];
-          };
-          workspaceOutputAssign = [
-            {
-              workspace = "1";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "2";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "3";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "4";
-              output = "${primaryMonitor}";
-            }
-            {
-              workspace = "5";
-              output = "${secondaryMonitor}";
-            }
-            {
-              workspace = "6";
-              output = "${secondaryMonitor}";
-            }
+      wayland.windowManager.hyprland = {
+        settings = {
+          # Window rules for assigns
+          windowrulev2 = [
+            "workspace 2, class:(steam)"
+            "workspace 3, class:(Spotify)"
+            "workspace 5, class:(Signal)"
+          ];
 
+          # Workspace monitor assignments  
+          workspace = [
+            "1, monitor:${primaryMonitor}"
+            "2, monitor:${primaryMonitor}"
+            "3, monitor:${primaryMonitor}"
+            "4, monitor:${primaryMonitor}"
+            "5, monitor:${secondaryMonitor}"
+            "6, monitor:${secondaryMonitor}"
           ];
 
           # Play-specific keybindings
-          keybindings = {
-            "Mod4+Shift+t" = "exec firefox --new-window https://monkeytype.com";
-          };
+          bind = [
+            "SUPER SHIFT, t, exec, firefox --new-window https://monkeytype.com"
+          ];
 
-          # Play-specific startup applications
-          startup = [
-            { command = "steam"; }
-            { command = "spotify"; }
-            { command = "sh -c 'sleep 2 && signal-desktop --use-tray-icon'"; }
+          # Startup applications
+          exec-once = [
+            "steam"
+            "spotify"
+            "sleep 2 && signal-desktop --use-tray-icon"
+            "sleep 2 && hyprctl dispatch workspace 1"
           ];
         };
-        extraConfig = ''
-          layer_effects "waybar" blur enable; shadows enable
-        '';
       };
     })
   ];
