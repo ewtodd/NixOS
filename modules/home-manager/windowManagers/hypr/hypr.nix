@@ -246,7 +246,7 @@ in {
           [ "SUPER, mouse:272, movewindow" "SUPER, mouse:273, resizewindow" ];
 
         # Volume and brightness controls using brightnessctl
-        bindel = [
+        binde= [
           ",XF86AudioRaiseVolume, exec, volumectl -u up"
           ",XF86AudioLowerVolume, exec, volumectl -u down"
           ",XF86AudioMute, exec, volumectl toggle-mute"
