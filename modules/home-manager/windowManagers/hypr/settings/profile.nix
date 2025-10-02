@@ -45,7 +45,7 @@ in {
           exec-once = [
             "thunderbird"
             "slack"
-            "todoist-electron"
+            "todoist-electron --enable-features=UseOzonePlatform --ozone-platform=wayland"
             "sleep 2 && hyprctl dispatch workspace 1"
           ];
         };

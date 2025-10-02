@@ -19,7 +19,7 @@
   Profile = "play";
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
-
+  xdg.portal.config.common.default = "*";
   programs.bash = {
     enable = true;
     enableCompletion = true;

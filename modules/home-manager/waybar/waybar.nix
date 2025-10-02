@@ -25,8 +25,10 @@ in {
             "custom/gpu"
             "custom/gpumemory"
           ] ++ [ "network" "pulseaudio" ]
-          ++ optionals (deviceType != "desktop") [ "battery" ]
-          ++ [ "custom/notification" ];
+          ++ optionals (deviceType != "desktop") [
+            "power-profiles-daemon"
+            "battery"
+          ] ++ [ "custom/notification" ];
         "${windowManager}/window" = {
           format = "";
           max-length = 0;
@@ -148,7 +150,17 @@ in {
           };
           tooltip = false;
         };
-
+        power-profiles-daemon = {
+          "format" = "{icon}";
+          "tooltip-format" = "Power profile= {profile}";
+          "tooltip" = true;
+          "format-icons" = {
+            "default" = "";
+            "performance" = "";
+            "balanced" = "";
+            "power-saver" = "";
+          };
+        };
       }];
     };
   };
