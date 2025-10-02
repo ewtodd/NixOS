@@ -1,5 +1,4 @@
-{ config, lib, ... }:
-
+{ config, ... }:
 let colors = config.colorScheme.palette;
 in {
   wayland.windowManager.hyprland = {
@@ -22,9 +21,7 @@ in {
       };
 
       # Misc settings with colors
-      misc = {
-        background_color = "rgba(${colors.base00}ff)";
-      };
+      misc = { background_color = "rgba(${colors.base00}ff)"; };
     };
   };
 }

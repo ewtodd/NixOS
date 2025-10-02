@@ -58,8 +58,8 @@ in {
           # Window rules for assigns
           windowrulev2 = [
             "workspace 2, class:(steam)"
-            "workspace 3, class:(Spotify)"
-            "workspace 5, class:(Signal)"
+            "workspace 3, class:(spotify)"
+            "workspace 5, class:(signal)"
           ];
 
           # Workspace monitor assignments  
