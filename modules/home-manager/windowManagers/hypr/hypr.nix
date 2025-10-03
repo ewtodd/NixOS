@@ -47,11 +47,15 @@ in {
 
         windowrule = [
           "float, class:(thunderbird), title:^Write:.*"
-          "float, class:(org.pulseaudio.pavucontrol), title:Volume Control"
-          "float, class:(floatingkitty)"
           "size 60% 60%, class:(thunderbird), title:^Write:.*"
+          "float, class:(org.pulseaudio.pavucontrol), title:Volume Control"
+
           "size 60% 60%, class:(org.pulseaudio.pavucontrol), title:Volume Control"
+          "float, class:(floatingkitty)"
           "size 60% 60%, class:(floatingkitty)"
+          "float, class:(firefox), title:File Upload"
+
+          "size 60% 60%, class:(firefox), title:File Upload"
 
         ];
 
