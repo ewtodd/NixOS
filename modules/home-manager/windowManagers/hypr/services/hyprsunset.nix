@@ -11,7 +11,7 @@ in {
     }
 
     profile {
-        time = 21:00
+        time = 19:45
         temperature = 4750 
     }
   '';
