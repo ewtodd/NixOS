@@ -13,6 +13,7 @@
     ../../modules/nixos/packages/todoist.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/freecad.nix
+    ../../modules/nixos/packages/blender-hip.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/docker.nix
