@@ -115,7 +115,7 @@ in {
             󰀂  {ifname}
             ⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}'';
           "tooltip-format-disconnected" = "Disconnected";
-          "on-click" = "kitty 'nmtui'";
+          "on-click" = "kitty --class 'floatingkitty' 'nmtui'";
           interval = 5;
           nospacing = 1;
         };

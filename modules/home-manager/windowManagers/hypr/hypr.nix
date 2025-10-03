@@ -48,6 +48,11 @@ in {
         windowrule = [
           "float, class:(thunderbird), title:^Write:.*"
           "float, class:(org.pulseaudio.pavucontrol), title:Volume Control"
+          "float, class:(floatingkitty)"
+          "size 60% 60%, class:(thunderbird), title:^Write:.*"
+          "size 60% 60%, class:(org.pulseaudio.pavucontrol), title:Volume Control"
+          "size 60% 60%, class:(floatingkitty)"
+
         ];
 
         ecosystem = { no_update_news = true; };
@@ -159,6 +164,7 @@ in {
         bind = [
           # Basic window management
           "SUPER, Return, exec, $terminal"
+          "SUPER SHIFT, Return, exec, $terminal --class 'floatingkitty'"
           "SUPER SHIFT, q, killactive,"
           "SUPER, d, exec, $menu"
 
@@ -246,7 +252,7 @@ in {
           [ "SUPER, mouse:272, movewindow" "SUPER, mouse:273, resizewindow" ];
 
         # Volume and brightness controls using brightnessctl
-        binde= [
+        binde = [
           ",XF86AudioRaiseVolume, exec, volumectl -u up"
           ",XF86AudioLowerVolume, exec, volumectl -u down"
           ",XF86AudioMute, exec, volumectl toggle-mute"

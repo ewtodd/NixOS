@@ -34,7 +34,6 @@ in {
             "3, monitor:${primaryMonitor}"
             "4, monitor:${primaryMonitor}"
             "5, monitor:${secondaryMonitor}, default:true"
-            "6, monitor:${secondaryMonitor}"
           ];
 
           # Work-specific keybindings
@@ -69,7 +68,6 @@ in {
             "3, monitor:${primaryMonitor}"
             "4, monitor:${primaryMonitor}"
             "5, monitor:${secondaryMonitor}, default:true"
-            "6, monitor:${secondaryMonitor}"
           ];
 
           # Play-specific keybindings
