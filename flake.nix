@@ -16,6 +16,10 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
+    hyprlock-greetd = {
+      url = "github:PaideiaDilemma/hyprlock?ref=greetdLogin";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
