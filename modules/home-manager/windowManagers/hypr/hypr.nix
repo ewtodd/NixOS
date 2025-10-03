@@ -137,6 +137,7 @@ in {
           force_default_wallpaper = -1;
           disable_splash_rendering = true;
           disable_hyprland_logo = true;
+          enable_anr_dialog = false;
         };
 
         # Input settings
