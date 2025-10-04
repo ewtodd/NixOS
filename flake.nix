@@ -93,6 +93,31 @@
           ./hosts/server-mu/configuration.nix
         ];
       };
+      server-nu = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          system = "x86_64-linux";
+        };
+        modules = [
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; };
+              users = import ./hosts/server-nu/home.nix;
+            };
+          }
+          ./hosts/server-nu/configuration.nix
+        ];
+      };
+
       v-laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
