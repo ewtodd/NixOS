@@ -14,21 +14,17 @@ in {
         position = "top";
         spacing = 0;
         height = 34;
-        modules-left = [
+        modules-left = [ "custom/notification" "group/left" ];
+        modules-center = [
           "${windowManager}/workspaces"
           "${windowManager}/window"
           "${windowManager}/mode"
         ];
-        modules-center = [ "group/center" ];
         modules-right = [ "cpu" "memory" ]
           ++ optionals (deviceType == "desktop") [
             "custom/gpu"
             "custom/gpumemory"
-          ] ++ [ "network" "pulseaudio" ]
-          ++ optionals (deviceType != "desktop") [
-            "power-profiles-daemon"
-            "battery"
-          ] ++ [ "custom/notification" ];
+          ] ++ optionals (deviceType != "desktop") [ "battery" ];
         "${windowManager}/window" = {
           format = "";
           max-length = 0;
@@ -67,10 +63,12 @@ in {
           };
         };
 
-        "group/center" = {
+        "group/left" = {
           orientation = "inherit";
           drawer = { transition-duration = 200; };
-          modules = [ "clock" "tray" ];
+          modules = [ "clock" "network" "pulseaudio" ]
+            ++ optionals (deviceType != "desktop") [ "power-profiles-daemon" ]
+            ++ [ "tray" ];
         };
 
         tray = { spacing = 10; };
