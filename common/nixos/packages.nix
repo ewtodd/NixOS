@@ -11,8 +11,7 @@ in {
   environment.shellAliases = {
     vim = "nvim";
     ":q" = "exit";
-    nrs = "nh os switch /etc/nixos";
-    fix-nixos-git = "sudo chown $USER:users /etc/nixos/.git";
+    nrs = "nh os switch /home/nixos";
   };
   environment.systemPackages = with pkgs; [
     git
