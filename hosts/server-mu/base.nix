@@ -7,6 +7,9 @@
     ../../modules/nixos/packages/nix-mineral.nix
   ];
   DeviceType = "server";
+
+  programs.dconf.enable = true;
+
   users.users.mu = {
     isNormalUser = true;
     description = "mu server";

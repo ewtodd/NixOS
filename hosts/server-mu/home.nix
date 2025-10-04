@@ -5,7 +5,7 @@
       home.homeDirectory = "/home/mu";
       home.stateVersion = "25.05";
       imports = [
-        ../../common/home-manager/work-user.nix
+        ../../common/home-manager/root-user.nix
       ];
       programs.git = {
         enable = true;

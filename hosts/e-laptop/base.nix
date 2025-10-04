@@ -19,7 +19,7 @@
     ../../modules/nixos/packages/nix-mineral.nix
   ];
   WindowManager = "hyprland";
-  DeviceType = "framework";
+  DeviceType = "laptop";
   users.users.e-play = {
     isNormalUser = true;
     description = "ethan-play";
