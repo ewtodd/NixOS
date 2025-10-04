@@ -4,7 +4,6 @@
     ../../common/nixos/base.nix
     ../../modules/nixos/desktops/desktopEnvironment-grayscale-dark.nix
     ../../modules/nixos/services/suspend-then-hibernate.nix
-    ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/tailscale.nix
     #../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/moonlight.nix
