@@ -16,8 +16,7 @@ in {
     ./services/hyprlock.nix
     ./services/avizo.nix
   ]
-  # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
-    ++ optionals (deviceType == "framework") [ ./settings/framework.nix ]
+   ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   config = {

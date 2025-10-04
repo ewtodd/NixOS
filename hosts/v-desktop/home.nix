@@ -13,7 +13,10 @@
       enable = true;
       userName = "Valarie Milton";
       userEmail = "157831739+vael3429@users.noreply.github.com";
-      extraConfig = { init = { defaultBranch = "main"; }; };
+      extraConfig = {
+        init = { defaultBranch = "main"; };
+        safe.directory = "/etc/nixos";
+      };
     };
     WallpaperPath = "/etc/nixos/hosts/v-desktop/play.png";
     colorScheme = inputs.nix-colors.colorSchemes.eris;
@@ -36,7 +39,10 @@
         enable = true;
         userName = "Valarie Milton";
         userEmail = "157831739+vael3429@users.noreply.github.com";
-        extraConfig = { init = { defaultBranch = "main"; }; };
+        extraConfig = {
+          init = { defaultBranch = "main"; };
+          safe.directory = "/etc/nixos";
+        };
       };
       WallpaperPath = "/etc/nixos/hosts/v-desktop/work.png";
       colorScheme = inputs.nix-colors.colorSchemes.atelier-cave;

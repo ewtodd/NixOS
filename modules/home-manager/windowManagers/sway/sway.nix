@@ -16,7 +16,6 @@ in {
     ./services/wlogout.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
-    ++ optionals (deviceType == "framework") [ ./settings/framework.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   config = let colors = config.colorScheme.palette;

@@ -1,21 +1,9 @@
-{ config, pkgs, ... }: {
-  wayland.windowManager.sway = {
-    config = {
-      # Output configuration
-      output = {
-        "eDP-1" = {
-          resolution = "1920x1080";
-          position = "0,0";
-        };
-        "HDMI-A-2" = {
-          resolution = "1920x1080";
-          position = "-1920,0";
-        };
-      };
-      keybindings = {
-        "Mod4+Shift+V" = "output HDMI-A-2 mode 2560x1440 position -2560 0";
-      };
+{ ... }: {
+  wayland.windowManager.hyprland = {
+    settings = {
+      monitor =
+        [ "eDP-1,2256x1504@59.999,0x0,1.333333" "DP-3,1920x1080,-1920x0,1" ];
     };
-
   };
+  home.pointerCursor = { size = 48; };
 }

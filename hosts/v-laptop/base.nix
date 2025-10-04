@@ -3,7 +3,7 @@
   imports = [
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/openrgb.nix
-    ../../modules/nixos/desktops/desktopEnvironment-darkviolet.nix
+    ../../modules/nixos/desktops/
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/quickemu.nix
@@ -16,8 +16,8 @@
     ../../modules/nixos/packages/moonlight.nix
   ];
 
-  WindowManager = "sway";
-  DeviceType = "framework";
+  WindowManager = "hypr";
+  DeviceType = "laptop";
 
   users.users.v-play = {
     isNormalUser = true;

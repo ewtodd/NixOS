@@ -14,7 +14,8 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-
+  boot.plymouth.enable = true;
+  boot.initrd.systemd.enable = false;
   nix.settings = {
     auto-optimise-store = true;
     download-buffer-size = 524288000;
