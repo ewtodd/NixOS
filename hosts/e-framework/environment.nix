@@ -11,11 +11,10 @@
   boot.kernelParams = [
     "resume=/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"
     "mem_sleep_default=s2idle"
-    "no_console_suspend"
-    "pm_debug_messages"
-    "initcall_debug"
+    #  "no_console_suspend"
+    #  "pm_debug_messages"
+    #  "initcall_debug"
     "acpi.ec_no_wakeup=1"
-    "xe.force_probe=46a6"
   ];
   boot.extraModprobeConfig = ''
     options snd-intel-dspcfg dsp_driver=3
@@ -23,8 +22,8 @@
 
   systemd.services.disable-all-wakeups = {
     description = "Disable wakeup sources before suspend";
-    wantedBy = [ "suspend.target"  ];
-    before = [ "systemd-suspend.service"  ];
+    wantedBy = [ "suspend.target" ];
+    before = [ "systemd-suspend.service" ];
     path = [ pkgs.util-linux pkgs.findutils pkgs.coreutils ];
     serviceConfig = {
       Type = "oneshot";
@@ -64,8 +63,7 @@
     '';
   };
 
-  boot.blacklistedKernelModules =
-    [ "mei_hdcp" "mei_pxp" "mei" "cros_kbd_led_backlight" "i915" ];
+  boot.blacklistedKernelModules = [ "cros_kbd_led_backlight" ];
 
   boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 
