@@ -66,8 +66,7 @@ in {
         "group/left" = {
           orientation = "inherit";
           drawer = { transition-duration = 200; };
-          modules = [ "clock" "network" "pulseaudio" ]
-            ++ optionals (deviceType != "desktop") [ "power-profiles-daemon" ]
+          modules = [ "clock" "network" "pulseaudio" "power-profiles-daemon" ]
             ++ [ "tray" ];
         };
 
@@ -150,7 +149,7 @@ in {
         };
         power-profiles-daemon = {
           "format" = "{icon}";
-          "tooltip-format" = "Power profile= {profile}";
+          "tooltip-format" = "Power profile = {profile}";
           "tooltip" = true;
           "format-icons" = {
             "default" = "";
