@@ -1,0 +1,18 @@
+{
+  "nu" = { pkgs, inputs, ... }:
+     {
+      home.username = "nu";
+      home.homeDirectory = "/home/nu";
+      home.stateVersion = "25.05";
+      imports = [
+        ../../common/home-manager/root-user.nix
+      ];
+      programs.git = {
+        enable = true;
+        userName = "Ethan Todd";
+        userEmail = "30243637+ewtodd@users.noreply.github.com";
+        extraConfig = { init = { defaultBranch = "main"; }; };
+      };
+    };
+
+}
