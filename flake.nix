@@ -69,7 +69,7 @@
           ./hosts/e-desktop/configuration.nix
         ];
       };
-      e-laptop = nixpkgs.lib.nixosSystem {
+      server-mu = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
@@ -87,10 +87,10 @@
                 inputs.nix-colors.homeManagerModules.default
               ];
               extraSpecialArgs = { inherit inputs; };
-              users = import ./hosts/e-laptop/home.nix;
+              users = import ./hosts/server-mu/home.nix;
             };
           }
-          ./hosts/e-laptop/configuration.nix
+          ./hosts/server-mu/configuration.nix
         ];
       };
       v-framework = nixpkgs.lib.nixosSystem {
