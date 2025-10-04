@@ -17,7 +17,10 @@
         enable = true;
         userName = "Ethan Todd";
         userEmail = "30243637+ewtodd@users.noreply.github.com";
-        extraConfig = { init = { defaultBranch = "main"; }; };
+        extraConfig = {
+          init = { defaultBranch = "main"; };
+          safe.directory = "/etc/nixos";
+        };
       };
       xdg.desktopEntries.todoist-electron = {
         name = "Todoist";
@@ -42,7 +45,10 @@
       enable = true;
       userName = "Ethan Todd";
       userEmail = "30243637+ewtodd@users.noreply.github.com";
-      extraConfig = { init = { defaultBranch = "main"; }; };
+      extraConfig = {
+        init = { defaultBranch = "main"; };
+        safe.directory = "/etc/nixos";
+      };
     };
     programs.bash.shellAliases = {
       vpn = ''

@@ -4,7 +4,7 @@ with lib; {
   options = {
 
     DeviceType = mkOption {
-      type = types.enum [ "laptop" "framework" "desktop" ];
+      type = types.enum [ "server" "laptop" "desktop" ];
       default = "desktop";
       description = "Device type for hardware-specific configurations";
     };

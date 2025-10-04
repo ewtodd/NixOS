@@ -4,40 +4,67 @@
     enable = true;
     scheduler = "scx_bpfland";
   };
-  boot.loader.grub = {
-    enable = true;
-    device = "/dev/nvme0n1";
-    splashImage = null; # Disable splash image for text mode
-    font = null; # Force console mode
-    extraConfig = ''
-      GRUB_TERMINAL_OUTPUT="console"
-      GRUB_GFXMODE=1920x1080x32
-      GRUB_GFXPAYLOAD_LINUX=keep
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.kernelParams = [
+    "resume=/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"
+    "mem_sleep_default=s2idle"
+    #  "no_console_suspend"
+    #  "pm_debug_messages"
+    #  "initcall_debug"
+    "acpi.ec_no_wakeup=1"
+  ];
+  boot.extraModprobeConfig = ''
+    options snd-intel-dspcfg dsp_driver=3
+  '';
+
+  systemd.services.disable-all-wakeups = {
+    description = "Disable wakeup sources before suspend";
+    wantedBy = [ "suspend.target" ];
+    before = [ "systemd-suspend.service" ];
+    path = [ pkgs.util-linux pkgs.findutils pkgs.coreutils ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # Log what we're doing
+      echo "Disabling wakeup sources..." | systemd-cat -t disable-wakeups
+
+      # Disable specific problematic devices
+      for device in LID0 H02C XHCI TXHC TDM0 TDM1 TRP0 TRP1 TRP2 TRP3; do
+        if grep -q "^$device.*enabled" /proc/acpi/wakeup; then
+          echo "Disabling $device" | systemd-cat -t disable-wakeups
+          echo "$device" > /proc/acpi/wakeup 2>/dev/null || true
+        fi
+      done
+
+      # Find and disable Chrome EC wakeup (multiple possible paths)
+      for path in \
+        /sys/class/chromeos/cros_ec/wakeup \
+        /sys/devices/platform/GOOG0004:00/power/wakeup \
+        /sys/devices/platform/PNP0C09:00/power/wakeup; do
+        if [[ -f "$path" ]]; then
+          echo "Disabling Chrome EC wakeup at $path" | systemd-cat -t disable-wakeups
+          echo disabled > "$path" 2>/dev/null || true
+        fi
+      done
+
+      # Disable Intel PMC wakeups
+      find /sys/devices -path "*/intel_pmc_core*" -name "power/wakeup" 2>/dev/null | while read -r f; do
+        echo disabled > "$f" 2>/dev/null || true
+      done
+
+      # Log final state
+      echo "Final wakeup state:" | systemd-cat -t disable-wakeups
+      cat /proc/acpi/wakeup | systemd-cat -t disable-wakeups
     '';
   };
 
-  boot.initrd.luks.devices."luks-ae8141ce-edf4-4fea-b6b0-d8b4840de6c5".device =
-    "/dev/disk/by-uuid/ae8141ce-edf4-4fea-b6b0-d8b4840de6c5";
-  # Setup keyfile
-  boot.initrd.secrets = { "/boot/crypto_keyfile.bin" = null; };
+  boot.blacklistedKernelModules = [ "cros_kbd_led_backlight" ];
 
-  boot.loader.grub.enableCryptodisk = true;
+  boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 
-  boot.initrd.luks.devices."luks-5583f8f8-c4b2-4a11-9cce-5db033529ba6".keyFile =
-    "/boot/crypto_keyfile.bin";
-  boot.initrd.luks.devices."luks-ae8141ce-edf4-4fea-b6b0-d8b4840de6c5".keyFile =
-    "/boot/crypto_keyfile.bin";
-
-  services.logrotate.checkConfig = false;
-
-  boot.loader.grub.configurationLimit = 5;
-  boot.consoleLogLevel = 0;
-  boot.initrd.verbose = false;
-  boot.kernelParams = [
-    "quiet"
-    "splash"
-    "video=1920x1080"
-    "resume=/dev/disk/by-uuid/b71761c0-68fa-41ca-9921-fcc6eb207eff"
-  ];
-  boot.resumeDevice = "/dev/disk/by-uuid/b71761c0-68fa-41ca-9921-fcc6eb207eff";
 }
