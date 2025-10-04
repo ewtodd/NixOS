@@ -2,7 +2,6 @@
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   systemd.targets.tpm2 = { enable = false; };
-  services.power-profiles-daemon.enable = false;
   powerManagement = {
     enable = true;
     powertop.enable = false;
