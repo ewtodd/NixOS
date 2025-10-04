@@ -93,7 +93,7 @@
           ./hosts/server-mu/configuration.nix
         ];
       };
-      v-framework = nixpkgs.lib.nixosSystem {
+      v-laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
@@ -111,13 +111,13 @@
                 inputs.nix-colors.homeManagerModules.default
               ];
               extraSpecialArgs = { inherit inputs; };
-              users = import ./hosts/v-framework/home.nix;
+              users = import ./hosts/v-laptop/home.nix;
             };
           }
-          ./hosts/v-framework/configuration.nix
+          ./hosts/v-laptop/configuration.nix
         ];
       };
-      e-framework = nixpkgs.lib.nixosSystem {
+      e-laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
@@ -135,10 +135,10 @@
                 inputs.nix-colors.homeManagerModules.default
               ];
               extraSpecialArgs = { inherit inputs; };
-              users = import ./hosts/e-framework/home.nix;
+              users = import ./hosts/e-laptop/home.nix;
             };
           }
-          ./hosts/e-framework/configuration.nix
+          ./hosts/e-laptop/configuration.nix
         ];
       };
     };
