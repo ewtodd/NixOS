@@ -20,6 +20,7 @@
         extraConfig = {
           init = { defaultBranch = "main"; };
           safe.directory = "/etc/nixos";
+          core.sharedRepository = "group";
         };
       };
       xdg.desktopEntries.todoist-electron = {
@@ -48,6 +49,7 @@
       extraConfig = {
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
+        core.sharedRepository = "group";
       };
     };
     programs.bash.shellAliases = {

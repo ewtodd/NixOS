@@ -11,7 +11,7 @@ in {
   environment.shellAliases = {
     vim = "nvim";
     ":q" = "exit";
-    nrs = "nh os switch /home/nixos";
+    nrs = "nh os switch /etc/nixos";
   };
   environment.systemPackages = with pkgs; [
     git
