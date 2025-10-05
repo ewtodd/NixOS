@@ -1,4 +1,4 @@
-{ config, lib, osConfig, ... }:
+{ config, lib, osConfig, pkgs, ... }:
 with lib;
 
 let
@@ -20,7 +20,7 @@ in {
           "${windowManager}/window"
           "${windowManager}/mode"
         ];
-        modules-right = [ "cpu" "memory" ]
+        modules-right = [ "custom/cpu" "memory" ]
           ++ optionals (deviceType == "desktop") [
             "custom/gpu"
             "custom/gpumemory"
@@ -34,27 +34,31 @@ in {
           "on-click" = "activate";
           format = "{name}";
         };
-        cpu = {
-          interval = 5;
-          format = "{icon} {usage}%";
+
+        "custom/cpu" = {
+          exec = "${pkgs.writeShellScript "cpu-stats.sh" ''
+            cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{printf "%.f%%", 100 - $1}')
+            cpu_temp=$(${pkgs.lm_sensors}/bin/sensors 2>/dev/null | ${pkgs.gnugrep}/bin/grep "Package id 0:" | ${pkgs.gawk}/bin/awk '{gsub(/[^0-9.]/, "", $4); printf "%.0f", $4}')
+            cpu_freq=$(cat /proc/cpuinfo | grep "cpu MHz" | head -n1 | awk '{printf "%.1fGHz", $4/1000}')
+            echo "''${cpu_usage} ''${cpu_temp}°C ''${cpu_freq}"
+          ''}";
+          interval = 3;
+          format = "{icon} {}";
           format-icons = "";
-          states = {
-            warning = 70;
-            critical = 90;
-          };
         };
 
         "custom/gpu" = {
-          interval = 5;
-          exec = ''echo " $(nvtop -s 2>/dev/null | jq -r ".[0].gpu_util")"'';
+          interval = 3;
+          exec = ''
+            echo " $(nvtop -s 2>/dev/null | jq -r '.[0] | "\(.gpu_util) \(.temp | gsub("C"; "°C")) \(.gpu_clock)"')"'';
         };
         "custom/gpumemory" = {
-          interval = 5;
+          interval = 3;
           exec = ''echo "󰘚 $(nvtop -s 2>/dev/null | jq -r ".[0].mem_util")"'';
         };
 
         memory = {
-          interval = 5;
+          interval = 3;
           format = "{icon} {}%";
           format-icons = "";
           states = {

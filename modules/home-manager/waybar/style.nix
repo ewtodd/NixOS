@@ -151,7 +151,7 @@ in {
                                           }
 
                                           /* Group 2: Individual modules grouped together */
-                                          #cpu {
+                                          #custom-cpu {
                                             background-color: #${colors.base00};
                                             color: #${accentColor};
                                             padding: 8px 12px;
@@ -293,7 +293,7 @@ in {
                                             padding-top: 8px;
                                             padding-bottom: 8px;
                                             padding-left: 8px;
-                                            padding-right: 12px;  /* Increased right padding */ 
+                                            padding-right: 11px;  /* Increased right padding */ 
                                           border-radius: 8px 0 0 8px;  /* No longer rounded on right */ 
                                             margin:  6px 0  6px 3px;     /* No longer has right margin */ 
                                             border-right: 1px solid #${colors.base03};  /* Now has right border */ 

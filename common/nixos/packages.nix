@@ -12,6 +12,8 @@ in {
     vim = "nvim";
     ":q" = "exit";
     nrs = "nh os switch /etc/nixos";
+    fix-nixos-git =
+      "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
   };
   environment.systemPackages = with pkgs; [
     git
