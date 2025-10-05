@@ -11,6 +11,7 @@
       extraConfig = {
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
+        core.sharedRepository = "group";
       };
     };
   };

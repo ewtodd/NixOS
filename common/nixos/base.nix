@@ -16,6 +16,17 @@
   };
   boot.plymouth.enable = true;
   boot.initrd.systemd.enable = false;
+
+  users.groups.nixos-config = {
+    members = [ "e-play" "e-work" "v-play" "v-work" "mu" "nu" ];
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /etc/nixos 2770 root nixos-config - -"
+    "Z /etc/nixos 2770 root nixos-config - -"
+    "Z /etc/nixos/.git 2770 root nixos-config - -"
+  ];
+
   nix.settings = {
     auto-optimise-store = true;
     download-buffer-size = 524288000;
