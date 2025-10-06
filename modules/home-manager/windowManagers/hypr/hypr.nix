@@ -3,8 +3,7 @@ with lib;
 let deviceType = osConfig.DeviceType;
 in {
   imports = [
-    #  ./hyprshell.nix
-    ./plugins.nix
+    ./plugins/hyprexpo.nix
     ./launcher/rofi.nix
     ./settings/colors.nix
     ./settings/profile.nix
@@ -15,8 +14,7 @@ in {
     ./services/hyprsunset.nix
     ./services/hyprlock.nix
     ./services/avizo.nix
-  ]
-   ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+  ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   config = {
