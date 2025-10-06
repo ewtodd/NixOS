@@ -69,8 +69,8 @@ in {
       positionX = "left";
       positionY = "top";
       layer = "overlay";
-      control-center-layer = "top";
       layer-shell = true;
+      layer-shell-cover-screen = true;
       cssPriority = "application";
       control-center-margin-top = 0;
       control-center-margin-bottom = 0;
