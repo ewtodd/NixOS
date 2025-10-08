@@ -26,6 +26,9 @@ in {
 
       settings = {
 
+        xwayland = { force_zero_scaling = true; };
+        env = [ "GDK_SCALE, 2" ];
+
         "$terminal" = "kitty";
         "$menu" = "rofi -show drun -matching fuzzy | xargs swaymsg exec --";
         exec-once = [
@@ -40,6 +43,7 @@ in {
           "blur, swaync-control-center"
           "blur, rofi"
           "blur, avizo"
+          "blur, wlogout"
         ];
 
         windowrule = [
