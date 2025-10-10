@@ -12,7 +12,7 @@
         sway-contrib.grimshot
         jq
         libnotify
-        lxqt.pavucontrol-qt
+        pavucontrol
         pulseaudio
         gthumb
         nautilus
@@ -20,7 +20,6 @@
         udiskie
         glib
         gnome-themes-extra
-        brightnessctl
       ];
     };
     environment.shellAliases = {

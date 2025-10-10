@@ -108,13 +108,13 @@ in {
                                             border-radius: 0 8px 8px 0;
                                           }
 
-                                          #workspaces button.active {
+                                          #workspaces button.focused {
                                             background-color: #${colors.base00};
                                             color: #${accentColor};
                                             border: 2px solid #${colors.base04};
                                          }
 
-                                          #workspaces button.active:first-child:last-child {
+                                          #workspaces button.focused:first-child:last-child {
                                             background-color: #${colors.base00};
                                             color: #${accentColor};
                                             border: 2px solid #${colors.base04};

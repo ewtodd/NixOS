@@ -66,11 +66,11 @@ in {
   services.swaync = {
     enable = true;
     settings = {
-      positionX = "right";
+      positionX = "left";
       positionY = "top";
       layer = "overlay";
-      control-center-layer = "top";
       layer-shell = true;
+      layer-shell-cover-screen = true;
       cssPriority = "application";
       control-center-margin-top = 0;
       control-center-margin-bottom = 0;
@@ -85,7 +85,7 @@ in {
       timeout-low = 5;
       timeout-critical = 0;
       fit-to-screen = true;
-      control-center-width = 500;
+      control-center-width = 1000;
       notification-window-width = 500;
       keyboard-shortcuts = true;
       image-visibility = "when-available";
@@ -111,9 +111,9 @@ in {
 
     style = ''
       .control-center {
-        background-color: ${hexToRgba colors.base00 "0.45"};
+        background-color: ${hexToRgba colors.base00 "0.75"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
-        border-radius: 12px;
+        border-radius: 8px;
         margin: 18px;
         padding: 12px;
       }
@@ -123,7 +123,7 @@ in {
       }
 
       .notification {
-        background-color: ${hexToRgba colors.base01 "0.9"};
+        background-color: ${hexToRgba colors.base00 "1"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
         border-radius: 8px;
         margin: 6px 0;

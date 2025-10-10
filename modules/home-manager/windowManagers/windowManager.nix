@@ -9,7 +9,6 @@ let
   else
     null;
 in {
-  imports = [ ] ++ lib.optionals (windowManager == "sway") [ ./sway/sway.nix ]
-  ++ lib.optionals (windowManager == "hyprland") [ ./hypr/hypr.nix ];
+  imports = [ ] ++ lib.optionals (windowManager == "sway") [ ./sway/sway.nix ];
 
 }

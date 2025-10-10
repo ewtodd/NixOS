@@ -1,16 +1,21 @@
-{ config, pkgs, lib, ... }:
+{ config, osConfig, pkgs, lib, ... }:
 
 with lib;
 
 let
   colors = config.colorScheme.palette;
   profile = config.Profile;
+  deviceType = osConfig.DeviceType;
 
   # Font selection based on profile
   fontFamily = if profile == "work" then
     "FiraCode Nerd Font"
   else
     "JetBrains Mono Nerd Font";
+
+  # Scale font sizes for laptop with fractional scaling
+  baseFontSize = 32;
+  fontSize = if deviceType == "laptop" then 42 else baseFontSize;
 
   # Logo selection based on profile
   logoPath = if profile == "play" then
@@ -37,7 +42,7 @@ in {
       timestr = "%-I:%M %p";
       datestr = "%a, %b %d";
       font = fontFamily;
-      font-size = 32;
+      font-size = fontSize;
       indicator-radius = 150;
       show-failed-attempts = true;
       ignore-empty-password = true;
