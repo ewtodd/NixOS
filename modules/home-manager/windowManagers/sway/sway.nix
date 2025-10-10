@@ -3,16 +3,13 @@ with lib;
 let
   deviceType = osConfig.DeviceType;
   wallpaperPath = config.WallpaperPath;
-  primaryMonitor = if osConfig.DeviceType == "desktop" then "DP-3" else "eDP-1";
-  secondaryMonitor =
-    if osConfig.DeviceType == "desktop" then "HDMI-A-1" else "HDMI-A-2";
 in {
   imports = [
     ./settings/sway-colors.nix
     ./services/swayidle.nix
     ./services/swaync.nix
     ./services/swaylock.nix
-    ./services/swayosd.nix
+    ./services/avizo.nix
     ./services/wlogout.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
@@ -40,7 +37,7 @@ in {
 
         # Window appearance
         window = {
-          border = 1;
+          border = 3;
           titlebar = false;
         };
 
@@ -59,6 +56,8 @@ in {
           # Basic window management
           "Mod4+Return" =
             "exec ${config.wayland.windowManager.sway.config.terminal}";
+          "Mod4+Shift+Return" =
+            "exec ${config.wayland.windowManager.sway.config.terminal} --class 'floatingkitty'";
           "Mod4+Shift+q" = "kill";
           "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
 
@@ -70,7 +69,7 @@ in {
             "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
           "Mod4+Shift+g" =
             "exec firefox --private-window https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1";
-          "Mod4+k+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
+          "Mod1+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
           "Mod4+h" = "focus left";
           "Mod4+j" = "focus down";
           "Mod4+k" = "focus up";
@@ -114,19 +113,10 @@ in {
           "Mod4+Shift+9" = "move container to workspace number 9";
           "Mod4+Shift+0" = "move container to workspace number 10";
 
-          # Troubleshooting!
-          "Mod4+Shift+Return" =
-            "exec swaymsg -r -t get_outputs | jq '.[0].layer_shell_surfaces | .[] | .namespace' | xargs notify-send";
-
           # Layout management
           "Mod4+Shift+f" = "fullscreen";
-          "Mod4+Shift+space" = "floating toggle";
-          "Mod4+space" = "focus mode_toggle";
-          "Mod4+a" = "focus parent";
-
-          # Scratchpad
-          "Mod4+Shift+minus" = "move scratchpad";
-          "Mod4+minus" = "scratchpad show";
+          "Mod4+space" = "floating toggle";
+          "Mod4+Shift+space" = "move position center";
 
           # System controls
           "Mod4+Shift+c" = "reload";
@@ -144,19 +134,15 @@ in {
           "Mod1+Shift+control+3" = "exec grimshot --notify save output";
           "Mod1+Shift+control+4" = "exec grimshot --notify save area";
 
-          "XF86AudioRaiseVolume" = "exec swayosd-client --output-volume raise";
-          "XF86AudioLowerVolume" = "exec swayosd-client --output-volume lower";
-          "XF86AudioMute" = "exec swayosd-client --output-volume mute-toggle";
-          "XF86AudioMicMute" = "exec swayosd-client --input-volume mute-toggle";
+          "XF86AudioRaiseVolume" = "exec volumectl -u up";
+          "XF86AudioLowerVolume" = "exec volumectl -u down";
+          "XF86AudioMute" = "exec volumectl toggle-mute";
 
-          # Brightness controls with SwayOSD (for laptops)
-          "XF86MonBrightnessUp" = "exec swayosd-client --brightness raise";
-          "XF86MonBrightnessDown" = "exec swayosd-client --brightness lower";
-          "F8" = "exec swayosd-client --brightness raise";
-          "F7" = "exec swayosd-client --brightness lower";
+          "XF86MonBrightnessUp" = "exec lightctl up";
+          "XF86MonBrightnessDown" = "exec lightctl down";
+          "F8" = "exec lightctl up";
+          "F7" = "exec lightctl down";
 
-          # Caps lock indicator
-          "Caps_Lock" = "exec swayosd-client --caps-lock";
         };
 
         # Resize mode
@@ -209,14 +195,37 @@ in {
         dim_inactive_colors.urgent #${colors.base08}
 
         layer_effects "rofi" blur enable; shadows enable
+        layer_effects "avizo" blur enable; shadows enable
         layer_effects "gtk-layer-shell" blur enable; shadows enable
-        layer_effects "logout_dialog" blur enable 
-        layer_effects "swaync-control-center" blur enable; blur_ignore_transparent enable
+        layer_effects "logout_dialog" blur enable; shadows enable 
+        layer_effects "swaync-control-center" blur enable; shadows enable
+
         exec swaybg -i ${wallpaperPath}
-        exec blueman-applet
+        exec slueman-applet
         exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
         exec swaymsg workspace 1
+
+
+
+        # Thunderbird compose window
+        for_window [app_id="thunderbird" title="^Write:"] floating enable, resize set 60 ppt 60 ppt, move position center
+
+        # PulseAudio volume control
+        for_window [title="Volume Control"] floating enable, resize set 60 ppt 60 ppt, move position center
+
+        # Floating kitty terminal
+        for_window [app_id="floatingkitty"] floating enable, resize set 60 ppt 60 ppt, move position center
+
+        # Firefox file upload dialog
+        for_window [class="firefox" title="File Upload"] floating enable, resize set 60 ppt 60 ppt, move position center
+
+        # GEANT4 simulation window
+        for_window [class="sim"] floating enable, resize set 80 ppt 80 ppt, move position center
+
+        # ROOT plots 
+        for_window [class="ROOT"] floating enable, resize set 60 ppt 60 ppt, move position center
+
       '';
     };
   };

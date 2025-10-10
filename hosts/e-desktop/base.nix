@@ -24,7 +24,7 @@
   # Configure ROCm targets for RX 7900 XTX
   nixpkgs.config.rocmTargets = [ "gfx1100" ];
 
-  WindowManager = "hyprland";
+  WindowManager = "sway";
   DeviceType = "desktop";
   users.users.e-play = {
     isNormalUser = true;

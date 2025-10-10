@@ -4,7 +4,7 @@ let
   schemeName = colorScheme.slug;
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in {
-  imports = [ ./sway/sway-de.nix ./hypr/hypr-de.nix ];
+  imports = [ ./sway/sway-de.nix ];
   services.xserver = {
     enable = true;
     displayManager.startx.enable = false;
