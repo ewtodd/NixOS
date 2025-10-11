@@ -11,7 +11,7 @@ in {
     enable = true;
     package = pkgs.rofi-wayland;
     terminal = "${pkgs.kitty}/bin/kitty";
-    modes = [ "drun" "window" "ssh" ];
+    modes = [ "drun" "window" "ssh" "filebrowser" ];
     cycle = true;
     extraConfig = {
       show-icons = true;

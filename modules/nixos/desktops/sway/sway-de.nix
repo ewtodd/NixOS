@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, ... }: {
+{ pkgs, config, lib, ... }: {
   config = lib.mkIf (config.WindowManager == "sway") {
 
     programs.sway = {
@@ -37,23 +37,17 @@
       enable = true;
       terminal = "kitty";
     };
-    #  xdg = {
-    #    portal = {
-    #      enable = true;
-    #      config.common.default = "*";
-    #      wlr.enable = true;
-    #      wlr.settings = {
-    #        screencast = {
-    #          chooser_type = "dmenu";
-    #          chooser_cmd = "rofi -show drun";
-    #        };
-    #      };
-    #      extraPortals = with pkgs; [
-    #        xdg-desktop-portal-wlr
-    #        xdg-desktop-portal-gtk
-    #      ];
-    #    };
-    #  };
+    xdg = {
+      portal = {
+        enable = true;
+        wlr.settings = {
+          screencast = {
+            chooser_type = "dmenu";
+            chooser_cmd = "${pkgs.rofi-wayland}/bin/rofi -dmenu";
+          };
+        };
+      };
+    };
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
       GDK_SCALE = "2";
