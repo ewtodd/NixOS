@@ -5,6 +5,7 @@ with lib;
 let
   schemeName = config.colorScheme.slug;
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
+  fontFamily = config.FontChoice;
 in {
   config = mkIf config.gtk.enable {
 
@@ -21,7 +22,7 @@ in {
       };
 
       font = {
-        name = "JetBrainsMonoNF";
+        name = "${fontFamily}";
         size = 13;
       };
       gtk3.extraCss = ''

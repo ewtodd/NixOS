@@ -6,7 +6,6 @@
       package = pkgs.swayfx;
       extraPackages = with pkgs; [
         wlogout
-        birdtray
         wl-clipboard
         swaybg
         sway-contrib.grimshot
@@ -38,8 +37,27 @@
       enable = true;
       terminal = "kitty";
     };
-
-    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
+    #  xdg = {
+    #    portal = {
+    #      enable = true;
+    #      config.common.default = "*";
+    #      wlr.enable = true;
+    #      wlr.settings = {
+    #        screencast = {
+    #          chooser_type = "dmenu";
+    #          chooser_cmd = "rofi -show drun";
+    #        };
+    #      };
+    #      extraPortals = with pkgs; [
+    #        xdg-desktop-portal-wlr
+    #        xdg-desktop-portal-gtk
+    #      ];
+    #    };
+    #  };
+    environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      GDK_SCALE = "2";
+    };
     programs.ssh.enableAskPassword = false;
   };
 }

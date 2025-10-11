@@ -5,11 +5,12 @@ with lib;
 let
   colors = config.colorScheme.palette;
   opacity = "0.75";
+  fontFamily = config.FontChoice;
 in {
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {
       font = {
-        name = "JetBrains Mono Nerd Font";
+        name = "${fontFamily}";
         size = 13.0;
       };
 

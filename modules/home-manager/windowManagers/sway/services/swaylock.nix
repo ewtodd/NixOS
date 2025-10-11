@@ -8,10 +8,7 @@ let
   deviceType = osConfig.DeviceType;
 
   # Font selection based on profile
-  fontFamily = if profile == "work" then
-    "FiraCode Nerd Font"
-  else
-    "JetBrains Mono Nerd Font";
+  fontFamily = config.FontChoice;
 
   # Scale font sizes for laptop with fractional scaling
   baseFontSize = 32;

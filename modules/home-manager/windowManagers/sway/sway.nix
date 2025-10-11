@@ -3,6 +3,7 @@ with lib;
 let
   deviceType = osConfig.DeviceType;
   wallpaperPath = config.WallpaperPath;
+  fontFamily = config.FontChoice;
 in {
   imports = [
     ./settings/sway-colors.nix
@@ -48,7 +49,7 @@ in {
         };
 
         fonts = {
-          names = [ "JetBrains Mono Nerd Font" ];
+          names = [ "${fontFamily}" ];
           size = 12.0;
         };
 
