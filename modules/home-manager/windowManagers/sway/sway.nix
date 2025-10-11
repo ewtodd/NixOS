@@ -227,6 +227,9 @@ in {
         # ROOT plots 
         for_window [class="ROOT"] floating enable, resize set 60 ppt 60 ppt, move position center
 
+        #GNOME disks 
+        for_window [app_id="gnome-disks"] floating enable, resize set 60 ppt 60 ptt, move position center
+
       '';
     };
   };
