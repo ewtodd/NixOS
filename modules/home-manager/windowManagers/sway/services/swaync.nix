@@ -2,15 +2,6 @@
 
 let
   colors = config.colorScheme.palette;
-  profile = config.Profile;
-  accentColor = if profile == "work" then colors.base09 else colors.base0E;
-  # Font selection based on profile
-  fontFamily = if profile == "work" then
-    "FiraCode Nerd Font"
-  else
-    "JetBrains Mono Nerd Font";
-
-  # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
     if d == "0" then
       0

@@ -27,7 +27,7 @@
         name = "Todoist";
         noDisplay = true;
       };
-
+      FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
         "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
@@ -62,6 +62,7 @@
     };
     WallpaperPath =
       "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/kanagawa.png";
+    FontChoice = "Ubuntu Nerd Font";
     colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
   };
   "root" = { ... }: {

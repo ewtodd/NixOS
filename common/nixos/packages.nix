@@ -46,6 +46,8 @@ in {
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
     nerd-fonts.jetbrains-mono
+    nerd-fonts.space-mono
+    nerd-fonts.ubuntu
     fira-code
     fira-code-symbols
   ];

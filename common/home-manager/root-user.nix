@@ -18,4 +18,5 @@
       ll = "ls -l";
     };
   };
+  FontChoice = "JetBrains Mono Nerd Font";
 }

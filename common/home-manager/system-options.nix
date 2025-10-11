@@ -15,5 +15,15 @@ with lib;
         "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
       description = "Absolute path for wallpaper location";
     };
+    FontChoice = mkOption {
+      type = types.enum [
+        "JetBrains Mono Nerd Font"
+        "FiraCode Nerd Font"
+        "SpaceMono Nerd Font"
+        "Ubuntu Nerd Font"
+      ];
+      default = "JetBrains Mono Nerd Font";
+      description = "Font";
+    };
   };
 }

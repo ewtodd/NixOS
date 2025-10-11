@@ -16,10 +16,10 @@ in {
             "3" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
               app_id = "Slack";
             }] ++ optionals (osConfig.DeviceType == "desktop") [{
-              class = "Todoist";
+              app_id = "Todoist";
             }];
             "4" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
-              class = "Todoist";
+              app_id = "Todoist";
             }];
             "2" = [{ app_id = "thunderbird"; }]
               ++ optionals (osConfig.DeviceType == "desktop") [{
@@ -63,9 +63,11 @@ in {
           startup = [
             { command = "thunderbird"; }
             { command = "slack"; }
-            { command = "todoist-electron"; }
+            {
+              command =
+                "todoist-electron --enable-features=UseOzonePlatform --ozone-platform=wayland";
+            }
             { command = "swaymsg 'workspace 1'"; }
-            { command = "sh -c 'sleep 10 && birdtray'"; }
           ];
         };
         extraConfig = ''
