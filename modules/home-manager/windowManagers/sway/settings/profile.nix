@@ -62,7 +62,7 @@ in {
 
           startup = [
             { command = "thunderbird"; }
-            { command = "slack"; }
+            { command = "slack --enable-features=UseOzonePlatform --ozone-platform=wayland"; }
             {
               command =
                 "todoist-electron --enable-features=UseOzonePlatform --ozone-platform=wayland";
