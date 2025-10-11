@@ -4,6 +4,18 @@ let
   deviceType = osConfig.DeviceType;
   wallpaperPath = config.WallpaperPath;
   fontFamily = config.FontChoice;
+  toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
+    # Get the focused window's floating state
+    floating=$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused? == true) | .floating')
+
+    if [ "$floating" = "user_on" ] || [ "$floating" = "auto_on" ]; then
+        # If already floating, just toggle (disable floating)
+        ${pkgs.sway}/bin/swaymsg floating toggle
+    else
+        # If tiled, enable floating, resize, and center
+        ${pkgs.sway}/bin/swaymsg floating enable, resize set 75 ppt 75 ppt, move position center
+    fi
+  '';
 in {
   imports = [
     ./settings/sway-colors.nix
@@ -61,6 +73,8 @@ in {
             "exec ${config.wayland.windowManager.sway.config.terminal} --class 'floatingkitty'";
           "Mod4+Shift+q" = "kill";
           "Mod4+d" = "exec ${config.wayland.windowManager.sway.config.menu}";
+          "Mod4+Shift+d" =
+            "exec rofi -show filebrowser -matchine fuzzy -filebrowser-directory ~";
 
           "Mod4+f" = "exec firefox";
           "Mod4+Shift+p" = "exec firefox --private-window";
@@ -116,7 +130,7 @@ in {
 
           # Layout management
           "Mod4+Shift+f" = "fullscreen";
-          "Mod4+space" = "floating toggle";
+          "Mod4+space" = "exec ${toggle-float-smart}";
           "Mod4+Shift+space" = "move position center";
 
           # System controls
@@ -210,25 +224,25 @@ in {
 
 
         # Thunderbird compose window
-        for_window [app_id="thunderbird" title="^Write:"] floating enable, resize set 60 ppt 60 ppt, move position center
+        for_window [app_id="thunderbird" title="^Write:"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # PulseAudio volume control
-        for_window [title="Volume Control"] floating enable, resize set 60 ppt 60 ppt, move position center
+        for_window [title="Volume Control"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # Floating kitty terminal
-        for_window [app_id="floatingkitty"] floating enable, resize set 60 ppt 60 ppt, move position center
+        for_window [app_id="floatingkitty"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # Firefox file upload dialog
-        for_window [class="firefox" title="File Upload"] floating enable, resize set 60 ppt 60 ppt, move position center
+        for_window [class="firefox" title="File Upload"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # GEANT4 simulation window
-        for_window [class="sim"] floating enable, resize set 80 ppt 80 ppt, move position center
+        for_window [class="sim"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # ROOT plots 
-        for_window [class="ROOT"] floating enable, resize set 60 ppt 60 ppt, move position center
+        for_window [class="ROOT"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         #GNOME disks 
-        for_window [app_id="gnome-disks"] floating enable, resize set 60 ppt 60 ptt, move position center
+        for_window [app_id="gnome-disks"] floating enable, resize set 75 ppt 75 ptt, move position center
 
       '';
     };
