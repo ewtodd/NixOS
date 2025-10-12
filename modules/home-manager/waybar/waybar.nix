@@ -32,17 +32,7 @@ in {
 
         "${windowManager}/workspaces" = {
           "on-click" = "activate";
-          format = "{icon}";
-          format-icons = {
-            "1" = "󰪞";
-            "2" = "󰪟";
-            "3" = "󰪠";
-            "4" = "󰪡";
-            "5" = "󰪢";
-            "6" = "󰪣";
-            "7" = "󰪤";
-            "8" = "󰪥";
-          };
+          format = "{name}";
         };
 
         "custom/cpu" = {

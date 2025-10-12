@@ -4,7 +4,6 @@ result-*
 
 *.deb
 
-packages/swayfx
 
 # Ignore automatically generated direnv output
 .direnv
