@@ -1,6 +1,7 @@
-{ pkgs, inputs, ... }: {
+{ inputs, ... }: {
   imports = [
     ./system-options.nix
+    ./xdg.nix
     ./kitty/kitty.nix
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix

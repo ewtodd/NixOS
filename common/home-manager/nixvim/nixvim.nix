@@ -1,6 +1,4 @@
-{ config, lib, ... }:
-
-with lib;
+{ config, ... }:
 
 let colors = config.colorScheme.palette;
 in {
@@ -33,5 +31,16 @@ in {
       };
     };
   };
-
+  xdg.desktopEntries = {
+    nvim = {
+      name = "Neovim";
+      genericName = "Text Editor";
+      comment = "Edit text files";
+      exec = "kitty nvim %F";
+      icon = "nvim";
+      type = "Application";
+      terminal = false; # Set to false since we're explicitly calling kitty
+      categories = [ "Utility" "TextEditor" "Development" ];
+    };
+  };
 }

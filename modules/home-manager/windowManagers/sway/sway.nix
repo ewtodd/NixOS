@@ -24,6 +24,7 @@ in {
     ./services/swaylock.nix
     ./services/avizo.nix
     ./services/wlogout.nix
+    ./services/non-sway.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
@@ -216,8 +217,6 @@ in {
         layer_effects "swaync-control-center" blur enable; shadows enable
 
         exec swaybg -i ${wallpaperPath}
-        exec slueman-applet
-        exec udiskie --tray
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
         exec swaymsg workspace 1
 
