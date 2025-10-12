@@ -16,6 +16,12 @@ let
         ${pkgs.sway}/bin/swaymsg floating enable, resize set 75 ppt 75 ppt, move position center
     fi
   '';
+  open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
+    ${pkgs.firefox-wayland}/bin/firefox --new-window \
+      -url https://search.nixos.org/packages \
+      -new-tab -url https://search.nixos.org/options? \
+      -new-tab -url https://home-manager-options.extranix.com/ &
+  '';
 in {
   imports = [
     ./settings/sway-colors.nix
@@ -81,10 +87,10 @@ in {
           "Mod4+Shift+p" = "exec firefox --private-window";
           "Mod4+n" =
             "exec firefox https://nix-community.github.io/nixvim/25.05/";
-          "Mod4+p" =
-            "exec firefox --new-window -url https://search.nixos.org/packages -new-tab -url https://search.nixos.org/options? -new-tab -url https://home-manager-options.extranix.com/";
+          "Mod4+p" = "exec ${open-nix-docs}";
           "Mod4+Shift+g" =
             "exec firefox --private-window https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1";
+
           "Mod1+l" = "exec ${pkgs.swaylock-effects}/bin/swaylock";
           "Mod4+h" = "focus left";
           "Mod4+j" = "focus down";
@@ -133,6 +139,7 @@ in {
           "Mod4+Shift+f" = "fullscreen";
           "Mod4+space" = "exec ${toggle-float-smart}";
           "Mod4+Shift+space" = "move position center";
+          "Mod4+t" = "focus mode_toggle";
 
           # System controls
           "Mod4+Shift+c" = "reload";
@@ -232,7 +239,7 @@ in {
         for_window [app_id="floatingkitty"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # Firefox file upload dialog
-        for_window [class="firefox" title="File Upload"] floating enable, resize set 75 ppt 75 ppt, move position center
+        for_window [app_id="firefox" title="File Upload"] floating enable, resize set 75 ppt 75 ppt, move position center
 
         # GEANT4 simulation window
         for_window [class="sim"] floating enable, resize set 75 ppt 75 ppt, move position center
