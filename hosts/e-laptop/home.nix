@@ -32,7 +32,6 @@
         "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
-
   "e-work" = { inputs, ... }: {
     home.username = "e-work";
     home.homeDirectory = "/home/e-work";
@@ -69,6 +68,16 @@
     home.username = "root";
     home.stateVersion = "25.05";
     imports = [ ../../common/home-manager/root-user.nix ];
+  };
+  "gdm" = { lib, ... }: {
+    dconf.settings = {
+      "org/gnome/mutter" = {
+        experimental-features =
+          lib.hm.gvariant.mkArray lib.hm.gvariant.type.string
+          [ "scale-monitor-framebuffer" ];
+      };
+    };
+    home.stateVersion = "25.05";
   };
 
 }
