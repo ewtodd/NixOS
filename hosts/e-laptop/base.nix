@@ -4,6 +4,7 @@
     ../../common/nixos/base.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
     ../../modules/nixos/hardware/suzyqable.nix
+    ../../modules/nixos/hardware/laptop-power.nix
     ../../modules/nixos/hardware/chromebook-audio.nix
     ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/tailscale.nix
