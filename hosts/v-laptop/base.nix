@@ -2,7 +2,7 @@
 
   imports = [
     ../../common/nixos/base.nix
-    ../../modules/nixos/hardware/openrgb.nix
+    ../../modules/nixos/hardware/laptop-power.nix
     ../../modules/nixos/desktops/desktopEnvironment.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix

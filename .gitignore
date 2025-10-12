@@ -4,7 +4,7 @@ result-*
 
 *.deb
 
-packages/obs-studio
+packages/swayfx
 
 # Ignore automatically generated direnv output
 .direnv
