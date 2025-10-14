@@ -10,7 +10,7 @@ in {
   config = mkIf config.programs.waybar.enable {
     programs.waybar = {
       settings = [{
-        layer = "bottom";
+        layer = if (windowManager == "sway") then "bottom" else "top";
         position = "top";
         spacing = 0;
         height = 34;

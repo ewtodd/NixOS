@@ -1,11 +1,13 @@
-{ config, lib, inputs, ... }:
+{ config, lib, osConfig, ... }:
 
 with lib;
 
 let
   colors = config.colorScheme.palette;
-  opacity = "0.75";
   fontFamily = config.FontChoice;
+  windowManager = osConfig.WindowManager;
+  opacity = if (windowManager == "sway") then "0.75" else "0.875";
+
 in {
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {

@@ -1,7 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, osConfig, ... }:
 
 let
   colors = config.colorScheme.palette;
+  windowManager = osConfig.WindowManager;
+  opacity = if (windowManager == "sway") then "0.75" else "0.875";
   hexDigitToInt = d:
     if d == "0" then
       0
@@ -102,7 +104,7 @@ in {
 
     style = ''
       .control-center {
-        background-color: ${hexToRgba colors.base00 "0.75"};
+        background-color: ${hexToRgba colors.base00 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
         border-radius: 8px;
         margin: 18px;
@@ -114,7 +116,7 @@ in {
       }
 
       .notification {
-        background-color: ${hexToRgba colors.base00 "1"};
+        background-color: ${hexToRgba colors.base00 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
         border-radius: 8px;
         margin: 6px 0;

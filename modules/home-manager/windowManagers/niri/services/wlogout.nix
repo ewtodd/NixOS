@@ -1,6 +1,4 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
+{ config, pkgs, osConfig, ... }:
 
 let
   colors = config.colorScheme.palette;
@@ -8,6 +6,8 @@ let
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
   # Font selection based on profile
   fontFamily = config.FontChoice;
+  windowManager = osConfig.WindowManager;
+  opacity = if (windowManager == "sway") then "0.75" else "0.875";
 
   # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
@@ -68,7 +68,7 @@ in {
     layout = [
       {
         label = "logout";
-        action = "swaymsg exit";
+        action = "niri msg action quit --skip-confirmation";
         text = "Logout";
         keybind = "l";
       }
@@ -99,16 +99,16 @@ in {
       }
 
       window {
-        background-color: ${hexToRgba colors.base00 "0.75"};
+        background-color: ${hexToRgba colors.base00 "${opacity}"};
       }
 
       button {
         color: #${colors.base05};
-        background-color: ${hexToRgba colors.base01 "0.8"};
+        background-color: ${hexToRgba colors.base01 "1"};
         border-style: solid;
         border-width: 2px;
         border-radius: 15px;
-        border-color: ${hexToRgba colors.base04 "0.8"};
+        border-color: ${hexToRgba colors.base04 "1"};
         background-repeat: no-repeat;
         background-position: center;
         background-size: 25%;
@@ -120,7 +120,7 @@ in {
       }
 
       button:focus, button:active, button:hover {
-        background-color: ${hexToRgba accentColor "0.8"};
+        background-color: ${hexToRgba accentColor "1"};
         border-color: #${accentColor};
         outline-style: none;
       }
