@@ -15,26 +15,28 @@ in {
         spacing = 0;
         height = 34;
         modules-left = [ "custom/notification" "group/left" ];
-        modules-center = [
-          "${windowManager}/workspaces"
-          "${windowManager}/window"
-          "${windowManager}/mode"
-        ];
+        modules-center = [ "${windowManager}/workspaces" ]
+          ++ optionals (windowManager == "sway") [
+            "${windowManager}/window"
+            "${windowManager}/mode"
+          ];
         modules-right = [ "custom/cpu" "memory" ]
           ++ optionals (deviceType == "desktop") [
             "custom/gpu"
             "custom/gpumemory"
           ] ++ optionals (deviceType != "desktop") [ "battery" ];
-        "${windowManager}/window" = {
+        "${windowManager}/window" = mkIf (windowManager != "niri") {
           format = "";
           max-length = 0;
         };
-
-        "${windowManager}/workspaces" = {
+        "${windowManager}/workspaces" = if windowManager == "niri" then {
+          format = "{icon}";
+          on-click = "activate";
+          format-icons = { default = ""; };
+        } else {
           "on-click" = "activate";
           format = "{name}";
         };
-
         "custom/cpu" = {
           exec = "${pkgs.writeShellScript "cpu-stats.sh" ''
             cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{printf "%.f%%", 100 - $1}')

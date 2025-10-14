@@ -9,6 +9,5 @@ let
   else
     null;
 in {
-  imports = [ ] ++ lib.optionals (windowManager == "sway") [ ./sway/sway.nix ];
-
+  imports = [ ] ++ lib.optionals (windowManager == "sway") [ ./sway/sway.nix ] ++ lib.optionals (windowManager == "niri") [ ./niri/niri.nix ];
 }
