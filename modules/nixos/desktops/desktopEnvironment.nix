@@ -18,7 +18,7 @@ in {
     })
   ];
 
-  imports = [ ./sway/sway-de.nix ];
+  imports = [ ./sway/sway-de.nix ./niri/niri-de.nix ];
   services.xserver = {
     enable = true;
     displayManager.startx.enable = false;
