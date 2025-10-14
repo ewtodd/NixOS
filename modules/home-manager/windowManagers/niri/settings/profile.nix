@@ -1,4 +1,4 @@
-{ config, lib, osConfig,pkgs, ... }:
+{ config, lib, osConfig, pkgs, ... }:
 
 with lib;
 let
@@ -60,6 +60,8 @@ in {
           }
           {
             command = [
+              "sh"
+              "-c"
               "${pkgs.todoist-electron}/bin/todoist-electron"
               "--enable-features=UseOzonePlatform"
               "--ozone-platform=wayland"
@@ -116,7 +118,7 @@ in {
         # Play-specific startup applications
         spawn-at-startup = [
           { command = [ "firefox" ]; }
-          { command = [ "${pkgs.steam}/bin/steam" ]; }
+          { command = [ "sh" "-c" "${pkgs.steam}/bin/steam" ]; }
           {
             command =
               [ "${pkgs.signal-desktop}/bin/signal-desktop" "--use-tray-icon" ];
