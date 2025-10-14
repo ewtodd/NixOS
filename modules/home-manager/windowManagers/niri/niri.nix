@@ -212,7 +212,7 @@ in {
           # Audio controls
           "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-u" "up" ];
           "XF86AudioLowerVolume".action.spawn = [ "volumectl" "-u" "down" ];
-          "XF86AudioMute".action.spawn = [ "swayosd-client" "toggle-mute" ];
+          "XF86AudioMute".action.spawn = [ "volumectl" "toggle-mute" ];
 
           "XF86MonBrightnessUp".action.spawn = [ "lightctl" "up" ];
           "XF86MonBrightnessDown".action.spawn = [ "lightctl" "down" ];
