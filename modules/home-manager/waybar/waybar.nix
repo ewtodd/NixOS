@@ -70,8 +70,7 @@ in {
         "group/left" = {
           orientation = "inherit";
           drawer = { transition-duration = 200; };
-          modules = [ "clock" "network" "pulseaudio" "power-profiles-daemon" ]
-            ++ [ "tray" ];
+          modules = [ "clock" "network" "pulseaudio" "tray" ];
         };
 
         tray = { spacing = 10; };
