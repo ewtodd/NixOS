@@ -17,7 +17,6 @@
           EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
     '';
   };
-  services.power-profiles-daemon = { enable = true; };
   services.printing.enable = true;
   services.avahi.enable = true;
   services.avahi.nssmdns4 = true;
