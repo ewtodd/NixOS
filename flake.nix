@@ -53,7 +53,6 @@
           unstable = import unstable { system = "x86_64-linux"; };
         };
         modules = [
-          { nixpkgs.overlays = [ inputs.niri.overlays.niri ]; }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -152,7 +151,6 @@
           system = "x86_64-linux";
         };
         modules = [
-          { nixpkgs.overlays = [ inputs.niri.overlays.niri ]; }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {

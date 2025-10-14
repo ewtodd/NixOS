@@ -13,6 +13,7 @@ in {
 
   imports = [
     ./non-niri.nix
+    ./settings/profile.nix
     ./settings/niri-colors.nix
     ./services/swayidle.nix
     ./services/swaync.nix
@@ -27,6 +28,7 @@ in {
 
     programs.niri = {
       enable = true;
+      package = osConfig.programs.niri.package;
       settings = {
         prefer-no-csd = true;
         input = {
@@ -117,31 +119,34 @@ in {
         ];
 
         binds = with config.lib.niri.actions; {
-          "Mod+f".action.spawn = "firefox";
-          "Mod+Shift+p".action.spawn = [ "firefox" "--private-window" ];
+          "Mod+f".action.spawn = "${pkgs.firefox-wayland}/bin/firefox";
+          "Mod+Shift+p".action.spawn =
+            [ "${pkgs.firefox-wayland}/bin/firefox" "--private-window" ];
           "Mod+n".action.spawn = [
-            "firefox"
+            "${pkgs.firefox-wayland}/bin/firefox"
             "-new-window"
             "https://nix-community.github.io/nixvim/25.05/"
           ];
           "Mod+p".action = spawn "${open-nix-docs}";
           "Mod+Shift+g".action = spawn [
-            "firefox"
+            "${pkgs.firefox-wayland}/bin/firefox"
             "--private-window"
             "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"
           ];
-          "Mod+g".action.spawn =
-            [ "firefox" "--new-window" "-url" "https://umgpt.umich.edu/" ];
-          "Mod+t".action.spawn =
-            [ "firefox" "--private-window" "-url" "https://monkeytype.com" ];
 
-          "Mod+Return".action.spawn = "kitty";
+          "Mod+Return".action.spawn = "${pkgs.kitty}/bin/kitty";
           "Mod+Shift+Return".action.spawn =
-            [ "kitty" "--class" "'floatingkitty'" ];
+            [ "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'" ];
           "Mod+Shift+q".action = close-window;
-          "Mod+d".action.spawn = [ "rofi" "-show" "drun" "-matching" "fuzzy" ];
+          "Mod+d".action.spawn = [
+            "${pkgs.rofi-wayland}/bin/rofi"
+            "-show"
+            "drun"
+            "-matching"
+            "fuzzy"
+          ];
           "Mod+Shift+d".action.spawn = [
-            "rofi"
+            "${pkgs.rofi-wayland}/bin/rofi"
             "-show"
             "filebrowser"
             "-matching"
@@ -174,13 +179,13 @@ in {
           # Workspaces
           "Mod+a".action = focus-workspace-up;
           "Mod+s".action = focus-workspace-down;
-          "Mod+1".action = focus-monitor-next;
-          "Mod+2".action = focus-monitor-previous;
+          "Mod+c".action = focus-monitor-next;
+          "Mod+v".action = focus-monitor-previous;
 
           "Mod+Shift+a".action = move-window-to-workspace-up;
           "Mod+Shift+s".action = move-window-to-workspace-down;
-          "Mod+Shift+1".action = move-window-to-monitor-next;
-          "Mod+Shift+2".action = move-window-to-monitor-previous;
+          "Mod+Shift+c".action = move-window-to-monitor-next;
+          "Mod+Shift+v".action = move-window-to-monitor-previous;
 
           # Layout management
           "Mod+Shift+f".action = fullscreen-window;
@@ -191,12 +196,18 @@ in {
           "Mod+Shift+Space".action = center-window;
 
           # System controls
-          "Mod+Shift+n".action.spawn = [ "swaync-client" "-t" ];
-          "Mod+Shift+e".action.spawn = [ "swaync-client" "--close-all" ];
+          "Mod+Shift+n".action.spawn =
+            [ "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t" ];
+          "Mod+Shift+e".action.spawn = [
+            "${pkgs.swaynotificationcenter}/bin/swaync-client"
+            "--close-all"
+          ];
 
           # Screenshots
-          "Alt+Ctrl+3".action.spawn = [ "grimshot" "copy" "output" ];
-          "Alt+Ctrl+4".action.spawn = [ "grimshot" "copy" "area" ];
+          "Alt+Ctrl+3".action.spawn =
+            [ "${pkgs.sway-contrib.grimshot}/bin/grimshot" "copy" "output" ];
+          "Alt+Ctrl+4".action.spawn =
+            [ "${pkgs.sway-contrib.grimshot}/bin/grimshot" "copy" "area" ];
 
           # Audio controls
           "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-u" "up" ];

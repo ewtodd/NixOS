@@ -2,7 +2,7 @@
   config = lib.mkIf (config.WindowManager == "niri") {
     programs.niri = {
       enable = true;
-      package = pkgs.niri-stable;
+      package = pkgs.niri;
     };
     environment.systemPackages = with pkgs; [
       xwayland-satellite
@@ -25,7 +25,7 @@
 
     xdg.portal = {
       enable = true;
-      configPackages = [ pkgs.niri-stable ];
+      configPackages = [ pkgs.niri ];
       extraPortals =
         [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
     };
