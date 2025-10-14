@@ -26,7 +26,6 @@ in {
 
   imports = [
     ./settings/niri-colors.nix
-    ./settings/profile.nix
     ./services/swayidle.nix
     ./services/swaync.nix
     ./services/swaylock.nix
@@ -89,21 +88,18 @@ in {
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
           {
             matches = [{ title = "Volume Control"; }];
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
           {
             matches = [{ app-id = "floatingkitty"; }];
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
           {
             matches = [{
@@ -113,28 +109,24 @@ in {
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
           {
-            matches = [{ class = "sim"; }];
+            matches = [{ title = "sim"; }];
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
           {
-            matches = [{ class = "ROOT"; }];
+            matches = [{ title = "ROOT"; }];
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
           {
             matches = [{ app-id = "gnome-disks"; }];
             open-floating = true;
             default-column-width.proportion = 0.75;
             default-window-height.proportion = 0.75;
-            center-window = true;
           }
         ];
 
@@ -152,6 +144,10 @@ in {
             "--private-window"
             "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"
           ];
+          "Mod+g".action.spawn =
+            [ "firefox" "--new-window" "-url" "https://umgpt.umich.edu/" ];
+          "Mod+t".action.spawn =
+            [ "firefox" "--private-window" "-url" "https://monkeytype.com" ];
 
           "Mod+Return".action.spawn = "kitty";
           "Mod+Shift+Return".action.spawn =

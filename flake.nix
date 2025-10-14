@@ -16,6 +16,7 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
+    niri.url = "github:sodiboo/niri-flake";
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -52,6 +53,7 @@
           unstable = import unstable { system = "x86_64-linux"; };
         };
         modules = [
+          { nixpkgs.overlays = [ inputs.niri.overlays.niri ]; }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -61,6 +63,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
+                inputs.niri.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -149,6 +152,7 @@
           system = "x86_64-linux";
         };
         modules = [
+          { nixpkgs.overlays = [ inputs.niri.overlays.niri ]; }
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -158,6 +162,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
+                inputs.niri.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;
