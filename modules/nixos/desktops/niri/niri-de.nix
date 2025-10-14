@@ -5,7 +5,9 @@
       package = pkgs.niri-stable;
     };
     environment.systemPackages = with pkgs; [
+      xwayland-satellite
       wlogout
+      cmatrix
       wl-clipboard
       swaybg
       sway-contrib.grimshot
@@ -36,17 +38,6 @@
     programs.nautilus-open-any-terminal = {
       enable = true;
       terminal = "kitty";
-    };
-    xdg = {
-      portal = {
-        enable = true;
-        wlr.settings = {
-          screencast = {
-            chooser_type = "dmenu";
-            chooser_cmd = "${pkgs.rofi-wayland}/bin/rofi -dmenu";
-          };
-        };
-      };
     };
     environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
     programs.ssh.enableAskPassword = false;

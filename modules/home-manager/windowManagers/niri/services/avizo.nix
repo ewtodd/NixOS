@@ -1,6 +1,8 @@
-{ config, ... }:
+{ config, osConfig, ... }:
 let
   colors = config.colorScheme.palette;
+  windowManager = osConfig.WindowManager;
+  opacity = if (windowManager == "sway") then "0.75" else "0.875";
   hexToRgba = hex: alpha:
     let
       r = toString (hexPairToInt (builtins.substring 0 2 hex));
@@ -57,7 +59,7 @@ in {
         y-offset = 0.8;
         height = 210;
         border-radius = 8;
-        background = "${hexToRgba colors.base00 "0.75"}";
+        background = "${hexToRgba colors.base00 "${opacity}"}";
         border-width = 3;
         border-color = "${hexToRgba colors.base0D "1"}";
         bar-fg-color = "${hexToRgba colors.base0E "1"}";

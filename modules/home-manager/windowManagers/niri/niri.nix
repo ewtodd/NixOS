@@ -3,19 +3,6 @@ with lib;
 let
   deviceType = osConfig.DeviceType;
   wallpaperPath = config.WallpaperPath;
-  fontFamily = config.FontChoice;
-  toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
-    # Get the focused window's floating state
-    floating=$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused? == true) | .floating')
-
-    if [ "$floating" = "user_on" ] || [ "$floating" = "auto_on" ]; then
-        # If already floating, just toggle (disable floating)
-        ${pkgs.sway}/bin/swaymsg floating toggle
-    else
-        # If tiled, enable floating, resize, and center
-        ${pkgs.sway}/bin/swaymsg floating enable, resize set 75 ppt 75 ppt, move position center
-    fi
-  '';
   open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
     ${pkgs.firefox-wayland}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
@@ -25,6 +12,7 @@ let
 in {
 
   imports = [
+    ./non-niri.nix
     ./settings/niri-colors.nix
     ./services/swayidle.nix
     ./services/swaync.nix
@@ -40,9 +28,7 @@ in {
     programs.niri = {
       enable = true;
       settings = {
-        environment = { DISPLAY = ":0"; };
         prefer-no-csd = true;
-        cursor = { size = 18; };
         input = {
 
           focus-follows-mouse.enable = true;
@@ -228,6 +214,7 @@ in {
         spawn-at-startup = [
           { command = [ "waybar" ]; }
           { command = [ "swaybg" "-i" "${wallpaperPath}" ]; }
+          { command = [ "kitten" "panel" "--edge=background" "cmatrix" ]; }
         ];
         animations = {
           enable = true;
