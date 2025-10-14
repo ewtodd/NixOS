@@ -34,7 +34,7 @@ in {
           on-click = "activate";
           format-icons = {
             "default" = "";
-            "afirefox" = "";
+            "afirefox" = "";
             "bchat" = "󰿌";
             "cchat" = "󰿌";
             "bsteam" = "";
