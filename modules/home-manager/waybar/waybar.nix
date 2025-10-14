@@ -32,7 +32,13 @@ in {
         "${windowManager}/workspaces" = if windowManager == "niri" then {
           format = "{icon}";
           on-click = "activate";
-          format-icons = { default = ""; };
+          format-icons = {
+            "default" = "";
+            "afirefox" = "";
+            "bchat" = "󰿌";
+            "cchat" = "󰿌";
+            "bsteam" = "";
+          };
         } else {
           "on-click" = "activate";
           format = "{name}";
