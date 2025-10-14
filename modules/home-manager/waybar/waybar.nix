@@ -38,6 +38,7 @@ in {
             "bchat" = "󰿌";
             "cchat" = "󰿌";
             "bsteam" = "";
+            "ccalendar" = "";
           };
         } else {
           "on-click" = "activate";

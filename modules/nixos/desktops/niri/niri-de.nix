@@ -14,7 +14,6 @@
       jq
       libnotify
       pavucontrol
-      pulseaudio
       gthumb
       nautilus
       thunderbird-latest

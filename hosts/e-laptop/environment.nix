@@ -53,7 +53,19 @@
     '';
   };
 
-  boot.blacklistedKernelModules = [ "cros_kbd_led_backlight" ];
+  boot.blacklistedKernelModules = [
+    "cros_kbd_led_backlight"
+    "snd_soc_avs"
+    "snd_soc_hda_codec"
+    "snd_intel_dspcfg"
+    "snd_intel_sdw_acpi"
+    "snd_sof_intel_hda_generic"
+    "snd_sof_intel_hda"
+    "snd_sof_intel_hda_common"
+    "snd_sof_intel_hda_mlink"
+    "snd_sof_intel_hda_sdw_bpt"
+    "snd_sof_probes"
+  ];
 
   boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 

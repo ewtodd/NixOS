@@ -19,6 +19,10 @@ in {
           name = "bchat";
           open-on-output = primaryMonitor;
         };
+        workspaces."ccalendar" = {
+          name = "ccalendar";
+          open-on-output = secondaryMonitor;
+        };
 
         binds = with config.lib.niri.actions; {
           "Mod+g".action.spawn =
@@ -27,6 +31,9 @@ in {
           "Mod+Shift+1".action.move-window-to-workspace = "afirefox";
           "Mod+2".action.focus-workspace = "bchat";
           "Mod+Shift+2".action.move-window-to-workspace = "bchat";
+          "Mod+3".action.focus-workspace = "ccalendar";
+          "Mod+Shift+3".action.move-window-to-workspace = "ccalendar";
+
         };
 
         window-rules = [
@@ -40,11 +47,7 @@ in {
           }
           {
             matches = [{ app-id = "Todoist"; }];
-            open-on-workspace = "bchat";
-          }
-          {
-            matches = [{ app-id = "firefox"; }];
-            open-on-workspace = "afirefox";
+            open-on-workspace = "ccalendar";
           }
         ];
         # Work-specific startup applications
@@ -109,15 +112,9 @@ in {
             matches = [{ app-id = "signal"; }];
             open-on-workspace = "cchat";
           }
-          {
-            matches = [{ app-id = "firefox"; }];
-            open-on-workspace = "afirefox";
-          }
-
         ];
         # Play-specific startup applications
         spawn-at-startup = [
-          { command = [ "firefox" ]; }
           { command = [ "sh" "-c" "${pkgs.steam}/bin/steam" ]; }
           {
             command =
