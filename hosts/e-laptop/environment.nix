@@ -7,14 +7,8 @@
   boot.kernelParams = [
     "resume=/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"
     "mem_sleep_default=s2idle"
-    #  "no_console_suspend"
-    #  "pm_debug_messages"
-    #  "initcall_debug"
     "acpi.ec_no_wakeup=1"
   ];
-  boot.extraModprobeConfig = ''
-    options snd-intel-dspcfg dsp_driver=3
-  '';
 
   systemd.services.disable-all-wakeups = {
     description = "Disable wakeup sources before suspend";

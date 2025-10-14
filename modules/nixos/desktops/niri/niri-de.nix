@@ -23,6 +23,15 @@
       gnome-themes-extra
     ];
 
+    xdg.portal = {
+      enable = true;
+      configPackages = [ pkgs.niri-stable ];
+      extraPortals =
+        [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
+    };
+
+    services.xserver.desktopManager.runXdgAutostartIfNone = true;
+
     environment.shellAliases = {
       view-image = "kitten icat";
       get-layer-shells =
