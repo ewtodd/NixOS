@@ -17,6 +17,10 @@
       flake = false;
     };
     niri.url = "github:sodiboo/niri-flake";
+    fw-fanctrl = {
+      url = "github:TamtamHero/fw-fanctrl/packaging/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -127,6 +131,7 @@
           system = "x86_64-linux";
         };
         modules = [
+          inputs.fw-fanctrl.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -151,6 +156,7 @@
           system = "x86_64-linux";
         };
         modules = [
+          inputs.fw-fanctrl.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {

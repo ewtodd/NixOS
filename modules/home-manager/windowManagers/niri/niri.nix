@@ -52,7 +52,7 @@ in {
             { proportion = 0.66667; }
             { proportion = 1.0; }
           ];
-          default-column-width = { proportion = 0.66667; };
+          default-column-width = { proportion = 0.5; };
           always-center-single-column = true;
         };
 
@@ -74,20 +74,20 @@ in {
               title = "^Write:";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "Volume Control"; }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "floatingkitty"; }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{
@@ -95,26 +95,26 @@ in {
               title = "File Upload";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "sim"; }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "ROOT"; }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "gnome-disks"; }];
             open-floating = true;
-            default-column-width.proportion = 0.75;
-            default-window-height.proportion = 0.75;
+            default-column-width.proportion = 0.6;
+            default-window-height.proportion = 0.6;
           }
         ];
 

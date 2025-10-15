@@ -19,4 +19,5 @@
 
     };
   };
+  programs.fw-fanctrl.enable = true;
 }
