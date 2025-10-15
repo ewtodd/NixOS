@@ -9,7 +9,6 @@
     ./nixvim/nixvim.nix
   ];
   home.packages = [ pkgs.clang-tools pkgs.slack ];
-  xdg.portal.config.common.default = "*";
   xdg.desktopEntries.steam = {
     name = "Steam";
     noDisplay = true;

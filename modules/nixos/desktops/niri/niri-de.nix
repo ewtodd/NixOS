@@ -24,9 +24,18 @@
 
     xdg.portal = {
       enable = true;
-      configPackages = [ pkgs.niri ];
-      extraPortals =
-        [ pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk ];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-gnome
+      ];
+      config = {
+        common = { default = [ "gtk" ]; };
+        niri = {
+          default = [ "gtk" "gnome" ];
+          "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+          "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+        };
+      };
     };
 
     services.xserver.desktopManager.runXdgAutostartIfNone = true;
@@ -47,7 +56,12 @@
       enable = true;
       terminal = "kitty";
     };
-    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
+    environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      XDG_CURRENT_DESKTOP = "niri";
+      XDG_SESSION_TYPE = "wayland";
+      XDG_SESSION_DESKTOP = "niri";
+    };
     programs.ssh.enableAskPassword = false;
   };
 }
