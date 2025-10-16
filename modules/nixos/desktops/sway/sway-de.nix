@@ -5,6 +5,7 @@
       enable = true;
       package = pkgs.swayfx;
       extraPackages = with pkgs; [
+        autotiling-rs
         wlogout
         wl-clipboard
         swaybg
@@ -12,7 +13,6 @@
         jq
         libnotify
         pavucontrol
-        pulseaudio
         gthumb
         nautilus
         thunderbird-latest
@@ -48,9 +48,7 @@
         };
       };
     };
-    environment.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-    };
+    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
     programs.ssh.enableAskPassword = false;
   };
 }
