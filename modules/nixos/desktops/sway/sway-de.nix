@@ -5,6 +5,7 @@
       enable = true;
       package = pkgs.swayfx;
       extraPackages = with pkgs; [
+        autotiling-rs
         wlogout
         wl-clipboard
         swaybg
@@ -47,9 +48,7 @@
         };
       };
     };
-    environment.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-    };
+    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
     programs.ssh.enableAskPassword = false;
   };
 }
