@@ -199,6 +199,8 @@ in {
       };
 
       extraConfig = ''
+        smart_gaps inverse_outer
+
         blur enable
         blur_passes 3
         blur_radius 2

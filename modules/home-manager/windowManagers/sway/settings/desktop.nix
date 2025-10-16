@@ -16,6 +16,7 @@
       keybindings = {
         "Mod4+Shift+V" = "output HDMI-A-1 transform 90 position -1080 0";
       };
+      gaps = { horizontal = 574; };
     };
   };
 
