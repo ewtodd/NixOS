@@ -18,7 +18,7 @@
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
     ../../modules/nixos/packages/nix-mineral.nix
   ];
-  WindowManager = "niri";
+  WindowManager = "sway";
   DeviceType = "laptop";
   users.users.e-play = {
     isNormalUser = true;

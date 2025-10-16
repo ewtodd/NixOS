@@ -228,7 +228,7 @@ in {
         exec swaybg -i ${wallpaperPath}
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
         exec swaymsg workspace 1
-
+        exec autotiling-rs
 
 
         # Thunderbird compose window
