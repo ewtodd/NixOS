@@ -1,7 +1,7 @@
 { pkgs, ... }: {
   boot.loader.systemd-boot = {
     enable = true;
-    configurationLimit = 5;
+    configurationLimit = 10;
   };
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
