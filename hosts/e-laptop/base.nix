@@ -20,7 +20,6 @@
   ];
   WindowManager = "sway";
   DeviceType = "laptop";
-  CornerRadius = 15;
   users.users.e-play = {
     isNormalUser = true;
     description = "ethan-play";
