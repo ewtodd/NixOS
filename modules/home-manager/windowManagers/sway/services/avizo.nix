@@ -1,6 +1,7 @@
-{ config, ... }:
+{ config, osConfig, ... }:
 let
   colors = config.colorScheme.palette;
+  radius = toString osConfig.CornerRadius;
   hexToRgba = hex: alpha:
     let
       r = toString (hexPairToInt (builtins.substring 0 2 hex));
@@ -56,7 +57,7 @@ in {
         time = 2.0;
         y-offset = 0.8;
         height = 210;
-        border-radius = 20;
+        border-radius = "${radius}";
         background = "${hexToRgba colors.base00 "0.75"}";
         border-width = 3;
         border-color = "${hexToRgba colors.base0D "1"}";

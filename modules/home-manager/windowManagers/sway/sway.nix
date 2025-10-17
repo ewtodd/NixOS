@@ -2,6 +2,7 @@
 with lib;
 let
   deviceType = osConfig.DeviceType;
+  radius = toString osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
   fontFamily = config.FontChoice;
   toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
@@ -205,7 +206,7 @@ in {
         blur_contrast 1.0
 
         smart_corner_radius on
-        corner_radius 20
+        corner_radius ${radius}
 
         shadows enable
         shadows_on_csd enable
@@ -218,10 +219,10 @@ in {
         dim_inactive_colors.urgent #${colors.base08}
 
         layer_effects "rofi" blur enable; shadows enable
-        layer_effects "avizo" blur enable; shadows enable; corner_radius 20
-        layer_effects "gtk-layer-shell" blur enable; shadows enable; corner_radius 20
+        layer_effects "avizo" blur enable; shadows enable; corner_radius ${radius}
+        layer_effects "gtk-layer-shell" blur enable; shadows enable; corner_radius ${radius}
         layer_effects "waybar" blur enable; shadows enable;  blur_ignore_transparent enable
-        layer_effects "logout_dialog" blur enable; shadows enable; corner_radius 20
+        layer_effects "logout_dialog" blur enable; shadows enable; corner_radius ${radius}
         layer_effects "swaync-control-center" blur enable; shadows enable 
 
         exec swaybg -i ${wallpaperPath}

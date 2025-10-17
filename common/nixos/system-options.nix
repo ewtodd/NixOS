@@ -14,5 +14,11 @@ with lib; {
       default = "sway";
       description = "Window manager to use";
     };
+
+    CornerRadius = mkOption {
+      type = types.int;
+      default = 10;
+      description = "Corner radius for all windows.";
+    };
   };
 }
