@@ -6,7 +6,6 @@ let
   colors = config.colorScheme.palette;
   profile = config.Profile;
   deviceType = osConfig.DeviceType;
-  radius = osConfig.CornerRadius;
 
   # Font selection based on profile
   fontFamily = config.FontChoice;
@@ -41,7 +40,7 @@ in {
       datestr = "%a, %b %d";
       font = fontFamily;
       font-size = fontSize;
-      indicator-radius = "${toString radius}";
+      indicator-radius = 150;
       show-failed-attempts = true;
       ignore-empty-password = true;
       daemonize = true;
