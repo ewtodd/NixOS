@@ -107,7 +107,7 @@ in {
         background-color: ${hexToRgba colors.base01 "0.8"};
         border-style: solid;
         border-width: 2px;
-        border-radius: 15px;
+        border-radius: 20px;
         border-color: ${hexToRgba colors.base04 "0.8"};
         background-repeat: no-repeat;
         background-position: center;

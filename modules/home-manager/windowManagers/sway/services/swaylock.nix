@@ -40,7 +40,7 @@ in {
       datestr = "%a, %b %d";
       font = fontFamily;
       font-size = fontSize;
-      indicator-radius = 150;
+      indicator-radius = 20;
       show-failed-attempts = true;
       ignore-empty-password = true;
       daemonize = true;
