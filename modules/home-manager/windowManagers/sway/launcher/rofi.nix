@@ -110,7 +110,7 @@ in {
       background-color = mkLiteral "transparent";
       text-color = mkLiteral "#${colors.base05}";
       orientation = mkLiteral "vertical";
-      border-radius = mkLiteral "15px";
+      border-radius = mkLiteral "20px";
       padding = mkLiteral "35px 10px";
       spacing = mkLiteral "15px";
       cursor = mkLiteral "pointer";

@@ -56,7 +56,7 @@ in {
         time = 2.0;
         y-offset = 0.8;
         height = 210;
-        border-radius = 8;
+        border-radius = 20;
         background = "${hexToRgba colors.base00 "0.75"}";
         border-width = 3;
         border-color = "${hexToRgba colors.base0D "1"}";

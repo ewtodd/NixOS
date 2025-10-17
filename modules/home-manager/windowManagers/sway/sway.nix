@@ -62,8 +62,8 @@ in {
         };
 
         gaps = {
-          inner = 2;
-          outer = 2;
+          inner = 4;
+          outer = 1;
           smartBorders = "on";
         };
 
@@ -205,7 +205,7 @@ in {
         blur_contrast 1.0
 
         smart_corner_radius on
-        corner_radius 10
+        corner_radius 20
 
         shadows enable
         shadows_on_csd enable
@@ -218,10 +218,11 @@ in {
         dim_inactive_colors.urgent #${colors.base08}
 
         layer_effects "rofi" blur enable; shadows enable
-        layer_effects "avizo" blur enable; shadows enable
-        layer_effects "gtk-layer-shell" blur enable; shadows enable
-        layer_effects "logout_dialog" blur enable; shadows enable 
-        layer_effects "swaync-control-center" blur enable; shadows enable
+        layer_effects "avizo" blur enable; shadows enable; corner_radius 20
+        layer_effects "gtk-layer-shell" blur enable; shadows enable; corner_radius 20
+        layer_effects "waybar" blur enable; shadows enable;  blur_ignore_transparent enable
+        layer_effects "logout_dialog" blur enable; shadows enable; corner_radius 20
+        layer_effects "swaync-control-center" blur enable; shadows enable 
 
         exec swaybg -i ${wallpaperPath}
         exec gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
