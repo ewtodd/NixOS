@@ -1,9 +1,10 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig, ... }:
 
 with lib;
 
 let
   colors = config.colorScheme.palette;
+  radius = toString osConfig.CornerRadius;
   inherit (config.lib.formats.rasi) mkLiteral;
 in {
 
@@ -110,7 +111,7 @@ in {
       background-color = mkLiteral "transparent";
       text-color = mkLiteral "#${colors.base05}";
       orientation = mkLiteral "vertical";
-      border-radius = mkLiteral "20px";
+      border-radius = mkLiteral "${radius}px";
       padding = mkLiteral "35px 10px";
       spacing = mkLiteral "15px";
       cursor = mkLiteral "pointer";

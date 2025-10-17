@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig, ... }:
 
 with lib;
 
@@ -8,6 +8,7 @@ let
   accentColor = if profile == "work" then colors.base09 else colors.base0E;
   # Font selection based on profile
   fontFamily = config.FontChoice;
+  radius = toString osConfig.CornerRadius;
 
   # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
@@ -107,7 +108,7 @@ in {
         background-color: ${hexToRgba colors.base01 "0.8"};
         border-style: solid;
         border-width: 2px;
-        border-radius: 20px;
+        border-radius: ${radius}px;
         border-color: ${hexToRgba colors.base04 "0.8"};
         background-repeat: no-repeat;
         background-position: center;

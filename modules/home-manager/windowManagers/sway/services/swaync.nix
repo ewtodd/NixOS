@@ -1,7 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig, ... }:
 
 let
   colors = config.colorScheme.palette;
+  radius = osConfig.CornerRadius;
   hexDigitToInt = d:
     if d == "0" then
       0
@@ -104,7 +105,7 @@ in {
       .control-center {
         background-color: ${hexToRgba colors.base00 "0.75"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         margin: 18px;
         padding: 12px;
       }
@@ -116,7 +117,7 @@ in {
       .notification {
         background-color: ${hexToRgba colors.base00 "1"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         margin: 6px 0;
         padding: 12px;
       }
@@ -124,7 +125,7 @@ in {
       .notification-content {
         background-color: transparent;
         padding: 6px;
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
       }
 
       .widget-title {
@@ -132,7 +133,7 @@ in {
         background-color: ${hexToRgba colors.base01 "0.9"};
         padding: 8px 12px;
         margin: 6px 0;
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
       }
 
@@ -142,7 +143,7 @@ in {
         text-shadow: none;
         background-color: transparent;
         border: 1px solid #${colors.base08};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         padding: 4px 8px;
       }
 
@@ -153,7 +154,7 @@ in {
       .widget-dnd {
         background-color: ${hexToRgba colors.base01 "0.9"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         margin: 6px 0;
         padding: 8px;
         color: #${colors.base05};
@@ -161,7 +162,7 @@ in {
 
       .widget-dnd > switch {
         background-color: #${colors.base02};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
       }
 
       .widget-dnd > switch:checked {
@@ -172,7 +173,7 @@ in {
       .widget-volume {
         background-color: ${hexToRgba colors.base01 "0.9"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         margin: 6px 0;
         padding: 12px;
         color: #${colors.base05};
@@ -187,7 +188,7 @@ in {
       .widget-backlight {
         background-color: ${hexToRgba colors.base01 "0.9"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
-        border-radius: 20px;
+        border-radius: ${toString radius}px;
         margin: 6px 0;
         padding: 12px;
         color: #${colors.base05};
