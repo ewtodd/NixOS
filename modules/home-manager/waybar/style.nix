@@ -259,7 +259,7 @@ in {
                                             padding-top: 8px;
                                             padding-bottom: 8px;
                                             padding-left: ${left-notification-padding};
-                                            padding-right: 7px;  /* Increased right padding */ 
+                                            padding-right: 8px;  /* Increased right padding */ 
                                           border-radius: ${radius}px 0 0 ${radius}px;  /* No longer rounded on right */ 
                                             margin:  6px 0  6px 3px;     /* No longer has right margin */ 
                                             border-right: 1px solid #${colors.base03};  /* Now has right border */ 
