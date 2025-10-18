@@ -226,6 +226,7 @@ in {
           { command = [ "waybar" ]; }
           { command = [ "swaybg" "-i" "${wallpaperPath}" ]; }
           { command = [ "kitten" "panel" "--edge=background" "cmatrix" ]; }
+          { command = [ "wayland-pipewire-idle-inhibit" ]; }
         ];
         animations = {
           enable = true;
