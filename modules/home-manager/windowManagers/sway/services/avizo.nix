@@ -58,7 +58,7 @@ in {
         y-offset = 0.8;
         height = 210;
         border-radius = "${radius}";
-        background = "${hexToRgba colors.base00 "0.75"}";
+        background = "${hexToRgba colors.base05 "0.75"}";
         border-width = 3;
         border-color = "${hexToRgba colors.base0D "1"}";
         bar-fg-color = "${hexToRgba colors.base0E "1"}";
