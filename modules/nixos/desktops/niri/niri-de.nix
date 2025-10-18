@@ -20,6 +20,7 @@
       udiskie
       glib
       gnome-themes-extra
+      wayland-pipewire-idle-inhibit
     ];
 
     xdg.portal = {
