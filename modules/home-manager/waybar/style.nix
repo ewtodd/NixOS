@@ -11,6 +11,9 @@ let
   deviceType = osConfig.DeviceType;
   left-notification-padding =
     if (deviceType == "desktop") then "5px" else "8px";
+  left-workspace-padding = if (deviceType == "desktop") then "6px" else "8px";
+  right-workspace-padding =
+    if (deviceType == "desktop") then "11px" else "12px";
   right-notification-dnd-padding =
     if (deviceType == "desktop") then "11px" else "7px";
   notificationColor =
@@ -91,7 +94,9 @@ in {
                                                 background: transparent;
                                                 margin: 6px 0;
                                                 font-size: 1.0rem;
+                                                
                                               }
+
 
                                               #workspaces button:first-child:last-child {
                                                 border-radius: ${radius}px;
@@ -102,7 +107,11 @@ in {
                                               #workspaces button {
                                                 all: initial;
                                                 min-width: 24px;
+
                                                 padding: 8px 12px;
+
+                                                padding-left: ${left-workspace-padding};
+                                                padding-right: ${right-workspace-padding};
                                                 margin: 0;
                                                 border-radius: 0;
                                                 background-color: #${colors.base00};
@@ -110,7 +119,7 @@ in {
                                                 transition: background 0.2s, color 0.2s;
                                                 border-left: none;
                                               }
-
+                                              
                                               #workspaces button:not(:last-child) {
                                                 border-right: 1px solid #${colors.base03};
                                               }
