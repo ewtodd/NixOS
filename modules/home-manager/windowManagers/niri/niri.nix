@@ -9,6 +9,20 @@ let
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ &
   '';
+  toggle-overview-with-waybar =
+    pkgs.writeShellScript "toggle-overview-with-waybar" ''
+      # Check current overview state
+      OVERVIEW_STATE=$(${pkgs.niri}/bin/niri msg overview-state)
+
+      if [[ "$OVERVIEW_STATE" == *"open"* ]]; then
+        ${pkgs.waybar}/bin/waybar &
+        sleep 0.2
+        ${pkgs.niri}/bin/niri msg action close-overview 
+      else
+        ${pkgs.procps}/bin/pkill waybar
+        ${pkgs.niri}/bin/niri msg action open-overview 
+      fi
+    '';
 in {
 
   imports = [
@@ -43,6 +57,8 @@ in {
           mouse = { natural-scroll = true; };
         };
 
+        gestures = { hot-corners.enable = false; };
+
         # Layout configuration
         layout = {
           gaps = 2;
@@ -55,6 +71,17 @@ in {
           default-column-width = { proportion = 0.66667; };
           always-center-single-column = true;
         };
+
+        layer-rules = [
+          {
+            matches = [{ namespace = "waybar"; }];
+            block-out-from = "screen-capture";
+          }
+          {
+            matches = [{ namespace = "swaync-notification-window"; }];
+            block-out-from = "screen-capture";
+          }
+        ];
 
         window-rules = [
           {
@@ -174,7 +201,7 @@ in {
           "Mod+Shift+k".action = move-window-up;
           "Mod+Shift+l".action = move-column-right;
 
-          "Mod+Tab".action = toggle-overview;
+          "Mod+Tab".action.spawn = "${toggle-overview-with-waybar}";
 
           # Workspaces
           "Mod+a".action = focus-workspace-up;
@@ -225,7 +252,6 @@ in {
         spawn-at-startup = [
           { command = [ "waybar" ]; }
           { command = [ "swaybg" "-i" "${wallpaperPath}" ]; }
-          { command = [ "kitten" "panel" "--edge=background" "cmatrix" ]; }
           { command = [ "wayland-pipewire-idle-inhibit" ]; }
         ];
         animations = {

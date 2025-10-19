@@ -33,7 +33,7 @@ in {
           format = "{icon}";
           on-click = "activate";
           format-icons = {
-            "default" = "󱥸";
+            "default" = "";
             "afirefox" = "";
             "bchat" = "󰿌";
             "cchat" = "󰿌";

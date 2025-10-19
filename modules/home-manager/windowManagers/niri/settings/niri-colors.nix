@@ -13,12 +13,13 @@ in {
       };
     }];
     layer-rules = [{
-      matches = [{ namespace = "kitty-panel"; }];
+      matches = [{ namespace = "wallpaper"; }];
       place-within-backdrop = true;
     }];
 
     overview = { workspace-shadow.color = "#${colors.base00}99"; };
     layout = {
+      background-color = "transparent";
       focus-ring = {
         enable = true;
         width = 3;
