@@ -11,9 +11,12 @@ let
   deviceType = osConfig.DeviceType;
   left-notification-padding =
     if (deviceType == "desktop") then "5px" else "8px";
-  left-workspace-padding = if (deviceType == "desktop") then "6px" else "8px";
+  right-notification-padding =
+    if (deviceType == "desktop") then "8px" else "6px";
+
+  left-workspace-padding = if (deviceType == "desktop") then "6px" else "10px";
   right-workspace-padding =
-    if (deviceType == "desktop") then "11px" else "12px";
+    if (deviceType == "desktop") then "11px" else "10px";
   right-notification-dnd-padding =
     if (deviceType == "desktop") then "11px" else "7px";
   notificationColor =
@@ -270,7 +273,7 @@ in {
                                                 padding-top: 8px;
                                                 padding-bottom: 8px;
                                                 padding-left: ${left-notification-padding};
-                                                padding-right: 8px;  /* Increased right padding */ 
+                                                padding-right: ${right-notification-padding}; 
                                               border-radius: ${radius}px 0 0 ${radius}px;  /* No longer rounded on right */ 
                                                 margin:  6px 0  6px 3px;     /* No longer has right margin */ 
                                                 border-right: 1px solid #${colors.base03};  /* Now has right border */ 
