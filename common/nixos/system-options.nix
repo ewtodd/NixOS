@@ -10,7 +10,7 @@ with lib; {
     };
 
     WindowManager = mkOption {
-      type = types.enum [ "sway" "niri" ];
+      type = types.enum [ "sway" ];
       default = "sway";
       description = "Window manager to use";
     };

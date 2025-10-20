@@ -46,6 +46,9 @@
 
         #GNOME disks 
         for_window [app_id="gnome-disks"] floating enable, resize set 75 ppt 75 ptt, move position center
+
+        #XDG file upload
+        for_window [app_id="xdg-desktop-portal-gtk"] floating enable, resize set 75 ppt 75 ppt, move position center
       '';
     };
   };
