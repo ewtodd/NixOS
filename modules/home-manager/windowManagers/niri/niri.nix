@@ -72,16 +72,10 @@ in {
           always-center-single-column = true;
         };
 
-        layer-rules = [
-          {
-            matches = [{ namespace = "waybar"; }];
-            block-out-from = "screen-capture";
-          }
-          {
-            matches = [{ namespace = "swaync-notification-window"; }];
-            block-out-from = "screen-capture";
-          }
-        ];
+        layer-rules = [{
+          matches = [{ namespace = "swaync-notification-window"; }];
+          block-out-from = "screen-capture";
+        }];
 
         window-rules = [
           {
