@@ -1,4 +1,19 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+let
+  toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
+    # Get the focused window's floating state
+    floating=$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused? == true) | .floating')
+
+    if [ "$floating" = "user_on" ] || [ "$floating" = "auto_on" ]; then
+        # If already floating, just toggle (disable floating)
+        ${pkgs.sway}/bin/swaymsg floating toggle
+    else
+        # If tiled, enable floating, resize, and center
+        ${pkgs.sway}/bin/swaymsg floating enable, resize set 75 ppt 75 ppt, move position center
+    fi
+  '';
+
+in {
   wayland.windowManager.sway = {
     config = {
       # Output configuration
@@ -24,6 +39,7 @@
       };
       keybindings = {
         "Mod4+Shift+V" = "output HDMI-A-2 mode 2560x1440 position -2560 0";
+        "Mod4+space" = "exec ${toggle-float-smart}";
       };
     };
     extraConfig = ''
