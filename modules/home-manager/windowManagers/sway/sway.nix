@@ -5,18 +5,6 @@ let
   radius = toString osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
   fontFamily = config.FontChoice;
-  toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
-    # Get the focused window's floating state
-    floating=$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused? == true) | .floating')
-
-    if [ "$floating" = "user_on" ] || [ "$floating" = "auto_on" ]; then
-        # If already floating, just toggle (disable floating)
-        ${pkgs.sway}/bin/swaymsg floating toggle
-    else
-        # If tiled, enable floating, resize, and center
-        ${pkgs.sway}/bin/swaymsg floating enable, resize set 75 ppt 75 ppt, move position center
-    fi
-  '';
   open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
     ${pkgs.firefox-wayland}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
@@ -138,7 +126,6 @@ in {
 
           # Layout management
           "Mod4+Shift+f" = "fullscreen";
-          "Mod4+space" = "exec ${toggle-float-smart}";
           "Mod4+Shift+space" = "move position center";
           "Mod4+t" = "focus mode_toggle";
 
