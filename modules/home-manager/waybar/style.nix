@@ -13,10 +13,6 @@ let
     if (deviceType == "desktop") then "5px" else "8px";
   right-notification-padding =
     if (deviceType == "desktop") then "8px" else "6px";
-
-  left-workspace-padding = if (deviceType == "desktop") then "6px" else "10px";
-  right-workspace-padding =
-    if (deviceType == "desktop") then "11px" else "10px";
   right-notification-dnd-padding =
     if (deviceType == "desktop") then "11px" else "7px";
   notificationColor =
@@ -56,6 +52,7 @@ let
     else if d == "c" || d == "C" then
       12
     else if d == "d" || d == "D" then
+
       13
     else if d == "e" || d == "E" then
       14
@@ -113,8 +110,6 @@ in {
 
                                                 padding: 8px 12px;
 
-                                                padding-left: ${left-workspace-padding};
-                                                padding-right: ${right-workspace-padding};
                                                 margin: 0;
                                                 border-radius: 0;
                                                 background-color: #${colors.base00};
