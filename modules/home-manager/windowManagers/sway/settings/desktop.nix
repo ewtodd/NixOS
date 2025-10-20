@@ -46,6 +46,24 @@ let
     manage_window_gaps()
     i3.main()
   '';
+  toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
+    # Get the focused window's floating state
+    floating=$(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq -r '.. | select(.focused? == true) | .floating')
+
+    if [ "$floating" = "user_on" ] || [ "$floating" = "auto_on" ]; then
+        # If already floating, just toggle (disable floating)
+        ${pkgs.sway}/bin/swaymsg floating toggle
+    else
+        # If tiled, enable floating, resize, and center
+        ${pkgs.sway}/bin/swaymsg floating enable, resize set 45 ppt 75 ppt, move position center
+    fi
+  '';
+  open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
+    ${pkgs.firefox-wayland}/bin/firefox --new-window \
+      -url https://search.nixos.org/packages \
+      -new-tab -url https://search.nixos.org/options? \
+      -new-tab -url https://home-manager-options.extranix.com/ &
+  '';
 
 in {
   wayland.windowManager.sway = {
@@ -64,6 +82,7 @@ in {
       };
       keybindings = {
         "Mod4+Shift+V" = "output HDMI-A-1 transform 90 position -1080 0";
+        "Mod4+space" = "exec ${toggle-float-smart}";
       };
       startup = [{ command = "${gapManager}/bin/sway-gap-manager"; }];
     };
