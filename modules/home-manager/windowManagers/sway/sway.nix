@@ -230,29 +230,6 @@ in {
         exec swaymsg workspace 1
         exec autotiling-rs
         exec wayland-pipewire-idle-inhibit
-
-
-        # Thunderbird compose window
-        for_window [app_id="thunderbird" title="^Write:"] floating enable, resize set 75 ppt 75 ppt, move position center
-
-        # PulseAudio volume control
-        for_window [title="Volume Control"] floating enable, resize set 75 ppt 75 ppt, move position center
-
-        # Floating kitty terminal
-        for_window [app_id="floatingkitty"] floating enable, resize set 75 ppt 75 ppt, move position center
-
-        # Firefox file upload dialog
-        for_window [app_id="firefox" title="File Upload"] floating enable, resize set 75 ppt 75 ppt, move position center
-
-        # GEANT4 simulation window
-        for_window [class="sim"] floating enable, resize set 75 ppt 75 ppt, move position center
-
-        # ROOT plots 
-        for_window [class="ROOT"] floating enable, resize set 75 ppt 75 ppt, move position center
-
-        #GNOME disks 
-        for_window [app_id="gnome-disks"] floating enable, resize set 75 ppt 75 ptt, move position center
-
       '';
     };
   };

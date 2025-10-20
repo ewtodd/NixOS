@@ -13,6 +13,7 @@ let
     if (deviceType == "desktop") then "5px" else "8px";
   right-notification-padding =
     if (deviceType == "desktop") then "8px" else "6px";
+  right-network-padding = if (deviceType == "desktop") then "12px" else "9px";
   right-notification-dnd-padding =
     if (deviceType == "desktop") then "11px" else "7px";
   notificationColor =
@@ -208,7 +209,7 @@ in {
                                                 padding-top: 8px;
                                                 padding-bottom: 8px;
                                                 padding-left: 8px;
-                                                padding-right: 9px;
+                                                padding-right: ${right-network-padding};
                                                 border-radius: 0;
                                                 margin: 6px 0;
                                                 border-right: 1px solid #${colors.base03};
