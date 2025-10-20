@@ -58,12 +58,6 @@ let
         ${pkgs.sway}/bin/swaymsg floating enable, resize set 45 ppt 75 ppt, move position center
     fi
   '';
-  open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
-    ${pkgs.firefox-wayland}/bin/firefox --new-window \
-      -url https://search.nixos.org/packages \
-      -new-tab -url https://search.nixos.org/options? \
-      -new-tab -url https://home-manager-options.extranix.com/ &
-  '';
 
 in {
   wayland.windowManager.sway = {
