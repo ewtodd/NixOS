@@ -5,6 +5,12 @@ let
   radius = toString osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
   fontFamily = config.FontChoice;
+  open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
+    ${pkgs.firefox-wayland}/bin/firefox --new-window \
+      -url https://search.nixos.org/packages \
+      -new-tab -url https://search.nixos.org/options? \
+      -new-tab -url https://home-manager-options.extranix.com/ &
+  '';
 in {
   imports = [
     ./settings/sway-colors.nix
