@@ -13,12 +13,14 @@ in {
           assigns = {
             "3" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
               app_id = "Slack";
-            }] ++ optionals (osConfig.DeviceType == "desktop") [{
-              app_id = "Todoist";
             }];
             "4" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
               app_id = "Todoist";
             }];
+            "5" = [ ] ++ optionals (osConfig.DeviceType == "desktop") [{
+              app_id = "Todoist";
+            }];
+
             "2" = [{ app_id = "thunderbird"; }]
               ++ optionals (osConfig.DeviceType == "desktop") [{
                 app_id = "Slack";
@@ -81,8 +83,13 @@ in {
       wayland.windowManager.sway = {
         config = {
           assigns = {
-            "2" = [{ class = "steam"; }];
-            "3" = [{ app_id = "spotify"; }];
+            "2" = [{ class = "steam"; }]
+              ++ optionals (osConfig.DeviceType == "desktop") [{
+                app_id = "spotify";
+              }];
+            "3" = [ ] ++ optionals (osConfig.DeviceType != "desktop") [{
+              app_id = "spotify";
+            }];
             "5" = [{ app_id = "signal"; }];
           };
           workspaceOutputAssign = [
