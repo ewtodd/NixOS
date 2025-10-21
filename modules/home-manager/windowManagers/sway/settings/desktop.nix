@@ -6,18 +6,10 @@ let
     import i3ipc
 
     i3 = i3ipc.Connection()
-    print("Gap manager starting (ignoring floating windows)...")
-
-    def count_tiled_windows(workspace):
-        """Count only tiled (non-floating) windows in workspace"""
-        if workspace is None:
-            return 0
-        # workspace.nodes contains tiled windows
-        # workspace.floating_nodes contains floating windows
-        return len(workspace.nodes)
+    print("Gap manager starting...")
 
     def manage_window_gaps(self=None, e=None):
-        """Center single tiled window at 50% width on DP-3"""
+        """Center single window at 50% width on DP-3"""
         try:
             focused = i3.get_tree().find_focused()
             workspace = focused.workspace()
@@ -26,42 +18,33 @@ let
                 return
                 
             monitor = workspace.ipc_data['output']
+            num_windows = len(workspace.nodes)
             
-            # Only manage gaps for DP-3
             if monitor != 'DP-3':
                 return
-            
-            # Count only tiled windows (excludes floating)
-            num_tiled_windows = count_tiled_windows(workspace)
             
             # DP-3: 3440x1440 @ 50% = 1720px wide
             # Gaps: (3440 - 1720) / 2 = 860px each side
             
-            if num_tiled_windows == 1:
-                # Center window with equal gaps on both sides
+            if num_windows == 1:
                 i3.command('gaps left current set 860')
                 i3.command('gaps right current set 860')
-                print(f"Single tiled window: gaps enforced")
-            elif num_tiled_windows > 1:
-                # Multiple tiled windows, use normal tiling
+            else:
                 i3.command('gaps left current set 0')
                 i3.command('gaps right current set 0')
-                print(f"{num_tiled_windows} tiled windows: gaps removed")
-            # If num_tiled_windows == 0, only floating windows exist, do nothing
                 
         except Exception as e:
-            print(f"Error in manage_window_gaps: {e}")
+            print(f"Error: {e}")
 
-    # Only subscribe to window creation and close events
     i3.on('window::new', manage_window_gaps)
     i3.on('window::close', manage_window_gaps)
-    i3.on('window::floating', manage_window_gaps)  # Handle floating toggle
+    i3.on('window::move', manage_window_gaps)
+    i3.on('window::focus', manage_window_gaps)
+    i3.on('workspace::init', manage_window_gaps)
+    i3.on('workspace::empty', manage_window_gaps)
 
-    # Run initial check
     manage_window_gaps()
-
-    # Start event loop
-    i3.main()  
+    i3.main()
   '';
   toggle-float-smart = pkgs.writeShellScript "toggle-float-smart" ''
     # Get the focused window's floating state
