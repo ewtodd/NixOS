@@ -187,6 +187,9 @@ in {
       };
 
       extraConfig = ''
+        bindgesture swipe:right workspace prev
+        bindgesture swipe:left workspace next
+
         blur enable
         blur_passes 3
         blur_radius 2
