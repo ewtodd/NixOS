@@ -11,7 +11,7 @@ let
     if (deviceType == "desktop") then "5px" else "8px";
   right-info-padding = if (deviceType == "desktop") then "7px" else "3px";
   right-notification-padding =
-    if (deviceType == "desktop") then "8px" else "6px";
+    if (deviceType == "desktop") then "8px" else "7px";
   right-network-padding = if (deviceType == "desktop") then "10px" else "9px";
   left-network-padding = if (deviceType == "desktop") then "8px" else "10px";
   right-notification-dnd-padding =
@@ -82,6 +82,7 @@ in {
     }
 
     #workspaces button:first-child {
+        margin-left: 3px;
     	border-radius: ${radius}px 0 0 ${radius}px;
     	border-right: 1px solid #${colors.base03};
     }
