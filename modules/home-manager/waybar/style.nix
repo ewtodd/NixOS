@@ -9,9 +9,11 @@ let
   deviceType = osConfig.DeviceType;
   left-notification-padding =
     if (deviceType == "desktop") then "5px" else "8px";
+  right-info-padding = if (deviceType == "desktop") then "7px" else "3px";
   right-notification-padding =
     if (deviceType == "desktop") then "8px" else "6px";
   right-network-padding = if (deviceType == "desktop") then "10px" else "9px";
+  left-network-padding = if (deviceType == "desktop") then "8px" else "10px";
   right-notification-dnd-padding =
     if (deviceType == "desktop") then "11px" else "7px";
   notificationColor =
@@ -86,7 +88,7 @@ in {
 
     #workspaces {
     	background: transparent;
-    	margin: 4px 0;
+    	margin: 5px 0;
     	font-size: 1.0rem;
     }
 
@@ -151,7 +153,7 @@ in {
     	min-width: 0;
     	box-shadow: none;
     	padding: 6px 10px;
-    	margin: 4px 3px;
+    	margin: 5px 3px;
     	border-radius: ${radius}px;
     	background-color: #${colors.base00};
     	color: #${colors.base0C};
@@ -163,18 +165,37 @@ in {
     	color: #${accentColor};
     	padding: 6px 10px;
     	border-radius: ${radius}px 0 0 ${radius}px;
-    	margin: 4px 0 4px 3px;
+    	margin: 5px 0 5px 3px;
     	border-right: 1px solid #${colors.base03};
     	border-left: none;
     }
 
-    #memory,
+    #memory {
+    	background-color: #${colors.base00};
+    	color: #${accentColor};
+    	padding: 6px 10px;
+    	border-radius: 0;
+    	margin: 5px 0;
+    	border-right: 1px solid #${colors.base03};
+        border-left: none;
+        border-radius: ${
+          if deviceType != "desktop" then "0 ${radius} ${radius} 0" else "0"
+        };
+        margin: ${if deviceType != "desktop" then "6px 3px 6px 0" else "6px 0"};
+        border-right: ${
+          if deviceType != "desktop" then
+            "none"
+          else
+            "1px solid #${colors.base03}"
+        };
+    }
+
     #custom-gpu {
     	background-color: #${colors.base00};
     	color: #${accentColor};
     	padding: 6px 10px;
     	border-radius: 0;
-    	margin: 4px 0;
+    	margin: 5px 0;
     	border-right: 1px solid #${colors.base03};
     	border-left: none;
     }
@@ -185,7 +206,7 @@ in {
     	padding: 6px 10px;
     	border-right: 1px solid #${colors.base03};
     	border-radius: 0 ${radius}px ${radius}px 0;
-    	margin: 4px 3px 4px 0;
+    	margin: 5px 3px 5px 0;
     	border-right: none;
     	border-left: none;
     }
@@ -214,8 +235,8 @@ in {
     	padding-top: 0;
     	padding-bottom: 0;
         padding-left: 0;
-    	padding-right: 7px;
-    	margin: 4px 0 4px 3px;
+    	padding-right: ${right-info-padding};
+    	margin: 5px 0 5px 3px;
         min-width: 24px;
         font-size: 1.35rem;
     }
@@ -240,7 +261,7 @@ in {
        color: #${accentColor};
        padding: 6px 10px;
        border-radius: ${radius}px 0 0 ${radius}px;
-       margin: 4px 0 4px 3px;
+       margin: 5px 0 5px 3px;
        border-right: 1px solid #${colors.base03};
        border-left: none;
     }
@@ -250,10 +271,10 @@ in {
         color: #${accentColor};
         padding-top: 4px;
     	padding-bottom: 4px;
-    	padding-left: 8px;
+    	padding-left: ${left-network-padding};
     	padding-right: ${right-network-padding};
         border-radius: ${radius}px 0 0 ${radius}px;
-        margin: 4px 0 4px 3px;
+        margin: 5px 0 5px 3px;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -263,7 +284,7 @@ in {
         color: #${accentColor};
         padding: 6px 10px;
         border-radius: 0;
-        margin: 4px 0;
+        margin: 5px 0;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -273,7 +294,7 @@ in {
         color: #${accentColor};
         padding: 6px 10px;
         border-radius: 0;
-        margin: 4px 0;
+        margin: 5px 0;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -283,7 +304,7 @@ in {
         color: #${accentColor};
         padding: 6px 10px;
         border-radius: 0;
-        margin: 4px 0;
+        margin: 5px 0;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -292,7 +313,7 @@ in {
         color: #${accentColor};
         padding: 6px 10px;
         border-radius: 0;
-        margin: 4px 0;
+        margin: 5px 0;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -304,7 +325,7 @@ in {
         background-color: #${colors.base09};
         color: #${colors.base00};
         border-radius: 0;
-        margin: 4px 0;
+        margin: 5px 0;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -313,7 +334,7 @@ in {
         background-color: #${colors.base0B};
         color: #${colors.base00};
         border-radius: 0;
-        margin: 4px 0;
+        margin: 5px 0;
         border-right: 1px solid #${colors.base03};
         border-left: none;
     }
@@ -326,7 +347,7 @@ in {
         padding-left: ${left-notification-padding};
         padding-right: ${right-notification-padding};
         border-radius: 0 ${radius}px ${radius}px 0;
-        margin: 4px 3px 6px 0;
+        margin: 5px 3px 6px 0;
         border-right: none;
         border-left: none;
         min-width: 24px;
