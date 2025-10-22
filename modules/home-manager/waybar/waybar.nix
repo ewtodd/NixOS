@@ -13,37 +13,26 @@ in {
         layer = if (windowManager == "sway") then "bottom" else "top";
         position = "top";
         spacing = 0;
-        height = 34;
-        modules-left = [ "custom/notification" "group/left" ];
-        modules-center = [ "${windowManager}/workspaces" ]
+        height = 30;
+        modules-right = [ "group/right" "clock" ]
+          ++ optionals (deviceType != "desktop") [ "battery" ]
+          ++ [ "custom/notification" ];
+        modules-left = [ "${windowManager}/workspaces" ]
           ++ optionals (windowManager == "sway") [
             "${windowManager}/window"
             "${windowManager}/mode"
           ];
-        modules-right = [ "custom/cpu" "memory" ]
-          ++ optionals (deviceType == "desktop") [
-            "custom/gpu"
-            "custom/gpumemory"
-          ] ++ optionals (deviceType != "desktop") [ "battery" ];
+        modules-center = [ "group/left" ];
+
         "${windowManager}/window" = mkIf (windowManager != "niri") {
           format = "";
           max-length = 0;
         };
-        "${windowManager}/workspaces" = if windowManager == "niri" then {
-          format = "{icon}";
-          on-click = "activate";
-          format-icons = {
-            "default" = "";
-            "afirefox" = "";
-            "bchat" = "󰿌";
-            "cchat" = "󰿌";
-            "bsteam" = "";
-            "ccalendar" = "";
-          };
-        } else {
+        "${windowManager}/workspaces" = {
           "on-click" = "activate";
           format = "{name}";
         };
+
         "custom/cpu" = {
           exec = "${pkgs.writeShellScript "cpu-stats.sh" ''
             cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{printf "%.f%%", 100 - $1}')
@@ -66,6 +55,18 @@ in {
           exec = ''echo "󰘚 $(nvtop -s 2>/dev/null | jq -r ".[0].mem_util")"'';
         };
 
+        "custom/info" = {
+          format = "{icon}";
+          format-icons = "";
+          tooltip = false;
+        };
+
+        "custom/system" = {
+          format = "{icon}";
+          format-icons = "";
+          tooltip = false;
+        };
+
         memory = {
           interval = 3;
           format = "{icon} {}%";
@@ -78,8 +79,18 @@ in {
 
         "group/left" = {
           orientation = "inherit";
-          drawer = { transition-duration = 200; };
-          modules = [ "clock" "network" "pulseaudio" "tray" ];
+          drawer = { transition-duration = 100; };
+          modules = [ "custom/info" "custom/cpu" "memory" ]
+            ++ optionals (deviceType == "desktop") [
+              "custom/gpu"
+              "custom/gpumemory"
+            ];
+        };
+
+        "group/right" = {
+          orientation = "inherit";
+          drawer = { transition-duration = 100; };
+          modules = [ "custom/system" "network" "pulseaudio" "tray" ];
         };
 
         tray = { spacing = 10; };
@@ -110,6 +121,7 @@ in {
           on-click-right = "swaync-client -d -sw";
           escape = true;
         };
+
         network = {
           "format-wifi" = "{icon}";
           format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
@@ -157,17 +169,7 @@ in {
           };
           tooltip = false;
         };
-        power-profiles-daemon = {
-          "format" = "{icon}";
-          "tooltip-format" = "Power profile = {profile}";
-          "tooltip" = true;
-          "format-icons" = {
-            "default" = "";
-            "performance" = "";
-            "balanced" = "";
-            "power-saver" = "";
-          };
-        };
+
       }];
     };
   };
