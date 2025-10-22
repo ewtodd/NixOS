@@ -19,15 +19,9 @@ in {
   ];
 
   imports = [ ./sway/sway-de.nix ];
-  services.xserver = {
+  services.displayManager.sddm = {
     enable = true;
-    displayManager.startx.enable = false;
-    excludePackages = with pkgs; [ xterm ];
-    displayManager.gdm = {
-      enable = true;
-      wayland = true;
-      autoSuspend = false;
-    };
+    wayland.enable = true;
   };
 
 }
