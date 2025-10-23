@@ -22,6 +22,16 @@
         wayland-pipewire-idle-inhibit
       ];
     };
+
+    programs.uwsm = {
+      enable = true;
+      waylandCompositors.sway = {
+        prettyName = "Sway (with UWSM)";
+        comment = "Sway compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/sway";
+      };
+    };
+
     environment.shellAliases = {
       view-image = "kitten icat";
       get-layer-shells =

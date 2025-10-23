@@ -6,9 +6,13 @@ let
 in {
 
   imports = [ ./sway/sway-de.nix ];
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
+  services.xserver = {
+    displayManager.startx.enable = false;
+    excludePackages = with pkgs; [ xterm ];
+    displayManager.gdm = {
+      enable = true;
+      wayland = true;
+      autoSuspend = false;
+    };
   };
-
 }
