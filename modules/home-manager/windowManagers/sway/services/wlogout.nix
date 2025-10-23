@@ -69,7 +69,7 @@ in {
     layout = [
       {
         label = "logout";
-        action = "uwsm stop";
+        action = "swaymsg exit";
         text = "Logout";
         keybind = "l";
       }

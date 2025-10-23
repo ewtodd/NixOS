@@ -23,15 +23,6 @@
       ];
     };
 
-    programs.uwsm = {
-      enable = true;
-      waylandCompositors.sway = {
-        prettyName = "Sway";
-        comment = "Sway compositor managed by UWSM";
-        binPath = "/run/current-system/sw/bin/sway";
-      };
-    };
-
     environment.shellAliases = {
       view-image = "kitten icat";
       get-layer-shells =
@@ -48,17 +39,7 @@
       enable = true;
       terminal = "kitty";
     };
-    xdg = {
-      portal = {
-        enable = true;
-        wlr.settings = {
-          screencast = {
-            chooser_type = "dmenu";
-            chooser_cmd = "${pkgs.rofi-wayland}/bin/rofi -dmenu";
-          };
-        };
-      };
-    };
+
     environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
     programs.ssh.enableAskPassword = false;
   };
