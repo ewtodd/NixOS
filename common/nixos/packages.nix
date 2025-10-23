@@ -14,6 +14,7 @@ in {
     nrs = "nh os switch /etc/nixos";
     fix-nixos-git =
       "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
+    init-dev-env = "nix flake init -t github:ewtodd/dev-env";
   };
   environment.systemPackages = with pkgs; [
     git
