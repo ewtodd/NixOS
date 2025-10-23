@@ -26,7 +26,7 @@
     programs.uwsm = {
       enable = true;
       waylandCompositors.sway = {
-        prettyName = "Sway (with UWSM)";
+        prettyName = "Sway";
         comment = "Sway compositor managed by UWSM";
         binPath = "/run/current-system/sw/bin/sway";
       };
