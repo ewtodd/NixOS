@@ -66,6 +66,9 @@ in {
 
       #XDG file upload
       for_window [app_id="xdg-desktop-portal-gtk"] floating enable, resize set 75 ppt 75 ppt, move position center
+
+      #blueman
+      for_window [app_id=".blueman-manager-wrapped"] floating enable, resize set 75 ppt 75 ppt, move position center
     '';
   };
   home.pointerCursor = { size = 48; };

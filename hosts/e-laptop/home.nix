@@ -69,15 +69,4 @@
     home.stateVersion = "25.05";
     imports = [ ../../common/home-manager/root-user.nix ];
   };
-  "gdm" = { lib, ... }: {
-    dconf.settings = {
-      "org/gnome/mutter" = {
-        experimental-features =
-          lib.hm.gvariant.mkArray lib.hm.gvariant.type.string
-          [ "scale-monitor-framebuffer" ];
-      };
-    };
-    home.stateVersion = "25.05";
-  };
-
 }
