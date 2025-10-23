@@ -5,7 +5,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = [
-    "resume=/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b"
     "mem_sleep_default=s2idle"
     "acpi.ec_no_wakeup=1"
   ];
@@ -66,7 +65,5 @@
     "snd_sof_intel_hda_sdw_bpt"
     "snd_sof_probes"
   ];
-
-  boot.resumeDevice = "/dev/disk/by-uuid/125110a9-9ead-4526-bd82-a7f208b2ec3b";
 
 }
