@@ -54,12 +54,7 @@ in {
 
           ];
 
-          # Work-specific keybindings
-          keybindings = {
-            "Mod4+g" =
-              "exec firefox --new-window -url https://umgpt.umich.edu/";
-          };
-
+          
           startup = [
             { command = "thunderbird"; }
             {
