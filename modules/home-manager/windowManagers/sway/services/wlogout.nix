@@ -69,7 +69,7 @@ in {
     layout = [
       {
         label = "logout";
-        action = "systemctl --user stop swaync.service && swaymsg exit";
+        action = "swaymsg exit";
         text = "Logout";
         keybind = "l";
       }
