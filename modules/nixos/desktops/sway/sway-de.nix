@@ -34,12 +34,6 @@
         enable = true;
         config.common.default = "*";
         wlr.enable = true;
-        wlr.settings = {
-          screencast = {
-            chooser_type = "dmenu";
-            chooser_cmd = "rofi -show drun";
-          };
-        };
         extraPortals = with pkgs; [
           xdg-desktop-portal-wlr
           xdg-desktop-portal-gtk
