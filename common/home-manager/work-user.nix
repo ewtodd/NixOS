@@ -13,6 +13,7 @@
     name = "Steam";
     noDisplay = true;
   };
+  xdg.portal.config.common.default = "*";
   Profile = "work";
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
