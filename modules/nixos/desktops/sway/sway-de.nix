@@ -28,6 +28,24 @@
         "swaymsg -r -t get_outputs | jq '.[0].layer_shell_surfaces | .[] | .namespace'";
     };
 
+    xdg = {
+      portal = {
+        enable = true;
+        config.common.default = "*";
+        wlr.enable = true;
+        wlr.settings = {
+          screencast = {
+            chooser_type = "dmenu";
+            chooser_cmd = "rofi -show drun";
+          };
+        };
+        extraPortals = with pkgs; [
+          xdg-desktop-portal-wlr
+          xdg-desktop-portal-gtk
+        ];
+      };
+    };
+
     security.pam.services.swaylock-effects = { };
     services.udisks2.enable = true;
     services.gvfs.enable = true;
