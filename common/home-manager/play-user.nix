@@ -20,6 +20,7 @@ in {
 
   ];
   Profile = "play";
+  xdg.portal.config.common.default = "*";
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
   programs.bash = {

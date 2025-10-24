@@ -19,6 +19,7 @@
         glib
         gnome-themes-extra
         wayland-pipewire-idle-inhibit
+        gsettings-desktop-schemas
       ];
     };
 
@@ -57,7 +58,13 @@
       terminal = "kitty";
     };
 
-    environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
+    environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+      XDG_DATA_DIRS = lib.mkBefore [
+        "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+        "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+      ];
+    };
     programs.ssh.enableAskPassword = false;
   };
 }
