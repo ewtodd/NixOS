@@ -4,4 +4,4 @@
   systemd.sleep.extraConfig = ''
     HibernateDelaySec=20m
   '';
-}
+ }

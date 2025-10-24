@@ -1,4 +1,6 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }:
+let unstable = import inputs.unstable { system = "x86_64-linux"; };
+in {
   imports = [
     ./system-options.nix
     ./xdg.nix
@@ -12,10 +14,10 @@
     signal-desktop
     mangohud
     protontricks
-    lutris
     spotify
     android-tools
     mumble
+
   ];
   Profile = "play";
   programs.nixvim.enable = true;
@@ -25,5 +27,4 @@
     enableCompletion = true;
     shellAliases = { ll = "ls -l"; };
   };
-  home.sessionVariables = { VKD3D_CONFIG = "no_upload_hvv"; };
 }

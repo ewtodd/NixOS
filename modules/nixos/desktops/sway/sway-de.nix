@@ -5,7 +5,6 @@
       enable = true;
       package = pkgs.swayfx;
       extraPackages = with pkgs; [
-        autotiling-rs
         wlogout
         wl-clipboard
         swaybg
