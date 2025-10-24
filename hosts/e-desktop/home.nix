@@ -27,6 +27,7 @@
         name = "Todoist";
         noDisplay = true;
       };
+      FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
         "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
@@ -56,6 +57,7 @@
       vpn = ''
         sudo openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
     };
+    FontChoice = "Ubuntu Nerd Font";
     WallpaperPath =
       "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/kanagawa.png";
     colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
