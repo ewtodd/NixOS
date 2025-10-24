@@ -55,6 +55,13 @@ let
     in "rgba(${r}, ${g}, ${b}, ${alpha})";
 
 in {
+  systemd.user.services.swaync = {
+    Unit = {
+      After = lib.mkForce [ "graphical-session-pre.target" ];
+      Before = [ "graphical-session.target" ];
+    };
+    Install = { WantedBy = lib.mkForce [ "graphical-session-pre.target" ]; };
+  };
   services.swaync = {
     enable = true;
     settings = {

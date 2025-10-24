@@ -16,7 +16,6 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
-    niri.url = "github:sodiboo/niri-flake";
     fw-fanctrl = {
       url = "github:TamtamHero/fw-fanctrl/packaging/nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -66,7 +65,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -166,7 +164,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;
