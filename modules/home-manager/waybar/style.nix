@@ -8,14 +8,17 @@ let
   opacity = if (windowManager == "sway") then "0.75" else "0.875";
   deviceType = osConfig.DeviceType;
   left-notification-padding =
-    if (deviceType == "desktop") then "5px" else "8px";
-  right-info-padding = if (deviceType == "desktop") then "7px" else "3px";
+    if (fontFamily == "JetBrains Mono Nerd Font") then "5px" else "8px";
+  right-info-padding =
+    if (fontFamily == "JetBrains Mono Nerd Font") then "7px" else "3px";
   right-notification-padding =
-    if (deviceType == "desktop") then "8px" else "7px";
-  right-network-padding = if (deviceType == "desktop") then "10px" else "9px";
-  left-network-padding = if (deviceType == "desktop") then "8px" else "10px";
+    if (fontFamily == "JetBrains Mono Nerd Font") then "8px" else "7px";
+  right-network-padding =
+    if (fontFamily == "JetBrains Mono Nerd Font") then "10px" else "9px";
+  left-network-padding =
+    if (fontFamily == "JetBrains Mono Nerd Font") then "8px" else "10px";
   right-notification-dnd-padding =
-    if (deviceType == "desktop") then "11px" else "7px";
+    if (fontFamily == "JetBrains Mono Nerd Font") then "11px" else "7px";
   notificationColor =
     if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   # Helper to convert hex to rgba
