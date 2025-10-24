@@ -73,9 +73,6 @@ in {
             { command = "swaymsg 'workspace 1'"; }
           ];
         };
-        extraConfig = ''
-          layer_effects "waybar" blur enable; shadows enable
-        '';
       };
     })
 
@@ -132,9 +129,6 @@ in {
             { command = "sh -c 'sleep 2 && signal-desktop --use-tray-icon'"; }
           ];
         };
-        extraConfig = ''
-          layer_effects "waybar" blur enable; shadows enable
-        '';
       };
     })
   ];
