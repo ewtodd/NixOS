@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
+#  programs.nixvim.extraPlugins = with pkgs.vimPlugins; [ plenary-nvim ];
   programs.nixvim.extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
