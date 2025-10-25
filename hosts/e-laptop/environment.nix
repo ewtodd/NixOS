@@ -1,13 +1,10 @@
 { pkgs, ... }: {
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = [
-    "mem_sleep_default=s2idle"
-    "acpi.ec_no_wakeup=1"
-  ];
+  boot.kernelParams = [ "mem_sleep_default=s2idle" "acpi.ec_no_wakeup=1" ];
 
   systemd.services.disable-all-wakeups = {
     description = "Disable wakeup sources before suspend";

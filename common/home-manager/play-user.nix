@@ -1,6 +1,4 @@
-{ pkgs, inputs, ... }:
-let unstable = import inputs.unstable { system = "x86_64-linux"; };
-in {
+{ pkgs, ... }: {
   imports = [
     ./system-options.nix
     ./xdg.nix
@@ -10,15 +8,7 @@ in {
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages = with pkgs; [
-    signal-desktop
-    mangohud
-    protontricks
-    spotify
-    android-tools
-    mumble
-
-  ];
+  home.packages = with pkgs; [ signal-desktop spotify android-tools mumble ];
   Profile = "play";
   xdg.portal.config.common.default = "*";
   programs.nixvim.enable = true;

@@ -1,17 +1,13 @@
-{ pkgs, inputs, ... }:
-let unstable = inputs.unstable.legacyPackages.${pkgs.system};
-in {
+{ pkgs, ... }: {
   hardware.graphics = {
     enable = true;
     package = pkgs.mesa;
     enable32Bit = true;
-    extraPackages = with unstable; [ vulkan-tools rocmPackages.clr.icd ];
-
+    extraPackages = with pkgs; [ vulkan-tools rocmPackages.clr.icd ];
   };
-  # Allow unfree packages (required for ROCm)
+
   nixpkgs.config.allowUnfree = true;
 
-  # Add ROCm packages to system packages
   environment.systemPackages = with pkgs; [
     rocmPackages.rocminfo
     rocmPackages.rocm-smi
