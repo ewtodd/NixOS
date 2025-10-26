@@ -1,3 +1,12 @@
-## NixOS Configs
+# NixOS Configuration
 
-This is a repo for the contents of my /etc/nixos, managed with flakes. It includes extensive use of home-manager to manage dotfiles - with a lovely rice using SwayFX. It also includes development environments for coding! It is designed to be used with two users, play/work, for separation of church and state. A home-manager level option called profile is defined so that the dotfiles can be setup according tto the appropriate account. The colorschemes for all apps are also set according to the profile option to ensure a different experience on the two accounts.
+This repo contains an opinionated NixOS/home-manager configuration. The desktop environment is composed of SwayFX combined with many GNOME apps, waybar, swaync, and other common tools. Theming is controlled via a nix-colors colorScheme option in home-manager. The default behavior is to have two accounts, work and play, with separate themes for proper separation of Church and state. The play account is set up to run Steam and for the most part everything should "just work". The work account contains useful aliases for common data analysis tools used in physics. 
+
+# Roadmap:
+## Crucial:
+- [ ] Convert from nix-colors to base16.nix, since this is actually maintained. 
+- [ ] Switch from nix modules, in the sense of chunks of code that you manually decide whether or not to import, to standard NixOS style modules where you enable options within your configuration and the rest is abstracted away. 
+- [ ] Create proper headless compositor sessions for accessing desktops remotely via Sunshine/Moonlight. 
+## Flexible: 
+- [ ] Write a new Wayland compositor using Smithay/Rust to mimic the functionality of sway with some of the modern conveniences of Niri (per window screen sharing, overview, animations, ...) that is configured entirely via Nix. 
+- [ ] Write a complete Wayland shell to replace the combination of waybar+swaync+avizo that is compositor independent and configured entirely via Nix. 
