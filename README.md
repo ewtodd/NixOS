@@ -2,7 +2,7 @@
 
 This repo contains an opinionated NixOS/home-manager configuration. The desktop environment is composed of SwayFX combined with many GNOME apps, waybar, swaync, and other common tools. Theming is controlled via a nix-colors colorScheme option in home-manager. The default behavior is to have two accounts, work and play, with separate themes for proper separation of Church and state. The play account is set up to run Steam and for the most part everything should "just work". The work account contains useful aliases for common data analysis tools used in physics. 
 
-# Roadmap:
+# Roadmap
 ## Crucial:
 - [ ] Convert from nix-colors to base16.nix, since this is actually maintained. 
 - [ ] Switch from nix modules, in the sense of chunks of code that you manually decide whether or not to import, to standard NixOS style modules where you enable options within your configuration and the rest is abstracted away. 
