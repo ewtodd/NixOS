@@ -6,6 +6,21 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = [ "mem_sleep_default=s2idle" "acpi.ec_no_wakeup=1" ];
 
+  services.undervolt = {
+    enable = true;
+    tempBat = 75;
+    tempAc = 85;
+    p1 = {
+      window = 1.0e-3;
+      limit = 45;
+    };
+    p2 = {
+      window = 96;
+      limit = 22;
+    };
+    turbo = 1;
+  };
+
   systemd.services.disable-all-wakeups = {
     description = "Disable wakeup sources before suspend";
     wantedBy = [ "suspend.target" ];
