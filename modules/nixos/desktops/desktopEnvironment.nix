@@ -5,7 +5,7 @@ let
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in {
 
-  imports = [ ./sway/sway-de.nix ];
+  imports = [ ./sway/sway-de.nix ./niri/niri-de.nix ];
   services.xserver = {
     displayManager.startx.enable = false;
     excludePackages = with pkgs; [ xterm ];

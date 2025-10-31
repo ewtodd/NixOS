@@ -36,7 +36,8 @@ in {
         # Variables
         modifier = "Mod4";
         terminal = "kitty";
-        menu = "rofi -show drun -matching fuzzy | xargs swaymsg exec --";
+        menu = ''
+          rofi -show combi -modes combi -combi-modes "window,drun" -matching fuzzy | xargs swaymsg exec --'';
 
         # Direction keys (vim-style)
         left = "h";

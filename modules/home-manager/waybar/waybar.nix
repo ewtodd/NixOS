@@ -28,11 +28,21 @@ in {
           format = "";
           max-length = 0;
         };
-        "${windowManager}/workspaces" = {
+        "${windowManager}/workspaces" = if windowManager == "niri" then {
+          format = "{icon}";
+          on-click = "activate";
+          format-icons = {
+            "default" = "";
+            "afirefox" = "";
+            "bchat" = "󰿌";
+            "cchat" = "󰿌";
+            "bsteam" = "";
+            "ccalendar" = "";
+          };
+        } else {
           "on-click" = "activate";
           format = "{name}";
         };
-
         "custom/cpu" = {
           exec = "${pkgs.writeShellScript "cpu-stats.sh" ''
             cpu_usage=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{printf "%.f%%", 100 - $1}')
