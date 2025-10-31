@@ -69,6 +69,9 @@ in {
 
       #blueman
       for_window [app_id=".blueman-manager-wrapped"] floating enable, resize set 75 ppt 75 ppt, move position center
+
+      #udiskie
+      for_window [app_id="udiskie"] floating enable, resize set 75 ppt 75 ppt, move position center
     '';
   };
   home.pointerCursor = { size = 48; };
