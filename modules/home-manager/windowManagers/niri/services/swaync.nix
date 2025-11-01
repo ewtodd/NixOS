@@ -2,6 +2,8 @@
 
 let
   colors = config.colorScheme.palette;
+  windowManager = osConfig.WindowManager;
+  opacity = if (windowManager == "sway") then "0.75" else "0.925";
   radius = osConfig.CornerRadius;
   hexDigitToInt = d:
     if d == "0" then
@@ -110,7 +112,7 @@ in {
 
     style = ''
       .control-center {
-        background-color: ${hexToRgba colors.base00 "0.75"};
+        background-color: ${hexToRgba colors.base00 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
         border-radius: ${toString radius}px;
         margin: 18px;
@@ -137,7 +139,7 @@ in {
 
       .widget-title {
         color: #${colors.base05};
-        background-color: ${hexToRgba colors.base01 "0.9"};
+        background-color: ${hexToRgba colors.base01 "${opacity}"};
         padding: 8px 12px;
         margin: 6px 0;
         border-radius: ${toString radius}px;
@@ -178,7 +180,7 @@ in {
 
       /* Volume widget styling */
       .widget-volume {
-        background-color: ${hexToRgba colors.base01 "0.9"};
+        background-color: ${hexToRgba colors.base01 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
         border-radius: ${toString radius}px;
         margin: 6px 0;
@@ -193,7 +195,7 @@ in {
       }
 
       .widget-backlight {
-        background-color: ${hexToRgba colors.base01 "0.9"};
+        background-color: ${hexToRgba colors.base01 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.1"};
         border-radius: ${toString radius}px;
         margin: 6px 0;

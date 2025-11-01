@@ -7,7 +7,7 @@ let
   # Font selection based on profile
   fontFamily = config.FontChoice;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.875";
+  opacity = if (windowManager == "sway") then "0.75" else "0.925";
 
   # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
