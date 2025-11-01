@@ -36,7 +36,7 @@ in {
             "afirefox" = "";
             "bchat" = "󰿌";
             "cchat" = "󰿌";
-            "bmedia" = "";
+            "bmedia" = "";
             "ccalendar" = "";
           };
         } else {

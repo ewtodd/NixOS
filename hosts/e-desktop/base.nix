@@ -9,7 +9,6 @@
     ../../modules/nixos/services/tailscale.nix
     ../../modules/nixos/services/sunshine.nix
     #../../modules/nixos/services/protonvpn.nix
-    ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/packages/todoist.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/freecad.nix
@@ -23,6 +22,7 @@
 
   # Configure ROCm targets for RX 7900 XTX
   nixpkgs.config.rocmTargets = [ "gfx1100" ];
+  powerManagement.enable = true;
 
   WindowManager = "niri";
   DeviceType = "desktop";
