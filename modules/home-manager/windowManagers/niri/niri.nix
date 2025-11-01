@@ -2,7 +2,7 @@
 with lib;
 let
   deviceType = osConfig.DeviceType;
-  radius = osConfig.CornerRadius;
+  radius = 1.0 * osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
   open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
     ${pkgs.firefox-wayland}/bin/firefox --new-window \
@@ -50,9 +50,16 @@ in {
           preset-column-widths = [
             { proportion = 0.33333; }
             { proportion = 0.5; }
-            { proportion = 0.66667; }
+            { proportion = 0.46667; }
             { proportion = 1.0; }
           ];
+          preset-window-heights = [
+            { proportion = 0.33333; }
+            { proportion = 0.5; }
+            { proportion = 0.46667; }
+            { proportion = 1.0; }
+          ];
+
           default-column-width = { proportion = 0.5; };
           always-center-single-column = true;
         };
@@ -67,10 +74,10 @@ in {
             clip-to-geometry = true;
 
             geometry-corner-radius = {
-              top-left = "${radius}";
-              top-right = "${radius}";
-              bottom-right = "${radius}";
-              bottom-left = "${radius}";
+              top-left = radius;
+              top-right = radius;
+              bottom-right = radius;
+              bottom-left = radius;
             };
           }
 
@@ -80,32 +87,32 @@ in {
               title = "^Write:";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ title = "Volume Control"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ app-id = "floatingkitty"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ app-id = ".blueman-manager-wrapped"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ app-id = "udiskie"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{
@@ -113,26 +120,30 @@ in {
               title = "File Upload";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ title = "sim"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ title = "ROOT"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
           }
           {
             matches = [{ app-id = "gnome-disks"; }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
-            default-window-height.proportion = 0.6;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.4;
+          }
+          {
+            matches = [{ app-id = "com.obsproject.Studio"; }];
+            default-column-width.proportion = 1.0;
           }
         ];
 
@@ -187,6 +198,7 @@ in {
           "Mod+j".action = focus-window-down;
           "Mod+k".action = focus-window-up;
           "Mod+l".action = focus-column-right;
+          "Mod+t".action = switch-focus-between-floating-and-tiling;
 
           # Move windows
           "Mod+Shift+h".action = move-column-left;
@@ -194,24 +206,26 @@ in {
           "Mod+Shift+k".action = move-window-up;
           "Mod+Shift+l".action = move-column-right;
 
-          "Mod+Tab".action.spawn = "${toggle-overview-with-waybar}";
+          "Mod+Tab".action = toggle-overview;
 
           # Workspaces
           "Mod+a".action = focus-workspace-up;
           "Mod+s".action = focus-workspace-down;
-          "Mod+c".action = focus-monitor-next;
-          "Mod+v".action = focus-monitor-previous;
+          "Mod+1".action = focus-monitor-next;
+          "Mod+2".action = focus-monitor-previous;
 
           "Mod+Shift+a".action = move-window-to-workspace-up;
           "Mod+Shift+s".action = move-window-to-workspace-down;
-          "Mod+Shift+c".action = move-window-to-monitor-next;
-          "Mod+Shift+v".action = move-window-to-monitor-previous;
+          "Mod+Shift+1".action = move-window-to-monitor-next;
+          "Mod+Shift+2".action = move-workspace-to-monitor-previous;
 
           # Layout management
           "Mod+Shift+f".action = fullscreen-window;
+          "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
           "Mod+r".action = switch-preset-column-width;
-          "Mod+Comma".action = consume-or-expel-window-left;
-          "Mod+Period".action = consume-or-expel-window-right;
+          "Mod+Shift+r".action = switch-preset-window-height;
+          "Mod+c".action = consume-or-expel-window-left;
+          "Mod+v".action = consume-or-expel-window-right;
           "Mod+Space".action = toggle-window-floating;
           "Mod+Shift+Space".action = center-window;
 
@@ -244,7 +258,9 @@ in {
         spawn-at-startup = [
           { command = [ "waybar" ]; }
           { command = [ "swaybg" "-i" "${wallpaperPath}" ]; }
-          { command = [ "wayland-pipewire-idle-inhibit" ]; }
+          {
+            command = [ "sh" "-c" "sleep 2 && wayland-pipewire-idle-inhibit" ];
+          }
         ];
         animations = {
           enable = true;
