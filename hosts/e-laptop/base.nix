@@ -7,7 +7,6 @@
     ../../modules/nixos/hardware/laptop-power.nix
     ../../modules/nixos/hardware/chromebook-audio.nix
     ../../modules/nixos/hardware/intel-graphics.nix
-    ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/tailscale.nix
     #../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/moonlight.nix
@@ -19,7 +18,7 @@
     ../../modules/nixos/packages/mtkclient-udev-rules.nix
     ../../modules/nixos/packages/nix-mineral.nix
   ];
-  WindowManager = "sway";
+  WindowManager = "niri";
   DeviceType = "laptop";
   users.users.e-play = {
     isNormalUser = true;
