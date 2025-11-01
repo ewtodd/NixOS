@@ -5,7 +5,7 @@ let
   fontFamily = config.FontChoice;
   accentColor = colors.base0E;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.875";
+  opacity = if (windowManager == "sway") then "0.75" else "0.925";
   deviceType = osConfig.DeviceType;
   left-notification-padding =
     if (fontFamily == "JetBrains Mono Nerd Font") then "5px" else "8px";

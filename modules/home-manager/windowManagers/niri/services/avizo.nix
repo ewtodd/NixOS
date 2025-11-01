@@ -2,7 +2,7 @@
 let
   colors = config.colorScheme.palette;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.875";
+  opacity = if (windowManager == "sway") then "0.75" else "0.925";
   hexToRgba = hex: alpha:
     let
       r = toString (hexPairToInt (builtins.substring 0 2 hex));
