@@ -4,6 +4,7 @@
       enable = true;
       package = pkgs.niri;
     };
+
     environment.systemPackages = with pkgs; [
       xwayland-satellite
       wlogout
@@ -26,11 +27,11 @@
     xdg.portal = {
       enable = true;
       extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
         xdg-desktop-portal-gnome
+        xdg-desktop-portal-gtk
       ];
       config = {
-        common = { default = [ "gtk" ]; };
+        common = { default = [ "gnome" ]; };
         niri = {
           default = [ "gtk" "gnome" ];
           "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
@@ -53,9 +54,8 @@
     };
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
-      XDG_CURRENT_DESKTOP = "niri";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
       XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "niri";
       XDG_DATA_DIRS = lib.mkBefore [
         "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
         "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
