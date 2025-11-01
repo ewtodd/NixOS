@@ -37,7 +37,7 @@ in {
 
     window = {
       transparency = "real";
-      background-color = mkLiteral "#${colors.base00}bf";
+      background-color = mkLiteral "#${colors.base00}FF";
       text-color = mkLiteral "#${colors.base05}";
       border = mkLiteral "0px";
       border-color = mkLiteral "#${colors.base03}";

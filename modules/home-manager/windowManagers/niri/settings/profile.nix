@@ -46,7 +46,6 @@ in {
         ];
         # Work-specific startup applications
         spawn-at-startup = [
-          { command = [ "firefox" ]; }
           { command = [ "thunderbird" ]; }
           { command = [ "${pkgs.slack}/bin/slack" ]; }
           {
