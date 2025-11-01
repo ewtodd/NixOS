@@ -227,15 +227,15 @@ in {
           "Alt+l".action.spawn = "${pkgs.swaylock-effects}/bin/swaylock";
           # Focus management (vim-style)
           "Mod+h".action = focus-column-or-monitor-left;
-          "Mod+j".action = focus-window-down;
-          "Mod+k".action = focus-window-up;
+          "Mod+j".action = focus-window-or-workspace-down;
+          "Mod+k".action = focus-window-or-workspace-up;
           "Mod+l".action = focus-column-or-monitor-right;
           "Mod+t".action = switch-focus-between-floating-and-tiling;
 
           # Move windows
           "Mod+Shift+h".action = move-column-left-or-to-monitor-left;
-          "Mod+Shift+j".action = move-window-down;
-          "Mod+Shift+k".action = move-window-up;
+          "Mod+Shift+j".action = move-window-down-or-to-workspace-down;
+          "Mod+Shift+k".action = move-window-up-or-to-workspace-up;
           "Mod+Shift+l".action = move-column-right-or-to-monitor-right;
 
           "Mod+Tab".action = toggle-overview;
@@ -271,9 +271,8 @@ in {
 
           # Screenshots
           "Alt+Ctrl+3".action.spawn =
-            [ "${pkgs.sway-contrib.grimshot}/bin/grimshot" "copy" "output" ];
-          "Alt+Ctrl+4".action.spawn =
-            [ "${pkgs.sway-contrib.grimshot}/bin/grimshot" "copy" "area" ];
+            [ "niri" "msg" "action" "screenshot-screen" ];
+          "Alt+Ctrl+4".action.spawn = [ "niri" "msg" "action" "screenshot" ];
 
           # Audio controls
           "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-u" "up" ];

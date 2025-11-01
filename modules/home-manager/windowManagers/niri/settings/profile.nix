@@ -47,7 +47,7 @@ in {
         # Work-specific startup applications
         spawn-at-startup = [
           { command = [ "thunderbird" ]; }
-          { command = [ "${pkgs.slack}/bin/slack" ]; }
+          { command = [ "sh" "-c" "sleep 2 && ${pkgs.slack}/bin/slack" ]; }
           {
             command = [
               "sh"
@@ -100,7 +100,7 @@ in {
         # Play-specific startup applications
         spawn-at-startup = [
           { command = [ "sh" "-c" "sleep 2 && steam" ]; }
-          { command = [ "sh" "-c" "sleep 2 && spotify" ]; }
+          { command = [ "sh" "-c" "sleep 6 && spotify" ]; }
           {
             command =
               [ "${pkgs.signal-desktop}/bin/signal-desktop" "--use-tray-icon" ];

@@ -34,9 +34,9 @@ in {
           format-icons = {
             "default" = "";
             "afirefox" = "";
-            "bchat" = "󰿌";
+            "bchat" = "";
             "cchat" = "󰿌";
-            "bmedia" = "";
+            "bmedia" = "";
             "ccalendar" = "";
           };
         } else {

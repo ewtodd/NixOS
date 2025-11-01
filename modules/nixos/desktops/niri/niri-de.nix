@@ -11,7 +11,6 @@
       cmatrix
       wl-clipboard
       swaybg
-      sway-contrib.grimshot
       jq
       libnotify
       pavucontrol
