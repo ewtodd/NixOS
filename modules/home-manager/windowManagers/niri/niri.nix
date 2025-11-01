@@ -226,10 +226,10 @@ in {
           ];
           "Alt+l".action.spawn = "${pkgs.swaylock-effects}/bin/swaylock";
           # Focus management (vim-style)
-          "Mod+h".action = focus-column-left;
+          "Mod+h".action = focus-column-or-monitor-left;
           "Mod+j".action = focus-window-down;
           "Mod+k".action = focus-window-up;
-          "Mod+l".action = focus-column-right;
+          "Mod+l".action = focus-column-or-monitor-right;
           "Mod+t".action = switch-focus-between-floating-and-tiling;
 
           # Move windows
