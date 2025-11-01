@@ -10,7 +10,6 @@
   ];
   home.packages = with pkgs; [ signal-desktop spotify android-tools mumble ];
   Profile = "play";
-  xdg.portal.config.common.default = "*";
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
   programs.bash = {

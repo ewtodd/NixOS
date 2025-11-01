@@ -36,10 +36,10 @@
           default = [ "gtk" "gnome" ];
           "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
           "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+          "org.freedesktop.impl.portal.Settings" = [ "gnome" ]; # Add this
         };
       };
     };
-
     environment.shellAliases = { view-image = "kitten icat"; };
 
     security.pam.services.swaylock-effects = { };
