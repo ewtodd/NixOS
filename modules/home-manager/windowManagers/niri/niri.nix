@@ -1,6 +1,7 @@
 { config, lib, osConfig, pkgs, ... }:
 with lib;
 let
+  colors = config.colorScheme.palette;
   deviceType = osConfig.DeviceType;
   radius = 1.0 * osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
@@ -10,6 +11,8 @@ let
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ &
   '';
+  notificationColor =
+    if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
 in {
 
   imports = [
@@ -80,6 +83,16 @@ in {
               bottom-left = radius;
             };
           }
+          {
+            matches = [{ is-window-cast-target = true; }];
+            border = {
+              enable = true;
+              width = 3;
+              active.color = "#${notificationColor}";
+              inactive.color = "#${notificationColor}";
+            };
+            focus-ring.enable = false;
+          }
 
           {
             matches = [{
@@ -88,31 +101,31 @@ in {
             }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "Volume Control"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "floatingkitty"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = ".blueman-manager-wrapped"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "udiskie"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{
@@ -121,30 +134,49 @@ in {
             }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "sim"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "ROOT"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "gnome-disks"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.4;
+            default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "com.obsproject.Studio"; }];
             default-column-width.proportion = 1.0;
           }
+          {
+            matches = [{
+              app-id = "com.obsproject.Studio";
+              title = "^Create/Select Source";
+            }];
+            open-floating = true;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.6;
+          }
+          {
+            matches = [{
+              app-id = "com.obsproject.Studio";
+              title = "^Properties for 'Screen Capture (PipeWire)'";
+            }];
+            open-floating = true;
+            default-column-width.proportion = 0.4;
+            default-window-height.proportion = 0.6;
+          }
+
         ];
 
         binds = with config.lib.niri.actions; {
@@ -201,10 +233,10 @@ in {
           "Mod+t".action = switch-focus-between-floating-and-tiling;
 
           # Move windows
-          "Mod+Shift+h".action = move-column-left;
+          "Mod+Shift+h".action = move-column-left-or-to-monitor-left;
           "Mod+Shift+j".action = move-window-down;
           "Mod+Shift+k".action = move-window-up;
-          "Mod+Shift+l".action = move-column-right;
+          "Mod+Shift+l".action = move-column-right-or-to-monitor-right;
 
           "Mod+Tab".action = toggle-overview;
 
