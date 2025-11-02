@@ -25,7 +25,6 @@ in {
     ./services/wlogout.nix
     ./services/avizo.nix
     ./launcher/rofi.nix
-    ./services/tile-to-n.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
