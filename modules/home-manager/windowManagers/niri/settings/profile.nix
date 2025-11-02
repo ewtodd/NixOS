@@ -53,14 +53,26 @@ in {
               "firefox && niri msg action move-window-to-workspace afirefox"
             ];
           }
-          { command = [ "thunderbird" ]; }
-          { command = [ "sh" "-c" "sleep 2 && ${pkgs.slack}/bin/slack" ]; }
+          {
+            command =
+              [ "sh" "-c" "thunderbird  && niri msg action move-column-left" ];
+          }
+          {
+            command = [
+              "sh"
+              "-c"
+              "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right"
+            ];
+          }
           {
             command = [
               "sh"
               "-c"
               "sleep 2 && ${pkgs.todoist-electron}/bin/todoist-electron"
             ];
+          }
+          {
+            command = [ "sh" "-c" "niri msg action focus-workspace afirefox" ];
           }
         ];
       };
@@ -114,13 +126,21 @@ in {
             ];
           }
 
-          { command = [ "sh" "-c" "sleep 2 && steam" ]; }
-          { command = [ "sh" "-c" "sleep 6 && spotify" ]; }
+          {
+            command = [
+              "sh"
+              "-c"
+              "sleep 2 && steam && niri msg action move-column-left"
+            ];
+          }
+          { command = [ "sh" "-c" "sleep 2 && spotify" ]; }
           {
             command =
               [ "${pkgs.signal-desktop}/bin/signal-desktop" "--use-tray-icon" ];
           }
-
+          {
+            command = [ "sh" "-c" "niri msg action focus-workspace afirefox" ];
+          }
         ];
       };
     })
