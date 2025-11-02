@@ -1,5 +1,7 @@
 { ... }: {
   programs.niri.settings = {
+    layout = { default-column-width = { proportion = 0.66667; }; };
+
     outputs = {
       "eDP-1" = {
         mode = {

@@ -1,5 +1,6 @@
 { ... }: {
   programs.niri.settings = {
+    layout = { default-column-width = { proportion = 0.5; }; };
     outputs = {
       "HDMI-A-1" = {
         mode = {
