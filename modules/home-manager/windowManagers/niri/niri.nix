@@ -25,6 +25,7 @@ in {
     ./services/wlogout.nix
     ./services/avizo.nix
     ./launcher/rofi.nix
+    ./services/tile-to-n.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
@@ -273,9 +274,11 @@ in {
           "Alt+Ctrl+4".action.spawn = [ "niri" "msg" "action" "screenshot" ];
 
           # Audio controls
-          "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-u" "up" ];
-          "XF86AudioLowerVolume".action.spawn = [ "volumectl" "-u" "down" ];
-          "XF86AudioMute".action.spawn = [ "volumectl" "toggle-mute" ];
+          "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-d" "-p" "up" ];
+          "XF86AudioLowerVolume".action.spawn =
+            [ "volumectl" "-d" "-p" "down" ];
+          "XF86AudioMute".action.spawn =
+            [ "volumectl" "-d" "-p" "toggle-mute" ];
 
           "XF86MonBrightnessUp".action.spawn = [ "lightctl" "up" ];
           "XF86MonBrightnessDown".action.spawn = [ "lightctl" "down" ];
