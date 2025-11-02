@@ -90,13 +90,6 @@ in {
         };
         window-rules = [
           {
-            command = [
-              "sh"
-              "-c"
-              "firefox && niri msg action move-window-to-workspace afirefox"
-            ];
-          }
-          {
             matches = [{ app-id = "steam"; }];
             open-on-workspace = "bmedia";
           }
@@ -113,6 +106,14 @@ in {
         ];
         # Play-specific startup applications
         spawn-at-startup = [
+          {
+            command = [
+              "sh"
+              "-c"
+              "firefox && niri msg action move-window-to-workspace afirefox"
+            ];
+          }
+
           { command = [ "sh" "-c" "sleep 2 && steam" ]; }
           { command = [ "sh" "-c" "sleep 6 && spotify" ]; }
           {
