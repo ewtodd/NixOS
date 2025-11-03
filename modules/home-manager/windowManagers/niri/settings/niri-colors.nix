@@ -3,15 +3,6 @@
 let colors = config.colorScheme.palette;
 in {
   programs.niri.settings = {
-    window-rules = [{
-      matches = [ { } ]; # Match all windows
-      excludes = [{ is-focused = true; }];
-      shadow = {
-        enable = true;
-        draw-behind-window = false;
-        inactive-color = "#${colors.base03}";
-      };
-    }];
     layer-rules = [{
       matches = [{ namespace = "wallpaper"; }];
       place-within-backdrop = true;
@@ -23,6 +14,7 @@ in {
       focus-ring = {
         enable = true;
         width = 3;
+        inactive.color = "#${colors.base03}";
         active.gradient = {
           from = "#${colors.base0D}";
           to = "#${colors.base0E}";

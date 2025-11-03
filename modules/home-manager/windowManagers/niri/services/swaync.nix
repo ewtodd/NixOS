@@ -3,7 +3,7 @@
 let
   colors = config.colorScheme.palette;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.925";
+  opacity = if (windowManager == "sway") then "0.75" else "1";
   radius = osConfig.CornerRadius;
   hexDigitToInt = d:
     if d == "0" then
@@ -86,7 +86,6 @@ in {
       timeout-low = 5;
       timeout-critical = 0;
       fit-to-screen = true;
-      control-center-width = 1000;
       notification-window-width = 500;
       keyboard-shortcuts = true;
       image-visibility = "when-available";
@@ -115,7 +114,7 @@ in {
         background-color: ${hexToRgba colors.base00 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
         border-radius: ${toString radius}px;
-        margin: 18px;
+        margin: 0px;
         padding: 12px;
       }
 
