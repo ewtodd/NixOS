@@ -35,7 +35,6 @@ in {
     pciutils
     unzip
     paprefs
-    bottles
     wineWowPackages.stable
     winetricks
     zip
