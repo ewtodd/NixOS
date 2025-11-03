@@ -42,7 +42,6 @@ in {
             natural-scroll = true;
             tap-button-map = "left-right-middle";
           };
-
           mouse = { natural-scroll = true; };
         };
 
@@ -50,6 +49,7 @@ in {
 
         layout = {
           gaps = 2;
+          default-column-width = { proportion = 0.5; };
           preset-column-widths = [
             { proportion = 0.33333; }
             { proportion = 0.5; }
@@ -131,7 +131,7 @@ in {
               title = "File Upload";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.6;
             default-window-height.proportion = 0.6;
           }
           {
