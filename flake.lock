@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1762221916,
-        "narHash": "sha256-vV4IFHFvpJ9RoHvvwv4outVv3wOTCw0DFZgZ71i0xVI=",
+        "lastModified": 1762222766,
+        "narHash": "sha256-VUHmpTvMM6wdt9JbKMy8ngC4+xTrwEMtPknXAnRhEuo=",
         "owner": "ewtodd",
         "repo": "SRIM-nix",
-        "rev": "dc8410d446a54293662ffc2480ac0966a2702b10",
+        "rev": "f5575f8be71e97ecac844f0954334a05f56d2a7c",
         "type": "github"
       },
       "original": {
