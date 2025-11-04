@@ -3,7 +3,7 @@
     layout = { default-column-width = { proportion = 0.66667; }; };
     window-rules = [{
       matches = [{ app-id = "firefox"; }];
-      default-column-width.proportion = 1;
+      default-column-width.proportion = 0.83333;
     }];
     outputs = {
       "eDP-1" = {
