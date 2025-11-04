@@ -1,6 +1,16 @@
 { ... }: {
   programs.niri.settings = {
-    layout = { default-column-width = { proportion = 0.5; }; };
+    layout = { default-column-width = { proportion = 0.33333; }; };
+    window-rules = [
+      {
+        matches = [{ app-id = "Slack"; }];
+        default-column-width.proportion = 0.5;
+      }
+      {
+        matches = [{ app-id = "thunderbird"; }];
+        default-column-width.proportion = 0.5;
+      }
+    ];
     outputs = {
       "HDMI-A-1" = {
         mode = {
