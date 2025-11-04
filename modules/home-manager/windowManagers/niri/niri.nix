@@ -57,9 +57,10 @@ in {
             { proportion = 1.0; }
           ];
           preset-window-heights = [
-            { proportion = 0.33333; }
-            { proportion = 0.5; }
-            { proportion = 0.66667; }
+            { proportion = 0.2; }
+            { proportion = 0.4; }
+            { proportion = 0.6; }
+            { proportion = 0.8; }
             { proportion = 1.0; }
           ];
           always-center-single-column = true;
