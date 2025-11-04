@@ -21,6 +21,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri.url = "github:sodiboo/niri-flake";
+    SRIM.url = "github:ewtodd/SRIM-nix";
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {

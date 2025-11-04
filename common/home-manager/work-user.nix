@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, system, ... }:
+let
+  lisepp = pkgs.callPackage ../../packages/LISE++/default.nix { };
+  SRIM = inputs.SRIM.packages."x86_64-linux".default;
+in {
   imports = [
     ./system-options.nix
     ./xdg.nix
@@ -8,7 +12,7 @@
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages = [ pkgs.clang-tools pkgs.slack ];
+  home.packages = [ pkgs.clang-tools pkgs.slack lisepp SRIM ];
   xdg.desktopEntries.steam = {
     name = "Steam";
     noDisplay = true;
