@@ -24,6 +24,7 @@ in {
     ./services/swaylock.nix
     ./services/wlogout.nix
     ./services/avizo.nix
+    ./services/tile-to-n.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
@@ -49,7 +50,6 @@ in {
 
         layout = {
           gaps = 2;
-          default-column-width = { proportion = 0.5; };
           preset-column-widths = [
             { proportion = 0.33333; }
             { proportion = 0.5; }
@@ -64,6 +64,7 @@ in {
             { proportion = 1.0; }
           ];
           always-center-single-column = true;
+          center-focused-column = "on-overflow";
         };
 
         layer-rules = [{
