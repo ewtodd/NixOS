@@ -10,6 +10,11 @@
         matches = [{ app-id = "thunderbird"; }];
         default-column-width.proportion = 0.5;
       }
+      {
+        matches = [{ app-id = "firefox"; }];
+        default-column-width.proportion = 0.5;
+      }
+
     ];
     outputs = {
       "HDMI-A-1" = {

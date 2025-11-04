@@ -1,6 +1,10 @@
 { ... }: {
   programs.niri.settings = {
     layout = { default-column-width = { proportion = 0.66667; }; };
+    window-rules = [{
+      matches = [{ app-id = "firefox"; }];
+      default-column-width.proportion = 1;
+    }];
     outputs = {
       "eDP-1" = {
         mode = {
