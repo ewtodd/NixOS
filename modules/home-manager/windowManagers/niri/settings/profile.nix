@@ -104,12 +104,13 @@ in {
           {
             matches = [{ app-id = "steam"; }];
             open-on-workspace = "bmedia";
+            default-column-width.proportion = 0.5;
           }
           {
             matches = [{ app-id = "spotify"; }];
             open-on-workspace = "bmedia";
+            default-column-width.proportion = 0.5;
           }
-
           {
             matches = [{ app-id = "signal"; }];
             open-on-workspace = "cchat";
