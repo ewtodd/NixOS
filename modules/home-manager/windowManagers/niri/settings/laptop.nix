@@ -1,15 +1,6 @@
 { ... }: {
   programs.niri.settings = {
-    window-rules = [
-      {
-        matches = [{ app-id = "thunderbird"; }];
-        default-column-width.proportion = 0.66667;
-      }
-      {
-        matches = [{ title = "Slack"; }];
-        default-column-width.proportion = 0.66667;
-      }
-    ];
+    layout = { default-column-width = { proportion = 0.66667; }; };
     outputs = {
       "eDP-1" = {
         mode = {
