@@ -255,7 +255,8 @@ in {
           "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
           "Mod+r".action = switch-preset-column-width;
           "Mod+Shift+r".action = switch-preset-window-height;
-          "Mod+w".action = center-visible-columns;
+          "Mod+w".action = center-column;
+          "Mod+Shift+w".action = center-visible-columns;
           "Mod+c".action = consume-or-expel-window-left;
           "Mod+v".action = consume-or-expel-window-right;
           "Mod+Space".action = toggle-window-floating;
