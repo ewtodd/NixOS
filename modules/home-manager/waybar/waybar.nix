@@ -34,11 +34,11 @@ in {
           format-icons = {
             "default" = "";
             "focused" = "";
-            "afirefox" = "";
-            "bchat" = "";
-            "cchat" = "󰿌";
-            "bmedia" = "";
-            "ccalendar" = "";
+            #  "afirefox" = "";
+            #  "bchat" = "";
+            #  "cchat" = "󰿌";
+            #  "bmedia" = "";
+            #  "ccalendar" = "";
           };
         } else {
           "on-click" = "activate";

@@ -15,16 +15,8 @@
         ];
 
         shellHook = ''
-          # Force TeX to rebuild its file database
           mktexlsr
           echo "TeX Live database updated"
-
-          # Test if elsarticle.cls can be found
-          if kpsewhich elsarticle.cls; then
-            echo "✓ elsarticle.cls found"
-          else
-            echo "✗ elsarticle.cls still not found"
-          fi
         '';
       };
     };
