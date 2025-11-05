@@ -41,6 +41,7 @@ in {
     gearlever
     imagemagick
     ghostscript
+    spotify
   ];
 
   fonts.packages = with pkgs; [

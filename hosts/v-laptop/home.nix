@@ -32,7 +32,6 @@
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
-    home.packages = [ pkgs.spotify ];
     programs.waybar.enable = true;
     programs.git = {
       enable = true;

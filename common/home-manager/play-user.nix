@@ -8,7 +8,7 @@
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages = with pkgs; [ signal-desktop spotify android-tools mumble ];
+  home.packages = with pkgs; [ signal-desktop android-tools mumble ];
   Profile = "play";
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
