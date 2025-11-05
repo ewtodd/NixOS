@@ -2,7 +2,6 @@
 let
   deviceType = osConfig.DeviceType;
   maximize-solos = if (deviceType == "laptop") then "True" else "False";
-  default-N = if (deviceType == "laptop") then "2" else "3";
   tile-to-n = pkgs.writeScriptBin "tile-to-n" ''
     #!${pkgs.python3.withPackages (ps: [ ps.circus ])}/bin/python3
 
@@ -22,11 +21,11 @@ let
     # %% Args
 
     # Set built-in defaults (helpful for debugging)
-    default_N = ${default-N}
+    default_N = 3
     default_delay_ms = 0 
-    default_maximize_solos = ${maximize-solos} 
+    default_maximize_solos = False
     default_maximize_solo_on_close = False 
-    default_collapse_solos_on_open = True
+    default_collapse_solos_on_open = False 
     default_apply_on_move = False
     default_debug_names = False
     default_debug_data = False
