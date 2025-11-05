@@ -24,6 +24,7 @@ in {
     ./services/swaylock.nix
     ./services/wlogout.nix
     ./services/avizo.nix
+    ./services/tile-to-n.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
@@ -50,16 +51,13 @@ in {
         layout = {
           gaps = 2;
           preset-column-widths = [
-            { proportion = 0.33333; }
             { proportion = 0.5; }
-            { proportion = 0.66667; }
+            { proportion = 0.75; }
             { proportion = 1.0; }
           ];
           preset-window-heights = [
-            { proportion = 0.2; }
-            { proportion = 0.4; }
-            { proportion = 0.6; }
-            { proportion = 0.8; }
+            { proportion = 0.5; }
+            { proportion = 0.75; }
             { proportion = 1.0; }
           ];
           always-center-single-column = true;
