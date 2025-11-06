@@ -6,7 +6,6 @@ let
   radius = 1.0 * osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
   open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
-    ${pkgs.firefox-wayland}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ &
