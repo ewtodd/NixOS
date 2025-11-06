@@ -8,6 +8,7 @@
       imports = [
         ../../common/home-manager/play-user.nix
         ../../modules/home-manager/waybar/waybar.nix
+        ../../modules/home-manager/qutebrowser/qutebrowser.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
         ../../modules/home-manager/windowManagers/sway/settings/profile.nix
       ];
@@ -39,6 +40,7 @@
     imports = [
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/waybar/waybar.nix
+      ../../modules/home-manager/qutebrowser/qutebrowser.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
       ../../modules/home-manager/windowManagers/sway/settings/profile.nix
     ];
