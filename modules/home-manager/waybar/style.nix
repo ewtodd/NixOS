@@ -368,22 +368,5 @@ in {
     	background-color: #${colors.base00};
     	color: #${colors.base05};
       }  
-  '' + lib.optionalString (windowManager == "niri") ''
-    #workspaces button.focused:nth-last-child(2) {
-    	background-color: #${colors.base00};
-    	color: #${accentColor};
-    	border: 2px solid #${colors.base04};
-    }
-
-    #workspaces button:nth-last-child(2) {
-        border: none;
-        border-radius: 0 ${radius}px ${radius}px 0; 
-      }
-    #workspaces button:not(.focused).empty {
-        opacity: 0;
-        min-width: 0;
-        padding: 0;
-        margin: 0;
-      }
   '';
 }
