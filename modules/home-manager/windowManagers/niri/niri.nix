@@ -49,7 +49,7 @@ in {
         gestures = { hot-corners.enable = false; };
 
         layout = {
-          gaps = 2;
+          gaps = 12;
           preset-column-widths = [
             { proportion = 0.5; }
             { proportion = 0.75; }
