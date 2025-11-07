@@ -179,13 +179,12 @@ in {
     	color: #${accentColor};
     	padding: 6px 10px;
     	border-radius: 0;
-    	margin: 5px 0;
     	border-right: 1px solid #${colors.base03};
         border-left: none;
         border-radius: ${
           if deviceType != "desktop" then "0 ${radius} ${radius} 0" else "0"
         };
-        margin: ${if deviceType != "desktop" then "6px 3px 6px 0" else "6px 0"};
+        margin: ${if deviceType != "desktop" then "5px 3px 5px 0" else "5px 0"};
         border-right: ${
           if deviceType != "desktop" then
             "none"
@@ -351,7 +350,7 @@ in {
         padding-left: ${left-notification-padding};
         padding-right: ${right-notification-padding};
         border-radius: 0 ${radius}px ${radius}px 0;
-        margin: 5px 3px 6px 0;
+        margin: 5px 3px 5px 0;
         border-right: none;
         border-left: none;
         min-width: 24px;
