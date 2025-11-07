@@ -127,6 +127,8 @@ in {
           {
             matches = [{ app-id = "LISE++"; }];
             open-floating = true;
+            default-column-width = { };
+            default-window-height = { };
           }
           {
             matches = [{
@@ -245,12 +247,10 @@ in {
           "Mod+a".action = focus-workspace-up;
           "Mod+s".action = focus-workspace-down;
           "Mod+1".action = focus-monitor-next;
-          "Mod+2".action = focus-monitor-previous;
 
           "Mod+Shift+a".action = move-window-to-workspace-up;
           "Mod+Shift+s".action = move-window-to-workspace-down;
           "Mod+Shift+1".action = move-window-to-monitor-next;
-          "Mod+Shift+2".action = move-workspace-to-monitor-previous;
 
           # Layout management
           "Mod+Shift+f".action = fullscreen-window;
