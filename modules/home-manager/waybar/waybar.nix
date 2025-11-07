@@ -28,21 +28,13 @@ in {
           format = "";
           max-length = 0;
         };
-        "${windowManager}/workspaces" = if windowManager == "niri" then {
+        "${windowManager}/workspaces" = {
           format = "{icon}";
           on-click = "activate";
           format-icons = {
             "default" = "";
             "focused" = "";
-            #  "afirefox" = "";
-            #  "bchat" = "";
-            #  "cchat" = "󰿌";
-            #  "bmedia" = "";
-            #  "ccalendar" = "";
           };
-        } else {
-          "on-click" = "activate";
-          format = "{name}";
         };
         "custom/cpu" = {
           exec = "${pkgs.writeShellScript "cpu-stats.sh" ''
