@@ -81,7 +81,7 @@ in {
 
     window#waybar {
     	background-color: ${hexToRgba colors.base00 "${opacity}"};
-        border-radius: 0px 0px ${radius}px ${radius}px;
+        border-radius: 0;
     }
 
     #workspaces button:first-child {
