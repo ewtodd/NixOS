@@ -125,6 +125,10 @@ in {
             default-window-height.proportion = 0.6;
           }
           {
+            matches = [{ app-id = "LISE++"; }];
+            open-floating = true;
+          }
+          {
             matches = [{
               app-id = "firefox";
               title = "File Upload";
