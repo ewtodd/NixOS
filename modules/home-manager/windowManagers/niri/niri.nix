@@ -17,7 +17,6 @@ in {
 
   imports = [
     ./non-niri.nix
-    ./settings/profile.nix
     ./settings/niri-colors.nix
     ./services/swayidle.nix
     ./services/swaync.nix

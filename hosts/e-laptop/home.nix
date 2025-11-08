@@ -10,7 +10,7 @@
         ../../modules/home-manager/waybar/waybar.nix
         ../../modules/home-manager/qutebrowser/qutebrowser.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
-        ../../modules/home-manager/windowManagers/sway/settings/profile.nix
+        ../../modules/home-manager/windowManagers/niri/settings/profile.nix
       ];
       home.packages = [ mtkclient ];
       programs.waybar.enable = true;
@@ -30,7 +30,7 @@
       };
       FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
-        "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
+        "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
   "e-work" = { inputs, ... }: {
@@ -42,7 +42,7 @@
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/qutebrowser/qutebrowser.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
-      ../../modules/home-manager/windowManagers/sway/settings/profile.nix
+      ../../modules/home-manager/windowManagers/niri/settings/profile.nix
     ];
     programs.bash.shellAliases = {
       phone-home = "ssh e-work@ssh.ethanwtodd.com -p 2222";
@@ -62,7 +62,7 @@
       };
     };
     WallpaperPath =
-      "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/kanagawa.png";
+      "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/kanagawa.png";
     FontChoice = "Ubuntu Nerd Font";
     colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
   };
