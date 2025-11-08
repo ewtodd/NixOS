@@ -42,6 +42,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
+                inputs.niri.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/v-desktop/home.nix;
@@ -142,6 +143,8 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
+                inputs.niri.homeModules.niri
+
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/v-laptop/home.nix;

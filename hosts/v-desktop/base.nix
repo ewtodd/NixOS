@@ -18,7 +18,7 @@
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];
 
-  WindowManager = "sway";
+  WindowManager = "niri";
   DeviceType = "desktop";
 
   users.users.v-play = {

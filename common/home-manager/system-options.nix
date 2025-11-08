@@ -22,7 +22,7 @@ with lib;
         "SpaceMono Nerd Font"
         "Ubuntu Nerd Font"
       ];
-      default = "JetBrains Mono Nerd Font";
+      default = "Ubuntu Nerd Font";
       description = "Font";
     };
   };
