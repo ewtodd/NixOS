@@ -8,6 +8,7 @@
     environment.systemPackages = with pkgs; [
       xwayland-satellite
       wlogout
+      sway-contrib.grimshot
       cmatrix
       wl-clipboard
       swaybg

@@ -24,11 +24,6 @@ in {
           open-on-output = secondaryMonitor;
         };
 
-        binds = with config.lib.niri.actions; {
-          "Mod+g".action.spawn =
-            [ "firefox" "--new-window" "-url" "https://umgpt.umich.edu/" ];
-        };
-
         window-rules = [
           {
             matches = [{ app-id = "Slack"; }];

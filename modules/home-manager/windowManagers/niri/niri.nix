@@ -124,9 +124,13 @@ in {
           }
           {
             matches = [{ app-id = "LISE++"; }];
-            open-floating = true;
             default-column-width = { };
             default-window-height = { };
+          }
+          {
+            matches = [{ app-id = "LISE++"; }];
+            excludes = [{ title = " L I S E ++   [Noname]"; }];
+            open-floating = true;
           }
           {
             matches = [{
@@ -272,8 +276,13 @@ in {
 
           # Screenshots
           "Alt+Ctrl+3".action.spawn =
-            [ "niri" "msg" "action" "screenshot-screen" ];
-          "Alt+Ctrl+4".action.spawn = [ "niri" "msg" "action" "screenshot" ];
+            [ "sh" "-c" "grimshot --notify copy output" ];
+          "Alt+Ctrl+4".action.spawn =
+            [ "sh" "-c" "grimshot --notify copy area" ];
+          "Alt+Ctrl+Shift+3".action.spawn =
+            [ "sh" "-c" "grimshot --notify save output" ];
+          "Alt+Ctrl+Shift+4".action.spawn =
+            [ "sh" "-c" "grimshot --notify save area" ];
 
           # Audio controls
           "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-d" "-p" "up" ];
