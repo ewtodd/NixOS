@@ -38,6 +38,11 @@ in {
             open-on-workspace = "ccalendar";
             default-column-width.proportion = 1.0;
           }
+
+          {
+            matches = [{ app-id = "firefox"; }];
+            default-column-width.proportion = 0.75;
+          }
         ];
         # Work-specific startup applications
         spawn-at-startup = [
@@ -110,6 +115,10 @@ in {
             matches = [{ app-id = "signal"; }];
             open-on-workspace = "cchat";
             default-column-width.proportion = 1.0;
+          }
+          {
+            matches = [{ app-id = "firefox"; }];
+            default-column-width.proportion = 0.75;
           }
         ];
         # Play-specific startup applications
