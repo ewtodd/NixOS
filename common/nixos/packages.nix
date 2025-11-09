@@ -1,6 +1,5 @@
-{ pkgs, ... }:
-let bottles = pkgs.bottles.override { removeWarningPopup = true; };
-
+{ pkgs, inputs, ... }:
+let unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
 
   programs.appimage.enable = true;
@@ -32,7 +31,7 @@ in {
     openconnect
     tree
     usbutils
-    pciutils
+    unstable.pciutils
     unzip
     paprefs
     wineWowPackages.stable
