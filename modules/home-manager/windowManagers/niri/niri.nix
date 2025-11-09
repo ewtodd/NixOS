@@ -23,7 +23,6 @@ in {
     ./services/swaylock.nix
     ./services/wlogout.nix
     ./services/avizo.nix
-    ./services/tile-to-n.nix
     ./launcher/rofi.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
