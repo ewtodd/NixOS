@@ -48,11 +48,13 @@ in {
 
         layout = {
           gaps = 12;
-          preset-column-widths = [
-            { proportion = 0.5; }
-            { proportion = 0.75; }
-            { proportion = 1.0; }
-          ];
+          preset-column-widths =
+            lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
+            ++ [
+              { proportion = 0.5; }
+              { proportion = 0.75; }
+              { proportion = 1.0; }
+            ];
           preset-window-heights =
             [ { proportion = 0.5; } { proportion = 1.0; } ];
           always-center-single-column = true;
@@ -272,14 +274,12 @@ in {
           ];
 
           # Screenshots
-          "Alt+Ctrl+3".action.spawn =
-            [ "sh" "-c" "grimshot --notify copy output" ];
-          "Alt+Ctrl+4".action.spawn =
-            [ "sh" "-c" "grimshot --notify copy area" ];
-          "Alt+Ctrl+Shift+3".action.spawn =
-            [ "sh" "-c" "grimshot --notify save output" ];
-          "Alt+Ctrl+Shift+4".action.spawn =
-            [ "sh" "-c" "grimshot --notify save area" ];
+          "Alt+Ctrl+3".action.spawn-sh = [ "grimshot --notify copy output" ];
+          "Alt+Ctrl+4".action.spawn-sh = [ "grimshot --notify copy area" ];
+          "Alt+Ctrl+Shift+3".action.spawn-sh =
+            [ "grimshot --notify save output" ];
+          "Alt+Ctrl+Shift+4".action.spawn-sh =
+            [ "grimshot --notify save area" ];
 
           # Audio controls
           "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-d" "-p" "up" ];

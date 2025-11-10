@@ -39,11 +39,10 @@ in {
             default-column-width.proportion = 1.0;
           }
 
-          {
-            matches = [{ app-id = "firefox"; }];
-            default-column-width.proportion = 0.75;
-          }
-        ];
+        ] ++ lib.optionals (osConfig.DeviceType == "laptop") [{
+          matches = [{ app-id = "firefox"; }];
+          default-column-width.proportion = 0.75;
+        }];
         # Work-specific startup applications
         spawn-at-startup = [
           {
@@ -116,11 +115,10 @@ in {
             open-on-workspace = "cchat";
             default-column-width.proportion = 1.0;
           }
-          {
-            matches = [{ app-id = "firefox"; }];
-            default-column-width.proportion = 0.75;
-          }
-        ];
+        ] ++ lib.optionals (osConfig.DeviceType == "laptop") [{
+          matches = [{ app-id = "firefox"; }];
+          default-column-width.proportion = 0.75;
+        }];
         # Play-specific startup applications
         spawn-at-startup = [
           {
