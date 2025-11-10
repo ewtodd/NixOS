@@ -53,11 +53,8 @@ in {
             { proportion = 0.75; }
             { proportion = 1.0; }
           ];
-          preset-window-heights = [
-            { proportion = 0.5; }
-            { proportion = 0.75; }
-            { proportion = 1.0; }
-          ];
+          preset-window-heights =
+            [ { proportion = 0.5; } { proportion = 1.0; } ];
           always-center-single-column = true;
           center-focused-column = "on-overflow";
         };
