@@ -19,11 +19,6 @@ in {
           name = "bchat";
           open-on-output = primaryMonitor;
         };
-        workspaces."ccalendar" = {
-          name = "ccalendar";
-          open-on-output = secondaryMonitor;
-        };
-
         window-rules = [
           {
             matches = [{ app-id = "Slack"; }];
@@ -32,16 +27,6 @@ in {
           {
             matches = [{ app-id = "thunderbird"; }];
             open-on-workspace = "bchat";
-          }
-          {
-            matches = [{ app-id = "Todoist"; }];
-            open-on-workspace = "ccalendar";
-            default-column-width.proportion = 1.0;
-          }
-
-          {
-            matches = [{ app-id = "firefox"; }];
-            default-column-width.proportion = 0.75;
           }
         ];
         # Work-specific startup applications
@@ -62,13 +47,6 @@ in {
               "sh"
               "-c"
               "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right"
-            ];
-          }
-          {
-            command = [
-              "sh"
-              "-c"
-              "sleep 2 && ${pkgs.todoist-electron}/bin/todoist-electron"
             ];
           }
           {
@@ -115,10 +93,6 @@ in {
             matches = [{ app-id = "signal"; }];
             open-on-workspace = "cchat";
             default-column-width.proportion = 1.0;
-          }
-          {
-            matches = [{ app-id = "firefox"; }];
-            default-column-width.proportion = 0.75;
           }
         ];
         # Play-specific startup applications

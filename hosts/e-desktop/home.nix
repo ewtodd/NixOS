@@ -24,10 +24,6 @@
           core.sharedRepository = "group";
         };
       };
-      xdg.desktopEntries.todoist-electron = {
-        name = "Todoist";
-        noDisplay = true;
-      };
       FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
         "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/eris.png";
