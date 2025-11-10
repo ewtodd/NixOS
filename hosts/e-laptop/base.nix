@@ -10,6 +10,7 @@
     ../../modules/nixos/services/tailscale.nix
     #../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/moonlight.nix
+    ../../modules/nixos/packages/todoist.nix
     ../../modules/nixos/packages/boxcli.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
