@@ -32,7 +32,7 @@ in {
           format = "{icon}";
           on-click = "activate";
           format-icons = {
-            "default" = "";
+            "default" = "";
             "focused" = "";
           };
         };
