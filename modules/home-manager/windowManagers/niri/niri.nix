@@ -48,13 +48,9 @@ in {
 
         layout = {
           gaps = 12;
-          preset-column-widths =
-            lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
-            ++ [
-              { proportion = 0.5; }
-              { proportion = 0.75; }
-              { proportion = 1.0; }
-            ];
+          preset-column-widths = [{ proportion = 0.5; }]
+            ++ lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
+            ++ [ { proportion = 0.75; } { proportion = 1.0; } ];
           preset-window-heights =
             [ { proportion = 0.5; } { proportion = 1.0; } ];
           always-center-single-column = true;
