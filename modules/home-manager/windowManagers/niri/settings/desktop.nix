@@ -1,12 +1,11 @@
 { ... }: {
   programs.niri.settings = {
-    layout = { default-column-width = { proportion = 0.5; }; };
     outputs = {
       "HDMI-A-1" = {
         mode = {
           width = 1920;
           height = 1080;
-          refresh = 75.973;
+          refresh = 74.973;
         };
         position = {
           x = -1920;
@@ -19,6 +18,7 @@
           height = 1440;
           refresh = 180.0;
         };
+        variable-refresh-rate = true;
         position = {
           x = 0;
           y = 0;
