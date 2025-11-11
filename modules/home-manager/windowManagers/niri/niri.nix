@@ -48,9 +48,13 @@ in {
 
         layout = {
           gaps = 12;
-          preset-column-widths = [{ proportion = 0.5; }]
-            ++ lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
-            ++ [ { proportion = 0.75; } { proportion = 1.0; } ];
+          preset-column-widths =
+            lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
+            ++ [
+              { proportion = 0.5; }
+              { proportion = 0.75; }
+              { proportion = 1.0; }
+            ];
           preset-window-heights =
             [ { proportion = 0.5; } { proportion = 1.0; } ];
           always-center-single-column = true;
@@ -235,8 +239,9 @@ in {
           # Layout management
           "Mod+Shift+f".action = fullscreen-window;
           "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
-          "Mod+r".action = switch-preset-column-width;
+          "Mod+r".action = switch-preset-column-width-back;
           "Mod+Shift+r".action = switch-preset-window-height;
+          "Mod+e".action = expand-column-to-available-width;
           "Mod+w".action = center-column;
           "Mod+Shift+w".action = center-visible-columns;
           "Mod+c".action = consume-or-expel-window-left;
