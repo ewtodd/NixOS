@@ -91,30 +91,30 @@ in {
             }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ title = "Volume Control"; }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "floatingkitty"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ app-id = ".blueman-manager-wrapped"; }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "udiskie"; }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
@@ -133,50 +133,33 @@ in {
               title = "File Upload";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "sim"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ title = "ROOT"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ app-id = "gnome-disks"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ app-id = "com.obsproject.Studio"; }];
-            default-column-width.proportion = 1.0;
-          }
-          {
-            matches = [{
-              app-id = "com.obsproject.Studio";
-              title = "^Create/Select Source";
-            }];
-            open-floating = true;
-            default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
-          }
-          {
-            matches = [{
-              app-id = "com.obsproject.Studio";
-              title = "^Properties for 'Screen Capture (PipeWire)'";
-            }];
-            open-floating = true;
-            default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
-          }
+            default-column-width = { };
+            default-window-height = { };
 
+          }
         ];
 
         binds = with config.lib.niri.actions; {
