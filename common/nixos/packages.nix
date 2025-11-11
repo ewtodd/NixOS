@@ -31,6 +31,7 @@ in {
     openconnect
     tree
     usbutils
+    poppler-utils
     unstable.pciutils
     unzip
     paprefs
