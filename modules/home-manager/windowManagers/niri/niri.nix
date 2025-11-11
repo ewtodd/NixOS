@@ -48,6 +48,7 @@ in {
 
         layout = {
           gaps = 12;
+          default-column-width = { proportion = 0.5; };
           preset-column-widths =
             lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
             ++ [
