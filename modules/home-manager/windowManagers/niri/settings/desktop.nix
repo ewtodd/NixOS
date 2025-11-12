@@ -18,7 +18,7 @@
           height = 1440;
           refresh = 180.0;
         };
-        variable-refresh-rate = true;
+        variable-refresh-rate = "on-demand";
         position = {
           x = 0;
           y = 0;
