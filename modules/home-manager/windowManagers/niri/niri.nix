@@ -217,6 +217,9 @@ in {
             "2"
           ];
           "Alt+l".action.spawn = "${pkgs.swaylock-effects}/bin/swaylock";
+          "Mod+Shift+c".action.spawn =
+            [ "sh" "-c" "pkill waybar && waybar & disown" ];
+
           # Focus management (vim-style)
           "Mod+h".action = focus-column-or-monitor-left;
           "Mod+j".action = focus-window-or-workspace-down;
