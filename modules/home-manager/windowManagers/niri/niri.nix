@@ -35,8 +35,12 @@ in {
       settings = {
         prefer-no-csd = true;
         input = {
-          focus-follows-mouse.enable = true;
+          focus-follows-mouse = {
+            enable = true;
+            max-scroll-amount = "20%";
+          };
           touchpad = mkIf (deviceType == "laptop") {
+            dwt = true;
             tap = true;
             natural-scroll = true;
             tap-button-map = "left-right-middle";
@@ -241,7 +245,8 @@ in {
           "Mod+Shift+f".action = fullscreen-window;
           "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
           "Mod+r".action = switch-preset-column-width-back;
-          "Mod+Shift+r".action = switch-preset-window-height;
+          "Mod+Shift+r".action = set-column-width { size-change = "50%"; };
+          "Mod+Ctrl+r".action = switch-preset-window-height;
           "Mod+e".action = expand-column-to-available-width;
           "Mod+w".action = center-column;
           "Mod+Shift+w".action = center-visible-columns;
