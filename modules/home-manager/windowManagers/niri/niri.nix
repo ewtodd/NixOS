@@ -245,7 +245,7 @@ in {
           "Mod+Shift+f".action = fullscreen-window;
           "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
           "Mod+r".action = switch-preset-column-width-back;
-          "Mod+Shift+r".action = set-column-width { size-change = "50%"; };
+          "Mod+Shift+r".action = set-column-width "50%";
           "Mod+Ctrl+r".action = switch-preset-window-height;
           "Mod+e".action = expand-column-to-available-width;
           "Mod+w".action = center-column;
