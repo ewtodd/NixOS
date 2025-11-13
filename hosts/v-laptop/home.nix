@@ -32,6 +32,7 @@
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
+    home.packages = [ pkgs.signal-desktop ];
     programs.waybar.enable = true;
     programs.git = {
       enable = true;
