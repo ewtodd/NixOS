@@ -1,6 +1,5 @@
 { ... }: {
   programs.niri.settings = {
-    layout = { default-column-width = { proportion = 0.5; }; };
     window-rules = [
       {
         matches = [{ app-id = "Slack"; }];

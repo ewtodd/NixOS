@@ -35,8 +35,12 @@ in {
       settings = {
         prefer-no-csd = true;
         input = {
-          focus-follows-mouse.enable = true;
+          focus-follows-mouse = {
+            enable = true;
+            max-scroll-amount = "20%";
+          };
           touchpad = mkIf (deviceType == "laptop") {
+            dwt = true;
             tap = true;
             natural-scroll = true;
             tap-button-map = "left-right-middle";
@@ -48,16 +52,16 @@ in {
 
         layout = {
           gaps = 12;
-          preset-column-widths = [
-            { proportion = 0.5; }
-            { proportion = 0.75; }
-            { proportion = 1.0; }
-          ];
-          preset-window-heights = [
-            { proportion = 0.5; }
-            { proportion = 0.75; }
-            { proportion = 1.0; }
-          ];
+          default-column-width = { proportion = 0.5; };
+          preset-column-widths =
+            lib.optionals (deviceType == "desktop") [{ proportion = 0.25; }]
+            ++ [
+              { proportion = 0.5; }
+              { proportion = 0.75; }
+              { proportion = 1.0; }
+            ];
+          preset-window-heights =
+            [ { proportion = 0.5; } { proportion = 1.0; } ];
           always-center-single-column = true;
           center-focused-column = "on-overflow";
         };
@@ -96,37 +100,41 @@ in {
             }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ title = "Volume Control"; }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "floatingkitty"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ app-id = ".blueman-manager-wrapped"; }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "udiskie"; }];
             open-floating = true;
-            default-column-width.proportion = 0.4;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ app-id = "LISE++"; }];
-            open-floating = true;
             default-column-width = { };
             default-window-height = { };
+          }
+          {
+            matches = [{ app-id = "LISE++"; }];
+            excludes = [{ title = " L I S E ++   [Noname]"; }];
+            open-floating = true;
           }
           {
             matches = [{
@@ -134,50 +142,33 @@ in {
               title = "File Upload";
             }];
             open-floating = true;
-            default-column-width.proportion = 0.6;
+            default-column-width.proportion = 0.3;
             default-window-height.proportion = 0.6;
           }
           {
             matches = [{ title = "sim"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ title = "ROOT"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ app-id = "gnome-disks"; }];
             open-floating = true;
             default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
+            default-window-height.proportion = 0.7;
           }
           {
             matches = [{ app-id = "com.obsproject.Studio"; }];
-            default-column-width.proportion = 1.0;
-          }
-          {
-            matches = [{
-              app-id = "com.obsproject.Studio";
-              title = "^Create/Select Source";
-            }];
-            open-floating = true;
-            default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
-          }
-          {
-            matches = [{
-              app-id = "com.obsproject.Studio";
-              title = "^Properties for 'Screen Capture (PipeWire)'";
-            }];
-            open-floating = true;
-            default-column-width.proportion = 0.4;
-            default-window-height.proportion = 0.6;
-          }
+            default-column-width = { };
+            default-window-height = { };
 
+          }
         ];
 
         binds = with config.lib.niri.actions; {
@@ -226,6 +217,9 @@ in {
             "2"
           ];
           "Alt+l".action.spawn = "${pkgs.swaylock-effects}/bin/swaylock";
+          "Mod+Shift+c".action.spawn =
+            [ "sh" "-c" "pkill waybar && waybar & disown" ];
+
           # Focus management (vim-style)
           "Mod+h".action = focus-column-or-monitor-left;
           "Mod+j".action = focus-window-or-workspace-down;
@@ -253,8 +247,10 @@ in {
           # Layout management
           "Mod+Shift+f".action = fullscreen-window;
           "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
-          "Mod+r".action = switch-preset-column-width;
-          "Mod+Shift+r".action = switch-preset-window-height;
+          "Mod+r".action = switch-preset-column-width-back;
+          "Mod+Shift+r".action = set-column-width "50%";
+          "Mod+Ctrl+r".action = switch-preset-window-height;
+          "Mod+e".action = expand-column-to-available-width;
           "Mod+w".action = center-column;
           "Mod+Shift+w".action = center-visible-columns;
           "Mod+c".action = consume-or-expel-window-left;
@@ -271,9 +267,12 @@ in {
           ];
 
           # Screenshots
-          "Alt+Ctrl+3".action.spawn =
-            [ "niri" "msg" "action" "screenshot-screen" ];
-          "Alt+Ctrl+4".action.spawn = [ "niri" "msg" "action" "screenshot" ];
+          "Alt+Ctrl+3".action.spawn-sh = [ "grimshot --notify copy output" ];
+          "Alt+Ctrl+4".action.spawn-sh = [ "grimshot --notify copy area" ];
+          "Alt+Ctrl+Shift+3".action.spawn-sh =
+            [ "grimshot --notify save output" ];
+          "Alt+Ctrl+Shift+4".action.spawn-sh =
+            [ "grimshot --notify save area" ];
 
           # Audio controls
           "XF86AudioRaiseVolume".action.spawn = [ "volumectl" "-d" "-p" "up" ];
