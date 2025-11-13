@@ -24,11 +24,6 @@ in {
           open-on-output = secondaryMonitor;
         };
 
-        binds = with config.lib.niri.actions; {
-          "Mod+g".action.spawn =
-            [ "firefox" "--new-window" "-url" "https://umgpt.umich.edu/" ];
-        };
-
         window-rules = [
           {
             matches = [{ app-id = "Slack"; }];
@@ -43,7 +38,11 @@ in {
             open-on-workspace = "ccalendar";
             default-column-width.proportion = 1.0;
           }
-        ];
+
+        ] ++ lib.optionals (osConfig.DeviceType == "laptop") [{
+          matches = [{ app-id = "firefox"; }];
+          default-column-width.proportion = 0.75;
+        }];
         # Work-specific startup applications
         spawn-at-startup = [
           {
@@ -116,7 +115,10 @@ in {
             open-on-workspace = "cchat";
             default-column-width.proportion = 1.0;
           }
-        ];
+        ] ++ lib.optionals (osConfig.DeviceType == "laptop") [{
+          matches = [{ app-id = "firefox"; }];
+          default-column-width.proportion = 0.75;
+        }];
         # Play-specific startup applications
         spawn-at-startup = [
           {

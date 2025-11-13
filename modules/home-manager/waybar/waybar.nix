@@ -32,7 +32,7 @@ in {
           format = "{icon}";
           on-click = "activate";
           format-icons = {
-            "default" = "";
+            "default" = "";
             "focused" = "";
           };
         };
@@ -46,16 +46,24 @@ in {
           interval = 3;
           format = "{icon} {}";
           format-icons = "";
+          tooltip = false;
+
         };
+
+        memory = { tooltip = false; };
 
         "custom/gpu" = {
           interval = 3;
           exec = ''
             echo " $(nvtop -s 2>/dev/null | jq -r '.[0] | "\(.gpu_util) \(.temp | gsub("C"; "°C")) \(.gpu_clock)"')"'';
+          tooltip = false;
+
         };
         "custom/gpumemory" = {
           interval = 3;
           exec = ''echo "󰘚 $(nvtop -s 2>/dev/null | jq -r ".[0].mem_util")"'';
+          tooltip = false;
+
         };
 
         "custom/info" = {
