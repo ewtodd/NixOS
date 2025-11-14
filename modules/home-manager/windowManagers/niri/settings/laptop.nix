@@ -15,7 +15,7 @@
         mode = {
           width = 2256;
           height = 1504;
-          # Optional refresh rate can be added like refresh = 60;
+          refresh = 47.998;
         };
         scale = 1.35;
         position = {
