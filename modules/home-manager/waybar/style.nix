@@ -359,13 +359,13 @@ in {
     tooltip {
     	border-radius: ${radius}px;
     	padding: 15px;
-    	background-color: #${colors.base00};
+    	background-color: ${hexToRgba colors.base00 "0.99"};
     }
 
     tooltip label {
     	padding: 5px;
-    	background-color: #${colors.base00};
-    	color: #${colors.base05};
+        background-color: ${hexToRgba colors.base00 "0.99"};
+        color: #${colors.base05};
       }  
   '';
 }

@@ -37,7 +37,22 @@
             (python-pkgs: with python-pkgs; [ matplotlib numpy mplhep uproot ]))
         ];
         shellHook = ''
-          export QT_QPA_PLATFORM="xcb";
+          # Niri-specific Wayland settings
+          export QT_QPA_PLATFORM=wayland
+          export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+          export G4VIS_DEFAULT_DRIVER=TSG_QT_ZB
+
+          # AMD 7900 XTX - Force RADV (Mesa driver)
+          export AMD_VULKAN_ICD=RADV
+          export RADV_PERFTEST=gpl  # Enable advanced features
+          export MESA_LOADER_DRIVER_OVERRIDE=radeonsi
+
+          # Disable threaded optimization 
+          export mesa_glthread=false
+          export __GL_THREADED_OPTIMIZATIONS=0
+
+          # XWayland fallback for problematic apps
+          export DISPLAY=:0
         '';
       };
     };
