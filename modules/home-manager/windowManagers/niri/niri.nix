@@ -37,7 +37,6 @@ in {
         input = {
           focus-follows-mouse = {
             enable = true;
-            max-scroll-amount = "20%";
           };
           touchpad = mkIf (deviceType == "laptop") {
             dwt = true;
