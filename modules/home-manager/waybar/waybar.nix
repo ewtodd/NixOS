@@ -46,36 +46,36 @@ in {
           interval = 3;
           format = "{icon} {}";
           format-icons = "";
-          tooltip = false;
+          tooltip = true;
 
         };
 
-        memory = { tooltip = false; };
+        memory = { tooltip = true; };
 
         "custom/gpu" = {
           interval = 3;
           exec = ''
             echo " $(nvtop -s 2>/dev/null | jq -r '.[0] | "\(.gpu_util) \(.temp | gsub("C"; "°C")) \(.gpu_clock)"')"'';
-          tooltip = false;
+          tooltip = true;
 
         };
         "custom/gpumemory" = {
           interval = 3;
           exec = ''echo "󰘚 $(nvtop -s 2>/dev/null | jq -r ".[0].mem_util")"'';
-          tooltip = false;
+          tooltip = true;
 
         };
 
         "custom/info" = {
           format = "{icon}";
           format-icons = "";
-          tooltip = false;
+          tooltip = true;
         };
 
         "custom/system" = {
           format = "{icon}";
           format-icons = "";
-          tooltip = false;
+          tooltip = true;
         };
 
         memory = {
@@ -109,11 +109,17 @@ in {
         clock = {
           interval = 1;
           format = "{:%I:%M, %d %b %Y}";
-          tooltip = false;
+          tooltip = true;
+          "tooltip-format" = "<tt>{calendar}</tt>";
+          "calendar" = { "mode" = "month"; };
+          actions = {
+            on-click = "shift_up";
+            on-click-right = "shift_down";
+          };
         };
 
         "custom/notification" = {
-          tooltip = false;
+          tooltip = true;
           format = "{icon}";
           format-icons = {
             notification = "";
@@ -178,7 +184,7 @@ in {
             warning = 20;
             critical = 10;
           };
-          tooltip = false;
+          tooltip = true;
         };
 
       }];
