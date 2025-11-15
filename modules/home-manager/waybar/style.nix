@@ -81,7 +81,6 @@ in {
 
     window#waybar {
     	background-color: ${hexToRgba colors.base00 "${opacity}"};
-        border-radius: 0;
     }
 
     #workspaces button:first-child {
@@ -359,7 +358,8 @@ in {
     tooltip {
     	border-radius: ${radius}px;
     	padding: 15px;
-    	background-color: ${hexToRgba colors.base00 "0.99"};
+        background-color: ${hexToRgba colors.base00 "0.99"};
+        border: 2px solid #${colors.base04};
     }
 
     tooltip label {

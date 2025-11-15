@@ -35,9 +35,7 @@ in {
       settings = {
         prefer-no-csd = true;
         input = {
-          focus-follows-mouse = {
-            enable = true;
-          };
+          focus-follows-mouse = { enable = true; };
           touchpad = mkIf (deviceType == "laptop") {
             dwt = true;
             tap = true;
@@ -163,6 +161,10 @@ in {
             default-column-width = { };
             default-window-height = { };
 
+          }
+          {
+            matches = [{ title = "Resident Evil 4"; }];
+            variable-refresh-rate = true;
           }
         ];
 
