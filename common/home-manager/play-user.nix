@@ -8,7 +8,7 @@
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages = with pkgs; [ signal-desktop gamescope android-tools mumble ];
+  home.packages = with pkgs; [ signal-desktop gamescope mangohud android-tools mumble ];
   Profile = "play";
   programs.nixvim.enable = true;
   programs.kitty = { enable = true; };
