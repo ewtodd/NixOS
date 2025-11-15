@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, osConfig, ... }:
+let
+  deviceType = osConfig.DeviceType;
+  timeout = if (deviceType == "desktop") then 3600 else 660;
+in {
   services.swayidle = {
     enable = true;
     package = pkgs.swayidle;
@@ -10,7 +14,7 @@
         command = "${pkgs.swaylock-effects}/bin/swaylock";
       }
       {
-        timeout = 660;
+        timeout = timeout;
         command = "${pkgs.systemd}/bin/systemctl suspend-then-hibernate";
       }
     ];
