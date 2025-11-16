@@ -30,8 +30,8 @@
       };
       FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
-        "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/pasque.png";
-      colorScheme = inputs.nix-colors.colorSchemes.pasque;
+        "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/eris.png";
+      colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
   "e-work" = { inputs, pkgs, ... }: {
     home.username = "e-work";
