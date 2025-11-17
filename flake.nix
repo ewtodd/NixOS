@@ -23,6 +23,10 @@
     niri.url = "github:sodiboo/niri-flake";
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
+    ignis = {
+      url = "github:ignis-sh/ignis";
+      inputs.nixpkgs.follows = "unstable";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -70,6 +74,7 @@
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
                 inputs.niri.homeModules.niri
+                inputs.ignis.homeManagerModules.default
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
