@@ -22,6 +22,7 @@
     };
     niri.url = "github:sodiboo/niri-flake";
     SRIM.url = "github:ewtodd/SRIM-nix";
+    remarkable.url = "github:ewtodd/reMarkable-nix";
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
