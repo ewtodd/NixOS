@@ -83,65 +83,56 @@ in {
     	background-color: ${hexToRgba colors.base00 "${opacity}"};
     }
 
-    #workspaces button:first-child {
-        margin-left: 3px;
-    	border-radius: ${radius}px 0 0 ${radius}px;
-    	border-right: 1px solid #${colors.base03};
-    }
 
     #workspaces {
-    	background: transparent;
-    	margin: 5px 0;
-    	font-size: 1.0rem;
+      background: transparent;
+      margin: 5px 0;
+      font-size: 1.0rem;
+      padding: 0 4px;
     }
 
-    #workspaces button:first-child:last-child {
-    	border-radius: ${radius}px;
-    	margin-left: 3px;
-    	border-right: none;
-    }
-
-    #workspaces button:last-child {
-        border: none;
-        border-radius: 0 ${radius}px ${radius}px 0; 
-    }
-
+    /* base “dot” for every workspace */
     #workspaces button {
-    	all: initial;
-    	min-width: 24px;
-    	padding: 6px 10px;
-    	margin: 0;
-    	border-radius: 0;
-    	background-color: #${colors.base00};
-    	color: #${accentColor};
-    	transition: background 0.2s, color 0.2s;
-    	border-left: none;
+      all: unset;
+      min-width: 22px;         /* circle size */
+      min-height: 22px;
+      margin: 4px 3px;
+      padding: 0;
+      border-radius: 999px;    /* full circle/pill */
+      background-color: #${colors.base00};
+      color: #${accentColor};
+      border: 2px solid #${colors.base03};
+      transition: background 0.2s, color 0.2s, min-width 0.2s, padding 0.2s;
     }
 
-    #workspaces button:not(:last-child) {
-    	border-right: 1px solid #${colors.base03};
-    }
-
+    /* wider pill for the focused workspace */
     #workspaces button.focused {
-    	background-color: #${colors.base00};
-    	color: #${accentColor};
-    	border: 2px solid #${colors.base04};
-    }
-
-    #workspaces button.focused:first-child:last-child {
-    	background-color: #${colors.base00};
-    	color: #${accentColor};
-    	border: 2px solid #${colors.base04};
+      min-width: 34px;         /* this is what makes it “wider” */
+      padding: 0 10px;
+      background-color: #${accentColor};
+      color: #${colors.base00};
+      border-color: #${colors.base04};
     }
 
     #workspaces button:hover {
-    	color: #${colors.base00};
-    	background-color: #${accentColor};
+      background-color: #${accentColor};
+      color: #${colors.base00};
     }
 
     #workspaces button.urgent {
-    	background-color: #${colors.base08};
-    	color: #${colors.base00};
+      background-color: #${colors.base08};
+      color: #${colors.base00};
+      border-color: #${colors.base08};
+    }
+
+
+    #workspaces button.empty {
+      opacity: 0;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      margin: 0;
+      border-width: 0;
     }
 
     #window {
