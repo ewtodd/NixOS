@@ -29,7 +29,7 @@ in {
           max-length = 0;
         };
         "${windowManager}/workspaces" = {
-          format = "";
+          format = "{icon}";
           on-click = "activate";
           format-icons = {
             "default" = "";
