@@ -11,10 +11,6 @@ in {
   config = mkMerge [
     (mkIf (config.Profile == "work") {
       programs.niri.settings = {
-        workspaces."afirefox" = {
-          name = "afirefox";
-          open-on-output = primaryMonitor;
-        };
         workspaces."bchat" = {
           name = "bchat";
           open-on-output = primaryMonitor;
@@ -43,15 +39,8 @@ in {
           matches = [{ app-id = "firefox"; }];
           default-column-width.proportion = 0.75;
         }];
-        # Work-specific startup applications
         spawn-at-startup = [
-          {
-            command = [
-              "sh"
-              "-c"
-              "firefox && niri msg action move-window-to-workspace afirefox"
-            ];
-          }
+
           {
             command =
               [ "sh" "-c" "thunderbird  && niri msg action move-column-left" ];
@@ -70,20 +59,12 @@ in {
               "sleep 2 && ${pkgs.todoist-electron}/bin/todoist-electron"
             ];
           }
-          {
-            command = [ "sh" "-c" "niri msg action focus-workspace afirefox" ];
-          }
         ];
       };
     })
 
     (mkIf (config.Profile == "play") {
       programs.niri.settings = {
-
-        workspaces."afirefox" = {
-          name = "afirefox";
-          open-on-output = primaryMonitor;
-        };
 
         workspaces."bmedia" = {
           name = "bmedia";
@@ -119,16 +100,7 @@ in {
           matches = [{ app-id = "firefox"; }];
           default-column-width.proportion = 0.75;
         }];
-        # Play-specific startup applications
         spawn-at-startup = [
-          {
-            command = [
-              "sh"
-              "-c"
-              "firefox && niri msg action move-window-to-workspace afirefox"
-            ];
-          }
-
           {
             command = [
               "sh"
@@ -140,9 +112,6 @@ in {
           {
             command =
               [ "${pkgs.signal-desktop}/bin/signal-desktop" "--use-tray-icon" ];
-          }
-          {
-            command = [ "sh" "-c" "niri msg action focus-workspace afirefox" ];
           }
         ];
       };
