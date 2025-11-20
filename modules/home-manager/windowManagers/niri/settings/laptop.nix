@@ -1,5 +1,5 @@
 { ... }: {
-  wayland.windowManager.niri.settings = {
+  programs.niri.settings = {
     window-rules = [
       {
         matches = [{ app-id = "Slack"; }];

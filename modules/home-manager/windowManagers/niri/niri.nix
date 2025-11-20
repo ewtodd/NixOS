@@ -29,7 +29,7 @@ in {
 
   config = {
 
-    wayland.windowManager.niri = {
+    programs.niri = {
       enable = true;
       package = osConfig.programs.niri.package;
       settings = {
@@ -161,6 +161,7 @@ in {
             matches = [{ app-id = "com.obsproject.Studio"; }];
             default-column-width = { };
             default-window-height = { };
+
           }
           {
             matches = [{ title = "Resident Evil 4"; }];
@@ -168,8 +169,7 @@ in {
           }
         ];
 
-        binds = {
-          # Application launches
+        binds = with config.lib.niri.actions; {
           "Mod+f".action.spawn = "${pkgs.firefox-wayland}/bin/firefox";
           "Mod+Shift+p".action.spawn =
             [ "${pkgs.firefox-wayland}/bin/firefox" "--private-window" ];
@@ -178,8 +178,8 @@ in {
             "-new-window"
             "https://nix-community.github.io/nixvim/25.05/"
           ];
-          "Mod+p".action.spawn = "${open-nix-docs}";
-          "Mod+Shift+g".action.spawn = [
+          "Mod+p".action = spawn "${open-nix-docs}";
+          "Mod+Shift+g".action = spawn [
             "${pkgs.firefox-wayland}/bin/firefox"
             "--private-window"
             "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"
@@ -188,7 +188,7 @@ in {
           "Mod+Return".action.spawn = "${pkgs.kitty}/bin/kitty";
           "Mod+Shift+Return".action.spawn =
             [ "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'" ];
-          "Mod+Shift+q".action.close-window = [ ];
+          "Mod+Shift+q".action = close-window;
           "Mod+d".action.spawn = [
             "${pkgs.rofi-wayland}/bin/rofi"
             "-show"
@@ -219,42 +219,42 @@ in {
             [ "sh" "-c" "pkill waybar && waybar & disown" ];
 
           # Focus management (vim-style)
-          "Mod+h".action.focus-column-or-monitor-left = [ ];
-          "Mod+j".action.focus-window-or-workspace-down = [ ];
-          "Mod+k".action.focus-window-or-workspace-up = [ ];
-          "Mod+l".action.focus-column-or-monitor-right = [ ];
-          "Mod+t".action.switch-focus-between-floating-and-tiling = [ ];
+          "Mod+h".action = focus-column-or-monitor-left;
+          "Mod+j".action = focus-window-or-workspace-down;
+          "Mod+k".action = focus-window-or-workspace-up;
+          "Mod+l".action = focus-column-or-monitor-right;
+          "Mod+t".action = switch-focus-between-floating-and-tiling;
 
           # Move windows
-          "Mod+Shift+h".action.move-column-left-or-to-monitor-left = [ ];
-          "Mod+Shift+j".action.move-window-down-or-to-workspace-down = [ ];
-          "Mod+Shift+k".action.move-window-up-or-to-workspace-up = [ ];
-          "Mod+Shift+l".action.move-column-right-or-to-monitor-right = [ ];
+          "Mod+Shift+h".action = move-column-left-or-to-monitor-left;
+          "Mod+Shift+j".action = move-window-down-or-to-workspace-down;
+          "Mod+Shift+k".action = move-window-up-or-to-workspace-up;
+          "Mod+Shift+l".action = move-column-right-or-to-monitor-right;
 
-          "Mod+Tab".action.toggle-overview = [ ];
+          "Mod+Tab".action = toggle-overview;
 
           # Workspaces
-          "Mod+a".action.focus-workspace-up = [ ];
-          "Mod+s".action.focus-workspace-down = [ ];
-          "Mod+1".action.focus-monitor-next = [ ];
+          "Mod+a".action = focus-workspace-up;
+          "Mod+s".action = focus-workspace-down;
+          "Mod+1".action = focus-monitor-next;
 
-          "Mod+Shift+a".action.move-window-to-workspace-up = [ ];
-          "Mod+Shift+s".action.move-window-to-workspace-down = [ ];
-          "Mod+Shift+1".action.move-window-to-monitor-next = [ ];
+          "Mod+Shift+a".action = move-window-to-workspace-up;
+          "Mod+Shift+s".action = move-window-to-workspace-down;
+          "Mod+Shift+1".action = move-window-to-monitor-next;
 
           # Layout management
-          "Mod+Shift+f".action.fullscreen-window = [ ];
-          "Mod+Ctrl+f".action.toggle-windowed-fullscreen = [ ];
-          "Mod+r".action.switch-preset-column-width-back = [ ];
-          "Mod+Shift+r".action.set-column-width = [ "100%" ];
-          "Mod+Ctrl+r".action.switch-preset-window-height = [ ];
-          "Mod+e".action.expand-column-to-available-width = [ ];
-          "Mod+w".action.center-column = [ ];
-          "Mod+Shift+w".action.center-visible-columns = [ ];
-          "Mod+c".action.consume-or-expel-window-left = [ ];
-          "Mod+v".action.consume-or-expel-window-right = [ ];
-          "Mod+Space".action.toggle-window-floating = [ ];
-          "Mod+Shift+Space".action.center-window = [ ];
+          "Mod+Shift+f".action = fullscreen-window;
+          "Mod+Ctrl+f".action = toggle-windowed-fullscreen;
+          "Mod+r".action = switch-preset-column-width-back;
+          "Mod+Shift+r".action = set-column-width "100%";
+          "Mod+Ctrl+r".action = switch-preset-window-height;
+          "Mod+e".action = expand-column-to-available-width;
+          "Mod+w".action = center-column;
+          "Mod+Shift+w".action = center-visible-columns;
+          "Mod+c".action = consume-or-expel-window-left;
+          "Mod+v".action = consume-or-expel-window-right;
+          "Mod+Space".action = toggle-window-floating;
+          "Mod+Shift+Space".action = center-window;
 
           # System controls
           "Mod+Shift+n".action.spawn =
