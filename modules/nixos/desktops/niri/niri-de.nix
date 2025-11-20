@@ -1,8 +1,10 @@
-{ pkgs, config, lib, ... }: {
+{ pkgs, config, lib, inputs, ... }:
+let niri = inputs.niri.packages."x86_64-linux".default;
+in {
   config = lib.mkIf (config.WindowManager == "niri") {
     programs.niri = {
       enable = true;
-      package = pkgs.niri;
+      package = niri;
     };
 
     environment.systemPackages = with pkgs; [
