@@ -1,5 +1,5 @@
 { ... }: {
-  wayland.windowManager.niri.settings = {
+  programs.niri.settings = {
     outputs = {
       "HDMI-A-1" = {
         mode = {

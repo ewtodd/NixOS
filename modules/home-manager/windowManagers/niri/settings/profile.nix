@@ -10,7 +10,7 @@ let
 in {
   config = mkMerge [
     (mkIf (config.Profile == "work") {
-      wayland.windowManager.niri.settings = {
+      programs.niri.settings = {
         workspaces."bchat" = {
           name = "bchat";
           open-on-output = primaryMonitor;
@@ -40,6 +40,7 @@ in {
           default-column-width.proportion = 0.75;
         }];
         spawn-at-startup = [
+
           {
             command =
               [ "sh" "-c" "thunderbird  && niri msg action move-column-left" ];
@@ -63,7 +64,7 @@ in {
     })
 
     (mkIf (config.Profile == "play") {
-      wayland.windowManager.niri.settings = {
+      programs.niri.settings = {
 
         workspaces."bmedia" = {
           name = "bmedia";
@@ -74,9 +75,10 @@ in {
           open-on-output = secondaryMonitor;
         };
 
-        binds = {
-          "Mod+Shift+t".action.spawn =
-            [ "firefox" "--new-window" "https://monkeytype.com" ];
+        # Play-specific keybindings
+        binds = with config.lib.niri.actions; {
+          "Mod+Shift+t".action =
+            spawn "firefox" "--new-window" "https://monkeytype.com";
         };
         window-rules = [
           {
