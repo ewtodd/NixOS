@@ -12,6 +12,8 @@
       extensions.file-browser.enable = true;
     };
 
+    wilder = { enable = true; };
+
     which-key = {
       enable = true;
       settings = {
@@ -103,10 +105,6 @@
         cmake.enable = true;
         jsonls.enable = true;
       };
-      keymaps.diagnostic = {
-        "<space>j" = "goto_next";
-        "<space>k" = "goto_prev";
-      };
     };
 
     lsp-format = { enable = true; };
@@ -153,6 +151,7 @@
         ];
         snippet = { expand = "luasnip"; };
         mapping = {
+          # Fixed Tab mapping that handles both completion and snippet expansion
           "<Tab>" = ''
             cmp.mapping(function(fallback)
               local luasnip = require("luasnip")
@@ -166,6 +165,7 @@
             end, {'i', 's'})
           '';
 
+          # Shift-Tab for reverse navigation
           "<S-Tab>" = ''
             cmp.mapping(function(fallback)
               local luasnip = require("luasnip")
