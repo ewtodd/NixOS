@@ -2,7 +2,7 @@
 
 let colors = config.colorScheme.palette;
 in {
-  programs.niri.settings = {
+  wayland.windowManager.niri.settings = {
     layer-rules = [{
       matches = [{ namespace = "wallpaper"; }];
       place-within-backdrop = true;
@@ -10,7 +10,6 @@ in {
 
     overview = { workspace-shadow.color = "#${colors.base00}99"; };
     layout = {
-      background-color = "transparent";
       focus-ring = {
         enable = true;
         width = 3;

@@ -20,13 +20,10 @@
       url = "github:TamtamHero/fw-fanctrl/packaging/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    niri.url = "github:sodiboo/niri-flake";
+    niri.url = "github:YaLTeR/niri";
+    niri-hm.url = "github:ewtodd/niri-homeManager";
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
-    ignis = {
-      url = "github:ignis-sh/ignis";
-      inputs.nixpkgs.follows = "unstable";
-    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -47,7 +44,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri.homeModules.niri
+                inputs.niri-hm.homeManagerModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/v-desktop/home.nix;
@@ -73,8 +70,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri.homeModules.niri
-                inputs.ignis.homeManagerModules.default
+                inputs.niri-hm.homeManagerModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -149,7 +145,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri.homeModules.niri
+                inputs.niri-hm.homeManagerModules.niri
 
               ];
               extraSpecialArgs = { inherit inputs; };
@@ -176,7 +172,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri.homeModules.niri
+                inputs.niri-hm.homeManagerModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;
