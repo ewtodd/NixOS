@@ -236,6 +236,27 @@ in {
     }
     gestures { hot-corners { off; }; }
     animations { slowdown 1.000000; }
+    recent-windows {
+        open-delay-ms 150
+
+        highlight {
+            urgent-color "#${notificationColor}"
+            padding 30
+            corner-radius ${radius}
+        }
+
+        previews {
+            max-height 480
+            max-scale 0.5
+        }
+
+        binds {
+            Alt+Tab         { next-window; }
+            Alt+Shift+Tab   { previous-window; }
+            Alt+grave       { next-window     filter="app-id"; }
+            Alt+Shift+grave { previous-window filter="app-id"; }
+        }
+       }
   '' + lib.optionalString (deviceType == "laptop") ''
     include "laptop.kdl"
   '' + lib.optionalString (deviceType == "desktop") ''
