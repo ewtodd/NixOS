@@ -21,7 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri.url = "github:YaLTeR/niri";
-    niri-flake.url = "github:sodiboo/niri-flake";
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
     ignis = {
@@ -48,7 +47,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri-flake.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/v-desktop/home.nix;
@@ -74,8 +72,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri-flake.homeModules.niri
-                inputs.ignis.homeManagerModules.default
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -150,7 +146,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri-flake.homeModules.niri
 
               ];
               extraSpecialArgs = { inherit inputs; };
@@ -177,7 +172,6 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.niri-flake.homeModules.niri
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;
