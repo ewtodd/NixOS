@@ -23,8 +23,7 @@ in {
     ./services/wlogout.nix
     ./services/avizo.nix
     ./launcher/rofi.nix
-  ]
-  # ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+  ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   xdg.configFile."niri/config.kdl".text = ''

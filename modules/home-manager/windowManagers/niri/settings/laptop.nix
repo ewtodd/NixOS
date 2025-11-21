@@ -1,61 +1,40 @@
 { ... }: {
-  programs.niri.settings = {
-    window-rules = [
-      {
-        matches = [{ app-id = "Slack"; }];
-        default-column-width.proportion = 0.75;
-      }
-      {
-        matches = [{ app-id = "thunderbird"; }];
-        default-column-width.proportion = 0.75;
-      }
-    ];
-    outputs = {
-      "eDP-1" = {
-        mode = {
-          width = 2256;
-          height = 1504;
-          refresh = 47.998;
-        };
-        scale = 1.35;
-        position = {
-          x = 0;
-          y = 0;
-        };
-      };
-      "HDMI-A-2" = {
-        mode = {
-          width = 1920;
-          height = 1080;
-        };
-        position = {
-          x = -1920;
-          y = 0;
-        };
-      };
-      "DP-4" = {
-        mode = {
-          width = 1920;
-          height = 1080;
-        };
-        position = {
-          x = -1920;
-          y = 0;
-        };
-      };
-      "DP-3" = {
-        mode = {
-          width = 1920;
-          height = 1080;
-        };
-        position = {
-          x = -1920;
-          y = 0;
-        };
-      };
-    };
+  xdg.configFile."niri/laptop.kdl".text = ''
+    output "DP-3" {
+        transform "normal"
+        position x=-1920 y=0
+        mode "1920x1080"
+    }
+    output "DP-4" {
+        transform "normal"
+        position x=-1920 y=0
+        mode "1920x1080"
+    }
+    output "HDMI-A-2" {
+        transform "normal"
+        position x=-1920 y=0
+        mode "1920x1080"
+    }
+    output "eDP-1" {
+        scale 1.350000
+        transform "normal"
+        position x=0 y=0
+        mode "2256x1504@47.998000"
+    }
+    window-rule {
+        match app-id="firefox"
+        default-column-width { proportion 0.750000; }
+    }
 
-  };
+    window-rule {
+        match app-id="Slack"
+        default-column-width { proportion 0.750000; }
+    }
+    window-rule {
+        match app-id="thunderbird"
+        default-column-width { proportion 0.750000; }
+    }
+  '';
 
   home.pointerCursor = { size = 48; };
 }
