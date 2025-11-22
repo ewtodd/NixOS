@@ -102,6 +102,7 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
+        zls.enable = true; 
       };
       keymaps.diagnostic = {
         "<space>j" = "goto_next";
