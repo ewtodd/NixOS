@@ -10,7 +10,6 @@
         ../../modules/home-manager/waybar/waybar.nix
         ../../modules/home-manager/qutebrowser/qutebrowser.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
-#        ../../modules/home-manager/windowManagers/niri/settings/profile.nix
       ];
       home.packages = [ mtkclient ];
       programs.waybar.enable = true;
@@ -33,7 +32,7 @@
         "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
-  "e-work" = { inputs, pkgs, ... }: {
+  "e-work" = { inputs, ... }: {
     home.username = "e-work";
     home.homeDirectory = "/home/e-work";
     home.stateVersion = "25.05";
@@ -42,7 +41,6 @@
       ../../modules/home-manager/waybar/waybar.nix
       ../../modules/home-manager/qutebrowser/qutebrowser.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
-#      ../../modules/home-manager/windowManagers/niri/settings/profile.nix
     ];
 
     programs.waybar.enable = true;

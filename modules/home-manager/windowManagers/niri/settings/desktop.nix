@@ -5,6 +5,7 @@
         position x=0 y=0
         mode "3440x1440@180.000000"
         variable-refresh-rate on-demand=true
+        focus-at-startup
         layout {
           default-column-width { proportion 0.33333; }
           preset-column-widths {

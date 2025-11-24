@@ -23,6 +23,7 @@ in {
     ./services/wlogout.nix
     ./services/avizo.nix
     ./launcher/rofi.nix
+    ./settings/profile.nix
   ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
@@ -261,5 +262,8 @@ in {
     include "laptop.kdl"
   '' + lib.optionalString (deviceType == "desktop") ''
     include "desktop.kdl"
-  '';
+  '' + lib.optionalString
+    (lib.strings.hasPrefix "e" osConfig.networking.hostName) ''
+      include "profile.kdl" 
+    '';
 }
