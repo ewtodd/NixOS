@@ -6,7 +6,13 @@ let
   colors = config.colorScheme.palette;
   fontFamily = config.FontChoice;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.925";
+  opacity = if (windowManager == "sway") then
+    "0.75"
+  else
+    (if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+      "1"
+    else
+      "0.925");
 
 in {
   config = mkIf config.programs.kitty.enable {

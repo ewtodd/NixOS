@@ -13,7 +13,7 @@ in {
         layer = if (windowManager == "sway") then "bottom" else "top";
         position = "top";
         spacing = 0;
-        height = 30;
+        #height = 30;
         modules-right = [ "group/right" "clock" ]
           ++ optionals (deviceType != "desktop") [ "battery" ]
           ++ [ "custom/notification" ];
@@ -34,6 +34,7 @@ in {
           format-icons = {
             "default" = "";
             "focused" = "";
+            "empty" = "";
           };
         };
         "custom/cpu" = {

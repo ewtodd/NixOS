@@ -1,8 +1,14 @@
-{ config, osConfig, ... }:
+{ lib, config, osConfig, ... }:
 let
   colors = config.colorScheme.palette;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.925";
+  opacity = if (windowManager == "sway") then
+    "0.75"
+  else
+    (if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+      "1"
+    else
+      "0.925");
   hexToRgba = hex: alpha:
     let
       r = toString (hexPairToInt (builtins.substring 0 2 hex));

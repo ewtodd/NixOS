@@ -1,4 +1,4 @@
-{ config, pkgs, osConfig, ... }:
+{ lib, config, pkgs, osConfig, ... }:
 
 let
   colors = config.colorScheme.palette;
@@ -7,8 +7,13 @@ let
   # Font selection based on profile
   fontFamily = config.FontChoice;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.925";
-
+  opacity = if (windowManager == "sway") then
+    "0.75"
+  else
+    (if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+      "1"
+    else
+      "0.925");
   # Helper to convert single hex digit to decimal (handles both upper and lowercase)
   hexDigitToInt = d:
     if d == "0" then
