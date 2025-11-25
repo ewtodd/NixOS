@@ -93,14 +93,14 @@ in {
         F7 { spawn "lightctl" "down"; }
         F8 { spawn "lightctl" "up"; }
         Mod+1 { focus-monitor-next; }
+        Mod+2 { spawn-sh "pkill -USR1 waybar"; }
         Mod+Ctrl+f { toggle-windowed-fullscreen; }
         Mod+Ctrl+r { switch-preset-window-height; }
         Mod+Return { spawn "${pkgs.kitty}/bin/kitty"; }
         Mod+Shift+1 { move-window-to-monitor-next; }
         Mod+Shift+Return { spawn "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'"; }
         Mod+Shift+Space { center-window; }
-        Mod+Shift+a { move-window-to-workspace-up; }
-        Mod+Shift+c { spawn "sh" "-c" "pkill waybar && waybar & disown"; }
+        Mod+Shift+c { spawn "sh" "-c" "pkill -USR2 waybar"; }
         Mod+Shift+d { spawn "${pkgs.rofi-wayland}/bin/rofi" "-show" "filebrowser" "-matching" "fuzzy" "-filebrowser-directory" "~"; }
         Mod+Shift+e { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "--close-all"; }
         Mod+Shift+f { fullscreen-window; }
