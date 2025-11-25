@@ -93,7 +93,7 @@ in {
         F7 { spawn "lightctl" "down"; }
         F8 { spawn "lightctl" "up"; }
         Mod+1 { focus-monitor-next; }
-        Mod+2 { spawn-sh "pkill -USR1 waybar"; }
+        Mod+2 { spawn-sh "pkill -USR1 waybar && niri msg action do-screen-transition --delay-ms 0"; }
         Mod+Ctrl+f { toggle-windowed-fullscreen; }
         Mod+Ctrl+r { switch-preset-window-height; }
         Mod+Return { spawn "${pkgs.kitty}/bin/kitty"; }
@@ -240,7 +240,7 @@ in {
         place-within-backdrop true
     }
     gestures { hot-corners { off; }; }
-    animations { slowdown 1.000000; }
+    animations { slowdown 0.75; }
     recent-windows {
         open-delay-ms 150
 
