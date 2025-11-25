@@ -12,11 +12,6 @@ let
       "1"
     else
       "0.925");
-  bar-color = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
-    colors.base03
-  else
-    colors.base00;
-
   deviceType = osConfig.DeviceType;
   left-notification-padding =
     if (fontFamily == "JetBrains Mono Nerd Font") then "5px" else "8px";
@@ -91,7 +86,7 @@ in {
     }
 
     window#waybar {
-    	background-color: ${hexToRgba bar-color "${opacity}"};
+    	background-color: ${hexToRgba colors.base00 "${opacity}"};
     }
 
     #workspaces button.empty {

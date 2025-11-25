@@ -63,12 +63,7 @@ in {
             active-gradient angle=180 from="#${colors.base0D}" relative-to="window" to="#${colors.base0E}"
         }
         border { off; }
-        background-color "${
-          if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
-            "#${colors.base03}"
-          else
-            "transparent"
-        }"
+        background-color "transparent"
         default-column-width { proportion 0.500000; }
         preset-column-widths {
             proportion 0.250000
