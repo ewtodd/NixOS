@@ -5,7 +5,18 @@ let
   fontFamily = config.FontChoice;
   accentColor = colors.base0E;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "0.925";
+  opacity = if (windowManager == "sway") then
+    "0.75"
+  else
+    (if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+      "1"
+    else
+      "0.925");
+  bar-color = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+    colors.base03
+  else
+    colors.base00;
+
   deviceType = osConfig.DeviceType;
   left-notification-padding =
     if (fontFamily == "JetBrains Mono Nerd Font") then "5px" else "8px";
@@ -80,10 +91,17 @@ in {
     }
 
     window#waybar {
-    	background-color: ${hexToRgba colors.base00 "${opacity}"};
+    	background-color: ${hexToRgba bar-color "${opacity}"};
     }
 
-    #workspaces button:first-child {
+    #workspaces button.empty {
+        opacity: 0;
+    	min-width: 0;
+    	padding: 0;
+    	margin: 0;
+    }
+
+    #workspaces button:nth-child(2) {
         margin-left: 3px;
     	border-radius: ${radius}px 0 0 ${radius}px;
     	border-right: 1px solid #${colors.base03};
@@ -95,15 +113,14 @@ in {
     	font-size: 1.0rem;
     }
 
-    #workspaces button:first-child:last-child {
-    	border-radius: ${radius}px;
-    	margin-left: 3px;
-    	border-right: none;
-    }
-
-    #workspaces button:last-child {
+    #workspaces button:nth-last-child(2) {
         border: none;
         border-radius: 0 ${radius}px ${radius}px 0; 
+      }
+
+    #workspaces button:nth-child(2):nth-last-child(2) {
+    	border-radius: ${radius}px;
+    	margin-left: 3px;
     }
 
     #workspaces button {
@@ -118,7 +135,7 @@ in {
     	border-left: none;
     }
 
-    #workspaces button:not(:last-child) {
+    #workspaces button:not(:nth-last-child(2)) {
     	border-right: 1px solid #${colors.base03};
     }
 
@@ -138,6 +155,7 @@ in {
     	color: #${colors.base00};
     	background-color: #${accentColor};
     }
+
 
     #workspaces button.urgent {
     	background-color: #${colors.base08};

@@ -61,10 +61,14 @@ in {
         focus-ring {
             width 3
             active-gradient angle=180 from="#${colors.base0D}" relative-to="window" to="#${colors.base0E}"
-            inactive-color "#${colors.base03}"
         }
         border { off; }
-        background-color "transparent"
+        background-color "${
+          if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+            "#${colors.base03}"
+          else
+            "transparent"
+        }"
         default-column-width { proportion 0.500000; }
         preset-column-widths {
             proportion 0.250000
