@@ -23,10 +23,6 @@
     niri.url = "github:YaLTeR/niri";
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
-    ignis = {
-      url = "github:ignis-sh/ignis";
-      inputs.nixpkgs.follows = "unstable";
-    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
