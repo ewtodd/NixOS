@@ -42,11 +42,13 @@ in {
             track-layout "global"
         }
         touchpad {
+            dwt
             tap
             natural-scroll
         }
         mouse { natural-scroll; }
         focus-follows-mouse
+        disable-power-key-handling
     }
     screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
     prefer-no-csd
