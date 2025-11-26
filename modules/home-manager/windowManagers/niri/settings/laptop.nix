@@ -1,5 +1,11 @@
 { ... }: {
   xdg.configFile."niri/laptop.kdl".text = ''
+    layout {
+        preset-column-widths {
+          proportion 0.500000
+          proportion 0.750000
+        }
+    }
     output "DP-3" {
         transform "normal"
         position x=-1920 y=0
