@@ -169,48 +169,6 @@
         "type": "github"
       }
     },
-    "ignis": {
-      "inputs": {
-        "ignis-gvc": "ignis-gvc",
-        "nixpkgs": [
-          "unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1762970543,
-        "narHash": "sha256-7ipFVC9pvI564c22b1dIEzSQ8dZXK3cxh/tF/4tX38c=",
-        "owner": "ignis-sh",
-        "repo": "ignis",
-        "rev": "ba8b0e11c2462afc9fdc30ce6a72b4e94e8ee7c4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ignis-sh",
-        "repo": "ignis",
-        "type": "github"
-      }
-    },
-    "ignis-gvc": {
-      "inputs": {
-        "nixpkgs": [
-          "ignis",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1754064086,
-        "narHash": "sha256-ft5KvY2OYrWF+jEsfBL/Zx8Iuo2C10C6COk8wHwZw34=",
-        "owner": "ignis-sh",
-        "repo": "ignis-gvc",
-        "rev": "f2c9f10d8b49cc38106a2f07a51ea959c6aa4e63",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ignis-sh",
-        "repo": "ignis-gvc",
-        "type": "github"
-      }
-    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -442,7 +400,6 @@
         "SRIM": "SRIM",
         "fw-fanctrl": "fw-fanctrl",
         "home-manager": "home-manager",
-        "ignis": "ignis",
         "niri": "niri",
         "nix-colors": "nix-colors",
         "nix-mineral": "nix-mineral",

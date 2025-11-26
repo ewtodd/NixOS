@@ -1,4 +1,4 @@
-{ config, lib, osConfig, pkgs, ... }:
+{ config, lib, osConfig, pkgs, inputs, ... }:
 with lib;
 let
   colors = config.colorScheme.palette;
@@ -13,6 +13,7 @@ let
   '';
   notificationColor =
     if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
+  unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
 
   imports = [
@@ -108,12 +109,15 @@ in {
         Mod+Shift+p { spawn "${pkgs.firefox-wayland}/bin/firefox" "--private-window"; }
         Mod+Shift+q { close-window; }
         Mod+Shift+r { set-column-width "100%"; }
+        Mod+Shift+a { move-window-to-workspace-up; }
         Mod+Shift+s { move-window-to-workspace-down; }
         Mod+Shift+t { spawn "firefox" "--new-window" "https://monkeytype.com"; }
         Mod+Shift+w { center-visible-columns; }
         Mod+Space { toggle-window-floating; }
         Mod+Tab { toggle-overview; }
-        Mod+a { focus-workspace-up; }
+        Mod+a { spawn-sh "${unstable.nirius}/bin/nirius toggle-follow-mode"; }
+        Mod+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-show"; }
+        Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle"; }
         Mod+c { consume-or-expel-window-left; }
         Mod+d { spawn "${pkgs.rofi-wayland}/bin/rofi" "-show" "combi" "-modes" "combi" "-combi-modes" "window,drun"; }
         Mod+e { expand-column-to-available-width; }
@@ -126,7 +130,6 @@ in {
         Mod+n { spawn "${pkgs.firefox-wayland}/bin/firefox" "-new-window" "https://nix-community.github.io/nixvim/25.05/"; }
         Mod+p { spawn "${open-nix-docs}"; }
         Mod+r { switch-preset-column-width-back; }
-        Mod+s { focus-workspace-down; }
         Mod+t { switch-focus-between-floating-and-tiling; }
         Mod+v { consume-or-expel-window-right; }
         Mod+w { center-column; }
@@ -136,6 +139,7 @@ in {
         XF86MonBrightnessDown { spawn "lightctl" "down"; }
         XF86MonBrightnessUp { spawn "lightctl" "up"; }
     }
+    spawn-at-startup "${unstable.nirius}/bin/niriusd"
     spawn-at-startup "waybar"
     spawn-at-startup "swaybg" "-i" "${wallpaperPath}"
     spawn-at-startup "sh" "-c" "sleep 2 && wayland-pipewire-idle-inhibit"

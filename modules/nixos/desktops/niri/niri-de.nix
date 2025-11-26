@@ -1,5 +1,7 @@
 { pkgs, config, lib, inputs, ... }:
-let niri = inputs.niri.packages."x86_64-linux".default;
+let
+  niri = inputs.niri.packages."x86_64-linux".default;
+  unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
   config = lib.mkIf (config.WindowManager == "niri") {
     programs.niri = {
@@ -8,6 +10,7 @@ in {
     };
 
     environment.systemPackages = with pkgs; [
+      unstable.nirius
       xwayland-satellite
       wlogout
       sway-contrib.grimshot
