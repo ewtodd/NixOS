@@ -119,7 +119,7 @@ in {
         Mod+Tab { toggle-overview; }
         Mod+a { spawn-sh "${unstable.nirius}/bin/nirius toggle-follow-mode"; }
         Mod+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-show"; }
-        Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle"; }
+        Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle --no-move"; }
         Mod+c { consume-or-expel-window-left; }
         Mod+d { spawn "${pkgs.rofi-wayland}/bin/rofi" "-show" "combi" "-modes" "combi" "-combi-modes" "window,drun"; }
         Mod+e { expand-column-to-available-width; }
