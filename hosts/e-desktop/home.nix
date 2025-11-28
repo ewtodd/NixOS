@@ -15,9 +15,9 @@
       programs.waybar.enable = true;
       programs.git = {
         enable = true;
-        userName = "Ethan Todd";
-        userEmail = "30243637+ewtodd@users.noreply.github.com";
-        extraConfig = {
+        settings = {
+          user.name = "Ethan Todd";
+          user.email = "30243637+ewtodd@users.noreply.github.com";
           init = { defaultBranch = "main"; };
           safe.directory = "/etc/nixos";
           core.sharedRepository = "group";
@@ -46,9 +46,9 @@
     programs.waybar.enable = true;
     programs.git = {
       enable = true;
-      userName = "Ethan Todd";
-      userEmail = "30243637+ewtodd@users.noreply.github.com";
-      extraConfig = {
+      settings = {
+        user.name = "Ethan Todd";
+        user.email = "30243637+ewtodd@users.noreply.github.com";
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
         core.sharedRepository = "group";

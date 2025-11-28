@@ -6,7 +6,7 @@ let
   radius = toString osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
   open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
-    ${pkgs.firefox-wayland}/bin/firefox --new-window \
+    ${pkgs.firefox}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ &
@@ -99,16 +99,16 @@ in {
         Mod+Shift+Return { spawn "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'"; }
         Mod+Shift+Space { center-window; }
         Mod+Shift+c { spawn "sh" "-c" "pkill -USR2 waybar"; }
-        Mod+Shift+d { spawn "${pkgs.rofi-wayland}/bin/rofi" "-show" "filebrowser" "-matching" "fuzzy" "-filebrowser-directory" "~"; }
+        Mod+Shift+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "filebrowser" "-matching" "fuzzy" "-filebrowser-directory" "~"; }
         Mod+Shift+e { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "--close-all"; }
         Mod+Shift+f { fullscreen-window; }
-        Mod+Shift+g { spawn "${pkgs.firefox-wayland}/bin/firefox" "--private-window" "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"; }
+        Mod+Shift+g { spawn "${pkgs.firefox}/bin/firefox" "--private-window" "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"; }
         Mod+Shift+h { move-column-left-or-to-monitor-left; }
         Mod+Shift+j { move-window-down-or-to-workspace-down; }
         Mod+Shift+k { move-window-up-or-to-workspace-up; }
         Mod+Shift+l { move-column-right-or-to-monitor-right; }
         Mod+Shift+n { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t"; }
-        Mod+Shift+p { spawn "${pkgs.firefox-wayland}/bin/firefox" "--private-window"; }
+        Mod+Shift+p { spawn "${pkgs.firefox}/bin/firefox" "--private-window"; }
         Mod+Shift+q { close-window; }
         Mod+Shift+r { set-column-width "100%"; }
         Mod+Shift+a { move-window-to-workspace-up; }
@@ -121,15 +121,15 @@ in {
         Mod+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-show"; }
         Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle --no-move"; }
         Mod+c { consume-or-expel-window-left; }
-        Mod+d { spawn "${pkgs.rofi-wayland}/bin/rofi" "-show" "combi" "-modes" "combi" "-combi-modes" "window,drun"; }
+        Mod+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "combi" "-modes" "combi" "-combi-modes" "window,drun"; }
         Mod+e { expand-column-to-available-width; }
-        Mod+f { spawn "${pkgs.firefox-wayland}/bin/firefox"; }
+        Mod+f { spawn "${pkgs.firefox}/bin/firefox"; }
         Mod+h { focus-column-or-monitor-left; }
         Mod+j { focus-window-or-workspace-down; }
         Mod+k { focus-window-or-workspace-up; }
         Mod+l { focus-column-or-monitor-right; }
         Mod+m { spawn "${pkgs.wlogout}/bin/wlogout" "-p" "layer-shell" "--buttons-per-row" "2"; }
-        Mod+n { spawn "${pkgs.firefox-wayland}/bin/firefox" "-new-window" "https://nix-community.github.io/nixvim/25.05/"; }
+        Mod+n { spawn "${pkgs.firefox}/bin/firefox" "-new-window" "https://nix-community.github.io/nixvim/25.05/"; }
         Mod+p { spawn "${open-nix-docs}"; }
         Mod+r { switch-preset-column-width-back; }
         Mod+t { switch-focus-between-floating-and-tiling; }

@@ -1,5 +1,4 @@
 { ... }: {
-
   imports = [
     ../../common/nixos/base.nix
     ../../modules/nixos/hardware/amd-graphics.nix

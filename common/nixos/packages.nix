@@ -1,6 +1,6 @@
-{ pkgs, inputs, ... }:
-let unstable = import inputs.unstable { system = "x86_64-linux"; };
-in {
+{ pkgs, ... }: {
+
+  nixpkgs.config.allowUnfree = true;
 
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
@@ -15,13 +15,14 @@ in {
       "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
     init-dev-env = "nix flake init -t github:ewtodd/dev-env";
   };
+
   environment.systemPackages = with pkgs; [
     git
     gh
     nh
     wget
     inkscape
-    firefox-wayland
+    firefox
     libreoffice
     tree
     zathura
@@ -32,7 +33,7 @@ in {
     tree
     usbutils
     poppler-utils
-    unstable.pciutils
+    pciutils
     unzip
     paprefs
     wineWowPackages.stable

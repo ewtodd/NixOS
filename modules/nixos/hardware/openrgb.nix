@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, inputs, ... }:
 let unstable = inputs.unstable.legacyPackages.${pkgs.system};
 in {
   environment.systemPackages = with unstable; [ i2c-tools ];

@@ -1,5 +1,4 @@
-{ config, pkgs, inputs, ... }: {
-  # Configure keymap in X11
+{ pkgs, ... }: {
   services.xserver.xkb = {
     layout = "us";
     variant = "";

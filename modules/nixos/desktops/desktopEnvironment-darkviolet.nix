@@ -4,7 +4,7 @@ let
   schemeName = colorScheme.slug;
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
 in {
-  imports = [ ./sway/sway-de.nix ./niri/niri-de.nix ];
+  imports = [ ./niri/niri-de.nix ];
   programs.regreet = {
     enable = true;
     settings = {
