@@ -1,4 +1,4 @@
-{ pkgs, inputs, system, ... }:
+{ pkgs, inputs, ... }:
 let
   lisepp = pkgs.callPackage ../../packages/LISE++/default.nix { };
   SRIM = inputs.SRIM.packages."x86_64-linux".default;

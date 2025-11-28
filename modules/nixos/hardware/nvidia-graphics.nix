@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, inputs, ... }:
 let unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
   hardware.graphics = {

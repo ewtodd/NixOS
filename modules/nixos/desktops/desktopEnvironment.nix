@@ -1,18 +1,13 @@
-{ pkgs, inputs, ... }:
-let
-  colorScheme = inputs.nix-colors.colorSchemes.grayscale-dark;
-  schemeName = colorScheme.slug;
-  nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
-in {
+{ pkgs, ... }: {
 
-  imports = [ ./sway/sway-de.nix ./niri/niri-de.nix ];
+  imports = [ ./niri/niri-de.nix ];
   services.xserver = {
     displayManager.startx.enable = false;
     excludePackages = with pkgs; [ xterm ];
-    displayManager.gdm = {
-      enable = true;
-      wayland = true;
-      autoSuspend = false;
-    };
+  };
+  services.displayManager.gdm = {
+    enable = true;
+    wayland = true;
+    autoSuspend = false;
   };
 }

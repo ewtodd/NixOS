@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-
+{ pkgs, ... }:
 let
   cb-ucm-conf = pkgs.alsa-ucm-conf.overrideAttrs {
     wttsrc = pkgs.fetchurl {

@@ -1,4 +1,4 @@
-{ inputs, lib, ... }: {
+{ inputs, ... }: {
   imports = [ "${inputs.nix-mineral}/nix-mineral.nix" ];
   lib.nm-overrides = {
     compatibility = {

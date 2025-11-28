@@ -1,5 +1,5 @@
 {
-  "v-play" = { pkgs, inputs, ... }: {
+  "v-play" = { inputs, ... }: {
     home.username = "v-play";
     home.homeDirectory = "/home/v-play";
     home.stateVersion = "25.05";
@@ -11,9 +11,9 @@
     programs.waybar.enable = true;
     programs.git = {
       enable = true;
-      userName = "Valarie Milton";
-      userEmail = "157831739+vael3429@users.noreply.github.com";
-      extraConfig = {
+      settings = {
+        user.name = "Valarie Milton";
+        user.email = "157831739+vael3429@users.noreply.github.com";
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
         core.sharedRepository = "group";
@@ -36,9 +36,9 @@
     programs.waybar.enable = true;
     programs.git = {
       enable = true;
-      userName = "Valarie Milton";
-      userEmail = "157831739+vael3429@users.noreply.github.com";
-      extraConfig = {
+      settings = {
+        user.name = "Valarie Milton";
+        user.email = "157831739+vael3429@users.noreply.github.com";
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
         core.sharedRepository = "group";

@@ -1,16 +1,13 @@
 {
   description = "Managing all the devices!";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixvim = { url = "github:nix-community/nixvim"; };
     nix-colors.url = "github:misterio77/nix-colors";
     nix-mineral = {
       url = "github:cynicsketch/nix-mineral";
@@ -76,55 +73,6 @@
           ./hosts/e-desktop/configuration.nix
         ];
       };
-      server-mu = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          system = "x86_64-linux";
-        };
-        modules = [
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "hm-backup";
-              sharedModules = [
-                inputs.nixvim.homeModules.nixvim
-                inputs.nix-colors.homeManagerModules.default
-              ];
-              extraSpecialArgs = { inherit inputs; };
-              users = import ./hosts/server-mu/home.nix;
-            };
-          }
-          ./hosts/server-mu/configuration.nix
-        ];
-      };
-      server-nu = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          system = "x86_64-linux";
-        };
-        modules = [
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "hm-backup";
-              sharedModules = [
-                inputs.nixvim.homeModules.nixvim
-                inputs.nix-colors.homeManagerModules.default
-              ];
-              extraSpecialArgs = { inherit inputs; };
-              users = import ./hosts/server-nu/home.nix;
-            };
-          }
-          ./hosts/server-nu/configuration.nix
-        ];
-      };
-
       v-laptop = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {

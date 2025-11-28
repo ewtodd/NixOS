@@ -1,5 +1,4 @@
-{ config, pkgs, lib, osConfig, ... }:
-
+{ config, lib, osConfig, ... }:
 let
   colors = config.colorScheme.palette;
   windowManager = osConfig.WindowManager;
