@@ -133,7 +133,7 @@ in {
         XF86MonBrightnessUp { spawn-sh "dms ipc call brightness increment 5"; }
     }
     spawn-at-startup "${unstable.nirius}/bin/niriusd"
-    spawn-sh-at-startup "dms ipc call wallpaper set ${wallpaperPath}"
+    spawn-sh-at-startup "sleep 2 && dms ipc call wallpaper set ${wallpaperPath}"
     spawn-at-startup "sh" "-c" "sleep 2 && wayland-pipewire-idle-inhibit"
     window-rule {
         geometry-corner-radius ${radius} ${radius} ${radius} ${radius} 
