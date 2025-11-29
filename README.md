@@ -10,4 +10,4 @@ This repo contains an opinionated NixOS/home-manager configuration. The desktop 
 ## Long term:
 - [ ] Convert from nix-colors to base16.nix, since this is actually maintained.
 - [ ] ~~Write a new Wayland compositor (possibly a fork of dwl similar to MangoWC) to mimic the functionality of sway with some of the modern conveniences of Niri (per window screen sharing, overview, animations, ...) that is configured entirely via Nix.~~
-- [ ] Write a complete set of Wayland shell components to replace the combination of waybar+swaync+avizo that is compositor independent and configured entirely via Nix. 
+- [ ] ~~Write a complete set of Wayland shell components to replace the combination of waybar+swaync+avizo that is compositor independent and configured entirely via Nix.~~

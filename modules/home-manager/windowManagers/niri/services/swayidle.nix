@@ -11,7 +11,7 @@ in {
     timeouts = [
       {
         timeout = 600;
-        command = "${pkgs.swaylock-effects}/bin/swaylock";
+        command = "dms ipc call lock lock";
       }
       {
         timeout = timeout;
@@ -19,15 +19,9 @@ in {
       }
     ];
 
-    events = [
-      {
-        event = "before-sleep";
-        command = "${pkgs.swaylock-effects}/bin/swaylock";
-      }
-      {
-        event = "after-resume";
-        command = "${pkgs.swayfx}/bin/swaymsg 'output * power on'";
-      }
-    ];
+    events = [{
+      event = "before-sleep";
+      command = "dms ipc call lock lock";
+    }];
   };
 }

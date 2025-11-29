@@ -16,16 +16,9 @@ let
   unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
 
-  imports = [
-    ./services/misc.nix
-    ./services/swayidle.nix
-    ./services/swaync.nix
-    ./services/swaylock.nix
-    ./services/wlogout.nix
-    ./services/avizo.nix
-    ./launcher/rofi.nix
-    ./settings/profile.nix
-  ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+  imports =
+    [ ./services/misc.nix ./services/swayidle.nix ./settings/profile.nix ]
+    ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   xdg.configFile."niri/config.kdl".text = ''
@@ -87,27 +80,24 @@ in {
         Alt+Ctrl+4 { spawn-sh "grimshot --notify copy area"; }
         Alt+Ctrl+Shift+3 { spawn-sh "grimshot --notify save output"; }
         Alt+Ctrl+Shift+4 { spawn-sh "grimshot --notify save area"; }
-        Alt+l { spawn "${pkgs.swaylock-effects}/bin/swaylock"; }
-        F7 { spawn "lightctl" "down"; }
-        F8 { spawn "lightctl" "up"; }
+        Alt+l { spawn-sh "dms ipc call lock lock"; }
+        F7 { spawn-sh "dms ipc call brightness decrement 5"; }
+        F8 { spawn-sh "dms ipc call brightness increment 5"; }
         Mod+1 { focus-monitor-next; }
-        Mod+2 { spawn-sh "pkill -USR1 waybar && niri msg action do-screen-transition --delay-ms 0"; }
         Mod+Ctrl+f { toggle-windowed-fullscreen; }
         Mod+Ctrl+r { switch-preset-window-height; }
         Mod+Return { spawn "${pkgs.kitty}/bin/kitty"; }
         Mod+Shift+1 { move-window-to-monitor-next; }
         Mod+Shift+Return { spawn "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'"; }
         Mod+Shift+Space { center-window; }
-        Mod+Shift+c { spawn "sh" "-c" "pkill -USR2 waybar"; }
-        Mod+Shift+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "filebrowser" "-matching" "fuzzy" "-filebrowser-directory" "~"; }
-        Mod+Shift+e { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "--close-all"; }
         Mod+Shift+f { fullscreen-window; }
         Mod+Shift+g { spawn "${pkgs.firefox}/bin/firefox" "--private-window" "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"; }
         Mod+Shift+h { move-column-left-or-to-monitor-left; }
         Mod+Shift+j { move-window-down-or-to-workspace-down; }
         Mod+Shift+k { move-window-up-or-to-workspace-up; }
         Mod+Shift+l { move-column-right-or-to-monitor-right; }
-        Mod+Shift+n { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t"; }
+        Mod+Shift+n { spawn-sh "dms ipc call notifications toggle"; }
+        Mod+Shift+e { spawn-sh "dms ipc call control-center toggle"; }
         Mod+Shift+p { spawn "${pkgs.firefox}/bin/firefox" "--private-window"; }
         Mod+Shift+q { close-window; }
         Mod+Shift+r { set-column-width "100%"; }
@@ -115,35 +105,35 @@ in {
         Mod+Shift+s { move-window-to-workspace-down; }
         Mod+Shift+t { spawn "firefox" "--new-window" "https://monkeytype.com"; }
         Mod+Shift+w { center-visible-columns; }
+        Mod+Shift+Tab { spawn-sh "dms ipc call dash toggle overview"; }
         Mod+Space { toggle-window-floating; }
         Mod+Tab { toggle-overview; }
         Mod+a { spawn-sh "${unstable.nirius}/bin/nirius toggle-follow-mode"; }
         Mod+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-show"; }
         Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle --no-move"; }
         Mod+c { consume-or-expel-window-left; }
-        Mod+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "combi" "-modes" "combi" "-combi-modes" "window,drun"; }
+        Mod+d { spawn-sh "dms ipc call spotlight toggle"; }
         Mod+e { expand-column-to-available-width; }
         Mod+f { spawn "${pkgs.firefox}/bin/firefox"; }
         Mod+h { focus-column-or-monitor-left; }
         Mod+j { focus-window-or-workspace-down; }
         Mod+k { focus-window-or-workspace-up; }
         Mod+l { focus-column-or-monitor-right; }
-        Mod+m { spawn "${pkgs.wlogout}/bin/wlogout" "-p" "layer-shell" "--buttons-per-row" "2"; }
+        Mod+m { spawn-sh "dms ipc call powermenu toggle"; }
         Mod+n { spawn "${pkgs.firefox}/bin/firefox" "-new-window" "https://nix-community.github.io/nixvim/25.05/"; }
         Mod+p { spawn "${open-nix-docs}"; }
         Mod+r { switch-preset-column-width-back; }
         Mod+t { switch-focus-between-floating-and-tiling; }
         Mod+v { consume-or-expel-window-right; }
         Mod+w { center-column; }
-        XF86AudioLowerVolume { spawn "volumectl" "-d" "-p" "down"; }
-        XF86AudioMute { spawn "volumectl" "-d" "-p" "toggle-mute"; }
-        XF86AudioRaiseVolume { spawn "volumectl" "-d" "-p" "up"; }
-        XF86MonBrightnessDown { spawn "lightctl" "down"; }
-        XF86MonBrightnessUp { spawn "lightctl" "up"; }
+        XF86AudioLowerVolume { spawn-sh "dms ipc call audio decrement 5"; }
+        XF86AudioMute { spawn-sh "dms ipc call audio mute"; }
+        XF86AudioRaiseVolume { spawn-sh "dms ipc call audio increment 5"; }
+        XF86MonBrightnessDown { spawn-sh "dms ipc call brightness decrement 5"; }
+        XF86MonBrightnessUp { spawn-sh "dms ipc call brightness increment 5"; }
     }
     spawn-at-startup "${unstable.nirius}/bin/niriusd"
-    spawn-at-startup "waybar"
-    spawn-at-startup "swaybg" "-i" "${wallpaperPath}"
+    spawn-sh-at-startup "dms ipc call wallpaper set ${wallpaperPath}"
     spawn-at-startup "sh" "-c" "sleep 2 && wayland-pipewire-idle-inhibit"
     window-rule {
         geometry-corner-radius ${radius} ${radius} ${radius} ${radius} 
