@@ -45,13 +45,11 @@ in {
             echo "''${cpu_usage} ''${cpu_temp}°C ''${cpu_freq}"
           ''}";
           interval = 3;
-          format = "{icon} {}";
+          format = "{icon} {text}";
           format-icons = "";
           tooltip = true;
 
         };
-
-        memory = { tooltip = true; };
 
         "custom/gpu" = {
           interval = 3;
@@ -81,12 +79,13 @@ in {
 
         memory = {
           interval = 3;
-          format = "{icon} {}%";
+          format = "{icon} {percentage}%";
           format-icons = "";
           states = {
             warning = 70;
             critical = 90;
           };
+          tooltip = true;
         };
 
         "group/left" = {
