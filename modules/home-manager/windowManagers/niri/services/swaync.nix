@@ -115,7 +115,7 @@ in {
 
       .control-center {
         background-color: ${hexToRgba colors.base00 "${opacity}"};
-        border: 1px solid ${hexToRgba colors.base05 "0.2"};
+        border: 0px;
         border-radius: 0px;
         margin: 0px;
         padding: 12px;
