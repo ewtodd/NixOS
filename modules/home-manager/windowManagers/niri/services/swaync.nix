@@ -71,7 +71,7 @@ in {
       layer = "overlay";
       layer-shell = true;
       layer-shell-cover-screen = true;
-      cssPriority = "application";
+      cssPriority = "user";
       control-center-margin-top = 0;
       control-center-margin-bottom = 0;
       control-center-margin-right = 0;
@@ -109,10 +109,14 @@ in {
     };
 
     style = ''
+      * {
+        background-color: ${hexToRgba colors.base00 "0"};
+      }
+
       .control-center {
         background-color: ${hexToRgba colors.base00 "${opacity}"};
         border: 1px solid ${hexToRgba colors.base05 "0.2"};
-        border-radius: ${toString radius}px;
+        border-radius: 0px;
         margin: 0px;
         padding: 12px;
       }
