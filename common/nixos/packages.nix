@@ -14,6 +14,8 @@
     fix-nixos-git =
       "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
     init-dev-env = "nix flake init -t github:ewtodd/dev-env --refresh";
+    init-nm-env =
+      "nix flake init -t github:ewtodd/Nuclear-Measurement-Toolkit --refresh";
   };
 
   environment.systemPackages = with pkgs; [

@@ -2,7 +2,13 @@
 let
   colors = config.colorScheme.palette;
   windowManager = osConfig.WindowManager;
-  opacity = if (windowManager == "sway") then "0.75" else "1";
+  opacity = if (windowManager == "sway") then
+    "0.75"
+  else
+    (if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+      "0.9"
+    else
+      "0.925");
   radius = osConfig.CornerRadius;
   hexDigitToInt = d:
     if d == "0" then
