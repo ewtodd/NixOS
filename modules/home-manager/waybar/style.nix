@@ -9,7 +9,7 @@ let
     "0.75"
   else
     (if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
-      "1"
+      "0.9"
     else
       "0.925");
   deviceType = osConfig.DeviceType;
