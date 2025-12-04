@@ -1,4 +1,11 @@
 { pkgs, ... }: {
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      extraArgs = "--keep 3";
+    };
+  };
   services.xserver.xkb = {
     layout = "us";
     variant = "";
