@@ -21,9 +21,11 @@
     download-buffer-size = 524288000;
   };
   nix.optimise.automatic = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 1w";
+  programs.nh = {
+    enable = true;
+    clean = {
+      enable = true;
+      extraArgs = "--keep 3";
+    };
   };
 }
