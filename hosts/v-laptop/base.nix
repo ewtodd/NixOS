@@ -8,7 +8,6 @@
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/remarkable.nix
     ../../modules/nixos/packages/quickemu.nix
-    ../../modules/nixos/packages/zoom.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/services/tailscale.nix
     ../../modules/nixos/services/suspend-then-hibernate.nix
