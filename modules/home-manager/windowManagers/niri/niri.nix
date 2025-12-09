@@ -83,8 +83,8 @@ in {
     }
     hotkey-overlay { skip-at-startup; }
     binds {
-        Alt+Ctrl+3 { spawn-sh "grimshot --notify copy output"; }
-        Alt+Ctrl+4 { spawn-sh "grimshot --notify copy area"; }
+        Alt+Ctrl+3 { spawn-sh "grimshot copy output"; }
+        Alt+Ctrl+4 { spawn-sh "grimshot copy area"; }
         Alt+Ctrl+Shift+3 { spawn-sh "grimshot --notify save output"; }
         Alt+Ctrl+Shift+4 { spawn-sh "grimshot --notify save area"; }
         Alt+l { spawn "${pkgs.swaylock-effects}/bin/swaylock"; }
