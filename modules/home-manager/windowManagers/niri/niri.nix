@@ -34,6 +34,7 @@ in {
             xkb {
                 layout ""
                 model ""
+
                 rules ""
                 variant ""
             }
@@ -47,7 +48,7 @@ in {
             natural-scroll
         }
         mouse { natural-scroll; }
-        focus-follows-mouse
+        focus-follows-mouse max-scroll-amount="15%"
         disable-power-key-handling
     }
     screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
