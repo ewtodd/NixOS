@@ -5,12 +5,11 @@
     ../../modules/nixos/desktops/desktopEnvironment.nix
     ../../modules/nixos/hardware/suzyqable.nix
     ../../modules/nixos/hardware/laptop-power.nix
-   # ../../modules/nixos/hardware/chromebook-audio.nix
+    # ../../modules/nixos/hardware/chromebook-audio.nix
     ../../modules/nixos/hardware/intel-graphics.nix
     ../../modules/nixos/services/tailscale.nix
     #../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/moonlight.nix
-    ../../modules/nixos/packages/todoist.nix
     ../../modules/nixos/packages/boxcli.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix

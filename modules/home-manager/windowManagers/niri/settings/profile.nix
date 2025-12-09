@@ -15,9 +15,6 @@ in {
         workspace "b-chat" {
           open-on-output "${primaryMonitor}"
         }
-        workspace "c-calendar" {
-          open-on-output "${secondaryMonitor}"
-        }
         window-rule {
           match app-id="Slack"
           match app-id="thunderbird"
@@ -29,14 +26,8 @@ in {
           match app-id="firefox"
           default-column-width { proportion ${alt-proportion}; }
         }
-        window-rule {
-          match app-id="Todoist" 
-          open-on-workspace "c-calendar"
-          default-column-width { proportion 1.0; }
-        }
         spawn-sh-at-startup "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left"
         spawn-sh-at-startup "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right"
-        spawn-sh-at-startup "sleep 2 && ${pkgs.todoist-electron}/bin/todoist-electron"
       '')
       (mkIf (config.Profile == "play") ''
         workspace "b-media" {
