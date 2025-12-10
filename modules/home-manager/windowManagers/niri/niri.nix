@@ -122,7 +122,7 @@ in {
         Mod+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-show"; }
         Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle --no-move"; }
         Mod+c { consume-or-expel-window-left; }
-        Mod+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "combi" "-modes" "combi" "-combi-modes" "window,drun"; }
+        Mod+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "drun" "-matching" "fuzzy"; }
         Mod+e { expand-column-to-available-width; }
         Mod+f { spawn "${pkgs.firefox}/bin/firefox"; }
         Mod+h { focus-column-or-monitor-left; }
