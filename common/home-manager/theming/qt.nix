@@ -1,7 +1,6 @@
-{ ... }:
-{
+{ ... }: {
   qt = {
-    enable  =true;
-    platformTheme.name="gtk";
+    enable = true;
+    platformTheme.name = "gtk";
   };
 }
