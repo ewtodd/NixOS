@@ -8,7 +8,7 @@ let
   fontFamily = config.FontChoice;
 in {
   config = mkIf config.gtk.enable {
-
+    home.packages = with pkgs; [ morewaita-icon-theme ];
     gtk = {
       theme = {
         package =
@@ -18,7 +18,7 @@ in {
 
       iconTheme = {
         package = pkgs.adwaita-icon-theme;
-        name = "Adwaita";
+        name = "MoreWaita";
       };
 
       font = {

@@ -7,7 +7,6 @@ in {
     ./system-options.nix
     ./xdg.nix
     ./kitty/kitty.nix
-    ./ranger/ranger.nix
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix
     ./nixvim/nixvim.nix
