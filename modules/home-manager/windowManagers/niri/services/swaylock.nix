@@ -16,9 +16,9 @@ let
 
   # Logo selection based on profile
   logoPath = if profile == "play" then
-    "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos-eris.png"
+    "/etc/nixos/modules/home-manager/windowManagers/niri/services/nixos-eris.png"
   else
-    "/etc/nixos/modules/home-manager/windowManagers/sway/services/nixos_kanagawa.png";
+    "/etc/nixos/modules/home-manager/windowManagers/niri/services/nixos_kanagawa.png";
 
 in {
   programs.swaylock = {
