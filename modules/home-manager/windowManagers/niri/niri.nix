@@ -1,16 +1,47 @@
 { config, lib, osConfig, pkgs, inputs, ... }:
 with lib;
 let
+  e = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
+    true
+  else
+    false;
   colors = config.colorScheme.palette;
   deviceType = osConfig.DeviceType;
   radius = toString osConfig.CornerRadius;
   wallpaperPath = config.WallpaperPath;
-  open-nix-docs = pkgs.writeShellScript "open-nix-docs" ''
+  open-nix-docs-firefox = pkgs.writeShellScript "open-nix-docs-firefox" ''
     ${pkgs.firefox}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
-      -new-tab -url https://home-manager-options.extranix.com/ &
+      -new-tab -url https://home-manager-options.extranix.com/ \
+      -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
+  open-nix-docs-qutebrowser =
+    pkgs.writeShellScript "open-nix-docs-qutebrowser" ''
+      ${pkgs.qutebrowser}/bin/qutebrowser -T https://search.nixos.org/packages https://search.nixos.org/options? https://home-manager-options.extranix.com https://nix-community.github.io/nixvim/25.11/
+    '';
+  open-fidget-window-qutebrowser =
+    pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
+      ${pkgs.qutebrowser}/bin/qutebrowser -T https://monkeytype.com
+    '';
+  open-fidget-window-firefox =
+    pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
+        ${pkgs.firefox}/bin/firefox --new-window \
+      -url https://monkeytype.com 
+    '';
+  open-nix-docs =
+    if e then open-nix-docs-qutebrowser else open-nix-docs-firefox;
+  open-fidget-window =
+    if e then open-fidget-window-qutebrowser else open-fidget-window-firefox;
+  open-browser-window = if e then
+    "${pkgs.qutebrowser}/bin/qutebrowser --target window"
+  else
+    "${pkgs.firefox}/bin/firefox";
+
+  open-private-window = if e then
+    "${pkgs.qutebrowser}/bin/qutebrowser --target private-window"
+  else
+    "${pkgs.firefox}/bin/firefox --private-window";
   notificationColor =
     if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   unstable = import inputs.unstable { system = "x86_64-linux"; };
@@ -103,18 +134,17 @@ in {
         Mod+Shift+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "filebrowser" "-matching" "fuzzy" "-filebrowser-directory" "~"; }
         Mod+Shift+e { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "--close-all"; }
         Mod+Shift+f { fullscreen-window; }
-        Mod+Shift+g { spawn "${pkgs.firefox}/bin/firefox" "--private-window" "https://looptube.io/?videoId=eaPT0dQgS9E&start=0&end=4111&rate=1"; }
         Mod+Shift+h { move-column-left-or-to-monitor-left; }
         Mod+Shift+j { move-window-down-or-to-workspace-down; }
         Mod+Shift+k { move-window-up-or-to-workspace-up; }
         Mod+Shift+l { move-column-right-or-to-monitor-right; }
         Mod+Shift+n { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t"; }
-        Mod+Shift+p { spawn "${pkgs.firefox}/bin/firefox" "--private-window"; }
+        Mod+Shift+p { spawn-sh "${open-private-window}"; }
         Mod+Shift+q { close-window; }
         Mod+Shift+r { set-column-width "100%"; }
         Mod+Shift+a { move-window-to-workspace-up; }
         Mod+Shift+s { move-window-to-workspace-down; }
-        Mod+Shift+t { spawn "firefox" "--new-window" "https://monkeytype.com"; }
+        Mod+Shift+t { spawn-sh "${open-fidget-window}"; }
         Mod+Shift+w { center-visible-columns; }
         Mod+Space { toggle-window-floating; }
         Mod+Tab { toggle-overview; }
@@ -124,17 +154,17 @@ in {
         Mod+c { consume-or-expel-window-left; }
         Mod+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "drun" "-matching" "fuzzy"; }
         Mod+e { expand-column-to-available-width; }
-        Mod+f { spawn "${pkgs.firefox}/bin/firefox"; }
+        Mod+f { spawn-sh "${open-browser-window}"; }
         Mod+h { focus-column-or-monitor-left; }
         Mod+j { focus-window-or-workspace-down; }
         Mod+k { focus-window-or-workspace-up; }
         Mod+l { focus-column-or-monitor-right; }
         Mod+m { spawn "${pkgs.wlogout}/bin/wlogout" "-p" "layer-shell" "--buttons-per-row" "2"; }
-        Mod+n { spawn "${pkgs.firefox}/bin/firefox" "-new-window" "https://nix-community.github.io/nixvim/25.05/"; }
         Mod+p { spawn "${open-nix-docs}"; }
         Mod+r { switch-preset-column-width-back; }
         Mod+t { switch-focus-between-floating-and-tiling; }
         Mod+v { consume-or-expel-window-right; }
+        Mod+x { spawn "${pkgs.keepassxc}/bin/keepassxc"; }
         Mod+w { center-column; }
         XF86AudioLowerVolume { spawn "volumectl" "-d" "-p" "down"; }
         XF86AudioMute { spawn "volumectl" "-d" "-p" "toggle-mute"; }
@@ -230,6 +260,11 @@ in {
         default-window-height
     }
     window-rule {
+        match app-id="org.keepassxc.KeePassXC"
+        default-column-width
+        default-window-height
+    }
+    window-rule {
         match title="Resident Evil 4"
         variable-refresh-rate true
     }
@@ -268,8 +303,7 @@ in {
     include "laptop.kdl"
   '' + lib.optionalString (deviceType == "desktop") ''
     include "desktop.kdl"
-  '' + lib.optionalString
-    (lib.strings.hasPrefix "e" osConfig.networking.hostName) ''
-      include "profile.kdl" 
-    '';
+  '' + lib.optionalString e ''
+    include "profile.kdl" 
+  '';
 }
