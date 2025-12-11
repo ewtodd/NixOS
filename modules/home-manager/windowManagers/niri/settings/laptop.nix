@@ -31,7 +31,10 @@
         match app-id="firefox"
         default-column-width { proportion 0.750000; }
     }
-
+    window-rule {
+        match app-id="org.qutebrowser.qutebrowser"
+        default-column-width { proportion 0.750000; }
+    }
     window-rule {
         match app-id="Slack"
         default-column-width { proportion 0.750000; }

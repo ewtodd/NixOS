@@ -23,7 +23,7 @@ in {
           block-out-from "screencast"
         }
         window-rule {
-          match app-id="firefox"
+          match app-id="org.qutebrowser.qutebrowser"
           default-column-width { proportion ${alt-proportion}; }
         }
         spawn-sh-at-startup "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left"
@@ -43,7 +43,7 @@ in {
           default-column-width { proportion ${alt-proportion}; }
         }
         window-rule {
-          match app-id="firefox"
+          match app-id="org.qutebrowser.qutebrowser"
           default-column-width { proportion ${alt-proportion}; }
         }
         window-rule {
