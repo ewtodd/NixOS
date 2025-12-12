@@ -4,8 +4,8 @@
     enable = true;
     settings = {
       tabs = {
-        position = "left";
-        width = "3%";
+        position = "right";
+        width = "5%";
       };
     };
 
@@ -29,11 +29,6 @@
         url =
           "https://raw.githubusercontent.com/afreakk/greasemonkeyscripts/refs/heads/master/youtube_shorts_block.js";
         sha256 = "sha256-e9qCSAuEMoNivepy7W/W5F9D1PJZrPAJoejsBi9ejiY=";
-      })
-      (pkgs.fetchurl {
-        url =
-          "https://openuserjs.org/install/AdGuard/Adguard_Popup_Blocker.user.js";
-        sha256 = "sha256-xDYNqnz7o2rm21h3byFoko127Sh/JDtZDe7cReoUCfA=";
       })
     ];
   };

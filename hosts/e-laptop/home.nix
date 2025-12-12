@@ -7,12 +7,11 @@
       home.stateVersion = "25.05";
       imports = [
         ../../common/home-manager/play-user.nix
-        ../../modules/home-manager/waybar/waybar.nix
+        ../../modules/home-manager/dms/dms.nix
         ../../modules/home-manager/qutebrowser/qutebrowser.nix
         ../../modules/home-manager/windowManagers/windowManager.nix
       ];
       home.packages = [ mtkclient ];
-      programs.waybar.enable = true;
       programs.git = {
         enable = true;
         settings = {
@@ -34,7 +33,7 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/work-user.nix
-      ../../modules/home-manager/waybar/waybar.nix
+      ../../modules/home-manager/dms/dms.nix
       ../../modules/home-manager/qutebrowser/qutebrowser.nix
       ../../modules/home-manager/windowManagers/windowManager.nix
     ];
@@ -44,7 +43,6 @@
       vpn = ''
         sudo openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
     };
-    programs.waybar.enable = true;
     programs.git = {
       enable = true;
       settings = {

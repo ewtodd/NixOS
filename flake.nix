@@ -20,6 +20,17 @@
     niri.url = "github:YaLTeR/niri";
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
+
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "unstable";
+    };
+
+    dankMaterialShell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "unstable";
+      inputs.dgop.follows = "dgop";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, unstable, ... }: {
@@ -65,6 +76,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
+                inputs.dankMaterialShell.homeModules.dankMaterialShell.default
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -116,6 +128,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
+                inputs.dankMaterialShell.homeModules.dankMaterialShell.default
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;

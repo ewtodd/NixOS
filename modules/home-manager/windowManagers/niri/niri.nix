@@ -47,16 +47,8 @@ let
   unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
 
-  imports = [
-    ./services/misc.nix
-    ./services/swayidle.nix
-    ./services/swaync.nix
-    ./services/swaylock.nix
-    ./services/wlogout.nix
-    ./services/avizo.nix
-    ./launcher/rofi.nix
-    ./settings/profile.nix
-  ] ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+  imports = [ ./services/misc.nix ./settings/profile.nix ]
+    ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   xdg.configFile."niri/config.kdl".text = ''
@@ -119,9 +111,9 @@ in {
         Alt+Ctrl+4 { spawn-sh "grimshot copy area"; }
         Alt+Ctrl+Shift+3 { spawn-sh "grimshot --notify save output"; }
         Alt+Ctrl+Shift+4 { spawn-sh "grimshot --notify save area"; }
-        Alt+l { spawn "${pkgs.swaylock-effects}/bin/swaylock"; }
-        F7 { spawn "lightctl" "down"; }
-        F8 { spawn "lightctl" "up"; }
+        Alt+l { spawn-sh "dms ipc lock lock"; }
+        F7 { spawn-sh "dms ipc brightness decrement 5"; }
+        F8 { spawn-sh "dms ipc brightness increment 5"; }
         Mod+1 { focus-monitor-next; }
         Mod+2 { spawn-sh "pkill -USR1 waybar && niri msg action do-screen-transition --delay-ms 0"; }
         Mod+Ctrl+f { toggle-windowed-fullscreen; }
@@ -152,28 +144,27 @@ in {
         Mod+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-show"; }
         Mod+Ctrl+s { spawn-sh "${unstable.nirius}/bin/nirius scratchpad-toggle --no-move"; }
         Mod+c { consume-or-expel-window-left; }
-        Mod+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "drun" "-matching" "fuzzy"; }
+        Mod+d { spawn-sh "dms ipc spotlight toggle"; }
         Mod+e { expand-column-to-available-width; }
         Mod+f { spawn-sh "${open-browser-window}"; }
         Mod+h { focus-column-or-monitor-left; }
         Mod+j { focus-window-or-workspace-down; }
         Mod+k { focus-window-or-workspace-up; }
         Mod+l { focus-column-or-monitor-right; }
-        Mod+m { spawn "${pkgs.wlogout}/bin/wlogout" "-p" "layer-shell" "--buttons-per-row" "2"; }
+        Mod+m { spawn-sh "dms ipc powermenu toggle"; }
         Mod+p { spawn "${open-nix-docs}"; }
         Mod+r { switch-preset-column-width-back; }
         Mod+t { switch-focus-between-floating-and-tiling; }
         Mod+v { consume-or-expel-window-right; }
         Mod+x { spawn "${pkgs.keepassxc}/bin/keepassxc"; }
         Mod+w { center-column; }
-        XF86AudioLowerVolume { spawn "volumectl" "-d" "-p" "down"; }
-        XF86AudioMute { spawn "volumectl" "-d" "-p" "toggle-mute"; }
-        XF86AudioRaiseVolume { spawn "volumectl" "-d" "-p" "up"; }
-        XF86MonBrightnessDown { spawn "lightctl" "down"; }
-        XF86MonBrightnessUp { spawn "lightctl" "up"; }
+        XF86AudioLowerVolume { spawn-sh "dms ipc audio decrement 5"; }
+        XF86AudioMute { spawn-sh "dms ipc audio mute"; }
+        XF86AudioRaiseVolume { spawn-sh "dms ipc audio increment 5"; }
+        XF86MonBrightnessDown { spawn-sh "dms ipc brightness decrement 5"; }
+        XF86MonBrightnessUp { spawn-sh "dms ipc brightness increment 5"; }
     }
     spawn-at-startup "${unstable.nirius}/bin/niriusd"
-    spawn-at-startup "waybar"
     spawn-at-startup "swaybg" "-i" "${wallpaperPath}"
     spawn-at-startup "sh" "-c" "sleep 2 && wayland-pipewire-idle-inhibit"
     window-rule {
