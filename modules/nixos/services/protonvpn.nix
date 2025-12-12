@@ -1,5 +1,5 @@
 { ... }:
-let server-ip = "193.148.18.82";
+let server-ip = "146.70.84.2";
 in {
   networking.firewall = { allowedUDPPorts = [ 51820 ]; };
   networking.wg-quick.interfaces = {
@@ -9,7 +9,7 @@ in {
       privateKeyFile = "/etc/wireguard-proton.key";
 
       peers = [{
-        publicKey = "R8Of+lrl8DgOQmO6kcjlX7SchP4ncvbY90MB7ZUNmD8=";
+        publicKey = "Rtsl6k9WA9t04Vt+EDUD3TlSr9+YL6YcTFwiSB1qBwA=";
         allowedIPs = [ "0.0.0.0/0" "::/0" ];
         endpoint = "${server-ip}:51820";
         persistentKeepalive = 25;

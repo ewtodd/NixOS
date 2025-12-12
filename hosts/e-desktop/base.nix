@@ -8,7 +8,7 @@
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
     ../../modules/nixos/services/sunshine.nix
-    #../../modules/nixos/services/protonvpn.nix
+   # ../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/freecad.nix
     ../../modules/nixos/packages/blender-hip.nix
