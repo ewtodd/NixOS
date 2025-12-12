@@ -25,6 +25,7 @@
     wget
     inkscape
     firefox
+    keepassxc
     libreoffice
     tree
     zathura
