@@ -5,9 +5,9 @@
     displayManager.startx.enable = false;
     excludePackages = with pkgs; [ xterm ];
   };
-  services.displayManager.gdm = {
+  programs.dankMaterialShell.greeter = {
     enable = true;
-    wayland = true;
-    autoSuspend = false;
+    compositor.name = "niri";
+    configFiles = [ "/home/e-work/.config/DankMaterialShell/settings.json" ];
   };
 }

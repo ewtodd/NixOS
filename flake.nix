@@ -68,6 +68,7 @@
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
+          inputs.dankMaterialShell.nixosModules.greeter
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -120,6 +121,7 @@
         modules = [
           inputs.fw-fanctrl.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
+          inputs.dankMaterialShell.nixosModules.greeter
           {
             home-manager = {
               useGlobalPkgs = true;
