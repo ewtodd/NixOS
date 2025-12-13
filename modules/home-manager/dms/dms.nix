@@ -282,6 +282,10 @@ in {
           id = "notificationButton";
           enabled = true;
         }
+        {
+          id = "privacyIndicator";
+          enabled = true;
+        }
       ];
       rightWidgets = [ "systemTray" "clipboard" ]
         ++ (if deviceType == "laptop" then [ "battery" ] else [ ])
