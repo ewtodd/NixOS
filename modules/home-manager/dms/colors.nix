@@ -6,7 +6,7 @@ in {
   xdg.configFile."DankMaterialShell/colors.json" = {
     source = jsonFormat.generate "colors.json" {
       dark = {
-        name = "Eris Dark";
+        name = "Custom";
         primary = "#${colors.base0E}";
         primaryText = "#${colors.base00}";
         primaryContainer = "#${colors.base0D}";
@@ -28,7 +28,7 @@ in {
         matugen_type = "scheme-fidelity";
       };
       light = {
-        name = "Eris Dark";
+        name = "Custom";
         primary = "#${colors.base0E}";
         primaryText = "#${colors.base00}";
         primaryContainer = "#${colors.base0D}";
