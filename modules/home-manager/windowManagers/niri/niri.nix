@@ -258,7 +258,7 @@ in {
         variable-refresh-rate true
     }
     layer-rule {
-        match namespace="swaync-notification-window"
+        match namespace="dms:notification-popup"
         block-out-from "screen-capture"
     }
     layer-rule {
