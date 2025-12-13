@@ -287,7 +287,7 @@ in {
           enabled = true;
         }
       ];
-      rightWidgets = [ "systemTray" "clipboard" ]
+      rightWidgets = [ "systemTray" "idleInhibitor" "clipboard" ]
         ++ (if deviceType == "laptop" then [ "battery" ] else [ ])
         ++ [ "controlCenterButton" ];
       spacing = 4;
