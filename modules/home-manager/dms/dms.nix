@@ -28,7 +28,7 @@ in {
     matugenTargetMonitor = "";
     popupTransparency = 1;
     dockTransparency = 1;
-    widgetBackgroundColor = "sth";
+    widgetBackgroundColor = "sc";
     widgetColorMode = "default";
     cornerRadius = 10;
     use24HourClock = false;
@@ -174,9 +174,9 @@ in {
     acSuspendTimeout = 3600;
     acSuspendBehavior = 0;
     acProfileName = "";
-    batteryMonitorTimeout = 0;
-    batteryLockTimeout = 0;
-    batterySuspendTimeout = 0;
+    batteryMonitorTimeout = 600;
+    batteryLockTimeout = 300;
+    batterySuspendTimeout = 1200;
     batterySuspendBehavior = 0;
     batteryProfileName = "";
     lockBeforeSuspend = true;
