@@ -122,15 +122,13 @@ in {
         Mod+Shift+1 { move-window-to-monitor-next; }
         Mod+Shift+Return { spawn "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'"; }
         Mod+Shift+Space { center-window; }
-        Mod+Shift+c { spawn "sh" "-c" "pkill -USR2 waybar"; }
-        Mod+Shift+d { spawn "${pkgs.rofi}/bin/rofi" "-show" "filebrowser" "-matching" "fuzzy" "-filebrowser-directory" "~"; }
-        Mod+Shift+e { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "--close-all"; }
+        Mod+Shift+c { spawn-sh "systemctl --user restart dms.service"; }
         Mod+Shift+f { fullscreen-window; }
         Mod+Shift+h { move-column-left-or-to-monitor-left; }
         Mod+Shift+j { move-window-down-or-to-workspace-down; }
         Mod+Shift+k { move-window-up-or-to-workspace-up; }
         Mod+Shift+l { move-column-right-or-to-monitor-right; }
-        Mod+Shift+n { spawn "${pkgs.swaynotificationcenter}/bin/swaync-client" "-t"; }
+        Mod+Shift+n { spawn-sh "dms ipc notifications toggle"; }
         Mod+Shift+p { spawn-sh "${open-private-window}"; }
         Mod+Shift+q { close-window; }
         Mod+Shift+r { set-column-width "100%"; }

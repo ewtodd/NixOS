@@ -12,22 +12,23 @@ in {
     environment.systemPackages = with pkgs; [
       unstable.nirius
       xwayland-satellite
-      wlogout
-      sway-contrib.grimshot
       cmatrix
       wl-clipboard
       swaybg
       jq
       libnotify
-      pavucontrol
       gthumb
       nautilus
       thunderbird-latest
       udiskie
       glib
       gnome-themes-extra
-      wayland-pipewire-idle-inhibit
     ];
+
+    services.upower = {
+      enable = true;
+      criticalPowerAction = "Ignore";
+    };
 
     xdg.portal = {
       enable = true;
@@ -47,7 +48,6 @@ in {
     };
     environment.shellAliases = { view-image = "kitten icat"; };
 
-    security.pam.services.swaylock-effects = { };
     services.udisks2.enable = true;
     services.gvfs.enable = true;
     programs.dconf.enable = true;
