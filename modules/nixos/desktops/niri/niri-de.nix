@@ -27,7 +27,7 @@ in {
 
     services.upower = {
       enable = true;
-      criticalPowerAction = "Ignore";
+      criticalPowerAction = "PowerOff";
     };
 
     xdg.portal = {
