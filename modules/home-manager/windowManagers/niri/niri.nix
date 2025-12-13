@@ -107,13 +107,13 @@ in {
     }
     hotkey-overlay { skip-at-startup; }
     binds {
-        Alt+Ctrl+3 { spawn-sh "grimshot copy output"; }
-        Alt+Ctrl+4 { spawn-sh "grimshot copy area"; }
-        Alt+Ctrl+Shift+3 { spawn-sh "grimshot --notify save output"; }
-        Alt+Ctrl+Shift+4 { spawn-sh "grimshot --notify save area"; }
+        Alt+Ctrl+3 { spawn-sh "dms screenshot full --no-notify --no-file"; }
+        Alt+Ctrl+4 { spawn-sh "dms screenshot --no-notify --no-file"; }
+        Alt+Ctrl+Shift+3 { spawn-sh "dms screenshot full"; }
+        Alt+Ctrl+Shift+4 { spawn-sh "dms screenshot"; }
         Alt+l { spawn-sh "dms ipc lock lock"; }
-        F7 { spawn-sh "dms ipc brightness decrement 5"; }
-        F8 { spawn-sh "dms ipc brightness increment 5"; }
+        F7 { spawn-sh "dms ipc brightness decrement 5 \"\" "; }
+        F8 { spawn-sh "dms ipc brightness increment 5 \"\" "; }
         Mod+1 { focus-monitor-next; }
         Mod+2 { spawn-sh "pkill -USR1 waybar && niri msg action do-screen-transition --delay-ms 0"; }
         Mod+Ctrl+f { toggle-windowed-fullscreen; }
@@ -159,8 +159,8 @@ in {
         XF86AudioLowerVolume { spawn-sh "dms ipc audio decrement 5"; }
         XF86AudioMute { spawn-sh "dms ipc audio mute"; }
         XF86AudioRaiseVolume { spawn-sh "dms ipc audio increment 5"; }
-        XF86MonBrightnessDown { spawn-sh "dms ipc brightness decrement 5"; }
-        XF86MonBrightnessUp { spawn-sh "dms ipc brightness increment 5"; }
+        XF86MonBrightnessDown { spawn-sh "dms ipc brightness decrement 5 \"\" "; }
+        XF86MonBrightnessUp { spawn-sh "dms ipc brightness increment 5 \"\" "; }
     }
     spawn-at-startup "${unstable.nirius}/bin/niriusd"
     spawn-at-startup "swaybg" "-i" "${wallpaperPath}"
