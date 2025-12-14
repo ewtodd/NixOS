@@ -17,11 +17,11 @@ let
   '';
   open-nix-docs-qutebrowser =
     pkgs.writeShellScript "open-nix-docs-qutebrowser" ''
-      ${pkgs.qutebrowser}/bin/qutebrowser -T https://search.nixos.org/packages https://search.nixos.org/options? https://home-manager-options.extranix.com https://nix-community.github.io/nixvim/25.11/
+      ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://search.nixos.org/ 
     '';
   open-fidget-window-qutebrowser =
     pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
-      ${pkgs.qutebrowser}/bin/qutebrowser -T https://monkeytype.com
+      ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://monkeytype.com
     '';
   open-fidget-window-firefox =
     pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
@@ -153,7 +153,7 @@ in {
         Mod+r { switch-preset-column-width-back; }
         Mod+t { switch-focus-between-floating-and-tiling; }
         Mod+v { consume-or-expel-window-right; }
-        Mod+x { spawn "${pkgs.keepassxc}/bin/keepassxc"; }
+        Mod+x { spawn "${pkgs.proton-pass}/bin/proton-pass"; }
         Mod+w { center-column; }
         XF86AudioLowerVolume { spawn-sh "dms ipc audio decrement 5"; }
         XF86AudioMute { spawn-sh "dms ipc audio mute"; }
