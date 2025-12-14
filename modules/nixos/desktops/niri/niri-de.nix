@@ -17,7 +17,7 @@ in {
       jq
       libnotify
       gthumb
-      xfce.thunar
+      nautilus
       thunderbird-latest
       udiskie
       glib
