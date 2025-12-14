@@ -8,7 +8,6 @@ let
   colors = config.colorScheme.palette;
   deviceType = osConfig.DeviceType;
   radius = toString osConfig.CornerRadius;
-  wallpaperPath = config.WallpaperPath;
   open-nix-docs-firefox = pkgs.writeShellScript "open-nix-docs-firefox" ''
     ${pkgs.firefox}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
@@ -163,8 +162,6 @@ in {
         XF86MonBrightnessUp { spawn-sh "dms ipc brightness increment 5 \"\" "; }
     }
     spawn-at-startup "${unstable.nirius}/bin/niriusd"
-    spawn-at-startup "swaybg" "-i" "${wallpaperPath}"
-    spawn-at-startup "sh" "-c" "sleep 2 && wayland-pipewire-idle-inhibit"
     window-rule {
         geometry-corner-radius ${radius} ${radius} ${radius} ${radius} 
         clip-to-geometry true
@@ -244,6 +241,11 @@ in {
         open-floating true
     }
     window-rule {
+        match title="Settings"
+        match app-id="org.quickshell"
+        open-floating true
+    }
+    window-rule {
         match app-id="com.obsproject.Studio"
         default-column-width
         default-window-height
@@ -262,7 +264,7 @@ in {
         block-out-from "screen-capture"
     }
     layer-rule {
-        match namespace="wallpaper"
+        match namespace="dms:blurwallpaper"
         place-within-backdrop true
     }
     gestures { hot-corners { off; }; }

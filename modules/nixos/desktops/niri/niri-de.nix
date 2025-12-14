@@ -14,7 +14,6 @@ in {
       xwayland-satellite
       cmatrix
       wl-clipboard
-      swaybg
       jq
       libnotify
       gthumb
