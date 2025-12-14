@@ -379,14 +379,6 @@ in {
             id = "workspaceSwitcher";
             enabled = true;
           }
-          {
-            id = "separator";
-            enabled = true;
-          }
-          {
-            id = "dankPomodoroTimer";
-            enabled = true;
-          }
         ];
         maximizeDetection = true;
         name = "Main Bar";
