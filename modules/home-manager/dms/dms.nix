@@ -2,6 +2,7 @@
 let
   deviceType = osConfig.DeviceType;
   homeDir = config.home.homeDirectory;
+  wallpaperPath = config.WallpaperPath;
   jsonFormat = pkgs.formats.json { };
 in {
   imports = [ ./colors.nix ./plugins.nix ];
@@ -17,12 +18,12 @@ in {
   xdg.stateFile."DankMaterialShell/session.json" = {
     source = jsonFormat.generate "session.json" {
       isLightMode = false;
-      wallpaperPath = "";
+      wallpaperPath = "${wallpaperPath}";
       perMonitorWallpaper = false;
       monitorWallpapers = { };
       perModeWallpaper = false;
-      wallpaperPathLight = "";
-      wallpaperPathDark = "";
+      wallpaperPathLight = "${wallpaperPath}";
+      wallpaperPathDark = "${wallpaperPath}";
       monitorWallpapersLight = { };
       monitorWallpapersDark = { };
       brightnessExponentialDevices = { };
@@ -97,7 +98,7 @@ in {
       animationSpeed = 1;
       customAnimationDuration = 500;
       wallpaperFillMode = "Fill";
-      blurredWallpaperLayer = false;
+      blurredWallpaperLayer = true;
       blurWallpaperOnOverview = false;
       showLauncherButton = true;
       showWorkspaceSwitcher = true;
@@ -131,43 +132,43 @@ in {
       privacyShowScreenShareIcon = false;
       controlCenterWidgets = [
         {
+          enabled = true;
           id = "volumeSlider";
-          enabled = true;
           width = 50;
         }
         {
+          enabled = true;
           id = "brightnessSlider";
-          enabled = true;
           width = 50;
         }
         {
+          enabled = true;
           id = "wifi";
-          enabled = true;
           width = 50;
         }
         {
+          enabled = true;
           id = "bluetooth";
-          enabled = true;
           width = 50;
         }
         {
+          enabled = true;
           id = "audioOutput";
-          enabled = true;
           width = 50;
         }
         {
+          enabled = true;
           id = "audioInput";
-          enabled = true;
           width = 50;
         }
         {
+          enabled = true;
           id = "nightMode";
-          enabled = true;
           width = 50;
         }
         {
-          id = "darkMode";
           enabled = true;
+          id = "darkMode";
           width = 50;
         }
       ];
@@ -298,9 +299,9 @@ in {
       notificationTimeoutLow = 5000;
       notificationTimeoutNormal = 5000;
       notificationTimeoutCritical = 0;
-      notificationPopupPosition = -1;
+      notificationPopupPosition = 0;
       osdAlwaysShowValue = false;
-      osdPosition = 5;
+      osdPosition = 0;
       osdVolumeEnabled = true;
       osdMediaVolumeEnabled = true;
       osdBrightnessEnabled = true;
@@ -325,20 +326,32 @@ in {
       updaterCustomCommand = "";
       updaterTerminalAdditionalParams = "";
       displayNameMode = "system";
-      screenPreferences = { wallpaper = [ ]; };
+      screenPreferences = { wallpaper = [ "all" ]; };
       showOnLastDisplay = { };
       barConfigs = [{
-        id = "default";
-        name = "Main Bar";
-        enabled = true;
-        position = 3;
-        screenPreferences = [ "all" ];
-        showOnLastDisplay = true;
-        leftWidgets = [ "launcherButton" "workspaceSwitcher" ];
+        autoHide = false;
+        autoHideDelay = 250;
+        borderColor = "primary";
+        borderEnabled = true;
+        borderOpacity = 1;
+        borderThickness = 2;
+        bottomGap = 0;
         centerWidgets = [
-          "clock"
+          {
+            id = "clock";
+            enabled = true;
+            clockCompactMode = false;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
           {
             id = "notificationButton";
+            enabled = true;
+          }
+          {
+            id = "separator";
             enabled = true;
           }
           {
@@ -346,36 +359,101 @@ in {
             enabled = true;
           }
         ];
-        rightWidgets = [ "systemTray" "idleInhibitor" "clipboard" ]
-          ++ (if deviceType == "laptop" then [ "battery" ] else [ ])
-          ++ [ "controlCenterButton" ];
-        spacing = 4;
-        innerPadding = 4;
-        bottomGap = 0;
-        transparency = 1;
-        widgetTransparency = 1;
-        squareCorners = false;
-        noBackground = false;
-        gothCornersEnabled = false;
+        enabled = true;
+        fontScale = 1;
         gothCornerRadiusOverride = false;
         gothCornerRadiusValue = 12;
-        borderEnabled = true;
-        borderColor = "primary";
-        borderOpacity = 1;
-        borderThickness = 2;
-        widgetOutlineEnabled = false;
-        widgetOutlineColor = "primary";
-        widgetOutlineOpacity = 1;
-        widgetOutlineThickness = 1;
-        fontScale = 1;
-        autoHide = false;
-        autoHideDelay = 250;
+        gothCornersEnabled = false;
+        id = "default";
+        innerPadding = 4;
+        leftWidgets = [
+          {
+            id = "launcherButton";
+            enabled = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+          {
+            id = "workspaceSwitcher";
+            enabled = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+          {
+            id = "dankPomodoroTimer";
+            enabled = true;
+          }
+        ];
+        maximizeDetection = true;
+        name = "Main Bar";
+        noBackground = true;
         openOnOverview = false;
-        visible = true;
         popupGapsAuto = true;
         popupGapsManual = 4;
-        maximizeDetection = true;
+        position = 3;
+        rightWidgets = [
+          {
+            id = "systemTray";
+            enabled = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+          {
+            id = "idleInhibitor";
+            enabled = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+          {
+            id = "clipboard";
+            enabled = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+        ] ++ (if deviceType == "laptop" then [
+          {
+            id = "battery";
+            enabled = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+        ] else
+          [ ]) ++ [
+            {
+              id = "spacer";
+              enabled = true;
+              size = 5;
+            }
+            {
+              id = "controlCenterButton";
+              enabled = true;
+            }
+          ];
+        screenPreferences = [ "all" ];
+        showOnLastDisplay = true;
+        spacing = 4;
+        squareCorners = false;
+        transparency = 1;
+        visible = true;
+        widgetOutlineColor = "primary";
+        widgetOutlineEnabled = false;
+        widgetOutlineOpacity = 1;
+        widgetOutlineThickness = 1;
+        widgetTransparency = 1;
       }];
+      configVersion = 2;
     };
   };
 }
