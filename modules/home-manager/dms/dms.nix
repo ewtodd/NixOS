@@ -350,14 +350,6 @@ in {
             id = "notificationButton";
             enabled = true;
           }
-          {
-            id = "separator";
-            enabled = true;
-          }
-          {
-            id = "privacyIndicator";
-            enabled = true;
-          }
         ];
         enabled = true;
         fontScale = 1;

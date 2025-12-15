@@ -154,6 +154,7 @@ in {
         Mod+t { switch-focus-between-floating-and-tiling; }
         Mod+v { consume-or-expel-window-right; }
         Mod+x { spawn "${pkgs.proton-pass}/bin/proton-pass"; }
+        Mod+z { spawn "${pkgs.zathura}/bin/zathura"; }
         Mod+w { center-column; }
         XF86AudioLowerVolume { spawn-sh "dms ipc audio decrement 5"; }
         XF86AudioMute { spawn-sh "dms ipc audio mute"; }
@@ -251,9 +252,11 @@ in {
         default-window-height
     }
     window-rule {
-        match app-id="org.keepassxc.KeePassXC"
-        default-column-width
-        default-window-height
+        match app-id="Proton Pass"
+        match title="Proton Pass"
+        default-column-width { proportion 0.400000; }
+        default-window-height { proportion 0.700000; }
+        open-floating true
     }
     window-rule {
         match title="Resident Evil 4"
