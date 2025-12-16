@@ -3,7 +3,7 @@ let colors = config.colorScheme.palette;
 in {
   programs.qutebrowser.settings = {
     colors = {
-      webpage = { darkmode.enabled = true; };
+      webpage = { preferred_color_scheme = "dark"; };
 
       completion = {
         fg = "#${colors.base05}";
