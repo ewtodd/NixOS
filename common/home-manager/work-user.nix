@@ -2,6 +2,18 @@
 let
   lisepp = pkgs.callPackage ../../packages/LISE++/default.nix { };
   SRIM = inputs.SRIM.packages."x86_64-linux".default;
+  rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin"
+    "${pkgs.root}/bin/rootbrowse --web=off";
+  rootbrowse_desktop = pkgs.makeDesktopItem {
+    name = "rootbrowse";
+    desktopName = "rootbrowse";
+    type = "Application";
+    exec = "${pkgs.kitty}/bin/kitty --class floatingkitty -e ${rootbrowse_bin}/bin/rootbrowse_bin";
+  };
+  rootbrowse_package = pkgs.symlinkJoin {
+    name = "rootbrowse";
+    paths = [ rootbrowse_bin rootbrowse_desktop ];
+  };
 in {
   imports = [
     ./system-options.nix
@@ -11,7 +23,8 @@ in {
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages = [ pkgs.clang-tools pkgs.slack lisepp SRIM ];
+  home.packages =
+    [ pkgs.clang-tools pkgs.slack lisepp SRIM rootbrowse_package ];
   xdg.desktopEntries.steam = {
     name = "Steam";
     noDisplay = true;
@@ -24,7 +37,6 @@ in {
     enableCompletion = true;
     shellAliases = {
       ll = "ls -la";
-      rootbrowse = ''nix-shell -p root --run "rootbrowse --web=off"'';
       geant4-env = "nix develop /etc/nixos/modules/dev-environments/geant4";
       analysis-env = "nix develop /etc/nixos/modules/dev-environments/analysis";
       latex-env = "nix develop /etc/nixos/modules/dev-environments/latex";
