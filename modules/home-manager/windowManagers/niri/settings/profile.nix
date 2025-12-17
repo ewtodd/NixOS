@@ -28,7 +28,7 @@ in {
         }
         window-rule {
           match app-id="spotify"
-          default-column-width { proportion 1; }
+          default-column-width { proportion 1.0; }
         }
         spawn-sh-at-startup "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left"
         spawn-sh-at-startup "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right"
