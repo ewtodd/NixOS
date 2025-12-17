@@ -19,6 +19,6 @@
         transform "normal"
         position x=-1920 y=0
         mode "1920x1080@74.973000"
-      }
+    }
   '';
 }
