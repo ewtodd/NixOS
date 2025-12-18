@@ -257,6 +257,7 @@ in {
         default-column-width { proportion 0.400000; }
         default-window-height { proportion 0.700000; }
         open-floating true
+        block-out-from "screen-capture"
     }
     window-rule {
         match title="Resident Evil 4"
