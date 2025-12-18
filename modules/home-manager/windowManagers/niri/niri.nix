@@ -230,6 +230,7 @@ in {
         open-floating true
     }
     window-rule {
+        match app-id="ROOT"
         match title="ROOT"
         default-column-width { proportion 0.400000; }
         default-window-height { proportion 0.700000; }
