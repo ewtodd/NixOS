@@ -122,6 +122,7 @@ in {
         Mod+Shift+Return { spawn "${pkgs.kitty}/bin/kitty" "--class" "'floatingkitty'"; }
         Mod+Shift+Space { center-window; }
         Mod+Shift+c { spawn-sh "systemctl --user restart dms.service"; }
+        Mod+Shift+e { spawn-sh "dms ipc call notifications clearAll"; } 
         Mod+Shift+f { fullscreen-window; }
         Mod+Shift+h { move-column-left-or-to-monitor-left; }
         Mod+Shift+j { move-window-down-or-to-workspace-down; }
