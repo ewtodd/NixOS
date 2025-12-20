@@ -22,6 +22,11 @@
           core.sharedRepository = "group";
         };
       };
+      programs.bash.shellAliases = {
+        phone-home = "ssh e-play@ssh.ethanwtodd.com -p 2222";
+        files-home = "sftp -P 2222 e-play@ssh.ethanwtodd.com";
+      };
+
       FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
         "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/eris.png";

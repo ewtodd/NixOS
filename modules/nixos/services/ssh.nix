@@ -6,7 +6,6 @@
       PasswordAuthentication = true;
       KbdInteractiveAuthentication = true;
       AuthenticationMethods = "password";
-      #PermitRootLogin = "prohibit-password";
       AllowUsers = [ "e-work" "e-play" "v-work" "v-play" ];
     };
   };
