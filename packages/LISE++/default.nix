@@ -6,7 +6,8 @@ stdenv.mkDerivation rec {
   version = "17.12.7";
 
   src = fetchurl {
-    url = "https://lise.frib.msu.edu/download/Linux/lise-app_v17.12.7_all.deb";
+    url =
+      "https://lise.frib.msu.edu/download/Linux/previous_versions/lise-app_v17.12.7_all.deb";
     sha256 = "02ddizpci4lwbvj2wq65bil92nxw3kgmfwx853vn7v6ybizf5jgm";
   };
 
