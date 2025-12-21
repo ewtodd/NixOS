@@ -286,11 +286,11 @@ in {
       notificationOverlayEnabled = false;
       modalDarkenBackground = true;
       lockScreenShowPowerActions = true;
-      lockScreenShowSystemIcons = true;
+      lockScreenShowSystemIcons = false;
       lockScreenShowTime = true;
       lockScreenShowDate = true;
-      lockScreenShowProfileImage = true;
-      lockScreenShowPasswordField = true;
+      lockScreenShowProfileImage = false;
+      lockScreenShowPasswordField = false;
       enableFprint = false;
       maxFprintTries = 15;
       lockScreenActiveMonitor = "all";
