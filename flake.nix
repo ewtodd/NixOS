@@ -79,7 +79,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+                inputs.dankMaterialShell.homeModules.dank-material-shell
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -133,7 +133,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+                inputs.dankMaterialShell.homeModules.dank-material-shell
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;
