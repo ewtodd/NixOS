@@ -26,7 +26,7 @@
       inputs.nixpkgs.follows = "unstable";
     };
 
-    dankMaterialShell = {
+    dank-material-shell = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "unstable";
       inputs.dgop.follows = "dgop";
@@ -43,7 +43,7 @@
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
-          inputs.dankMaterialShell.nixosModules.greeter
+          inputs.dank-material-shell.nixosModules.greeter
 
           {
             home-manager = {
@@ -70,7 +70,7 @@
         };
         modules = [
           inputs.home-manager.nixosModules.home-manager
-          inputs.dankMaterialShell.nixosModules.greeter
+          inputs.dank-material-shell.nixosModules.greeter
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -79,7 +79,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.dankMaterialShell.homeModules.dank-material-shell
+                inputs.dank-material-shell.homeModules.dank-material-shell
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-desktop/home.nix;
@@ -97,7 +97,7 @@
         modules = [
           inputs.fw-fanctrl.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
-          inputs.dankMaterialShell.nixosModules.greeter
+          inputs.dank-material-shell.nixosModules.greeter
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -106,7 +106,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-
+                inputs.dank-material-shell.homeModules.dank-material-shell
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/v-laptop/home.nix;
@@ -124,7 +124,7 @@
         modules = [
           inputs.fw-fanctrl.nixosModules.default
           inputs.home-manager.nixosModules.home-manager
-          inputs.dankMaterialShell.nixosModules.greeter
+          inputs.dank-material-shell.nixosModules.greeter
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -133,7 +133,7 @@
               sharedModules = [
                 inputs.nixvim.homeModules.nixvim
                 inputs.nix-colors.homeManagerModules.default
-                inputs.dankMaterialShell.homeModules.dank-material-shell
+                inputs.dank-material-shell.homeModules.dank-material-shell
               ];
               extraSpecialArgs = { inherit inputs; };
               users = import ./hosts/e-laptop/home.nix;

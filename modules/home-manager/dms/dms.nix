@@ -7,7 +7,7 @@ let
 in {
   imports = [ ./colors.nix ./plugins.nix ];
 
-  programs.dankMaterialShell = {
+  programs.dank-material-shell = {
     enable = true;
     systemd = {
       enable = true;

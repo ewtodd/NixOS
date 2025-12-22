@@ -6,7 +6,7 @@
     imports = [
       ../../common/home-manager/play-user.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/windowManagers/windowManager.nix
+      ../../modules/home-manager/niri/niri.nix
     ];
     programs.waybar.enable = true;
     programs.git = {
@@ -30,7 +30,7 @@
     imports = [
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/windowManagers/windowManager.nix
+      ../../modules/home-manager/niri/niri.nix
     ];
     home.packages = [ pkgs.signal-desktop ];
     programs.waybar.enable = true;

@@ -11,10 +11,10 @@ with lib;
     };
     WallpaperPath = mkOption {
       type = types.str;
-      default =
-        "/etc/nixos/modules/home-manager/windowManagers/sway/wallpapers/eris.png";
+      default = "/etc/nixos/modules/home-manager/niri/wallpapers/eris.png";
       description = "Absolute path for wallpaper location";
     };
+
     FontChoice = mkOption {
       type = types.enum [
         "JetBrains Mono Nerd Font"
