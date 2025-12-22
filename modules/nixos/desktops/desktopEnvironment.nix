@@ -5,9 +5,8 @@
     displayManager.startx.enable = false;
     excludePackages = with pkgs; [ xterm ];
   };
-  programs.dankMaterialShell.greeter = {
+  programs.dank-material-shell.greeter = {
     enable = true;
     compositor.name = "niri";
-    configFiles = [ "/home/e-work/.config/DankMaterialShell/settings.json" ];
   };
 }

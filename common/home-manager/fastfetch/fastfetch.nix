@@ -1,9 +1,5 @@
-{ osConfig, ... }:
-let
-  format = if osConfig.WindowManager == "sway" then
-    "{process-name} ({version} ({protocol-name})"
-  else
-    "{process-name} {version} ({protocol-name})";
+{ ... }:
+let format = "{process-name} {version} ({protocol-name})";
 in {
   programs.fastfetch = {
     enable = true;

@@ -16,7 +16,6 @@
     ../../modules/nixos/packages/moonlight.nix
   ];
 
-  WindowManager = "niri";
   DeviceType = "laptop";
 
   users.users.v-play = {

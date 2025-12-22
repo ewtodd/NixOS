@@ -9,7 +9,7 @@
         ../../common/home-manager/play-user.nix
         ../../modules/home-manager/dms/dms.nix
         ../../modules/home-manager/qutebrowser/qutebrowser.nix
-        ../../modules/home-manager/windowManagers/windowManager.nix
+        ../../modules/home-manager/niri/niri.nix
       ];
       home.packages = [ mtkclient ];
       programs.git = {
@@ -24,7 +24,7 @@
       };
       FontChoice = "Ubuntu Nerd Font";
       WallpaperPath =
-        "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/eris.png";
+        "/etc/nixos/modules/home-manager/niri/wallpapers/eris.png";
       colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
   "e-work" = { inputs, ... }: {
@@ -35,7 +35,7 @@
       ../../common/home-manager/work-user.nix
       ../../modules/home-manager/dms/dms.nix
       ../../modules/home-manager/qutebrowser/qutebrowser.nix
-      ../../modules/home-manager/windowManagers/windowManager.nix
+      ../../modules/home-manager/niri/niri.nix
     ];
 
     programs.git = {
@@ -54,7 +54,7 @@
     };
     FontChoice = "Ubuntu Nerd Font";
     WallpaperPath =
-      "/etc/nixos/modules/home-manager/windowManagers/niri/wallpapers/kanagawa.png";
+      "/etc/nixos/modules/home-manager/niri/wallpapers/kanagawa.png";
     colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
   };
 

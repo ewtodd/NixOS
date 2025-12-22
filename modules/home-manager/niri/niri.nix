@@ -46,7 +46,7 @@ let
   unstable = import inputs.unstable { system = "x86_64-linux"; };
 in {
 
-  imports = [ ./services/misc.nix ./settings/profile.nix ]
+  imports = [ ./services.nix ./settings/profile.nix ]
     ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
     ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 

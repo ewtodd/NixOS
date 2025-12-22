@@ -5,10 +5,9 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/play-user.nix
-      ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/windowManagers/windowManager.nix
+      ../../modules/home-manager/dms/dms.nix
+      ../../modules/home-manager/niri/niri.nix
     ];
-    programs.waybar.enable = true;
     programs.git = {
       enable = true;
       settings = {
@@ -29,11 +28,10 @@
     home.stateVersion = "25.05";
     imports = [
       ../../common/home-manager/work-user.nix
-      ../../modules/home-manager/waybar/waybar.nix
-      ../../modules/home-manager/windowManagers/windowManager.nix
+      ../../modules/home-manager/dms/dms.nix
+      ../../modules/home-manager/niri/niri.nix
     ];
     home.packages = [ pkgs.signal-desktop ];
-    programs.waybar.enable = true;
     programs.git = {
       enable = true;
       settings = {
