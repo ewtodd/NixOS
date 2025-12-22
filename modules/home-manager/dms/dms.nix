@@ -629,6 +629,12 @@ let
           clockCompactMode = false;
         }
         {
+          id = "spacer";
+          enabled = true;
+          size = 5;
+        }
+
+        {
           id = "separator";
           enabled = true;
         }
