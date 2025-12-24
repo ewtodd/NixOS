@@ -17,6 +17,7 @@
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
         core.sharedRepository = "group";
+        credential.helper = "store";
       };
     };
     WallpaperPath = "/etc/nixos/hosts/v-desktop/play.png";
@@ -42,6 +43,7 @@
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
         core.sharedRepository = "group";
+        credential.helper = "store";
       };
     };
     WallpaperPath = "/etc/nixos/hosts/v-desktop/work.png";

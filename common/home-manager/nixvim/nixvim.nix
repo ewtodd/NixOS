@@ -3,7 +3,7 @@
 let colors = config.colorScheme.palette;
 in {
   imports =
-    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix  ];
+    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix ./split.nix ];
 
   programs.nixvim = {
     colorschemes = {
