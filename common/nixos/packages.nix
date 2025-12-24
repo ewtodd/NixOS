@@ -26,6 +26,7 @@
     inkscape
     firefox
     proton-pass
+    protonvpn-gui
     libreoffice
     tree
     zathura
