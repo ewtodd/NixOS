@@ -164,6 +164,7 @@ in {
         XF86MonBrightnessDown { spawn-sh "dms ipc brightness decrement 5 \"\" "; }
         XF86MonBrightnessUp { spawn-sh "dms ipc brightness increment 5 \"\" "; }
     }
+    spawn-sh-at-startup "${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme prefer-dark"
     spawn-at-startup "${unstable.nirius}/bin/niriusd"
     window-rule {
         geometry-corner-radius ${radius} ${radius} ${radius} ${radius} 
