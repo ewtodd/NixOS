@@ -1,4 +1,4 @@
-{ pkgs,  lib, inputs, ... }:
+{ pkgs, lib, inputs, ... }:
 let
   niri = inputs.niri.packages."x86_64-linux".default;
   unstable = import inputs.unstable { system = "x86_64-linux"; };
@@ -40,7 +40,7 @@ in {
         default = [ "gtk" "gnome" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
         "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
-        "org.freedesktop.impl.portal.Settings" = [ "gnome" ]; # Add this
+        "org.freedesktop.impl.portal.Settings" = [ "gnome" ];
       };
     };
   };
