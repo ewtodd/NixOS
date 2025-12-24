@@ -20,6 +20,7 @@
           init = { defaultBranch = "main"; };
           safe.directory = "/etc/nixos";
           core.sharedRepository = "group";
+          credential.helper = "store";
         };
       };
       FontChoice = "Ubuntu Nerd Font";
@@ -46,6 +47,7 @@
         init = { defaultBranch = "main"; };
         safe.directory = "/etc/nixos";
         core.sharedRepository = "group";
+        credential.helper = "store";
       };
     };
     programs.bash.shellAliases = {
