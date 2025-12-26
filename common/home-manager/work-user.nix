@@ -1,9 +1,8 @@
 { pkgs, inputs, ... }:
 let
-  lisepp = pkgs.callPackage ../../packages/LISE++/default.nix { };
+  lisepp = pkgs.callPackage ../../modules/nixos/LISE++/default.nix { };
   SRIM = inputs.SRIM.packages."x86_64-linux".default;
-  rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin"
-    "${pkgs.root}/bin/rootbrowse --web=off";
+  rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin" "${pkgs.root}/bin/rootbrowse --web=off";
   rootbrowse_desktop = pkgs.makeDesktopItem {
     name = "rootbrowse";
     desktopName = "rootbrowse";
@@ -12,9 +11,13 @@ let
   };
   rootbrowse_package = pkgs.symlinkJoin {
     name = "rootbrowse";
-    paths = [ rootbrowse_bin rootbrowse_desktop ];
+    paths = [
+      rootbrowse_bin
+      rootbrowse_desktop
+    ];
   };
-in {
+in
+{
   imports = [
     ./system-options.nix
     ./xdg.nix
@@ -23,15 +26,22 @@ in {
     ./theming/theming.nix
     ./nixvim/nixvim.nix
   ];
-  home.packages =
-    [ pkgs.clang-tools pkgs.slack lisepp SRIM rootbrowse_package ];
+  home.packages = [
+    pkgs.clang-tools
+    pkgs.slack
+    lisepp
+    SRIM
+    rootbrowse_package
+  ];
   xdg.desktopEntries.steam = {
     name = "Steam";
     noDisplay = true;
   };
   Profile = "work";
   programs.nixvim.enable = true;
-  programs.kitty = { enable = true; };
+  programs.kitty = {
+    enable = true;
+  };
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -41,8 +51,7 @@ in {
       analysis-env = "nix develop /etc/nixos/modules/dev-environments/analysis";
       latex-env = "nix develop /etc/nixos/modules/dev-environments/latex";
       cpp-env = "nix-shell /etc/nixos/home/e-work/cpp.nix";
-      github-update =
-        "git add . && git commit -m 'Automated commit.' && git push -u origin main";
+      github-update = "git add . && git commit -m 'Automated commit.' && git push -u origin main";
     };
   };
   xdg.configFile = {

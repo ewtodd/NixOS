@@ -1,9 +1,10 @@
-{ ... }: {
+{ ... }:
+{
 
   imports = [
     ../../common/nixos/base.nix
-    ../../modules/nixos/hardware/laptop-power.nix
-    ../../modules/nixos/desktops/desktopEnvironment.nix
+    ../../modules/nixos/services/laptop-power.nix
+    ../../modules/nixos/desktopEnvironment/desktopEnvironment.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/remarkable.nix
@@ -21,11 +22,21 @@
   users.users.v-play = {
     isNormalUser = true;
     description = "v-play";
-    extraGroups = [ "networkmanager" "wheel" "i2c" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "i2c"
+      "docker"
+    ];
   };
   users.users.v-work = {
     isNormalUser = true;
     description = "v-work";
-    extraGroups = [ "networkmanager" "wheel" "i2c" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "i2c"
+      "docker"
+    ];
   };
 }

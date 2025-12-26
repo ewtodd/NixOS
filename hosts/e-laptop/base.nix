@@ -3,19 +3,16 @@
 
   imports = [
     ../../common/nixos/base.nix
-    ../../modules/nixos/desktops/desktopEnvironment.nix
-    ../../modules/nixos/hardware/suzyqable.nix
-    ../../modules/nixos/hardware/laptop-power.nix
-    # ../../modules/nixos/hardware/chromebook-audio.nix
-    ../../modules/nixos/hardware/intel-graphics.nix
+    ../../modules/nixos/desktopEnvironment/desktopEnvironment.nix
+    ../../modules/nixos/services/suzyqable.nix
+    ../../modules/nixos/services/laptop-power.nix
+    ../../modules/nixos/services/chromebook-audio.nix
     ../../modules/nixos/services/tailscale.nix
-    #../../modules/nixos/services/protonvpn.nix
     ../../modules/nixos/packages/moonlight.nix
     ../../modules/nixos/packages/boxcli.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/starship.nix
-    ../../modules/nixos/packages/mtkclient-udev-rules.nix
     ../../modules/nixos/packages/nix-mineral.nix
   ];
 

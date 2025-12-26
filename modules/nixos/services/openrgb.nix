@@ -1,6 +1,8 @@
 { pkgs, inputs, ... }:
-let unstable = inputs.unstable.legacyPackages.${pkgs.system};
-in {
+let
+  unstable = inputs.unstable.legacyPackages.${pkgs.system};
+in
+{
   environment.systemPackages = with unstable; [ i2c-tools ];
   services.hardware.openrgb = {
     enable = true;
@@ -21,7 +23,10 @@ in {
     "intel_i2c_ioapic_scan=force" # Bypass broken ACPI tables
     "i2c_i801.probe=force" # Override BIOS detection issues
   ];
-  boot.kernelModules = [ "i2c-dev" "i2c-i801" ];
+  boot.kernelModules = [
+    "i2c-dev"
+    "i2c-i801"
+  ];
   boot.blacklistedKernelModules = [ "spd5118" ];
   hardware.i2c.enable = true;
 }

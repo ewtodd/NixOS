@@ -1,1 +1,4 @@
-{ pkgs, ... }: { environment.systemPackages = with pkgs; [ freecad-wayland ]; }
+{ pkgs, ... }:
+{
+  environment.systemPackages = with pkgs; [ freecad-wayland ];
+}

@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [
     ./system-options.nix
     ./xdg.nix
@@ -16,10 +17,14 @@
   ];
   Profile = "play";
   programs.nixvim.enable = true;
-  programs.kitty = { enable = true; };
+  programs.kitty = {
+    enable = true;
+  };
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    shellAliases = { ll = "ls -l"; };
+    shellAliases = {
+      ll = "ls -l";
+    };
   };
 }

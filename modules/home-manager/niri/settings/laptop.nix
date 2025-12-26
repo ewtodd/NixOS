@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   xdg.configFile."niri/laptop.kdl".text = ''
     layout {
         preset-column-widths {
@@ -45,5 +46,7 @@
     }
   '';
 
-  home.pointerCursor = { size = 48; };
+  home.pointerCursor = {
+    size = 48;
+  };
 }

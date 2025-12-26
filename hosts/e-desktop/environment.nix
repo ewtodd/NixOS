@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   boot.loader.systemd-boot = {
     enable = true;
     configurationLimit = 10;
@@ -10,8 +11,7 @@
 
   boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
-  boot.resumeDevice =
-    "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; # Your swap partition UUID
+  boot.resumeDevice = "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; # Your swap partition UUID
   boot.kernelParams = [ "resume=0c8c96c9-7128-4635-8958-2e2cead680a0" ];
 
 }

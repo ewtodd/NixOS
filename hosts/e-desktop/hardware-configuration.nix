@@ -1,15 +1,35 @@
-{ config, lib, modulesPath, ... }: {
+{
+  config,
+  lib,
+  modulesPath,
+  ...
+}:
+{
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  systemd.targets.tpm2 = { enable = false; };
+  systemd.targets.tpm2 = {
+    enable = false;
+  };
   powerManagement = {
     enable = true;
     powertop.enable = false;
   };
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" ];
-  boot.initrd.kernelModules = [ "dm_mod" "btrfs" "amdgpu" ];
-  boot.kernelModules = [ "kvm-intel" "v4l2loopback" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+  ];
+  boot.initrd.kernelModules = [
+    "dm_mod"
+    "btrfs"
+    "amdgpu"
+  ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "v4l2loopback"
+  ];
   security.polkit.enable = true;
   boot.supportedFilesystems = [ "btrfs" ];
 
@@ -26,19 +46,25 @@
     allowDiscards = true; # Enable TRIM (if using SSD)
   };
 
-  boot.initrd.luks.devices."games".device =
-    "/dev/disk/by-uuid/f9219808-ffc7-41c7-854e-aaaf3d45a675";
+  boot.initrd.luks.devices."games".device = "/dev/disk/by-uuid/f9219808-ffc7-41c7-854e-aaaf3d45a675";
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/29FA-BB43";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
   fileSystems."/home" = {
     device = "/dev/mapper/home";
     fsType = "btrfs";
-    options = [ "compress=zstd" "noatime" "subvol=@home" ];
+    options = [
+      "compress=zstd"
+      "noatime"
+      "subvol=@home"
+    ];
     depends = [ "/dev/mapper/home" ];
   };
 
@@ -48,12 +74,10 @@
     depends = [ "/dev/mapper/games" ];
   };
 
-  swapDevices =
-    [{ device = "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; }];
+  swapDevices = [ { device = "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; } ];
 
   networking.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

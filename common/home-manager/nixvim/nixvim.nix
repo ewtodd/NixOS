@@ -1,9 +1,16 @@
 { config, ... }:
 
-let colors = config.colorScheme.palette;
-in {
-  imports =
-    [ ./opts.nix ./keymaps.nix ./plugins.nix ./performance.nix ./split.nix ];
+let
+  colors = config.colorScheme.palette;
+in
+{
+  imports = [
+    ./opts.nix
+    ./keymaps.nix
+    ./plugins.nix
+    ./performance.nix
+    ./split.nix
+  ];
 
   programs.nixvim = {
     colorschemes = {
@@ -27,7 +34,9 @@ in {
           base0E = "#${colors.base0E}";
           base0F = "#${colors.base0F}";
         };
-        settings = { telescope_borders = true; };
+        settings = {
+          telescope_borders = true;
+        };
       };
     };
   };
@@ -40,7 +49,11 @@ in {
       icon = "nvim";
       type = "Application";
       terminal = false; # Set to false since we're explicitly calling kitty
-      categories = [ "Utility" "TextEditor" "Development" ];
+      categories = [
+        "Utility"
+        "TextEditor"
+        "Development"
+      ];
     };
   };
 }

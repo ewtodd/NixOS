@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   services.tlp = {
     enable = true;
     settings = {
@@ -13,11 +14,12 @@
       CPU_MIN_PERF_ON_BAT = 0;
       CPU_MAX_PERF_ON_BAT = 50;
 
-      #Optional helps save long term battery health
-      START_CHARGE_THRESH_BAT0 = 20; # 40 and below it starts to charge
-      STOP_CHARGE_THRESH_BAT0 = 90; # 80 and above it stops charging
-
+      START_CHARGE_THRESH_BAT0 = 20;
+      STOP_CHARGE_THRESH_BAT0 = 90;
     };
   };
-  programs.fw-fanctrl.enable = true;
+  hardware.fw-fanctrl = {
+    enable = true;
+    config.strategies = { };
+  };
 }

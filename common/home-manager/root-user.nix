@@ -1,4 +1,5 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   imports = [
     ./system-options.nix
     ./xdg.nix
@@ -9,7 +10,9 @@
   ];
   colorScheme = inputs.nix-colors.colorSchemes.dracula;
   programs.nixvim.enable = true;
-  programs.kitty = { enable = true; };
+  programs.kitty = {
+    enable = true;
+  };
   programs.bash = {
     enable = true;
     enableCompletion = true;

@@ -1,16 +1,19 @@
-{ config, lib, osConfig, ... }:
+{
+  config,
+  lib,
+  osConfig,
+  ...
+}:
 
 with lib;
 
 let
   colors = config.colorScheme.palette;
   fontFamily = config.FontChoice;
-  opacity = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
-    "1"
-  else
-    "0.925";
+  opacity = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then "1" else "0.925";
 
-in {
+in
+{
   config = mkIf config.programs.kitty.enable {
     programs.kitty = {
       font = {

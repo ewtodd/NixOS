@@ -1,10 +1,25 @@
-{ config, lib, modulesPath, ... }: {
+{
+  config,
+  lib,
+  modulesPath,
+  ...
+}:
+{
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules =
-    [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "amdgpu" ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "amdgpu"
+  ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
@@ -20,11 +35,13 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/90F5-6F70";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
-  swapDevices =
-    [{ device = "/dev/disk/by-uuid/e9b86c6b-7f5a-4335-8bfa-2109472da470"; }];
+  swapDevices = [ { device = "/dev/disk/by-uuid/e9b86c6b-7f5a-4335-8bfa-2109472da470"; } ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -35,6 +52,5 @@
   # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

@@ -1,4 +1,10 @@
-{ config, pkgs, lib, osConfig, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  osConfig,
+  ...
+}:
 
 with lib;
 
@@ -6,13 +12,20 @@ let
   colors = config.colorScheme.palette;
   radius = toString osConfig.CornerRadius;
   inherit (config.lib.formats.rasi) mkLiteral;
-in {
+in
+{
 
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
     terminal = "${pkgs.kitty}/bin/kitty";
-    modes = [ "drun" "window" "combi" "ssh" "filebrowser" ];
+    modes = [
+      "drun"
+      "window"
+      "combi"
+      "ssh"
+      "filebrowser"
+    ];
     cycle = true;
     extraConfig = {
       show-icons = true;

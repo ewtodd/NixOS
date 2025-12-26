@@ -7,7 +7,8 @@ let
     hash = "sha256-6ScuVcvSaXc35Sf1iwtCy8aM/pFID3+0G4NRMw8aBcM=";
   };
   jsonFormat = pkgs.formats.json { };
-in {
+in
+{
 
   xdg.configFile."DankMaterialShell/plugin_settings.json" = {
     source = jsonFormat.generate "plugin_settings.json" {

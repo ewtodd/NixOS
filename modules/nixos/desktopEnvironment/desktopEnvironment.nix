@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
 
   imports = [ ./niri/niri-de.nix ];
   services.xserver = {

@@ -2,7 +2,8 @@
 let
   colors = config.colorScheme.palette;
   jsonFormat = pkgs.formats.json { };
-in {
+in
+{
   xdg.configFile."DankMaterialShell/colors.json" = {
     source = jsonFormat.generate "colors.json" {
       dark = {

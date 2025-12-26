@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 with lib;
 
@@ -6,13 +12,13 @@ let
   schemeName = config.colorScheme.slug;
   nix-colors-lib = inputs.nix-colors.lib.contrib { inherit pkgs; };
   fontFamily = config.FontChoice;
-in {
+in
+{
   config = mkIf config.gtk.enable {
     home.packages = with pkgs; [ morewaita-icon-theme ];
     gtk = {
       theme = {
-        package =
-          nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
+        package = nix-colors-lib.gtkThemeFromScheme { scheme = config.colorScheme; };
         name = schemeName;
       };
 
@@ -57,18 +63,19 @@ in {
     };
 
     home.sessionVariables = {
-      XDG_DATA_DIRS =
-        "$XDG_DATA_DIRS:${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}";
+      XDG_DATA_DIRS = "$XDG_DATA_DIRS:${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}";
     };
 
-    xdg.configFile = let
-      gtkTheme = config.gtk.theme;
-      gtk4Dir = "${gtkTheme.package}/share/themes/${gtkTheme.name}/gtk-4.0";
-    in {
-      "gtk-4.0/assets".source = "${gtk4Dir}/assets";
-      "gtk-4.0/gtk.css".source = "${gtk4Dir}/gtk.css";
-      "gtk-4.0/gtk-dark.css".source = "${gtk4Dir}/gtk-dark.css";
-    };
+    xdg.configFile =
+      let
+        gtkTheme = config.gtk.theme;
+        gtk4Dir = "${gtkTheme.package}/share/themes/${gtkTheme.name}/gtk-4.0";
+      in
+      {
+        "gtk-4.0/assets".source = "${gtk4Dir}/assets";
+        "gtk-4.0/gtk.css".source = "${gtk4Dir}/gtk.css";
+        "gtk-4.0/gtk-dark.css".source = "${gtk4Dir}/gtk-dark.css";
+      };
 
   };
 }

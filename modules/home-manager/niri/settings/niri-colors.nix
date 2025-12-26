@@ -1,14 +1,20 @@
 { config, ... }:
 
-let colors = config.colorScheme.palette;
-in {
+let
+  colors = config.colorScheme.palette;
+in
+{
   programs.niri.settings = {
-    layer-rules = [{
-      matches = [{ namespace = "wallpaper"; }];
-      place-within-backdrop = true;
-    }];
+    layer-rules = [
+      {
+        matches = [ { namespace = "wallpaper"; } ];
+        place-within-backdrop = true;
+      }
+    ];
 
-    overview = { workspace-shadow.color = "#${colors.base00}99"; };
+    overview = {
+      workspace-shadow.color = "#${colors.base00}99";
+    };
     layout = {
       background-color = "transparent";
       focus-ring = {

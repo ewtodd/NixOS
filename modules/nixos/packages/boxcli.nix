@@ -11,7 +11,11 @@ let
     };
     npmDepsHash = "sha256-jtmR27Dnx/nExlnmARrCxjJB764OBS54Z5lxbsKw6lA=";
 
-    nativeBuildInputs = with pkgs; [ pkg-config python3 nodePackages.node-gyp ];
+    nativeBuildInputs = with pkgs; [
+      pkg-config
+      python3
+      nodePackages.node-gyp
+    ];
 
     buildInputs = with pkgs; [ libsecret ];
 
@@ -20,4 +24,7 @@ let
     npmFlags = [ "--ignore-scripts" ];
 
   };
-in { environment.systemPackages = [ boxcli ]; }
+in
+{
+  environment.systemPackages = [ boxcli ];
+}
