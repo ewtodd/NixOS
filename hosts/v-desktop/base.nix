@@ -1,9 +1,10 @@
-{ ... }: {
+{ ... }:
+{
   imports = [
     ../../common/nixos/base.nix
-    ../../modules/nixos/hardware/amd-graphics.nix
-    ../../modules/nixos/hardware/openrgb.nix
-    ../../modules/nixos/desktops/desktopEnvironment.nix
+    ../../modules/nixos/services/amd-graphics.nix
+    ../../modules/nixos/services/openrgb.nix
+    ../../modules/nixos/desktopEnvironment/desktopEnvironment.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/remarkable.nix
@@ -23,11 +24,21 @@
   users.users.v-play = {
     isNormalUser = true;
     description = "v-play";
-    extraGroups = [ "networkmanager" "wheel" "i2c" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "i2c"
+      "docker"
+    ];
   };
   users.users.v-work = {
     isNormalUser = true;
     description = "v-work";
-    extraGroups = [ "networkmanager" "wheel" "i2c" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "i2c"
+      "docker"
+    ];
   };
 }

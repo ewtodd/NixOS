@@ -1,12 +1,9 @@
 { lib, osConfig, ... }:
 let
-  e = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
-    true
-  else
-    false;
-  browser =
-    if e then "org.qutebrowser.qutebrowser.desktop" else "firefox.desktop";
-in {
+  e = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then true else false;
+  browser = if e then "org.qutebrowser.qutebrowser.desktop" else "firefox.desktop";
+in
+{
   xdg.mimeApps = {
     enable = true;
 
@@ -60,34 +57,26 @@ in {
       "text/html" = browser;
       "application/xhtml+xml" = browser;
       "application/vnd.oasis.opendocument.text" = "writer.desktop"; # .odt
-      "application/vnd.oasis.opendocument.text-template" =
-        "writer.desktop"; # .ott
+      "application/vnd.oasis.opendocument.text-template" = "writer.desktop"; # .ott
       "application/msword" = "writer.desktop"; # .doc
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" =
-        "writer.desktop"; # .docx
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "writer.desktop"; # .docx
       "application/rtf" = "writer.desktop"; # .rtf
       "text/rtf" = "writer.desktop";
 
       "application/vnd.oasis.opendocument.spreadsheet" = "calc.desktop"; # .ods
-      "application/vnd.oasis.opendocument.spreadsheet-template" =
-        "calc.desktop"; # .ots
+      "application/vnd.oasis.opendocument.spreadsheet-template" = "calc.desktop"; # .ots
       "application/vnd.ms-excel" = "calc.desktop"; # .xls
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" =
-        "calc.desktop"; # .xlsx
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "calc.desktop"; # .xlsx
       "application/vnd.ms-excel.sheet.macroEnabled.12" = "calc.desktop"; # .xlsm
       "text/csv" = "calc.desktop"; # .csv
 
-      "application/vnd.oasis.opendocument.presentation" =
-        "impress.desktop"; # .odp
-      "application/vnd.oasis.opendocument.presentation-template" =
-        "impress.desktop"; # .otp
+      "application/vnd.oasis.opendocument.presentation" = "impress.desktop"; # .odp
+      "application/vnd.oasis.opendocument.presentation-template" = "impress.desktop"; # .otp
       "application/vnd.ms-powerpoint" = "impress.desktop"; # .ppt
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation" =
-        "impress.desktop"; # .pptx
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "impress.desktop"; # .pptx
 
       "application/vnd.oasis.opendocument.graphics" = "draw.desktop"; # .odg
-      "application/vnd.oasis.opendocument.graphics-template" =
-        "draw.desktop"; # .otg
+      "application/vnd.oasis.opendocument.graphics-template" = "draw.desktop"; # .otg
     };
   };
 }

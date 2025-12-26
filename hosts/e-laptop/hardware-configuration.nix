@@ -15,7 +15,7 @@
     "usb_storage"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.kernelModules = [ "xe" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
@@ -38,9 +38,7 @@
     ];
   };
 
-  swapDevices = [
-    { device = "/dev/mapper/luks-4aa58d65-793d-4ce2-b85c-07f5f37be761"; }
-  ];
+  swapDevices = [ { device = "/dev/mapper/luks-4aa58d65-793d-4ce2-b85c-07f5f37be761"; } ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

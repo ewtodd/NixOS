@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -28,7 +29,9 @@
     jack.enable = true;
   };
   services.gnome.gnome-keyring.enable = true;
-  security.polkit = { enable = true; };
+  security.polkit = {
+    enable = true;
+  };
   environment.systemPackages = with pkgs; [ polkit_gnome ];
 
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
@@ -38,15 +41,13 @@
     after = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart =
-        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       Restart = "on-failure";
       RestartSec = 1;
       TimeoutStopSec = 10;
     };
   };
   security.rtkit.enable = true;
-  services.blueman.enable = true;
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = false;

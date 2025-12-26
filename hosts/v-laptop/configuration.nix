@@ -1,5 +1,11 @@
-{ ... }: {
-  imports = [ ./hardware-configuration.nix ./environment.nix ./base.nix ];
+{ ... }:
+{
+  imports = [
+    ./extra-packages.nix
+    ./hardware-configuration.nix
+    ./environment.nix
+    ./base.nix
+  ];
 
   time.timeZone = "America/Chicago";
   networking.hostName = "v-laptop";

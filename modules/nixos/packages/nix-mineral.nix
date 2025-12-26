@@ -1,4 +1,5 @@
-{ inputs, ... }: {
+{ inputs, ... }:
+{
   imports = [ "${inputs.nix-mineral}/nix-mineral.nix" ];
   lib.nm-overrides = {
     compatibility = {
@@ -22,6 +23,8 @@
       tcp-timestamp-disable.enable = true;
       disable-intelme-kmodules.enable = true;
     };
-    software-choice = { secure-chrony.enable = true; };
+    software-choice = {
+      secure-chrony.enable = true;
+    };
   };
 }

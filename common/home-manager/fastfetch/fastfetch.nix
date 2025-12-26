@@ -1,11 +1,19 @@
 { ... }:
-let format = "{process-name} {version} ({protocol-name})";
-in {
+let
+  format = "{process-name} {version} ({protocol-name})";
+in
+{
   programs.fastfetch = {
     enable = true;
     settings = {
-      logo = { padding = { top = 2; }; };
-      display = { separator = " -> "; };
+      logo = {
+        padding = {
+          top = 2;
+        };
+      };
+      display = {
+        separator = " -> ";
+      };
       modules = [
         "title"
         "separator"

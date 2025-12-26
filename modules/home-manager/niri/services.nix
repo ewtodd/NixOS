@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services.udiskie = {
     enable = true;
     settings = {
@@ -8,6 +9,5 @@
       };
     };
   };
-  services.blueman-applet.enable = true;
   services.gnome-keyring.enable = true;
 }

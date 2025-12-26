@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   xdg.configFile."niri/desktop.kdl".text = ''
     output "DP-3" {
         transform "normal"

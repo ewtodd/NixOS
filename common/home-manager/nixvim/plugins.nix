@@ -1,11 +1,16 @@
-{ ... }: {
+{ pkgs, ... }:
+{
   programs.nixvim.extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
   '';
   programs.nixvim.plugins = {
-    web-devicons = { enable = true; };
-    lualine = { enable = true; };
+    web-devicons = {
+      enable = true;
+    };
+    lualine = {
+      enable = true;
+    };
 
     telescope = {
       enable = true;
@@ -57,7 +62,11 @@
         only_render_image_at_cursor = true;
         only_render_image_at_cursor_mode = "popup";
         window_overlap_clear_enabled = true;
-        window_overlap_clear_ft_ignore = [ "cmp_menu" "cmp_docs" "" ];
+        window_overlap_clear_ft_ignore = [
+          "cmp_menu"
+          "cmp_docs"
+          ""
+        ];
       };
     };
 
@@ -111,21 +120,30 @@
       };
     };
 
-    lsp-format = { enable = true; };
+    lsp-format = {
+      enable = true;
+    };
 
     none-ls = {
       enable = true;
       enableLspFormat = true;
-      sources.formatting.nixfmt.enable = true;
+      sources.formatting.nixfmt = {
+        enable = true;
+        package = pkgs.nixfmt;
+      };
       sources.formatting.black.enable = true;
       sources.formatting.bibclean.enable = true;
       sources.formatting.cmake_format.enable = true;
       sources.formatting.biome.enable = true;
     };
 
-    illuminate = { enable = true; };
+    illuminate = {
+      enable = true;
+    };
 
-    luasnip = { enable = true; };
+    luasnip = {
+      enable = true;
+    };
 
     cmp = {
       enable = true;
@@ -135,7 +153,13 @@
           fetchingTimeout = 200;
           maxViewEntries = 30;
         };
-        formatting = { fields = [ "kind" "abbr" "menu" ]; };
+        formatting = {
+          fields = [
+            "kind"
+            "abbr"
+            "menu"
+          ];
+        };
         sources = [
           { name = "zk"; }
           { name = "nvim_lsp"; }
@@ -153,7 +177,9 @@
             keywordLength = 3;
           }
         ];
-        snippet = { expand = "luasnip"; };
+        snippet = {
+          expand = "luasnip";
+        };
         mapping = {
           "<Tab>" = ''
             cmp.mapping(function(fallback)
@@ -187,8 +213,7 @@
           "<A-b>" = "cmp.mapping.scroll_docs(-4)";
           "<A-f>" = "cmp.mapping.scroll_docs(4)";
           "<CR>" = "cmp.mapping.confirm({ select = true })";
-          "<A-CR>" =
-            "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
+          "<A-CR>" = "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
         };
       };
     };
@@ -197,7 +222,9 @@
     cmp-buffer.enable = true;
     cmp_luasnip.enable = true;
     cmp-cmdline.enable = true;
-    indent-blankline = { enable = true; };
+    indent-blankline = {
+      enable = true;
+    };
 
   };
 }

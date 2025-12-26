@@ -1,9 +1,13 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   hardware.graphics = {
     enable = true;
     package = pkgs.mesa;
     enable32Bit = true;
-    extraPackages = with pkgs; [ vulkan-tools rocmPackages.clr.icd ];
+    extraPackages = with pkgs; [
+      vulkan-tools
+      rocmPackages.clr.icd
+    ];
   };
 
   nixpkgs.config.allowUnfree = true;

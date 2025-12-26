@@ -1,6 +1,8 @@
 { pkgs, inputs, ... }:
-let unstable = import inputs.unstable { system = "x86_64-linux"; };
-in {
+let
+  unstable = import inputs.unstable { system = "x86_64-linux"; };
+in
+{
   hardware.graphics = {
     enable = true;
     package = unstable.mesa;
@@ -10,7 +12,10 @@ in {
     enable = true;
     displayManager.startx.enable = false;
     excludePackages = with pkgs; [ xterm ];
-    videoDrivers = [ "nvidia" "intel" ];
+    videoDrivers = [
+      "nvidia"
+      "intel"
+    ];
   };
   hardware.nvidia = {
     modesetting.enable = true;
@@ -25,7 +30,6 @@ in {
     options nvidia NVreg_TemporaryFilePath=/var/tmp
   '';
   boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
-  systemd.services.systemd-suspend.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS =
-    "false";
+  systemd.services.systemd-suspend.environment.SYSTEMD_SLEEP_FREEZE_USER_SESSIONS = "false";
   environment.systemPackages = with pkgs; [ nvtopPackages.nvidia ];
 }

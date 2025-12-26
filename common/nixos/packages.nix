@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-
+{ pkgs, ... }:
+{
   nixpkgs.config.allowUnfree = true;
 
   programs.appimage.enable = true;
@@ -11,11 +11,11 @@
     vim = "nvim";
     ":q" = "exit";
     nrs = "nh os switch /etc/nixos";
-    fix-nixos-git =
-      "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
+    fix-nixos-git = "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
     init-dev-env = "nix flake init -t github:ewtodd/dev-env --refresh";
-    init-nm-env =
-      "nix flake init -t github:ewtodd/Nuclear-Measurement-Toolkit --refresh";
+    init-latex-env = "nix flake init -t github:ewtodd/latex-env --refresh";
+    init-geant4-env = "nix flake init -t github:ewtodd/geant4-env --refresh";
+    init-analysis-env = "nix flake init -t github:ewtodd/Analysis-Utilities --refresh";
   };
 
   environment.systemPackages = with pkgs; [
@@ -23,17 +23,13 @@
     gh
     nh
     wget
-    inkscape
-    firefox
-    proton-pass
-    protonvpn-gui
+    pavucontrol
     libreoffice
     tree
     zathura
     htop
     nix-prefetch-github
-    nixfmt-classic
-    openconnect
+    nixfmt
     tree
     usbutils
     poppler-utils

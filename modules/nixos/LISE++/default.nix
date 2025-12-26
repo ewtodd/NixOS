@@ -1,17 +1,34 @@
-{ stdenv, fetchurl, dpkg, autoPatchelfHook, libgcc, libglvnd, openssl
-, libgpg-error, libz, freetype, fontconfig, gmp, e2fsprogs, libdrm, mesa }:
+{
+  stdenv,
+  fetchurl,
+  dpkg,
+  autoPatchelfHook,
+  libgcc,
+  libglvnd,
+  openssl,
+  libgpg-error,
+  libz,
+  freetype,
+  fontconfig,
+  gmp,
+  e2fsprogs,
+  libdrm,
+  mesa,
+}:
 
 stdenv.mkDerivation rec {
   name = "lise-app";
   version = "17.12.7";
 
   src = fetchurl {
-    url =
-      "https://lise.frib.msu.edu/download/Linux/previous_versions/lise-app_v17.12.7_all.deb";
+    url = "https://lise.frib.msu.edu/download/Linux/previous_versions/lise-app_v17.12.7_all.deb";
     sha256 = "02ddizpci4lwbvj2wq65bil92nxw3kgmfwx853vn7v6ybizf5jgm";
   };
 
-  nativeBuildInputs = [ dpkg autoPatchelfHook ];
+  nativeBuildInputs = [
+    dpkg
+    autoPatchelfHook
+  ];
   buildInputs = [
     stdenv.cc.cc
     libgcc

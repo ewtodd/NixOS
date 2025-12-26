@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [ todoist-electron todoist ];
+  environment.systemPackages = with pkgs; [
+    todoist-electron
+    todoist
+  ];
 }

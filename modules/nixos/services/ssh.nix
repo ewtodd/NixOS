@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   services.openssh = {
     enable = true;
     ports = [ 2222 ];
@@ -6,7 +7,12 @@
       PasswordAuthentication = true;
       KbdInteractiveAuthentication = true;
       AuthenticationMethods = "password";
-      AllowUsers = [ "e-work" "e-play" "v-work" "v-play" ];
+      AllowUsers = [
+        "e-work"
+        "e-play"
+        "v-work"
+        "v-play"
+      ];
     };
   };
 

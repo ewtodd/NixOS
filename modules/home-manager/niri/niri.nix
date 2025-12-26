@@ -1,10 +1,14 @@
-{ config, lib, osConfig, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  osConfig,
+  pkgs,
+  inputs,
+  ...
+}:
 with lib;
 let
-  e = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then
-    true
-  else
-    false;
+  e = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then true else false;
   colors = config.colorScheme.palette;
   deviceType = osConfig.DeviceType;
   radius = toString osConfig.CornerRadius;
@@ -15,41 +19,38 @@ let
       -new-tab -url https://home-manager-options.extranix.com/ \
       -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
-  open-nix-docs-qutebrowser =
-    pkgs.writeShellScript "open-nix-docs-qutebrowser" ''
-      ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://search.nixos.org/ 
-    '';
-  open-fidget-window-qutebrowser =
-    pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
-      ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://monkeytype.com
-    '';
-  open-fidget-window-firefox =
-    pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
-        ${pkgs.firefox}/bin/firefox --new-window \
-      -url https://monkeytype.com 
-    '';
-  open-nix-docs =
-    if e then open-nix-docs-qutebrowser else open-nix-docs-firefox;
-  open-fidget-window =
-    if e then open-fidget-window-qutebrowser else open-fidget-window-firefox;
-  open-browser-window = if e then
-    "${pkgs.qutebrowser}/bin/qutebrowser --target window"
-  else
-    "${pkgs.firefox}/bin/firefox";
+  open-nix-docs-qutebrowser = pkgs.writeShellScript "open-nix-docs-qutebrowser" ''
+    ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://search.nixos.org/ 
+  '';
+  open-fidget-window-qutebrowser = pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
+    ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://monkeytype.com
+  '';
+  open-fidget-window-firefox = pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
+      ${pkgs.firefox}/bin/firefox --new-window \
+    -url https://monkeytype.com 
+  '';
+  open-nix-docs = if e then open-nix-docs-qutebrowser else open-nix-docs-firefox;
+  open-fidget-window = if e then open-fidget-window-qutebrowser else open-fidget-window-firefox;
+  open-browser-window =
+    if e then "${pkgs.qutebrowser}/bin/qutebrowser --target window" else "${pkgs.firefox}/bin/firefox";
 
-  open-private-window = if e then
-    "${pkgs.qutebrowser}/bin/qutebrowser --target private-window"
-  else
-    "${pkgs.firefox}/bin/firefox --private-window";
-  notificationColor =
-    if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
+  open-private-window =
+    if e then
+      "${pkgs.qutebrowser}/bin/qutebrowser --target private-window"
+    else
+      "${pkgs.firefox}/bin/firefox --private-window";
+  notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
   unstable = import inputs.unstable { system = "x86_64-linux"; };
-in {
+in
+{
 
-  imports = [ ./services.nix ./settings/profile.nix ]
-    ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
-    ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
+  imports = [
+    ./services.nix
+    ./settings/profile.nix
+  ]
+  ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+  ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   xdg.configFile."niri/config.kdl".text = ''
     input {
@@ -115,7 +116,6 @@ in {
         F7 { spawn-sh "dms ipc brightness decrement 5 \"\" "; }
         F8 { spawn-sh "dms ipc brightness increment 5 \"\" "; }
         Mod+1 { focus-monitor-next; }
-        Mod+2 { spawn-sh "pkill -USR1 waybar && niri msg action do-screen-transition --delay-ms 0"; }
         Mod+Ctrl+f { toggle-windowed-fullscreen; }
         Mod+Ctrl+r { switch-preset-window-height; }
         Mod+Return { spawn "${pkgs.kitty}/bin/kitty"; }
@@ -196,12 +196,6 @@ in {
         match app-id="floatingkitty"
         default-column-width { proportion 0.400000; }
         default-window-height { proportion 0.700000; }
-        open-floating true
-    }
-    window-rule {
-        match app-id=".blueman-manager-wrapped"
-        default-column-width { proportion 0.300000; }
-        default-window-height { proportion 0.600000; }
         open-floating true
     }
     window-rule {
@@ -297,11 +291,14 @@ in {
             Alt+Shift+grave { previous-window filter="app-id"; }
         }
        }
-  '' + lib.optionalString (deviceType == "laptop") ''
+  ''
+  + lib.optionalString (deviceType == "laptop") ''
     include "laptop.kdl"
-  '' + lib.optionalString (deviceType == "desktop") ''
+  ''
+  + lib.optionalString (deviceType == "desktop") ''
     include "desktop.kdl"
-  '' + lib.optionalString e ''
+  ''
+  + lib.optionalString e ''
     include "profile.kdl" 
   '';
 }

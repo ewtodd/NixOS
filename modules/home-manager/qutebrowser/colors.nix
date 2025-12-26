@@ -1,9 +1,13 @@
 { config, ... }:
-let colors = config.colorScheme.palette;
-in {
+let
+  colors = config.colorScheme.palette;
+in
+{
   programs.qutebrowser.settings = {
     colors = {
-      webpage = { preferred_color_scheme = "dark"; };
+      webpage = {
+        preferred_color_scheme = "dark";
+      };
 
       completion = {
         fg = "#${colors.base05}";

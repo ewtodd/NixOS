@@ -1,8 +1,14 @@
-{ pkgs, lib, inputs, ... }:
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 let
   niri = inputs.niri.packages."x86_64-linux".default;
   unstable = import inputs.unstable { system = "x86_64-linux"; };
-in {
+in
+{
   programs.niri = {
     enable = true;
     package = niri;
@@ -35,21 +41,30 @@ in {
       xdg-desktop-portal-gtk
     ];
     config = {
-      common = { default = [ "gnome" ]; };
+      common = {
+        default = [ "gnome" ];
+      };
       niri = {
-        default = [ "gtk" "gnome" ];
+        default = [
+          "gtk"
+          "gnome"
+        ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
         "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
         "org.freedesktop.impl.portal.Settings" = [ "gnome" ];
       };
     };
   };
-  environment.shellAliases = { view-image = "kitten icat"; };
+  environment.shellAliases = {
+    view-image = "kitten icat";
+  };
 
   services.udisks2.enable = true;
   services.gvfs.enable = true;
   programs.dconf.enable = true;
-  programs.gnome-disks = { enable = true; };
+  programs.gnome-disks = {
+    enable = true;
+  };
 
   programs.nautilus-open-any-terminal = {
     enable = true;

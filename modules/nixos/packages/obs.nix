@@ -1,6 +1,13 @@
-{ pkgs, inputs, config, ... }:
-let unstable = inputs.unstable.legacyPackages.${pkgs.system};
-in {
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}:
+let
+  unstable = inputs.unstable.legacyPackages.${pkgs.system};
+in
+{
   programs.obs-studio = {
     enable = true;
     package = unstable.obs-studio;

@@ -2,8 +2,7 @@
 let
   cb-ucm-conf = pkgs.alsa-ucm-conf.overrideAttrs {
     wttsrc = pkgs.fetchurl {
-      url =
-        "https://github.com/WeirdTreeThing/chromebook-ucm-conf/archive/1328e46bfca6db2c609df9c68d37bb418e6fe279.tar.gz";
+      url = "https://github.com/WeirdTreeThing/chromebook-ucm-conf/archive/1328e46bfca6db2c609df9c68d37bb418e6fe279.tar.gz";
       hash = "sha256-eTP++vdS7cKtc8Mq4qCzzKtTRM/gsLme4PLkN0ZWveo=";
     };
     unpackPhase = ''
@@ -21,15 +20,18 @@ let
       runHook postInstall
     '';
   };
-in {
+in
+{
 
   environment = {
     systemPackages = [ pkgs.sof-firmware ];
     sessionVariables.ALSA_CONFIG_UCM2 = "${cb-ucm-conf}/share/alsa/ucm2";
   };
-  system.replaceDependencies.replacements = [{
-    original = pkgs.alsa-ucm-conf;
-    replacement = cb-ucm-conf;
-  }];
+  system.replaceDependencies.replacements = [
+    {
+      original = pkgs.alsa-ucm-conf;
+      replacement = cb-ucm-conf;
+    }
+  ];
 
 }
