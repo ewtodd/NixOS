@@ -4,6 +4,7 @@
   imports = [
     ../../common/nixos/base.nix
     ../../modules/nixos/desktopEnvironment/desktopEnvironment.nix
+    ../../modules/nixos/services/fwupdmgr.nix
     ../../modules/nixos/services/suzyqable.nix
     ../../modules/nixos/services/laptop-power.nix
     ../../modules/nixos/services/chromebook-audio.nix

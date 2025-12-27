@@ -29,7 +29,6 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "plugdev"
       "dialout"
       "gamemode"
       "render"
@@ -46,7 +45,6 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "plugdev"
       "dialout"
       "video"
       "lp"
