@@ -3,6 +3,7 @@
   config,
   osConfig,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -792,6 +793,7 @@ in
 
   programs.dank-material-shell = {
     enable = true;
+    dgop.package = inputs.dgop.packages."x86_64-linux".default;
     systemd = {
       enable = true;
       restartIfChanged = true;

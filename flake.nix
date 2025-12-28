@@ -25,7 +25,6 @@
     dank-material-shell = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "unstable";
-      inputs.dgop.follows = "dgop";
     };
   };
 
