@@ -8,6 +8,15 @@
         position = "right";
         width = "5%";
       };
+      editor = {
+        command = [
+          "kitty"
+          "-e"
+          "nvim"
+          "-f"
+          "{file}"
+        ];
+      };
     };
 
     greasemonkey = [
