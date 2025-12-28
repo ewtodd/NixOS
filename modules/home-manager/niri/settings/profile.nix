@@ -1,22 +1,14 @@
-{
-  config,
-  lib,
-  osConfig,
-  pkgs,
-  ...
-}:
+{ config, lib, osConfig, pkgs, ... }:
 
 with lib;
 let
   primaryMonitor = if osConfig.DeviceType == "desktop" then "DP-3" else "eDP-1";
-  secondaryMonitor =
-    if osConfig.DeviceType == "desktop" then
-      "HDMI-A-1"
-    else
-      (if osConfig.DeviceType == "laptop" then "HDMI-A-2" else "DP-3");
+  secondaryMonitor = if osConfig.DeviceType == "desktop" then
+    "HDMI-A-1"
+  else
+    (if osConfig.DeviceType == "laptop" then "HDMI-A-2" else "DP-3");
   alt-proportion = if osConfig.DeviceType == "desktop" then "0.5" else "0.75";
-in
-{
+in {
   config = mkIf (lib.strings.hasPrefix "e" osConfig.networking.hostName) {
     xdg.configFile."niri/profile.kdl".text = mkMerge [
       (mkIf (config.Profile == "work") ''
@@ -40,6 +32,7 @@ in
         }
         spawn-sh-at-startup "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left"
         spawn-sh-at-startup "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right"
+        spawn-sh-at-startup "${pkgs.protonvpn-gui}/bin/protonvpn-gui --start-minimized"
       '')
       (mkIf (config.Profile == "play") ''
         workspace "b-media" {
@@ -66,6 +59,7 @@ in
         spawn-sh-at-startup "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon"
         spawn-sh-at-startup "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left"
         spawn-sh-at-startup "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right"
+        spawn-sh-at-startup "${pkgs.protonvpn-gui}/bin/protonvpn-gui --start-minimized"
       '')
     ];
   };
