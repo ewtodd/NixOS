@@ -37,20 +37,17 @@
     },
     "dank-material-shell": {
       "inputs": {
-        "dgop": [
-          "dgop"
-        ],
         "nixpkgs": [
           "unstable"
         ],
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1766778227,
-        "narHash": "sha256-lLB5HYtm/L7szUN2baA29tii5c+vxTvgeCiB4oOe980=",
+        "lastModified": 1766938414,
+        "narHash": "sha256-1cCBn7V4PwrhK6XN6fRCYd01ib6r3PQz4Gp+PQaKXpo=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "1194f3ffb8f415ea77d52193da8da7631b85b87c",
+        "rev": "45b8b2a8950f0fccd99f71045e8d0d91638a9c18",
         "type": "github"
       },
       "original": {
@@ -405,16 +402,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1766386896,
-        "narHash": "sha256-1uql4y229Rh+/2da99OVNe6DfsjObukXkf60TYRCvhI=",
+        "lastModified": 1766725085,
+        "narHash": "sha256-O2aMFdDUYJazFrlwL7aSIHbUSEm3ADVZjmf41uBJfHs=",
         "ref": "refs/heads/master",
-        "rev": "3918290c1bcd93ed81291844d9f1ed146672dbfc",
-        "revCount": 714,
+        "rev": "41828c4180fb921df7992a5405f5ff05d2ac2fff",
+        "revCount": 715,
         "type": "git",
         "url": "https://git.outfoxxed.me/quickshell/quickshell"
       },
       "original": {
-        "rev": "3918290c1bcd93ed81291844d9f1ed146672dbfc",
+        "rev": "41828c4180fb921df7992a5405f5ff05d2ac2fff",
         "type": "git",
         "url": "https://git.outfoxxed.me/quickshell/quickshell"
       }

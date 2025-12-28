@@ -11,6 +11,8 @@
       editor = {
         command = [
           "kitty"
+          "--class"
+          "'floatingkitty'"
           "-e"
           "nvim"
           "-f"
