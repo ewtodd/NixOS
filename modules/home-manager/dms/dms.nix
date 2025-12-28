@@ -859,10 +859,10 @@ in
 
   xdg.configFile."DankMaterialShell/clsettings.json" = {
     source = jsonFormat.generate "clsettings.json" {
-      maxHistory = 100;
+      maxHistory = 25;
       maxEntrySize = 5242880;
       autoClearDays = 1;
-      clearAtStartup = false;
+      clearAtStartup = true;
       disabled = false;
       disableHistory = false;
       disablePersist = true;
