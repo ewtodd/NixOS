@@ -32,7 +32,7 @@ in {
         }
         spawn-sh-at-startup "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left"
         spawn-sh-at-startup "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right"
-        spawn-sh-at-startup "${pkgs.protonvpn-gui}/bin/protonvpn-gui --start-minimized"
+        spawn-sh-at-startup "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized"
       '')
       (mkIf (config.Profile == "play") ''
         workspace "b-media" {
@@ -59,7 +59,7 @@ in {
         spawn-sh-at-startup "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon"
         spawn-sh-at-startup "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left"
         spawn-sh-at-startup "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right"
-        spawn-sh-at-startup "${pkgs.protonvpn-gui}/bin/protonvpn-gui --start-minimized"
+        spawn-sh-at-startup "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized"
       '')
     ];
   };

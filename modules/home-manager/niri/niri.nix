@@ -254,6 +254,12 @@ in
         default-window-height { proportion 0.700000; }
         open-floating true
         block-out-from "screen-capture"
+      }
+    window-rule {
+        match title="Proton VPN"
+        match app-id=".protonvpn-app-wrapped"
+        default-window-height { proportion 0.500000; }
+        open-floating true
     }
     window-rule {
         match title="Resident Evil 4"
