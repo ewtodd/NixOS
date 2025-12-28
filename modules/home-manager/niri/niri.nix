@@ -6,7 +6,6 @@
   inputs,
   ...
 }:
-with lib;
 let
   e = if (lib.strings.hasPrefix "e" osConfig.networking.hostName) then true else false;
   colors = config.colorScheme.palette;
@@ -49,8 +48,8 @@ in
     ./services.nix
     ./settings/profile.nix
   ]
-  ++ optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
-  ++ optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
+  ++ lib.optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
+  ++ lib.optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
   xdg.configFile."niri/config.kdl".text = ''
     input {
