@@ -19,6 +19,9 @@
           "{file}"
         ];
       };
+      content = {
+        pdfjs = true;
+      };
     };
 
     greasemonkey = [
