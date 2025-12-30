@@ -21,7 +21,7 @@
       inputs.nixpkgs.follows = "unstable";
     };
     dank-material-shell = {
-      url = "github:AvengeMedia/DankMaterialShell";
+      url = "github:ewtodd/DankMaterialShell";
       inputs.nixpkgs.follows = "unstable";
     };
   };
