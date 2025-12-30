@@ -19,7 +19,7 @@
     output "HDMI-A-1" {
         transform "normal"
         position x=-1920 y=0
-        mode "1920x1080@120.002"
+        mode "1920x1080@144.002"
     }
     output "HDMI-A-5" {
         transform "normal"
