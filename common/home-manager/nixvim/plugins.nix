@@ -113,6 +113,7 @@
         jsonls.enable = true;
         zls.enable = true;
         gopls.enable = true;
+        qmlls.enable = true;
       };
       keymaps.diagnostic = {
         "<space>j" = "goto_next";
@@ -131,10 +132,13 @@
         enable = true;
         package = pkgs.nixfmt;
       };
-      sources.formatting.black.enable = true;
-      sources.formatting.bibclean.enable = true;
-      sources.formatting.cmake_format.enable = true;
-      sources.formatting.biome.enable = true;
+      sources.formatting = {
+        black.enable = true;
+        bibclean.enable = true;
+        cmake_format.enable = true;
+        biome.enable = true;
+        qmlformat.enable = true;
+      };
     };
 
     illuminate = {
