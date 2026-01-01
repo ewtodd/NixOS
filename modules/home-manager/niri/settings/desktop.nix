@@ -26,5 +26,10 @@
         position x=0 y=0
         mode "1920x1080@75.000"
     }
-  '';
+    output "DP-4" {
+        transform "normal"
+        position x=-1920 y=0
+        mode "1920x1080@144.002"
+    } 
+    '';
 }
