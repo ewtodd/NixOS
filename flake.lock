@@ -43,11 +43,11 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1767304985,
-        "narHash": "sha256-juPGnC7ubUSuYAvZfvc77Jy3nWq1jid+7NC8ROQ4RzU=",
+        "lastModified": 1767392037,
+        "narHash": "sha256-b5E2jKui3uB3nSHcWORDJLPZxKZeiXVUO7rhZmIcxlo=",
         "owner": "ewtodd",
         "repo": "DankMaterialShell",
-        "rev": "a5ffb0d064638d84abd36f8dd357bc2246078c10",
+        "rev": "81fd9b38da865cc0d7a23d042a40171bdca7deaf",
         "type": "github"
       },
       "original": {
