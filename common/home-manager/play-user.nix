@@ -2,7 +2,8 @@
 {
   imports = [
     ./system-options.nix
-    ./xdg.nix
+    ./xdg/xdg.nix
+    ./zathura/zathura.nix
     ./kitty/kitty.nix
     ./fastfetch/fastfetch.nix
     ./theming/theming.nix
