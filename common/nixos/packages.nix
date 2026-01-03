@@ -26,7 +26,6 @@
     pavucontrol
     libreoffice
     tree
-    zathura
     htop
     nix-prefetch-github
     nixfmt
