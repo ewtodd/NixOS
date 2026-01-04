@@ -25,10 +25,10 @@
       "networkmanager"
       "wheel"
       "dialout"
-      "gamemode"
       "render"
       "video"
       "lp"
+      "tss"
     ];
   };
 
@@ -41,6 +41,7 @@
       "dialout"
       "video"
       "lp"
+      "tss"
     ];
   };
 

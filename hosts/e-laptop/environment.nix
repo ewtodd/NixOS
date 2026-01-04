@@ -1,8 +1,20 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
+  
+  security.tpm2 = {
+    enable = true;
+    pkcs11.enable = true;
+    tctiEnvironment.enable = true;
+  };
 
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+  };
+
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = [
     "mem_sleep_default=deep"
