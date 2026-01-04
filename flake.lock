@@ -315,22 +315,6 @@
         "type": "github"
       }
     },
-    "nix-mineral": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1761443828,
-        "narHash": "sha256-Dh6zq3IvLjU3wkmoM/5oVTQ0tIBn6Rm1KJ0Ri4k0yQQ=",
-        "owner": "cynicsketch",
-        "repo": "nix-mineral",
-        "rev": "395384ceabc7f1b04dc32fa92654f3cc3294f330",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cynicsketch",
-        "repo": "nix-mineral",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1762156382,
@@ -544,7 +528,6 @@
         "lanzaboote": "lanzaboote",
         "niri": "niri",
         "nix-colors": "nix-colors",
-        "nix-mineral": "nix-mineral",
         "nixpkgs": "nixpkgs_3",
         "nixvim": "nixvim",
         "remarkable": "remarkable",
