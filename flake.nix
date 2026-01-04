@@ -11,10 +11,6 @@
       url = "github:nix-community/nixvim/nixos-25.11";
     };
     nix-colors.url = "github:misterio77/nix-colors";
-    nix-mineral = {
-      url = "github:cynicsketch/nix-mineral";
-      flake = false;
-    };
     niri.url = "github:YaLTeR/niri";
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";

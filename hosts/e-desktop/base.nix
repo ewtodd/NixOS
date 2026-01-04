@@ -15,10 +15,8 @@
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/docker.nix
-    ../../modules/nixos/packages/nix-mineral.nix
   ];
 
-  # Configure ROCm targets for RX 7900 XTX
   nixpkgs.config.rocmTargets = [ "gfx1100" ];
   powerManagement.enable = true;
 

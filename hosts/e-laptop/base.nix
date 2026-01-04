@@ -14,7 +14,6 @@
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/steam.nix
     ../../modules/nixos/packages/starship.nix
-    ../../modules/nixos/packages/nix-mineral.nix
   ];
 
   DeviceType = "laptop";
