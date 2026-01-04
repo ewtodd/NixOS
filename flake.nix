@@ -46,7 +46,6 @@
           modules = [
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
-
             {
               home-manager = {
                 useGlobalPkgs = true;
