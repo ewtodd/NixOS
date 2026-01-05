@@ -6,7 +6,7 @@ in
 {
   settings = {
     currentThemeName = "custom";
-    customThemeFile = "${homeDir}/.config/DankMaterialShell/colors.json";
+    customThemeFile = "${homeDir}/.config/DankMaterialShell/dms-colors.json";
     matugenScheme = "scheme-content";
     runUserMatugenTemplates = false;
     matugenTargetMonitor = "";

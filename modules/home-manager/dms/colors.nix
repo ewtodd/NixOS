@@ -4,8 +4,8 @@ let
   jsonFormat = pkgs.formats.json { };
 in
 {
-  xdg.configFile."DankMaterialShell/colors.json" = {
-    source = jsonFormat.generate "colors.json" {
+  xdg.configFile."DankMaterialShell/dms-colors.json" = {
+    source = jsonFormat.generate "dms-colors.json" {
       dark = {
         name = "Custom";
         primary = "#${colors.base0E}";
