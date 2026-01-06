@@ -15,6 +15,12 @@
       url = "github:YaLTeR/niri";
       inputs.rust-overlay.follows = "";
     };
+    niri-nix = {
+      url = "git+https://codeberg.org/BANanaD3V/niri-nix";
+      inputs.git-hooks.follows = "";
+      inputs.niri-unstable.follows = "niri";
+      inputs.xwayland-satellite-unstable.follows = "";
+    };
     SRIM.url = "github:ewtodd/SRIM-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
     dgop = {
@@ -58,6 +64,7 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/v-desktop/home.nix;
@@ -85,6 +92,7 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/e-desktop/home.nix;
@@ -111,6 +119,7 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/v-laptop/home.nix;
@@ -138,6 +147,7 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/e-laptop/home.nix;
