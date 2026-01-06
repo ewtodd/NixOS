@@ -112,7 +112,6 @@ in
           proportion = 0.5;
         };
         preset-column-widths._children = [
-          { proportion = 0.25; }
           { proportion = 0.5; }
           { proportion = 0.75; }
         ];
