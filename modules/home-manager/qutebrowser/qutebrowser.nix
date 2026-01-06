@@ -20,6 +20,20 @@
       };
     };
 
+    perDomainSettings = {
+      "github.com" = {
+        content.javascript.clipboard = "access";
+      };
+      "mail.proton.me" = {
+        content.notifications.enabled = true;
+        content.register_protocol_handler = false;
+      };
+      "mail.google.com" = {
+        content.notifications.enabled = true;
+        content.register_protocol_handler = false;
+      };
+    };
+
     greasemonkey = [
       (pkgs.fetchurl {
         url = "https://raw.githubusercontent.com/afreakk/greasemonkeyscripts/1d1be041a65c251692ee082eda64d2637edf6444/youtube_sponsorblock.js";
