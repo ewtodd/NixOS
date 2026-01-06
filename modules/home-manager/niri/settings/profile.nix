@@ -139,10 +139,14 @@ let
 
   playConfig =
     if deviceType == "desktop" then
-      recursiveUpdate playConfigBase playConfigDesktopAdditions
+      {
+        workspace = playConfigBase.workspace ++ playConfigDesktopAdditions.workspace;
+        window-rule = playConfigBase.window-rule ++ playConfigDesktopAdditions.window-rule;
+        spawn-sh-at-startup =
+          playConfigBase.spawn-sh-at-startup ++ playConfigDesktopAdditions.spawn-sh-at-startup;
+      }
     else
       playConfigBase;
-
 in
 {
   config = mkIf (lib.strings.hasPrefix "e" osConfig.networking.hostName) {
