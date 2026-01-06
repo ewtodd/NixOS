@@ -500,6 +500,19 @@ in
         }
         {
           match._props = {
+            app-id = "Python3.13";
+          };
+          default-column-width = {
+            proportion = 0.3;
+          };
+          default-window-height = {
+            proportion = 0.6;
+          };
+          open-floating = true;
+        }
+
+        {
+          match._props = {
             title = "sim";
           };
           default-column-width = {
