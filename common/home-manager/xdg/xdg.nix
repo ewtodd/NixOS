@@ -4,6 +4,21 @@ let
   browser = if e then "org.qutebrowser.qutebrowser.desktop" else "firefox.desktop";
 in
 {
+  xdg.userDirs = lib.mkIf e {
+    enable = true;
+    createDirectories = true;
+
+    download = "$HOME/Downloads";
+
+    desktop = "$HOME/.misc";
+    documents = "$HOME/.misc";
+    music = "$HOME/.misc";
+    pictures = "$HOME/.misc";
+    publicShare = "$HOME/.misc";
+    templates = "$HOME/.misc";
+    videos = "$HOME/.misc";
+  };
+
   xdg.mimeApps = {
     enable = true;
 
