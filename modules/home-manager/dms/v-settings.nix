@@ -224,6 +224,7 @@ in
     notificationTimeoutNormal = 5000;
     notificationTimeoutCritical = 0;
     notificationPopupPosition = 0;
+    notificationHistoryEnabled = false;
     osdAlwaysShowValue = false;
     osdPosition = 0;
     osdVolumeEnabled = true;
