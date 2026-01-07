@@ -15,6 +15,7 @@ in
 {
   imports = [
     ./colors.nix
+    ./dsearch.nix
     ./plugins.nix
   ];
 
@@ -83,12 +84,8 @@ in
       configVersion = 1;
     };
     clipboardSettings = {
-      maxHistory = 25;
-      maxEntrySize = 5242880;
-      autoClearDays = 1;
-      clearAtStartup = true;
       disabled = false;
-      disableHistory = false;
+      disableHistory = true;
       disablePersist = true;
     };
     settings = settings;

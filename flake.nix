@@ -21,8 +21,6 @@
       inputs.niri-unstable.follows = "niri";
       inputs.xwayland-satellite-unstable.follows = "";
     };
-    SRIM.url = "github:ewtodd/SRIM-nix";
-    remarkable.url = "github:ewtodd/reMarkable-nix";
     dgop = {
       url = "github:AvengeMedia/dgop";
       inputs.nixpkgs.follows = "unstable";
@@ -31,6 +29,16 @@
       url = "github:ewtodd/DankMaterialShell";
       inputs.nixpkgs.follows = "unstable";
     };
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "unstable";
+    };
+    danksearch = {
+      url = "github:AvengeMedia/danksearch";
+      inputs.nixpkgs.follows = "unstable";
+    };
+    SRIM.url = "github:ewtodd/SRIM-nix";
+    remarkable.url = "github:ewtodd/reMarkable-nix";
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -64,6 +72,8 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.danksearch.homeModules.dsearch
+                  inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
@@ -92,6 +102,8 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.danksearch.homeModules.dsearch
+                  inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
@@ -119,6 +131,8 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.danksearch.homeModules.dsearch
+                  inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
@@ -147,6 +161,8 @@
                   inputs.nixvim.homeModules.nixvim
                   inputs.nix-colors.homeManagerModules.default
                   inputs.dank-material-shell.homeModules.dank-material-shell
+                  inputs.danksearch.homeModules.dsearch
+                  inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
                 ];
                 extraSpecialArgs = { inherit inputs; };
