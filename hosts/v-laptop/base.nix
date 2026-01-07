@@ -14,7 +14,6 @@
     ../../modules/nixos/services/suspend-then-hibernate.nix
     ../../modules/nixos/services/fingerprint.nix
     ../../modules/nixos/packages/docker.nix
-    ../../modules/nixos/packages/moonlight.nix
   ];
 
   DeviceType = "laptop";

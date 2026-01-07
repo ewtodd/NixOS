@@ -8,10 +8,7 @@
     ../../modules/nixos/desktopEnvironment/desktopEnvironment.nix
     ../../modules/nixos/services/ssh.nix
     ../../modules/nixos/services/tailscale.nix
-    ../../modules/nixos/services/sunshine.nix
     ../../modules/nixos/packages/steam.nix
-    ../../modules/nixos/packages/freecad.nix
-    ../../modules/nixos/packages/blender-hip.nix
     ../../modules/nixos/packages/obs.nix
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/docker.nix
