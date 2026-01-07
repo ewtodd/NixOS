@@ -11,7 +11,6 @@
   ];
   home.packages = with pkgs; [
     signal-desktop
-    gamescope
     mangohud
     android-tools
     mumble
