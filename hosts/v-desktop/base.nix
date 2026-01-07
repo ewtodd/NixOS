@@ -13,7 +13,6 @@
     ../../modules/nixos/packages/starship.nix
     ../../modules/nixos/packages/docker.nix
     ../../modules/nixos/services/ssh.nix
-    ../../modules/nixos/services/sunshine.nix
     ../../modules/nixos/services/tailscale.nix
   ];
 
