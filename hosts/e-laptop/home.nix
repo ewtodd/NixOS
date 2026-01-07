@@ -28,10 +28,9 @@
         phone-home = "ssh e-play@ssh.ethanwtodd.com -p 2222";
         files-home = "sftp -P 2222 e-play@ssh.ethanwtodd.com";
       };
-
       FontChoice = "Ubuntu Nerd Font";
-      WallpaperPath = "/etc/nixos/modules/home-manager/niri/wallpapers/eris.png";
-      colorScheme = inputs.nix-colors.colorSchemes.eris;
+      WallpaperPath = "/etc/nixos/hosts/e-laptop/play.png";
+      colorScheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
     };
 
   "e-work" =
@@ -64,9 +63,8 @@
           credential.helper = "store";
         };
       };
-
-      WallpaperPath = "/etc/nixos/modules/home-manager/niri/wallpapers/kanagawa.png";
       FontChoice = "Ubuntu Nerd Font";
+      WallpaperPath = "/etc/nixos/hosts/e-laptop/work.png";
       colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
     };
   "root" =

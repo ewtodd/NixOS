@@ -1,6 +1,7 @@
 { config, osConfig, ... }:
 let
   deviceType = osConfig.DeviceType;
+  profile = config.Profile;
   homeDir = config.home.homeDirectory;
 in
 {
@@ -21,7 +22,7 @@ in
     nightModeEnabled = false;
     animationSpeed = 1;
     customAnimationDuration = 500;
-    wallpaperFillMode = "Fill";
+    wallpaperFillMode = if (profile == "play") then "Tile" else "Fill";
     blurredWallpaperLayer = true;
     blurWallpaperOnOverview = false;
     showLauncherButton = true;

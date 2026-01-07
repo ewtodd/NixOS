@@ -25,8 +25,8 @@
         };
       };
       FontChoice = "Ubuntu Nerd Font";
-      WallpaperPath = "/etc/nixos/modules/home-manager/niri/wallpapers/eris.png";
-      colorScheme = inputs.nix-colors.colorSchemes.eris;
+      WallpaperPath = "/etc/nixos/hosts/e-desktop/play.png";
+      colorScheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
     };
   "e-work" =
     { inputs, ... }:
@@ -58,7 +58,7 @@
         vpn = ''sudo openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
       };
       FontChoice = "Ubuntu Nerd Font";
-      WallpaperPath = "/etc/nixos/modules/home-manager/niri/wallpapers/kanagawa.png";
+      WallpaperPath = "/etc/nixos/hosts/e-desktop/work.png";
       colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
     };
 
