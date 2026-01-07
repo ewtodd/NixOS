@@ -34,7 +34,6 @@
     poppler-utils
     pciutils
     unzip
-    paprefs
     wineWowPackages.stable
     winetricks
     zip
