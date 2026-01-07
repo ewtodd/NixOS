@@ -334,6 +334,20 @@ in
         position = 0;
         rightWidgets = [
           {
+            id = "cpuUsage";
+            enabled = true;
+            minimumWidth = true;
+          }
+          {
+            id = "memUsage";
+            enabled = true;
+            minimumWidth = true;
+          }
+          {
+            id = "separator";
+            enabled = true;
+          }
+          {
             id = "systemTray";
             enabled = true;
           }
