@@ -349,14 +349,6 @@ in
             id = "separator";
             enabled = true;
           }
-          {
-            id = "clipboard";
-            enabled = true;
-          }
-          {
-            id = "separator";
-            enabled = true;
-          }
         ]
         ++ (
           if deviceType == "laptop" then

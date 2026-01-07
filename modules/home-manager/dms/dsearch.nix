@@ -1,0 +1,6 @@
+{ ... }:
+{
+  programs.dsearch = {
+    enable = true;
+  };
+}
