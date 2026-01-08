@@ -38,6 +38,7 @@
       inputs.nixpkgs.follows = "unstable";
     };
     SRIM.url = "github:ewtodd/SRIM-nix";
+    lisepp.url = "github:ewtodd/LISEplusplus-nix";
     remarkable.url = "github:ewtodd/reMarkable-nix";
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
@@ -61,6 +62,7 @@
             system = "x86_64-linux";
           };
           modules = [
+            ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
@@ -91,6 +93,8 @@
             unstable = import unstable { system = "x86_64-linux"; };
           };
           modules = [
+            ./modules
+            inputs.lanzaboote.nixosModules.lanzaboote
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
@@ -120,6 +124,7 @@
             system = "x86_64-linux";
           };
           modules = [
+            ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
@@ -149,6 +154,7 @@
             system = "x86_64-linux";
           };
           modules = [
+            ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             inputs.lanzaboote.nixosModules.lanzaboote

@@ -1,9 +1,14 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-  boot.loader.systemd-boot = {
+  boot.initrd.systemd.enable = true;
+
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+
+  boot.lanzaboote = {
     enable = true;
-    configurationLimit = 10;
+    pkiBundle = "/var/lib/sbctl";
   };
+
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
   boot.initrd.luks.devices."luks-0c8c96c9-7128-4635-8958-2e2cead680a0".device =
