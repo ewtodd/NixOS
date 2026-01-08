@@ -30,7 +30,7 @@
     "kvm-intel"
     "v4l2loopback"
   ];
-  security.polkit.enable = true;
+
   boot.supportedFilesystems = [ "btrfs" ];
 
   fileSystems."/" = {

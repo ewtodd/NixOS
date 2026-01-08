@@ -4,8 +4,44 @@
     ./extra-packages.nix
     ./hardware-configuration.nix
     ./environment.nix
-    ./base.nix
   ];
+
+  systemOptions = {
+    graphics.intel.enable = true;
+    audio.chromebook.enable = true;
+    hardware.suzyqable.enable = true;
+    deviceType.laptop.enable = true;
+    services.ssh.enable = true;
+    services.tailscale.enable = true;
+    owner.e.enable = true;
+  };
+
+  users.users.e-play = {
+    isNormalUser = true;
+    description = "ethan-play";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "dialout"
+      "render"
+      "video"
+      "lp"
+      "tss"
+    ];
+  };
+
+  users.users.e-work = {
+    isNormalUser = true;
+    description = "ethan-work";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "dialout"
+      "video"
+      "lp"
+      "tss"
+    ];
+  };
 
   time.timeZone = "America/New_York";
   networking.hostName = "e-laptop";
