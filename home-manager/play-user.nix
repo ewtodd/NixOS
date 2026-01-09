@@ -1,6 +1,7 @@
 { osConfig, ... }:
 {
   imports = [
+    ./desktopEnvironment
     ./packages
     ./system-options
     ./theming
