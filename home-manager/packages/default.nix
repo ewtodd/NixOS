@@ -27,11 +27,9 @@ let
 in
 {
   imports = [
-    ./dms
     ./fastfetch
     ./git
     ./kitty
-    ./niri
     ./nixvim
     ./qutebrowser
     ./zathura
