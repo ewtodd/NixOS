@@ -44,6 +44,7 @@ in
   environment.systemPackages =
     with pkgs;
     [
+      pavucontrol
       git
       gh
       nh
