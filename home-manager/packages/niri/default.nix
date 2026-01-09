@@ -587,6 +587,12 @@ in
         }
         {
           match._props = {
+            app-id = "Matplotlib";
+          };
+          open-floating = true;
+        }
+        {
+          match._props = {
             title = "Resident Evil 4";
           };
           variable-refresh-rate = true;
