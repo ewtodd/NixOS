@@ -19,8 +19,6 @@
       imports = [
         ../../home-manager/work-user.nix
       ];
-      programs.bash.shellAliases = {
-      };
       colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
     };
   "root" =

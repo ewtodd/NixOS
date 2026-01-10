@@ -11,7 +11,6 @@
     audio.chromebook.enable = true;
     hardware.suzyqable.enable = true;
     deviceType.laptop.enable = true;
-    services.ssh.enable = true;
     services.tailscale.enable = true;
     owner.e.enable = true;
   };
