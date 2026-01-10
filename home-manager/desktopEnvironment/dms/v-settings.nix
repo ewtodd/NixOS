@@ -401,6 +401,8 @@ in
         widgetOutlineOpacity = 1;
         widgetOutlineThickness = 1;
         widgetTransparency = 1;
+        scrollYBehavior = "none";
+        scrollXBehavior = "none";
       }
     ];
   };
