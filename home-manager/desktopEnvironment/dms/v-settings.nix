@@ -124,8 +124,6 @@ in
     appLauncherGridColumns = 4;
     spotlightCloseNiriOverview = true;
     niriOverviewOverlayEnabled = true;
-    weatherLocation = "Baton Rouge, Louisiana";
-    weatherCoordinates = "30.4494155,-91.1869659";
     useAutoLocation = false;
     weatherEnabled = true;
     networkPreference = "auto";

@@ -10,6 +10,13 @@ let
     if (osConfig.systemOptions.owner.e.enable) then ./e-settings.nix else ./v-settings.nix;
   importedSettings = import settingsFile { inherit config osConfig; };
   settings = importedSettings.settings;
+  weatherLocation =
+    if (osConfig.systemOptions.owner.e.enable) then "Ann Arbor, Michigan" else "Baton Rouge, Louisiana";
+  weatherCoordinates =
+    if (osConfig.systemOptions.owner.e.enable) then
+      "42.2813722,-83.7484616"
+    else
+      "30.4494155,-91.1869659";
 in
 {
   imports = [
@@ -61,6 +68,8 @@ in
       enabledGpuPciIds = [ ];
       wifiDeviceOverride = "";
       weatherHourlyDetailed = true;
+      weatherLocation = weatherLocation;
+      weatherCoordinates = weatherCoordinates;
       wallpaperCyclingEnabled = false;
       wallpaperCyclingMode = "interval";
       wallpaperCyclingInterval = 300;
