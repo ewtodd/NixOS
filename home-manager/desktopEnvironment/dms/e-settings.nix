@@ -125,8 +125,6 @@ in
     appLauncherGridColumns = 4;
     spotlightCloseNiriOverview = true;
     niriOverviewOverlayEnabled = true;
-    weatherLocation = "Ann Arbor, Michigan";
-    weatherCoordinates = "42.2813722,-83.7484616";
     useAutoLocation = false;
     weatherEnabled = true;
     networkPreference = "auto";
