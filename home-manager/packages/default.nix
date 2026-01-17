@@ -24,6 +24,20 @@ let
       rootbrowse_desktop
     ];
   };
+  zoombrowse_bin = pkgs.writeShellScriptBin "zoombrowse_bin" "${pkgs.firefox}/bin/firefox --private-window zoom.us & disown";
+  zoombrowse_desktop = pkgs.makeDesktopItem {
+    name = "zoom";
+    desktopName = "zoom";
+    type = "Application";
+    exec = "${zoombrowse_bin}/bin/zoombrowse_bin";
+  };
+  zoombrowse_package = pkgs.symlinkJoin {
+    name = "zoombrowse";
+    paths = [
+      zoombrowse_bin
+      zoombrowse_desktop
+    ];
+  };
 in
 {
   imports = [
@@ -50,6 +64,9 @@ in
       lisepp
       SRIM
       rootbrowse_package
+    ]
+    ++ lib.optionals (profile == "work" && osConfig.systemOptions.owner.e.enable) [
+      zoombrowse_package
     ];
 
   programs.bash = {
