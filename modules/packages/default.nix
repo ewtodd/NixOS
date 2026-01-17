@@ -44,7 +44,6 @@ in
   environment.systemPackages =
     with pkgs;
     [
-      pavucontrol
       git
       gh
       nh
@@ -69,7 +68,10 @@ in
     ]
     ++ lib.optionals (config.systemOptions.apps.zoom.enable) [ zoom-us ]
     ++ lib.optionals (config.systemOptions.apps.remarkable.enable) [ remarkable ]
-    ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ];
+    ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ]
+    ++ lib.optionals (!config.systemOptions.owner.e.enable) [
+      pavucontrol
+    ];
 
   environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {
     windows = "quickemu --vm /home/v-work/.config/qemu/windows-11.conf";
