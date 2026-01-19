@@ -4,6 +4,7 @@
     vim.o.splitbelow = false
     vim.o.splitright = false
   '';
+
   programs.nixvim.plugins = {
     web-devicons = {
       enable = true;
@@ -229,6 +230,6 @@
     indent-blankline = {
       enable = true;
     };
-
   };
+
 }
