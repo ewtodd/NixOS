@@ -8,10 +8,6 @@
 let
   unstable = inputs.unstable.legacyPackages.${pkgs.system};
   remarkable = inputs.remarkable.packages."x86_64-linux".default;
-  lock-false = {
-    Value = false;
-    Status = "locked";
-  };
   e = config.systemOptions.owner.e.enable;
 in
 {
@@ -53,6 +49,7 @@ in
           ImproveSuggest = false;
           Locked = true;
         };
+        SearchSuggestEnabled = false;
         OverrideFirstRunPage = "";
         OverridePostUpdatePage = "";
         DontCheckDefaultBrowser = true;
@@ -69,7 +66,7 @@ in
             "Google"
             "Bing"
             "Perplexity"
-            "Amazon"
+            "Amazon.com"
           ];
         };
 
@@ -99,22 +96,44 @@ in
             Status = "locked";
           };
 
-          "extensions.pocket.enabled" = lock-false;
-          "browser.topsites.contile.enabled" = lock-false;
-          "browser.formfill.enable" = lock-false;
-          "browser.search.suggest.enabled" = lock-false;
-          "browser.search.suggest.enabled.private" = lock-false;
-          "browser.urlbar.suggest.searches" = lock-false;
-          "browser.urlbar.showSearchSuggestionsFirst" = lock-false;
-          "browser.newtabpage.activity-stream.feeds.section.topstories" = lock-false;
-          "browser.newtabpage.activity-stream.feeds.snippets" = lock-false;
-          "browser.newtabpage.activity-stream.section.highlights.includePocket" = lock-false;
-          "browser.newtabpage.activity-stream.section.highlights.includeBookmarks" = lock-false;
-          "browser.newtabpage.activity-stream.section.highlights.includeDownloads" = lock-false;
-          "browser.newtabpage.activity-stream.section.highlights.includeVisited" = lock-false;
-          "browser.newtabpage.activity-stream.showSponsored" = lock-false;
-          "browser.newtabpage.activity-stream.system.showSponsored" = lock-false;
-          "browser.newtabpage.activity-stream.showSponsoredTopSites" = lock-false;
+          "extensions.pocket.enabled" = false;
+          "browser.topsites.contile.enabled" = false;
+          "browser.formfill.enable" = false;
+          "browser.search.suggest.enabled" = false;
+          "browser.search.suggest.enabled.private" = false;
+          "browser.urlbar.suggest.addons" = false;
+          "browser.urlbar.suggest.amp" = false;
+          "browser.urlbar.suggest.bookmark" = false;
+          "browser.urlbar.suggest.calculator" = false;
+          "browser.urlbar.suggest.clipboard" = false;
+          "browser.urlbar.suggest.engines" = false;
+          "browser.urlbar.suggest.history" = false;
+          "browser.urlbar.suggest.importantDates" = false;
+          "browser.urlbar.suggest.mdn" = false;
+          "browser.urlbar.suggest.openpage" = false;
+          "browser.urlbar.suggest.quickactions" = false;
+          "browser.urlbar.suggest.realtimeOptIn" = false;
+          "browser.urlbar.suggest.recentsearches" = false;
+          "browser.urlbar.suggest.remotetab" = false;
+          "browser.urlbar.suggest.semanticHistory.minLength" = 0;
+          "browser.urlbar.suggest.sports" = false;
+          "browser.urlbar.suggest.topsites" = false;
+          "browser.urlbar.suggest.trending" = false;
+          "browser.urlbar.suggest.weather" = false;
+          "browser.urlbar.suggest.wikipedia" = false;
+          "browser.urlbar.suggest.yelp" = false;
+          "browser.urlbar.suggest.yelpRealtime" = false;
+          "browser.urlbar.showSearchSuggestionsFirst" = false;
+          "browser.urlbar.quicksuggest.enabled" = false;
+          "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+          "browser.newtabpage.activity-stream.feeds.snippets" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includePocket" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includeBookmarks" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includeDownloads" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includeVisited" = false;
+          "browser.newtabpage.activity-stream.showSponsored" = false;
+          "browser.newtabpage.activity-stream.system.showSponsored" = false;
+          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
         };
       };
     };
