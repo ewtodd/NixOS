@@ -11,34 +11,19 @@ let
   colors = config.colorScheme.palette;
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
   radius = "10";
-  open-nix-docs-firefox = pkgs.writeShellScript "open-nix-docs-firefox" ''
+  open-nix-docs = pkgs.writeShellScript "open-nix-docs-firefox" ''
     ${pkgs.firefox}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ \
       -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
-  open-nix-docs-qutebrowser = pkgs.writeShellScript "open-nix-docs-qutebrowser" ''
-    ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://search.nixos.org/ 
-  '';
-  open-fidget-window-qutebrowser = pkgs.writeShellScript "open-fidget-window-qutebrowser" ''
-    ${pkgs.qutebrowser}/bin/qutebrowser --target private-window https://monkeytype.com
-  '';
-  open-fidget-window-firefox = pkgs.writeShellScript "open-fidget-window-firefox" ''
+  open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" ''
       ${pkgs.firefox}/bin/firefox --new-window \
     -url https://monkeytype.com 
   '';
-  open-nix-docs = if e then open-nix-docs-qutebrowser else open-nix-docs-firefox;
-  open-fidget-window = if e then open-fidget-window-qutebrowser else open-fidget-window-firefox;
-  open-browser-window =
-    if e then "${pkgs.qutebrowser}/bin/qutebrowser --target window" else "${pkgs.firefox}/bin/firefox";
-
-  open-private-window =
-    if e then
-      "${pkgs.qutebrowser}/bin/qutebrowser --target private-window"
-    else
-      "${pkgs.firefox}/bin/firefox --private-window";
-
+  open-browser-window = "${pkgs.firefox}/bin/firefox";
+  open-private-window = "${pkgs.firefox}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
   unstable = import inputs.unstable { system = "x86_64-linux"; };

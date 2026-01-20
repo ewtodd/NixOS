@@ -88,7 +88,7 @@ let
       }
       {
         match._props = {
-          app-id = "org.qutebrowser.qutebrowser";
+          app-id = "firefox";
         };
         default-column-width = {
           proportion = alt-proportion;
@@ -120,7 +120,7 @@ let
     window-rule = [
       {
         match._props = {
-          app-id = "org.qutebrowser.qutebrowser";
+          app-id = "firefox";
         };
         default-column-width = {
           proportion = alt-proportion;

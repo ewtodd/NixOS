@@ -8,7 +8,7 @@
 let
   e = if (osConfig.systemOptions.owner.e.enable) then true else false;
   profile = config.Profile;
-  browser = if e then "org.qutebrowser.qutebrowser.desktop" else "firefox.desktop";
+  browser = "firefox.desktop";
 in
 {
   xdg.userDirs = lib.mkIf e {
