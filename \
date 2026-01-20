@@ -20,7 +20,7 @@ in
     firefox = {
       enable = true;
 
-      policies = lib.mkIf e {
+      policies = {
         DisableTelemetry = true;
         DisableFirefoxStudies = true;
         EnableTrackingProtection = {
@@ -30,48 +30,20 @@ in
           Fingerprinting = true;
         };
 
-        FirefoxHome = {
-          SponsoredPocket = false;
-          Pocket = false;
-          Highlights = false;
-          SponsoredTopSites = false;
-          TopSites = false;
-          Search = false;
-          Locked = true;
-        };
-
         DisablePocket = true;
         DisableFirefoxAccounts = true;
         DisableAccounts = true;
         DisableFirefoxScreenshots = true;
-        DisableSetDesktopBackground = true;
-        DisableMasterPasswordCreation = true;
-        DisableFormHistory = true;
-        FirefoxSuggest = {
-          WebSuggestions = false;
-          SponsoredSuggestions = false;
-          ImproveSuggest = false;
-          Locked = true;
-        };
         OverrideFirstRunPage = "";
         OverridePostUpdatePage = "";
         DontCheckDefaultBrowser = true;
-        DisplayBookmarksToolbar = "never";
+        DisplayBookmarksToolbar = "newtab";
         DisplayMenuBar = "default-off";
         SearchBar = "unified";
         AutofillAddressEnabled = false;
         AutofillCreditCardEnabled = false;
         GenerativeAI.Enabled = false;
-        OfferToSaveLogins = false;
-        SearchEngines = {
-          Default = "DuckDuckGo";
-          Remove = [
-            "Google"
-            "Bing"
-            "Perplexity"
-            "Amazon"
-          ];
-        };
+        OfferToSaveLogins=false;
 
         ExtensionSettings = {
           "*".installation_mode = "blocked";
@@ -83,11 +55,6 @@ in
           };
           "jid1-MnnxcxisBPnSXQ@jetpack" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/privacy-badger17/latest.xpi";
-            installation_mode = "force_installed";
-            private_browsing = true;
-          };
-          "vimium-c@gdh1995.cn" = {
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/vimium-c/latest.xpi";
             installation_mode = "force_installed";
             private_browsing = true;
           };
