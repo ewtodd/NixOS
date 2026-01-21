@@ -307,7 +307,7 @@ in
         ];
         maximizeDetection = true;
         name = "Main Bar";
-        noBackground = true;
+        noBackground = false;
         openOnOverview = false;
         popupGapsAuto = true;
         popupGapsManual = 4;
@@ -346,11 +346,6 @@ in
             [ ]
         )
         ++ [
-          {
-            id = "spacer";
-            enabled = true;
-            size = 5;
-          }
           {
             id = "controlCenterButton";
             enabled = true;
