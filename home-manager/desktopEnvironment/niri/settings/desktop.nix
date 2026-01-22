@@ -28,15 +28,6 @@ let
         };
       }
       {
-        _args = [ "HDMI-A-1" ];
-        transform = "normal";
-        position._props = {
-          x = -1920;
-          y = 0;
-        };
-        mode = "1920x1080@144.002";
-      }
-      {
         _args = [ "HDMI-A-5" ];
         transform = "normal";
         position._props = {
@@ -44,6 +35,20 @@ let
           y = 0;
         };
         mode = "1920x1080@75.000";
+      }
+      {
+        _args = [ "HDMI-A-1" ];
+        transform = "normal";
+        position._props = {
+          x = -1920;
+          y = 0;
+        };
+        mode = "1920x1080@74.973";
+        layout = {
+          default-column-width = {
+            proportion = 0.75;
+          };
+        };
       }
       {
         _args = [ "DP-4" ];
