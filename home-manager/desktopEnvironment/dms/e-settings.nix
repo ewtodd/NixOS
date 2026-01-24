@@ -354,7 +354,7 @@ in
         ];
         screenPreferences = [ "all" ];
         showOnLastDisplay = true;
-        spacing = 4;
+        spacing = 8;
         squareCorners = false;
         transparency = 1;
         visible = true;
