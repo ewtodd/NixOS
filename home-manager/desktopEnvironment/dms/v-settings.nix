@@ -17,6 +17,7 @@ in
     cornerRadius = 10;
     use24HourClock = false;
     showSeconds = false;
+    padHours12Hour = true;
     useFahrenheit = true;
     nightModeEnabled = false;
     animationSpeed = 1;
