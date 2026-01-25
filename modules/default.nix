@@ -2,10 +2,11 @@
 with lib;
 {
   imports = [
-    ./packages
-    ./hardware
-    ./services
     ./desktopEnvironment
+    ./hardware
+    ./packages
+    ./security
+    ./services
   ];
 
   options = {
@@ -27,6 +28,8 @@ with lib;
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate.";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
+
+      security.harden.enable = mkEnableOption "Try to reasonably harden NixOS.";
 
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
     };
