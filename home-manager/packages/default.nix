@@ -67,7 +67,7 @@ in
       ll = "ls -l";
       vpn =
         lib.mkIf (profile == "work" && osConfig.systemOptions.owner.e.enable)
-          ''sudo openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
+          ''sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
       phone-home = lib.mkIf (
         osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.laptop.enable
       ) "ssh ${config.home.username}@ssh.ethanwtodd.com -p 2222";
