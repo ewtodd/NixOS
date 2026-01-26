@@ -103,10 +103,23 @@ let
         };
       }
     ];
+    layer-rule = [
+      {
+        match._props = {
+          namespace = "kitty-background";
+        };
+        place-within-backdrop = true;
+      }
+    ];
     spawn-sh-at-startup = [
       [ "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
+    ]
+    ++ optionals (deviceType == "desktop") [
+      [
+        "${pkgs.kitty}/bin/kitten panel --edge=background --class kitty-background --output-name HDMI-A-1 btop"
+      ]
     ];
   };
 
@@ -136,9 +149,22 @@ let
         };
       }
     ];
+    layer-rule = [
+      {
+        match._props = {
+          namespace = "kitty-background";
+        };
+        place-within-backdrop = true;
+      }
+    ];
     spawn-sh-at-startup = [
       [ "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
+    ]
+    ++ optionals (deviceType == "desktop") [
+      [
+        "${pkgs.kitty}/bin/kitten panel --edge=background --class kitty-background --output-name HDMI-A-1 btop"
+      ]
     ];
     binds = {
       "Mod+o" = {
