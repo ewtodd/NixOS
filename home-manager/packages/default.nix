@@ -51,6 +51,14 @@ in
       rootbrowse_package
     ];
 
+  programs.btop = {
+    enable = true;
+    package = if (osConfig.systemOptions.graphics.amd.enable) then pkgs.btop-rocm else pkgs.btop;
+    settings = {
+      color_theme = "TTY";
+    };
+  };
+
   programs.bash = {
     enable = true;
     enableCompletion = true;
