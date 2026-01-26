@@ -44,8 +44,8 @@ in
       environment.systemPackages = with pkgs; [
         rocmPackages.rocminfo
         rocmPackages.rocm-smi
+        btop-rocm
         lm_sensors
-        nvtopPackages.amd
       ];
     })
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
@@ -60,7 +60,10 @@ in
         ];
         extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
       };
-      environment.systemPackages = with pkgs; [ lm_sensors ];
+      environment.systemPackages = with pkgs; [
+        btop
+        lm_sensors
+      ];
     })
     (lib.mkIf (config.systemOptions.audio.chromebook.enable) {
       environment = {

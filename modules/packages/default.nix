@@ -180,9 +180,6 @@ in
       wget
       libreoffice
       tree
-      htop
-      btop
-      nix-prefetch-github
       nixfmt
       tree
       usbutils
