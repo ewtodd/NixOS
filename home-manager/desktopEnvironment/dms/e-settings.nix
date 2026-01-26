@@ -269,7 +269,7 @@ in
         borderEnabled = true;
         borderOpacity = 1;
         borderThickness = 2;
-        bottomGap = 0;
+        bottomGap = -5;
         centerWidgets = [
           {
             id = "clock";
@@ -354,7 +354,7 @@ in
         ];
         screenPreferences = [ "all" ];
         showOnLastDisplay = true;
-        spacing = 8;
+        spacing = 4;
         squareCorners = false;
         transparency = 1;
         visible = true;
