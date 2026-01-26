@@ -28,7 +28,7 @@ in
             name = "Ollama (local)";
             npm = "@ai-sdk/openai-compatible";
             options = {
-              baseURL = "http://127.0.0.1:11434";
+              baseURL = "http://127.0.0.1:11434/v1";
             };
             models = {
               "llama3.2" = {
