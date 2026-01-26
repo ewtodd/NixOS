@@ -50,6 +50,11 @@ with lib;
       layout = "us";
       variant = "";
     };
+
+    systemd.tmpfiles.rules = [
+      "Z /sys/class/powercap/intel-rapl:0/energy_uj 0444 root root - -"
+    ];
+
     services.interception-tools = {
       enable = true;
       plugins = with pkgs.interception-tools-plugins; [
