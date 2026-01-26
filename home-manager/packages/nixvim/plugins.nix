@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  osConfig,
+  ...
+}:
 {
   programs.nixvim.extraConfigLua = ''
     vim.o.splitbelow = false
@@ -231,5 +236,4 @@
       enable = true;
     };
   };
-
 }
