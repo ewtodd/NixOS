@@ -258,12 +258,17 @@ in
     updaterTerminalAdditionalParams = "";
     displayNameMode = "system";
     screenPreferences = {
-      wallpaper = [ "all" ];
+      wallpaper = [
+        {
+          name = "DP-3";
+          model = "Sceptre O34";
+        }
+      ];
     };
     showOnLastDisplay = { };
     barConfigs = [
       {
-        autoHide = false;
+        autoHide = true;
         autoHideDelay = 250;
         borderColor = "primary";
         borderEnabled = true;
