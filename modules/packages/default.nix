@@ -181,6 +181,7 @@ in
       libreoffice
       tree
       htop
+      btop
       nix-prefetch-github
       nixfmt
       tree
