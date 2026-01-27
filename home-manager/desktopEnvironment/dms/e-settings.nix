@@ -268,7 +268,7 @@ in
     showOnLastDisplay = { };
     barConfigs = [
       {
-        autoHide = true;
+        autoHide = false;
         autoHideDelay = 250;
         borderColor = "primary";
         borderEnabled = true;
@@ -357,7 +357,12 @@ in
             enabled = true;
           }
         ];
-        screenPreferences = [ "all" ];
+        screenPreferences = [
+          {
+            name = "DP-3";
+            model = "Sceptre O34";
+          }
+        ];
         showOnLastDisplay = true;
         spacing = 4;
         squareCorners = false;
