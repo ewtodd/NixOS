@@ -102,7 +102,7 @@
 
       firewall = {
         enable = true;
-        allowedTCPPorts = [ 2222 ];
+        allowedTCPPorts = [ 2222 ] ++ lib.optionals (config.systemOptions.services.ai.enable) [ 11434 ];
       };
     };
   };
