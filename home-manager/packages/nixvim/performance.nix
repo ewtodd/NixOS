@@ -13,6 +13,7 @@
             sha256 = "sha256-nN2hV95KCiauvDgnWtHVbvpHz2oVyCRvwWt+e02EhUA=";
           };
         })
+        pkgs.vimPlugins.snacks-nvim
       ];
     };
 

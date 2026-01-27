@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, osConfig, ... }:
 {
 
   programs.nixvim.keymaps = [
@@ -191,6 +191,123 @@
         "v"
       ];
       options = {
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>lua Snacks.terminal.toggle()<CR>";
+      key = "<leader>tt";
+      mode = [ "n" ];
+      options = {
+        desc = "Toggle terminal";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>wincmd h<CR>";
+      key = "<C-h>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Go to left window";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>wincmd l<CR>";
+      key = "<C-l>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Go to right window";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>wincmd j<CR>";
+      key = "<C-j>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Go to below window";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>wincmd k<CR>";
+      key = "<C-k>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Go to above window";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>vertical resize -5<CR>";
+      key = "<C-Left>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Decrease window width";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>vertical resize +5<CR>";
+      key = "<C-Right>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Increase window width";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>resize -5<CR>";
+      key = "<C-Up>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Decrease window height";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>resize +5<CR>";
+      key = "<C-Down>";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "Increase window height";
+        nowait = true;
+      };
+    }
+    {
+      action = "<cmd>VimtexCompile<CR>";
+      key = "<leader>vc";
+      mode = [
+        "n"
+        "t"
+      ];
+      options = {
+        desc = "VimtexCompile";
         nowait = true;
       };
     }
