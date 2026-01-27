@@ -6,7 +6,6 @@
   ...
 }:
 let
-  niri = inputs.niri.packages."x86_64-linux".default;
   unstable = import inputs.unstable { system = "x86_64-linux"; };
   homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
 in
@@ -19,7 +18,7 @@ in
   };
   programs.niri = {
     enable = true;
-    package = niri;
+    package = unstable.niri;
   };
 
   environment.systemPackages = with pkgs; [
