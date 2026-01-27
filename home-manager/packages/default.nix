@@ -27,7 +27,6 @@ let
 in
 {
   imports = [
-    ./ai
     ./fastfetch
     ./git
     ./kitty

@@ -5,6 +5,7 @@
   ...
 }:
 {
+
   programs.nixvim.extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
@@ -171,7 +172,6 @@
           ];
         };
         sources = [
-          { name = "zk"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer";
@@ -234,6 +234,20 @@
     cmp-cmdline.enable = true;
     indent-blankline = {
       enable = true;
+    };
+
+    snacks = {
+      enable = true;
+      settings = {
+        input.enabled = true;
+        picker.enabled = true;
+        terminal = {
+          enabled = true;
+          win = {
+            position = "right";
+          };
+        };
+      };
     };
   };
 }
