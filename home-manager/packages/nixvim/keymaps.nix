@@ -253,7 +253,7 @@
     }
     {
       action = "<cmd>vertical resize -5<CR>";
-      key = "<C-Left>";
+      key = "<C-Right>";
       mode = [
         "n"
         "t"
@@ -265,7 +265,7 @@
     }
     {
       action = "<cmd>vertical resize +5<CR>";
-      key = "<C-Right>";
+      key = "<C-Left>";
       mode = [
         "n"
         "t"
