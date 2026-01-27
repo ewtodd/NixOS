@@ -1,4 +1,4 @@
-{ lib, osConfig, ... }:
+{ ... }:
 {
 
   programs.nixvim.keymaps = [
