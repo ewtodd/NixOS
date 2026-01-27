@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 {
@@ -12,11 +11,6 @@
 
       sudo.enable = lib.mkForce false;
       sudo-rs.enable = lib.mkForce true;
-    };
-
-    security.apparmor = {
-      enable = true;
-      packages = [ pkgs.apparmor-profiles ];
     };
 
     security.pam.loginLimits = [
@@ -40,10 +34,7 @@
 
     boot.kernelParams = [
       "slab_nomerge"
-      "init_on_alloc=1"
-      "init_on_free=1"
       "page_alloc.shuffle=1"
-      "pti=on"
       "randomize_kstack_offset=on"
       "vsyscall=none"
       "debugfs=off"
