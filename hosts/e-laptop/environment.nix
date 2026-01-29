@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 {
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_lqx;
 
   boot.initrd.systemd.enable = true;
 
@@ -21,7 +21,6 @@
   boot.kernelParams = [
     "mem_sleep_default=deep"
     "acpi.ec_no_wakeup=1"
-    "intel_pstate=passive"
   ];
 
   systemd.services.disable-all-wakeups = {
