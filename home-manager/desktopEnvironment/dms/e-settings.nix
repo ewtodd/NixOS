@@ -23,7 +23,7 @@ in
     nightModeEnabled = false;
     animationSpeed = 1;
     customAnimationDuration = 500;
-    wallpaperFillMode = if (profile == "play") then "Tile" else "Fill";
+    wallpaperFillMode = "Fill";
     blurredWallpaperLayer = true;
     blurWallpaperOnOverview = false;
     showLauncherButton = true;

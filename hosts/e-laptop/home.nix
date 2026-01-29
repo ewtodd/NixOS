@@ -8,7 +8,7 @@
       imports = [
         ../../home-manager/play-user.nix
       ];
-      colorScheme = inputs.nix-colors.colorSchemes.catppuccin-frappe;
+      colorScheme = inputs.nix-colors.colorSchemes.harmonic16-dark;
     };
   "e-work" =
     { inputs, ... }:
