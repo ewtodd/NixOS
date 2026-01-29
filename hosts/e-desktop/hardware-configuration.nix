@@ -2,6 +2,7 @@
   config,
   lib,
   modulesPath,
+  pkgs,
   ...
 }:
 {
@@ -10,9 +11,23 @@
   systemd.targets.tpm2 = {
     enable = false;
   };
+
   powerManagement = {
     enable = true;
     powertop.enable = false;
+    cpuFreqGovernor = lib.mkForce "performance";
+  };
+
+  systemd.services.cpu-performance-bias = {
+    description = "Set CPU energy performance bias to performance";
+    wantedBy = [ "multi-user.target" ];
+    script = ''
+      ${pkgs.linuxPackages.cpupower}/bin/cpupower set -b 0
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
   };
 
   boot.initrd.availableKernelModules = [
