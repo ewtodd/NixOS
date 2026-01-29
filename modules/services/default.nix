@@ -1,8 +1,13 @@
 {
+  inputs,
+  pkgs,
   config,
   lib,
   ...
 }:
+let
+  unstable = inputs.unstable.legacyPackages.${pkgs.system};
+in
 {
   config = lib.mkMerge [
     (lib.mkIf (config.systemOptions.services.ssh.enable) {
@@ -36,6 +41,16 @@
     })
     (lib.mkIf (config.systemOptions.services.tailscale.enable) {
       services.tailscale = {
+        enable = true;
+      };
+    })
+    (lib.mkIf (config.systemOptions.services.ai.enable) {
+      services.ollama = {
+        enable = true;
+        package = unstable.ollama-rocm;
+        acceleration = "rocm";
+      };
+      services.nextjs-ollama-llm-ui = {
         enable = true;
       };
     })

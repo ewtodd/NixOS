@@ -70,6 +70,14 @@ in
           ];
         };
 
+        Bookmarks = [
+          {
+            Title = "Check library access!";
+            URL = "javascript:void(location.href='http://apps.lib.umich.edu/api/bookmarklet/proxy/?url=%27+encodeURIComponent(location.href));";
+            Placement = "menu";
+          }
+        ];
+
         ExtensionSettings = {
           "*".installation_mode = "blocked";
           "uBlock0@raymondhill.net" = {
