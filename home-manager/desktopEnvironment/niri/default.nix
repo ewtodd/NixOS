@@ -193,7 +193,9 @@ in
           spawn = [
             "sh"
             "-c"
-            "systemctl --user restart dms.service"
+            "systemctl --user restart dms.service ${
+              lib.optionalString (e && deviceType == "desktop") "kitty-background-panel.service"
+            }"
           ];
         };
         "Mod+Shift+e" = {
