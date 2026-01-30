@@ -3,6 +3,24 @@
 
   programs.nixvim.keymaps = [
     {
+      action = "<C-f>";
+      key = "<S-j>";
+      mode = "n";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
+      action = "<C-b>";
+      key = "<S-k>";
+      mode = "n";
+      options = {
+        noremap = true;
+        silent = true;
+      };
+    }
+    {
       action = "<cmd>WhichKey<CR>";
       key = "<A-w>";
       mode = [
