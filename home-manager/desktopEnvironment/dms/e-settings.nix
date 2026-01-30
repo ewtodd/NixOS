@@ -263,6 +263,9 @@ in
           name = "DP-3";
           model = "Sceptre O34";
         }
+        {
+          name = "eDP-1";
+        }
       ];
     };
     showOnLastDisplay = { };
