@@ -9,4 +9,7 @@ The work account contains useful aliases for common data analysis tools used in 
 <!---->
 # Roadmap
 - [x] Move geant4 development environment into its own repo as a flake, so that each geant4 project has its own flake.nix.
-- [ ] Create proper headless compositor sessions for accessing desktops remotely via Sunshine/Moonlight.
+- [ ] Create proper headless compositor sessions for accessing desktops remotely via Sunshine/Moonlight. 
+- [ ] Expose nixvim configuration as a package in the flake that can be used with nix run. 
+- [ ] Add screenshots to the README. 
+- [ ] Create a system configuration for live USB (including calameres installer). 
