@@ -218,6 +218,7 @@ in
     maxFprintTries = 5;
     lockScreenActiveMonitor = "all";
     lockScreenInactiveColor = "#000000";
+    lockScreenNotificationMode = 2;
     hideBrightnessSlider = false;
     notificationTimeoutLow = 5000;
     notificationTimeoutNormal = 5000;
