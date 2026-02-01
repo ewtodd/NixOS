@@ -24,6 +24,7 @@ let
       rootbrowse_desktop
     ];
   };
+  unstable = inputs.unstable.legacyPackages.${pkgs.system};
 in
 {
   imports = [
@@ -53,9 +54,18 @@ in
 
   programs.btop = {
     enable = true;
-    package = if (osConfig.systemOptions.graphics.amd.enable) then pkgs.btop-rocm else pkgs.btop;
+    package =
+      if (osConfig.systemOptions.graphics.amd.enable) then unstable.btop-rocm else unstable.btop;
     settings = {
       color_theme = "TTY";
+      vim_keys = true;
+      proc_tree = true;
+      proc_per_core = true;
+      show_swap = false;
+      io_mode = true;
+      update_ms = 1000;
+      base_10_sizes = true;
+      shown_boxes = "cpu mem proc";
     };
   };
 
