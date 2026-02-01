@@ -38,7 +38,6 @@ let
       }
       {
         _args = [ "HDMI-A-1" ];
-        transform = "270";
         position._props = {
           x = -1080;
           y = 0;
