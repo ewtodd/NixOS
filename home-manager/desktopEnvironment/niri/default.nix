@@ -194,7 +194,9 @@ in
             "sh"
             "-c"
             "systemctl --user restart dms.service ${
-              lib.optionalString (e && deviceType == "desktop") "kitty-background-panel.service"
+              lib.optionalString (
+                e && deviceType == "desktop"
+              ) "kitty-background-panel.service stack-to-n.service"
             }"
           ];
         };

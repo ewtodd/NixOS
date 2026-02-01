@@ -444,14 +444,6 @@ let
       }
       {
         match._props = {
-          app-id = "firefox";
-        };
-        default-column-width = {
-          proportion = alt-proportion;
-        };
-      }
-      {
-        match._props = {
           app-id = "spotify";
         };
         default-column-width = {
@@ -483,14 +475,6 @@ let
       }
     ];
     window-rule = [
-      {
-        match._props = {
-          app-id = "firefox";
-        };
-        default-column-width = {
-          proportion = alt-proportion;
-        };
-      }
       {
         match._props = {
           app-id = "signal";
@@ -553,6 +537,7 @@ let
       {
         workspace = playConfigBase.workspace ++ playConfigDesktopAdditions.workspace;
         window-rule = playConfigBase.window-rule ++ playConfigDesktopAdditions.window-rule;
+        layer-rule = playConfigBase.layer-rule ++ playConfigBase.layer-rule;
         spawn-sh-at-startup =
           playConfigBase.spawn-sh-at-startup ++ playConfigDesktopAdditions.spawn-sh-at-startup;
       }
