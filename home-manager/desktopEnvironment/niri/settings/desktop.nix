@@ -45,7 +45,7 @@ let
         mode = "1920x1080@74.973";
         layout = {
           default-column-width = {
-            proportion = 1.0;
+            proportion = 0.75;
           };
         };
       }
