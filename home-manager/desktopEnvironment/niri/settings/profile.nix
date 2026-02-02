@@ -34,29 +34,6 @@ let
     };
   };
 
-  createStackService = lib.mkIf (deviceType == "desktop") {
-    systemd.user.services.stack-to-n = {
-      Unit = {
-        Description = "Make vertical monitor in niri act like a regular tiling wm.";
-        After = [
-          "graphical-session.target"
-          "niri.service"
-        ];
-        PartOf = [ "graphical-session.target" ];
-      };
-
-      Service = {
-        ExecStart = "${pkgs.python3}/bin/python3 ${stack-to-n}";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
-  };
-
   primaryMonitor = if deviceType == "desktop" then "DP-3" else "eDP-1";
   secondaryMonitor =
     if deviceType == "desktop" then
