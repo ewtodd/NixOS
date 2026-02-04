@@ -2,12 +2,13 @@
   pkgs,
   lib,
   config,
-  osConfig,
+  osConfig ? null,
   inputs,
   ...
 }:
 let
   profile = config.Profile;
+  isLinux = pkgs.stdenv.isLinux;
   lisepp = inputs.lisepp.packages.${pkgs.stdenv.hostPlatform.system}.default;
   SRIM = inputs.SRIM.packages.${pkgs.stdenv.hostPlatform.system}.default;
   rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin" "${pkgs.root}/bin/rootbrowse --web=off";
@@ -25,26 +26,34 @@ let
     ];
   };
   unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
+  # Safely access osConfig
+  hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
 in
 {
-  imports = [
-    ./fastfetch
-    ./git
-    ./kitty
-    ./nixvim
-    ./zathura
-  ];
+  imports =
+    [
+      ../shell.nix
+      ./ai
+      ./fastfetch
+      ./git
+      ./kitty
+      ./nixvim
+    ]
+    ++ lib.optionals isLinux [
+      ./zathura
+    ];
 
   home.packages =
     with pkgs;
     [ ]
-    ++ lib.optionals (profile == "play") [
+    ++ lib.optionals (isLinux && profile == "play") [
       signal-desktop
       mangohud
       android-tools
       mumble
     ]
-    ++ lib.optionals (profile == "work") [
+    ++ lib.optionals (isLinux && profile == "work") [
       pkgs.clang-tools
       pkgs.slack
       lisepp
@@ -54,8 +63,7 @@ in
 
   programs.btop = {
     enable = true;
-    package =
-      if (osConfig.systemOptions.graphics.amd.enable) then unstable.btop-rocm else unstable.btop;
+    package = if hasAMD then unstable.btop-rocm else unstable.btop;
     settings = {
       color_theme = "TTY";
       vim_keys = true;
@@ -66,24 +74,6 @@ in
       update_ms = 1000;
       base_10_sizes = true;
       shown_boxes = "cpu mem proc";
-    };
-  };
-
-  programs.bash = {
-    enable = true;
-    enableCompletion = true;
-    shellAliases = {
-      ll = "ls -l";
-      vpn =
-        lib.mkIf (profile == "work" && osConfig.systemOptions.owner.e.enable)
-          ''sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup="UMVPN-Only U-M Traffic alt" umvpn.umnet.umich.edu'';
-      phone-home = lib.mkIf (
-        osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.laptop.enable
-      ) "ssh ${config.home.username}@ssh.ethanwtodd.com -p 2222";
-      files-home = lib.mkIf (
-        osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.laptop.enable
-      ) "sftp -P 2222 ${config.home.username}@ssh.ethanwtodd.com";
-
     };
   };
 }

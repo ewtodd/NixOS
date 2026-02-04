@@ -71,22 +71,24 @@
       ...
     }:
     let
-      # Helper to create home-manager shared modules
-      mkHomeManagerSharedModules = inputs: [
+      # Common home-manager modules shared across all platforms
+      mkHomeManagerCommonModules = inputs: [
         inputs.nixvim.homeModules.nixvim
         inputs.nix-colors.homeManagerModules.default
-        inputs.dank-material-shell.homeModules.dank-material-shell
-        inputs.danksearch.homeModules.dsearch
-        inputs.dms-plugin-registry.modules.default
-        inputs.niri-nix.homeModules.default
         {
           programs.nixvim.nixpkgs.useGlobalPackages = true;
         }
       ];
 
+      # Additional NixOS-specific home-manager modules
+      mkHomeManagerNixosModules = inputs: [
+        inputs.dank-material-shell.homeModules.dank-material-shell
+        inputs.danksearch.homeModules.dsearch
+        inputs.dms-plugin-registry.modules.default
+        inputs.niri-nix.homeModules.default
+      ];
+
       # Helper to create a NixOS system configuration
-      # hostname: name of the host (e.g., "v-desktop")
-      # useLanzaboote: whether to include lanzaboote module (for secure boot)
       mkNixSystem =
         {
           hostname,
@@ -103,7 +105,8 @@
             };
           };
           modules = [
-            ./modules
+            ./modules/common
+            ./modules/nixos
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
@@ -112,7 +115,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "hm-backup";
-                sharedModules = mkHomeManagerSharedModules inputs;
+                sharedModules = mkHomeManagerCommonModules inputs ++ mkHomeManagerNixosModules inputs;
                 extraSpecialArgs = {
                   inherit inputs;
                 };
@@ -123,6 +126,49 @@
           ]
           ++ nixpkgs.lib.optionals useLanzaboote [
             inputs.lanzaboote.nixosModules.lanzaboote
+          ];
+        };
+
+      # Helper to create a Darwin system configuration
+      mkDarwinSystem =
+        { hostname }:
+        nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = {
+            inherit inputs;
+          };
+          modules = [
+            ./modules/common
+            ./modules/darwin
+            inputs.home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "hm-backup";
+                sharedModules = mkHomeManagerCommonModules inputs;
+                extraSpecialArgs = {
+                  inherit inputs;
+                };
+                users = import ./hosts/${hostname}/home.nix;
+              };
+            }
+            inputs.nix-homebrew.darwinModules.nix-homebrew
+            {
+              nix-homebrew = {
+                enable = true;
+                enableRosetta = true;
+                user = "e-host"; # TODO: Make this configurable per-host
+                taps = {
+                  "homebrew/homebrew-core" = inputs.homebrew-core;
+                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                  "FelixKratz/homebrew-formulae" = inputs.homebrew-borders;
+                  "J-x-Z/homebrew-tap" = inputs.homebrew-jxz;
+                };
+                mutableTaps = false;
+              };
+            }
+            ./hosts/${hostname}/configuration.nix
           ];
         };
     in
@@ -139,43 +185,9 @@
           useLanzaboote = true;
         };
       };
-      darwinConfigurations."e-darwin" = nix-darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        specialArgs = {
-          inherit inputs;
-        };
-        modules = [
-          inputs.home-manager.darwinModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "hm-backup";
-              sharedModules = [
-                inputs.nixvim.homeModules.nixvim
-                inputs.nix-colors.homeManagerModules.default
-              ];
-              extraSpecialArgs = { inherit inputs; };
-              users = import ./hosts/e-darwin/home.nix;
-            };
-          }
-          inputs.nix-homebrew.darwinModules.nix-homebrew
-          {
-            nix-homebrew = {
-              enable = true;
-              enableRosetta = true;
-              user = "e-host";
-              taps = {
-                "homebrew/homebrew-core" = inputs.homebrew-core;
-                "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                "FelixKratz/homebrew-formulae" = inputs.homebrew-borders;
-                "J-x-Z/homebrew-tap" = inputs.homebrew-jxz;
-              };
-              mutableTaps = false;
-            };
-          }
-          ./hosts/e-darwin/configuration.nix
-        ];
+
+      darwinConfigurations = {
+        e-darwin = mkDarwinSystem { hostname = "e-darwin"; };
       };
     };
 }

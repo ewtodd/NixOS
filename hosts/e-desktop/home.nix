@@ -6,7 +6,7 @@
       home.homeDirectory = "/home/e-play";
       home.stateVersion = "25.05";
       imports = [
-        ../../home-manager/play-user.nix
+        ../../home-manager/common/profiles/play.nix
       ];
       colorScheme = inputs.nix-colors.colorSchemes.harmonic16-dark;
     };
@@ -17,7 +17,7 @@
       home.homeDirectory = "/home/e-work";
       home.stateVersion = "25.05";
       imports = [
-        ../../home-manager/work-user.nix
+        ../../home-manager/common/profiles/work.nix
       ];
       colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
     };
