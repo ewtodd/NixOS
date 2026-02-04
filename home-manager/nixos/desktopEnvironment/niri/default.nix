@@ -1,15 +1,16 @@
 {
   config,
   lib,
-  osConfig,
+  osConfig ? null,
   pkgs,
   inputs,
   ...
 }:
 let
-  e = if (osConfig.systemOptions.owner.e.enable) then true else false;
+  isLinux = pkgs.stdenv.isLinux;
+  e = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
   colors = config.colorScheme.palette;
-  deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
+  deviceType = if osConfig != null && (osConfig.systemOptions.deviceType.desktop.enable or false) then "desktop" else "laptop";
   radius = "10";
   open-nix-docs = pkgs.writeShellScript "open-nix-docs-firefox" ''
     ${pkgs.firefox}/bin/firefox --new-window \
