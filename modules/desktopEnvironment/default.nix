@@ -6,7 +6,9 @@
   ...
 }:
 let
-  unstable = import inputs.unstable { system = "x86_64-linux"; };
+  unstable = import inputs.unstable {
+    system = pkgs.stdenv.hostPlatform.system;
+  };
   homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
 in
 {

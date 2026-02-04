@@ -1,7 +1,6 @@
 {
   pkgs,
-  lib,
-  osConfig,
+
   ...
 }:
 {
@@ -12,10 +11,6 @@
   '';
 
   programs.nixvim.plugins = {
-    claude-code = lib.mkIf (osConfig.systemOptions.services.ai.enable) {
-      enable = true;
-    };
-
     web-devicons = {
       enable = true;
     };
