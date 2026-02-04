@@ -7,6 +7,8 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.11";
     };
@@ -40,13 +42,31 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-borders = {
+      url = "github:FelixKratz/homebrew-formulae";
+      flake = false;
+    };
+    homebrew-jxz = {
+      url = "github:J-x-Z/homebrew-tap";
+      flake = false;
+    };
+      };
 
   outputs =
     inputs@{
       self,
       nixpkgs,
       unstable,
+      nix-darwin,
       ...
     }:
     {
@@ -174,6 +194,44 @@
             ./hosts/e-laptop/configuration.nix
           ];
         };
+      };
+      darwinConfigurations."e-darwin" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit inputs;
+        };
+        modules = [
+          inputs.home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                inputs.nix-colors.homeManagerModules.default
+              ];
+              extraSpecialArgs = { inherit inputs; };
+              users = import ./hosts/e-darwin/home.nix;
+            };
+          }
+          inputs.nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              enable = true;
+              enableRosetta = true;
+              user = "e-host";
+              taps = {
+                "homebrew/homebrew-core" = inputs.homebrew-core;
+                "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                "FelixKratz/homebrew-formulae" = inputs.homebrew-borders;
+                "J-x-Z/homebrew-tap" = inputs.homebrew-jxz;
+              };
+              mutableTaps = false;
+            };
+          }
+          ./hosts/e-darwin/configuration.nix
+        ];
       };
     };
 }
