@@ -207,6 +207,9 @@ in
     ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ]
     ++ lib.optionals (!config.systemOptions.owner.e.enable) [
       pavucontrol
+    ]
+    ++ lib.optionals (config.systemOptions.services.ai.enable) [
+      claude-code
     ];
 
   environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {

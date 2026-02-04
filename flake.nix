@@ -62,6 +62,7 @@
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
@@ -73,6 +74,9 @@
                   inputs.danksearch.homeModules.dsearch
                   inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
+                  {
+                    programs.nixvim.nixpkgs.useGlobalPackages = true;
+                  }
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/v-desktop/home.nix;
@@ -86,7 +90,10 @@
           specialArgs = {
             inherit inputs;
             system = "x86_64-linux";
-            unstable = import unstable { system = "x86_64-linux"; };
+            unstable = import unstable {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
           };
           modules = [
             ./modules
@@ -94,6 +101,7 @@
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
@@ -105,6 +113,9 @@
                   inputs.danksearch.homeModules.dsearch
                   inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
+                  {
+                    programs.nixvim.nixpkgs.useGlobalPackages = true;
+                  }
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/e-desktop/home.nix;
@@ -124,6 +135,7 @@
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
@@ -135,6 +147,9 @@
                   inputs.danksearch.homeModules.dsearch
                   inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
+                  {
+                    programs.nixvim.nixpkgs.useGlobalPackages = true;
+                  }
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/v-laptop/home.nix;
@@ -155,6 +170,7 @@
             inputs.dank-material-shell.nixosModules.greeter
             inputs.lanzaboote.nixosModules.lanzaboote
             {
+              nixpkgs.config.allowUnfree = true;
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
@@ -166,6 +182,9 @@
                   inputs.danksearch.homeModules.dsearch
                   inputs.dms-plugin-registry.modules.default
                   inputs.niri-nix.homeModules.default
+                  {
+                    programs.nixvim.nixpkgs.useGlobalPackages = true;
+                  }
                 ];
                 extraSpecialArgs = { inherit inputs; };
                 users = import ./hosts/e-laptop/home.nix;
