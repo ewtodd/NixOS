@@ -158,7 +158,7 @@
               nix-homebrew = {
                 enable = true;
                 enableRosetta = true;
-                user = "e-host"; # TODO: Make this configurable per-host
+                user = "e-darwin";
                 taps = {
                   "homebrew/homebrew-core" = inputs.homebrew-core;
                   "homebrew/homebrew-cask" = inputs.homebrew-cask;

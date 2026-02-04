@@ -1,10 +1,10 @@
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   systemOptions = {
     owner.e.enable = true;
   };
 
-  system.primaryUser = "e-host";
+  system.primaryUser = "e-darwin";
 
   networking.hostName = "e-darwin";
   networking.computerName = "e-darwin";
@@ -16,8 +16,8 @@
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   users.users.e-host = {
-    name = "e-host";
-    home = "/Users/e-host";
+    name = "e-darwin";
+    home = "/Users/e-darwin";
     shell = pkgs.zsh;
   };
 }

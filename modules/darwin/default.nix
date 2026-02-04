@@ -8,7 +8,8 @@
   config = {
     nix.settings.experimental-features = "nix-command flakes";
 
-    # Enable zsh system-wide
+    users.defaultUserShell = pkgs.zsh;
+
     programs.zsh.enable = true;
 
     environment.variables.EDITOR = "nvim";
@@ -27,7 +28,6 @@
 
     nixpkgs.config.allowUnfree = true;
 
-    # Common Darwin system packages
     environment.systemPackages = with pkgs; [
       git
       gh
