@@ -49,6 +49,7 @@ The configuration is organized into three main layers:
 └── hosts/{hostname}/
     ├── configuration.nix               # Host system config (enables systemOptions)
     ├── hardware-configuration.nix      # NixOS only
+    ├── environment.nix                 # NixOS only, handles all things kernel
     └── home.nix                        # User definitions (imports profiles)
 ```
 <!---->
