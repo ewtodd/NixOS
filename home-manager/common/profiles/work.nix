@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, osConfig, ... }:
 {
   imports = [
     ../packages
@@ -10,5 +10,5 @@
   Profile = "work";
 
   # Platform-specific wallpaper handling (only applies on NixOS)
-  WallpaperPath = lib.mkDefault "/etc/nixos/hosts/HOSTNAME_PLACEHOLDER/work.png";
+  WallpaperPath = lib.mkDefault "/etc/nixos/hosts/${osConfig.networking.hostName}/work.png";
 }

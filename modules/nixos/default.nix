@@ -15,6 +15,7 @@ with lib;
       "flakes"
     ];
 
+    users.defaultUserShell = pkgs.zsh;
     programs.zsh.enable = true;
 
     networking = {
