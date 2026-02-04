@@ -1,11 +1,10 @@
 # NixOS & nix-darwin Multi-Host Configuration
 <!---->
-This repository manages both **NixOS** (Linux) and **nix-darwin** (macOS) systems with a unified, cross-platform configuration structure.
-The architecture maximizes code reuse while keeping platform-specific concerns isolated.
+This repository manages both **NixOS** (Linux) and **nix-darwin** (macOS) systems.
 <!---->
 ## Overview
 <!---->
-The configuration is organized into three main layers:
+The configuration is organized into three main layers per typical conventions:
 <!---->
 1. **modules/** - System-level configuration (common, nixos, darwin)
 <!---->
@@ -53,7 +52,7 @@ The configuration is organized into three main layers:
     └── home.nix                        # User definitions (imports profiles)
 ```
 <!---->
-## Key Design Patterns
+## Key Design Patterns (according to Claude)
 <!---->
 ### 1. Unified `systemOptions`
 <!---->
@@ -205,7 +204,6 @@ init-analysis-env     # Data analysis tools, semi-deprecated
 <!---->
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
-- [x] Unified cross-platform architecture for NixOS and Darwin
 - [x] Standardize on zsh across all platforms
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Expose nixvim configuration as a runnable package (`nix run`)
