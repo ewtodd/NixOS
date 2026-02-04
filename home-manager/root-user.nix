@@ -1,8 +1,8 @@
 { inputs, ... }:
 {
   imports = [
-    ./packages/nixvim
-    ./packages/kitty
+    ./common/packages/nixvim
+    ./common/packages/kitty
   ];
 
   colorScheme = inputs.nix-colors.colorSchemes.dracula;
