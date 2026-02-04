@@ -26,7 +26,9 @@ let
   open-private-window = "${pkgs.firefox}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
-  unstable = import inputs.unstable { system = "x86_64-linux"; };
+  unstable = import inputs.unstable {
+    system = pkgs.stdenv.hostPlatform.system;
+  };
 in
 {
   imports = [
