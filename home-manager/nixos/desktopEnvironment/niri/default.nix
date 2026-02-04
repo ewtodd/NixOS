@@ -39,7 +39,7 @@ in
   ++ lib.optionals (deviceType == "laptop") [ ./settings/laptop.nix ]
   ++ lib.optionals (deviceType == "desktop") [ ./settings/desktop.nix ];
 
-  wayland.windowManager.niri = {
+  wayland.windowManager.niri = lib.mkIf isLinux {
     enable = true;
     package = osConfig.programs.niri.package;
     validation.enable = true;

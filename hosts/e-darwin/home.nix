@@ -1,14 +1,13 @@
 {
-  "e-host" =
-    { inputs, ... }:
+  "e-darwin" =
+    { ... }:
     {
-      home.username = "e-host";
+      home.username = "e-darwin";
       home.stateVersion = "25.11";
 
       imports = [
-        ../../home-manager/common/profiles/work.nix
+        ../../home-manager/common/profiles/root.nix
       ];
 
-      colorScheme = inputs.nix-colors.colorSchemes.harmonic16-dark;
     };
 }

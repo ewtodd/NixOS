@@ -6,12 +6,13 @@
   ...
 }:
 let
+  isLinux = pkgs.stdenv.isLinux;
   e = if (osConfig.systemOptions.owner.e.enable) then true else false;
   profile = config.Profile;
   browser = "firefox.desktop";
 in
 {
-  xdg.userDirs = lib.mkIf e {
+  xdg.userDirs = lib.mkIf (isLinux && e) {
     enable = true;
     createDirectories = true;
 
@@ -26,7 +27,7 @@ in
     videos = "$HOME/.misc";
   };
 
-  xdg.mimeApps = {
+  xdg.mimeApps = lib.mkIf isLinux {
     enable = true;
 
     defaultApplications = {
@@ -102,11 +103,11 @@ in
     };
   };
 
-  xdg.desktopEntries.steam = lib.mkIf (profile == "work") {
+  xdg.desktopEntries.steam = lib.mkIf (isLinux && profile == "work") {
     name = "Steam";
     noDisplay = true;
   };
-  xdg.configFile = lib.mkIf (profile == "work") {
+  xdg.configFile = lib.mkIf (isLinux && profile == "work") {
     "clangd/config.yaml".text = ''
       CompileFlags:
         Add: [

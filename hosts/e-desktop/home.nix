@@ -26,6 +26,6 @@
     {
       home.username = "root";
       home.stateVersion = "25.05";
-      imports = [ ../../home-manager/root-user.nix ];
+      imports = [ ../../home-manager/common/profiles/root.nix ];
     };
 }
