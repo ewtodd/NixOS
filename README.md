@@ -25,8 +25,10 @@ The configuration is organized into three main layers:
 <!---->
 1.
 **modules/** - System-level configuration (common, nixos, darwin)
+<!---->
 2.
 **home-manager/** - User-level configuration (common, nixos, darwin)
+<!---->
 3.
 **hosts/** - Per-host specific configuration
 <!---->
@@ -73,6 +75,7 @@ The configuration is organized into three main layers:
 <!---->
 ### 1.
 Unified `systemOptions`
+<!---->
 All hosts have access to `systemOptions` defined in `modules/common/default.nix`:
 <!---->
 ```nix
@@ -86,6 +89,7 @@ systemOptions = {
 <!---->
 ### 2.
 Profile System
+<!---->
 Users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
 <!---->
 ```nix
@@ -104,8 +108,8 @@ Users are organized into **work**, **play**, or **root** profiles that import al
 Each platform module uses `mkIf pkgs.stdenv.isLinux` or `mkIf pkgs.stdenv.isDarwin` internally to control activation.
 The **root** profile only imports darwin modules since root users don't need desktop environment configurations.
 <!---->
-### 3.
-Platform Detection
+### 3. Platform Detection
+<!---->
 Modules use `pkgs.stdenv.isLinux` / `isDarwin` with `mkIf` for conditional activation:
 <!---->
 ```nix
@@ -123,8 +127,8 @@ in
 }
 ```
 <!---->
-### 4.
-Safe `osConfig` Access
+### 4. Safe `osConfig` Access
+<!---->
 Home-manager modules safely access system options:
 <!---->
 ```nix
@@ -198,12 +202,11 @@ darwinConfigurations.new-darwin = mkDarwinSystem { hostname = "new-darwin"; };
 ## Modifying Configuration
 <!---->
 ### Add System Feature
-1.
-Add option to `modules/common/default.nix`
-2.
-Create module in `modules/nixos/` or `modules/darwin/`
-3.
-Enable in host's `configuration.nix`
+1. Add option to `modules/common/default.nix`
+<!---->
+2. Create module in `modules/nixos/` or `modules/darwin/`
+<!---->
+3. Enable in host's `configuration.nix`
 <!---->
 ### Add User Package
 Edit `home-manager/common/packages/default.nix` with platform conditionals.
