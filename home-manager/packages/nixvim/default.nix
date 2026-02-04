@@ -1,4 +1,9 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   colors = config.colorScheme.palette;
@@ -12,9 +17,8 @@ in
     ./split.nix
   ];
 
-  programs.nixvim.enable = true;
-
   programs.nixvim = {
+    enable = true;
     colorschemes = {
       base16 = {
         enable = true;
@@ -43,7 +47,7 @@ in
     };
   };
 
-  xdg.desktopEntries = {
+  xdg.desktopEntries = lib.mkIf (!pkgs.stdenv.isDarwin) {
     nvim = {
       name = "Neovim";
       genericName = "Text Editor";
@@ -51,7 +55,7 @@ in
       exec = "kitty nvim %F";
       icon = "nvim";
       type = "Application";
-      terminal = false; 
+      terminal = false;
       categories = [
         "Utility"
         "TextEditor"

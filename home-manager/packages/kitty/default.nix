@@ -1,11 +1,17 @@
 {
   config,
+  pkgs,
   osConfig,
+  lib,
   ...
 }:
 let
   colors = config.colorScheme.palette;
-  opacity = if (osConfig.systemOptions.owner.e.enable) then "1" else "0.925";
+  opacity =
+    if (pkgs.stdenv.isDarwin) then
+      "0.875"
+    else
+      (if (osConfig.systemOptions.owner.e.enable) then "1" else "0.925");
 in
 {
   programs.kitty = {
@@ -27,13 +33,16 @@ in
       strip_trailing_spaces = "smart";
       enable_audio_bell = "no";
       visual_bell_duration = 0.0;
-      hide_window_decorations = "no";
       window_padding_width = 4;
       tab_bar_edge = "bottom";
       tab_bar_style = "powerline";
       sync_to_monitor = "yes";
       confirm_os_window_close = "-1";
       notify_on_cmd_finish = "unfocused 90.0 notify";
+      background_blur = lib.mkIf (pkgs.stdenv.isDarwin) "32";
+      macos_show_window_title_in = lib.mkIf (pkgs.stdenv.isDarwin) "menubar";
+      hide_window_decorations = if (pkgs.stdenv.isDarwin) then "titlebar-only" else "no";
+
       # Use nix-colors palette
       background = "#${colors.base00}";
       foreground = "#${colors.base05}";
