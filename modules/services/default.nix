@@ -6,7 +6,7 @@
   ...
 }:
 let
-  unstable = inputs.unstable.legacyPackages.${pkgs.system};
+  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   config = lib.mkMerge [

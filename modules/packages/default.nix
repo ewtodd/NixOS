@@ -6,8 +6,8 @@
   ...
 }:
 let
-  unstable = inputs.unstable.legacyPackages.${pkgs.system};
-  remarkable = inputs.remarkable.packages."x86_64-linux".default;
+  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  remarkable = inputs.remarkable.packages.${pkgs.stdenv.hostPlatform.system}.default;
   e = config.systemOptions.owner.e.enable;
 in
 {

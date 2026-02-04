@@ -8,8 +8,8 @@
 }:
 let
   profile = config.Profile;
-  lisepp = inputs.lisepp.packages."x86_64-linux".default;
-  SRIM = inputs.SRIM.packages."x86_64-linux".default;
+  lisepp = inputs.lisepp.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  SRIM = inputs.SRIM.packages.${pkgs.stdenv.hostPlatform.system}.default;
   rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin" "${pkgs.root}/bin/rootbrowse --web=off";
   rootbrowse_desktop = pkgs.makeDesktopItem {
     name = "rootbrowse";
@@ -24,7 +24,7 @@ let
       rootbrowse_desktop
     ];
   };
-  unstable = inputs.unstable.legacyPackages.${pkgs.system};
+  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [
