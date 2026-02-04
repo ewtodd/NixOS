@@ -3,23 +3,7 @@
 This repository manages both **NixOS** (Linux) and **nix-darwin** (macOS) systems with a unified, cross-platform configuration structure.
 The architecture maximizes code reuse while keeping platform-specific concerns isolated.
 <!---->
-## Quick Start
-<!---->
-```bash
-# NixOS: Rebuild and switch
-nrs  # Alias for: nh os switch /etc/nixos
-#
-# Darwin: Rebuild and switch
-nrs  # Alias for: nh darwin switch /etc/nixos
-#
-# Update flake inputs
-nix flake update
-#
-# Fix git permissions
-fix-nixos-git
-```
-<!---->
-## Architecture Overview
+## Overview
 <!---->
 The configuration is organized into three main layers:
 <!---->
