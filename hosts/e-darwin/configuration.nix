@@ -15,7 +15,7 @@
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-  users.users.e-host = {
+  users.users.e-darwin = {
     name = "e-darwin";
     home = "/Users/e-darwin";
     shell = pkgs.zsh;

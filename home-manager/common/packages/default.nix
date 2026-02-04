@@ -32,12 +32,12 @@ let
 in
 {
   imports = [
-    ../shell.nix
     ./ai
     ./fastfetch
     ./git
     ./kitty
     ./nixvim
+    ./shell
     ./zathura
   ];
 

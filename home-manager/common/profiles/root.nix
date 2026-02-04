@@ -1,9 +1,11 @@
 { inputs, ... }:
 {
   imports = [
-    ./common/packages/nixvim
-    ./common/packages/kitty
+    ../packages
+    ../system-options
+    ../../darwin
   ];
 
+  Profile = "root";
   colorScheme = inputs.nix-colors.colorSchemes.dracula;
 }

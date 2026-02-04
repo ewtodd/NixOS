@@ -1,7 +1,12 @@
-{ ... }:
+{ pkgs, lib, ... }:
+let
+  isLinux = pkgs.stdenv.isLinux;
+in
 {
-  qt = {
-    enable = true;
-    platformTheme.name = "gtk";
+  config = lib.mkIf isLinux {
+    qt = {
+      enable = true;
+      platformTheme.name = "gtk";
+    };
   };
 }

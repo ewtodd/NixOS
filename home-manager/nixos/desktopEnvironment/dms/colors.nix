@@ -1,10 +1,11 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
+  isLinux = pkgs.stdenv.isLinux;
   colors = config.colorScheme.palette;
   jsonFormat = pkgs.formats.json { };
 in
 {
-  xdg.configFile."DankMaterialShell/dms-colors.json" = {
+  xdg.configFile."DankMaterialShell/dms-colors.json" = lib.mkIf isLinux {
     source = jsonFormat.generate "dms-colors.json" {
       dark = {
         name = "Custom";

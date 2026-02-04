@@ -1,14 +1,12 @@
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
-    ./homebrew.nix
-    ./system-defaults.nix
+    ./homebrew
+    ./system-defaults
   ];
 
   config = {
     nix.settings.experimental-features = "nix-command flakes";
-
-    users.defaultUserShell = pkgs.zsh;
 
     programs.zsh.enable = true;
 
@@ -29,6 +27,7 @@
     nixpkgs.config.allowUnfree = true;
 
     environment.systemPackages = with pkgs; [
+      claude-code
       git
       gh
       nh
@@ -36,7 +35,7 @@
       tree
       nixfmt-rfc-style
       usbutils
-      poppler_utils
+      poppler-utils
       pciutils
       unzip
       zip

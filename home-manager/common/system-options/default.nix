@@ -6,6 +6,7 @@ with lib;
       type = types.enum [
         "work"
         "play"
+        "root"
       ];
       default = "play";
       description = "Profile for user (work/play)";

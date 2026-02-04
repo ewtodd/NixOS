@@ -36,14 +36,33 @@ The configuration is organized into three main layers:
 ├── modules/
 │   ├── common/default.nix              # Cross-platform systemOptions definitions
 │   ├── nixos/                          # NixOS: desktop env, hardware, security, services
-│   └── darwin/                         # macOS: homebrew, system defaults
+│   │   ├── desktopEnvironment/         # Niri compositor & DMS shell
+│   │   ├── hardware/                   # Graphics, audio, fingerprint, etc.
+│   │   ├── packages/                   # System packages
+│   │   ├── security/                   # Security hardening
+│   │   └── services/                   # System services
+│   └── darwin/                         # macOS system configuration
+│       ├── homebrew/                   # Homebrew package management
+│       └── system-defaults/            # macOS system preferences
 ├── home-manager/
-│   ├── common/                         # Cross-platform: packages, shell (zsh), profiles
-│   │   ├── profiles/{work,play}.nix    # Unified profiles that auto-import platform modules
-│   │   ├── packages/                   # nixvim, git, kitty, fastfetch, etc.
-│   │   └── shell.nix                   # zsh + starship configuration
-│   ├── nixos/                          # NixOS: niri, DMS, theming, XDG
-│   └── darwin/                         # macOS: amethyst, karabiner
+│   ├── common/                         # Cross-platform user configuration
+│   │   ├── profiles/{work,play,root}.nix  # Unified profiles that auto-import platform modules
+│   │   ├── packages/                   # nixvim, git, kitty, zathura, etc.
+│   │   │   ├── nixvim/                 # Neovim configuration
+│   │   │   ├── shell/                  # zsh + starship
+│   │   │   └── ...                     # Other package configs
+│   │   └── system-options/             # Profile & owner options
+│   ├── nixos/                          # NixOS user configuration
+│   │   ├── desktopEnvironment/         # Niri & DMS settings
+│   │   │   ├── dms/                    # DMS colors, plugins, dsearch
+│   │   │   └── niri/                   # Niri keybinds & window rules
+│   │   ├── theming/                    # GTK & Qt themes
+│   │   └── xdg/                        # XDG directories & MIME types
+│   └── darwin/                         # macOS user configuration
+│       ├── window-management/          # Window manager configuration
+│       │   └── amethyst/               # Amethyst tiling WM
+│       └── input/                      # Input device configuration
+│           └── karabiner/              # Karabiner-Elements keyboard
 └── hosts/{hostname}/
     ├── configuration.nix               # Host system config (enables systemOptions)
     ├── hardware-configuration.nix      # NixOS only
@@ -67,7 +86,7 @@ systemOptions = {
 <!---->
 ### 2.
 Profile System
-Users are organized into **work** or **play** profiles that import all platform modules unconditionally:
+Users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
 <!---->
 ```nix
 # home-manager/common/profiles/work.nix
@@ -83,6 +102,7 @@ Users are organized into **work** or **play** profiles that import all platform 
 ```
 <!---->
 Each platform module uses `mkIf pkgs.stdenv.isLinux` or `mkIf pkgs.stdenv.isDarwin` internally to control activation.
+The **root** profile only imports darwin modules since root users don't need desktop environment configurations.
 <!---->
 ### 3.
 Platform Detection
@@ -127,7 +147,8 @@ in { /* ... */ }
 ### Darwin
 - **Window Manager:** Amethyst (tiling)
 - **Keyboard:** Karabiner-Elements
-- **Config:** `home-manager/darwin/`
+- **Config:** `home-manager/darwin/window-management/` & `home-manager/darwin/input/`
+- **System:** `modules/darwin/homebrew/` & `modules/darwin/system-defaults/`
 <!---->
 ## Shell & Terminal
 <!---->
@@ -196,33 +217,8 @@ Edit `home-manager/common/shell.nix` for cross-platform zsh aliases.
 init-dev-env          # General development
 init-latex-env        # LaTeX
 init-geant4-env       # Geant4 physics simulation
-init-analysis-env     # Data analysis tools
+init-analysis-env     # Data analysis tools, semi-deprecated
 ```
-<!---->
-## Git Workflow
-<!---->
-This repo lives in `/etc/nixos` (root-owned):
-<!---->
-```bash
-fix-nixos-git
-git add .
-git commit -m "Update configuration"
-```
-<!---->
-## Flake Inputs
-<!---->
-- **nixpkgs** (25.11), **unstable**, **home-manager**, **nix-darwin**
-- **nixvim**, **nix-colors**, **niri-nix**, **dank-material-shell**
-- **lanzaboote** (secure boot), **nix-homebrew** (Darwin)
-- Custom: SRIM, LISE++, reMarkable tools
-<!---->
-## Notes
-<!---->
-- **Generations:** Old configs remain bootable.
-Clean with `nh clean`.
-- **Caps Lock → Esc:** NixOS-wide via interception-tools.
-- **Work/Play:** Separate user accounts with different themes/packages.
-- **Darwin Homebrew:** Declaratively managed via nix-homebrew.
 <!---->
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
