@@ -1,6 +1,11 @@
-{ lib, ... }:
+{ lib, pkgs, osConfig ? null, ... }:
+let
+  isDarwin = pkgs.stdenv.isDarwin;
+  isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable or false else false;
+in
 {
-  home.file.".amethyst.yml".text = lib.generators.toYAML { } {
+  home.file.".amethyst.yml" = lib.mkIf (isDarwin && isEOwner) {
+    text = lib.generators.toYAML { } {
     layouts = [
       "tall"
       "wide"
@@ -81,5 +86,6 @@
     screen-padding-bottom = 0;
     restore-layouts-on-launch = true;
     debug-layout-info = false;
+  };
   };
 }

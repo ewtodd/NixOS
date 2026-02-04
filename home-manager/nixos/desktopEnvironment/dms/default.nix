@@ -19,7 +19,7 @@ let
   weatherCoordinates = if isEOwner then "42.2813722,-83.7484616" else "30.4494155,-91.1869659";
 in
 {
-  imports = lib.optionals isLinux [
+  imports = [
     ./colors.nix
     ./dsearch.nix
     ./plugins.nix
