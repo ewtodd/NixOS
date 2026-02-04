@@ -23,14 +23,11 @@ fix-nixos-git
 <!---->
 The configuration is organized into three main layers:
 <!---->
-1.
-**modules/** - System-level configuration (common, nixos, darwin)
+1. **modules/** - System-level configuration (common, nixos, darwin)
 <!---->
-2.
-**home-manager/** - User-level configuration (common, nixos, darwin)
+2. **home-manager/** - User-level configuration (common, nixos, darwin)
 <!---->
-3.
-**hosts/** - Per-host specific configuration
+3. **hosts/** - Per-host specific configuration
 <!---->
 ```
 /etc/nixos/
@@ -73,8 +70,7 @@ The configuration is organized into three main layers:
 <!---->
 ## Key Design Patterns
 <!---->
-### 1.
-Unified `systemOptions`
+### 1. Unified `systemOptions`
 <!---->
 All hosts have access to `systemOptions` defined in `modules/common/default.nix`:
 <!---->
@@ -87,8 +83,7 @@ systemOptions = {
 };
 ```
 <!---->
-### 2.
-Profile System
+### 2. Profile System
 <!---->
 Users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
 <!---->
