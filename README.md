@@ -60,30 +60,64 @@ systemOptions = {
 };
 ```
 
-### 2. Profile System
-Users are organized into **work** or **play** profiles that automatically import platform-specific modules:
+### 2. No Conditional Imports Philosophy
+
+**Critical Design Principle**: This configuration **never uses conditional imports**. All modules are imported unconditionally, and platform-specific behavior is controlled via `lib.mkIf` guards inside the modules.
 
 ```nix
-# hosts/e-darwin/home.nix
+# ✅ CORRECT: Unconditional imports with mkIf guards
+{ lib, pkgs, ... }:
 {
-  "e-host" = { inputs, ... }: {
-    imports = [ ../../home-manager/common/profiles/work.nix ];
-    colorScheme = inputs.nix-colors.colorSchemes.harmonic16-dark;
+  imports = [ ./darwin ./nixos ];  # Always imported
+
+  programs.zathura = lib.mkIf pkgs.stdenv.isLinux {  # Only enabled on Linux
+    enable = true;
   };
+}
+
+# ❌ WRONG: Conditional imports cause infinite recursion
+{ lib, pkgs, ... }:
+{
+  imports = lib.optionals pkgs.stdenv.isLinux [ ./nixos ];  # DON'T DO THIS
 }
 ```
 
-The profile auto-imports:
-- Common packages (nixvim, git, kitty)
-- Common shell (zsh + starship)
-- Platform modules (niri on Linux, amethyst on Darwin)
+This prevents infinite recursion issues where `pkgs` depends on `config`, which depends on `imports`.
 
-### 3. Platform Detection
-Modules use `pkgs.stdenv.isLinux` / `isDarwin` for conditional behavior:
+### 3. Profile System
+Users are organized into **work** or **play** profiles that import all platform modules unconditionally:
 
 ```nix
-home.packages = lib.optionals isLinux [ signal-desktop ]
-             ++ lib.optionals isDarwin [ /* macOS packages */ ];
+# home-manager/common/profiles/work.nix
+{ lib, ... }:
+{
+  imports = [
+    ../packages
+    ../../nixos    # Always imported, only activates on Linux
+    ../../darwin   # Always imported, only activates on Darwin
+  ];
+  Profile = "work";
+}
+```
+
+Each platform module uses `mkIf pkgs.stdenv.isLinux` or `mkIf pkgs.stdenv.isDarwin` internally to control activation.
+
+### 3. Platform Detection
+Modules use `pkgs.stdenv.isLinux` / `isDarwin` with `mkIf` for conditional activation:
+
+```nix
+let
+  isLinux = pkgs.stdenv.isLinux;
+in
+{
+  home.packages = lib.optionals isLinux [ signal-desktop ]
+               ++ lib.optionals isDarwin [ /* macOS packages */ ];
+
+  programs.dank-material-shell = lib.mkIf isLinux {
+    enable = true;
+    # ... NixOS-only configuration
+  };
+}
 ```
 
 ### 4. Safe `osConfig` Access
