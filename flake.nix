@@ -67,7 +67,7 @@
       # Helper to create a NixOS system configuration
       # hostname: name of the host (e.g., "v-desktop")
       # useLanzaboote: whether to include lanzaboote module (for secure boot)
-      mkNixOSSystem =
+      mkNixSystem =
         {
           hostname,
           useLanzaboote ? false,
@@ -108,13 +108,13 @@
     in
     {
       nixosConfigurations = {
-        v-desktop = mkNixOSSystem { hostname = "v-desktop"; };
-        v-laptop = mkNixOSSystem { hostname = "v-laptop"; };
-        e-desktop = mkNixOSSystem {
+        v-desktop = mkNixSystem { hostname = "v-desktop"; };
+        v-laptop = mkNixSystem { hostname = "v-laptop"; };
+        e-desktop = mkNixSystem {
           hostname = "e-desktop";
           useLanzaboote = true;
         };
-        e-laptop = mkNixOSSystem {
+        e-laptop = mkNixSystem {
           hostname = "e-laptop";
           useLanzaboote = true;
         };
