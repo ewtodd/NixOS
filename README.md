@@ -138,23 +138,20 @@ in { /* ... */ }
 - **Shell:** zsh (all platforms)
 - **Prompt:** Starship
 - **Terminal:** Kitty
-- **Editor:** Neovim (nixvim)
+- **Editor:** Neovim (Configured via nixvim)
 <!---->
-Configuration unified in `home-manager/common/shell.nix`.
+Configuration in `home-manager/common/packages/shell`.
 <!---->
 ## Profiles: Work vs Play
 <!---->
-- **Work:** clang-tools, slack, SRIM, LISE++, VPN aliases (e-owner), research tools
+- **Work:** clang-tools, slack, tools for nuclear physics data analysis
 - **Play:** signal-desktop, mangohud, android-tools, mumble, gaming tools
 <!---->
 Set per-user in `hosts/{hostname}/home.nix` via profile import.
 <!---->
 ## Theming
 <!---->
-Colors managed via **nix-colors**.
-Common schemes:
-- Work: `kanagawa`, `atelier-cave`
-- Play: `eris`, `harmonic16-dark`
+Colors managed via **nix-colors** on a per-profile basis.
 <!---->
 ```nix
 colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
@@ -178,6 +175,8 @@ Create `hosts/new-darwin/configuration.nix`, then add to flake.nix:
 darwinConfigurations.new-darwin = mkDarwinSystem { hostname = "new-darwin"; };
 ```
 <!---->
+Note that darwin is intended to act only as a host for nixOS containers, which is why it supports only a single user.
+
 ## Modifying Configuration
 <!---->
 ### Add System Feature
@@ -205,6 +204,7 @@ init-analysis-env     # Data analysis tools, semi-deprecated
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
 - [x] Standardize on zsh across all platforms
+- [ ] Declarative containers on darwin via orbstack running regular NixOS, with cocoa-way to pass through graphics.
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Expose nixvim configuration as a runnable package (`nix run`)
 - [ ] Add screenshots to README
