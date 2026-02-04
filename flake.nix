@@ -60,7 +60,7 @@
       url = "github:J-x-Z/homebrew-tap";
       flake = false;
     };
-      };
+  };
 
   outputs =
     inputs@{

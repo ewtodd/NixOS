@@ -112,11 +112,11 @@
         dockerls.enable = false;
         clangd.enable = true;
         nixd.enable = true;
-       # pylsp.enable = true;
+        # pylsp.enable = true;
         yamlls.enable = true;
         bashls.enable = true;
         texlab.enable = true;
- #       cmake.enable = true;
+        #       cmake.enable = true;
         jsonls.enable = true;
         zls.enable = true;
         gopls.enable = true;
@@ -140,9 +140,9 @@
         package = pkgs.nixfmt;
       };
       sources.formatting = {
-     #   black.enable = true;
+        #   black.enable = true;
         bibclean.enable = true;
-      #  cmake_format.enable = true;
+        #  cmake_format.enable = true;
         biome.enable = true;
         qmlformat.enable = true;
       };
