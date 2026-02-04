@@ -1,6 +1,6 @@
-{ ... }:
+{ lib, pkgs, ... }:
 {
-  programs.zathura = {
+  programs.zathura = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     options = {
       selection-clipboard = "clipboard";

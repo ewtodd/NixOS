@@ -31,18 +31,15 @@ let
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
 in
 {
-  imports =
-    [
-      ../shell.nix
-      ./ai
-      ./fastfetch
-      ./git
-      ./kitty
-      ./nixvim
-    ]
-    ++ lib.optionals isLinux [
-      ./zathura
-    ];
+  imports = [
+    ../shell.nix
+    ./ai
+    ./fastfetch
+    ./git
+    ./kitty
+    ./nixvim
+    ./zathura
+  ];
 
   home.packages =
     with pkgs;
