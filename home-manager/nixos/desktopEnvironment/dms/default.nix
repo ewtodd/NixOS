@@ -1,31 +1,31 @@
 {
-  osConfig,
+  osConfig ? null,
   config,
   inputs,
+  lib,
+  pkgs,
   ...
 }:
 let
-  wallpaperPath = config.WallpaperPath;
-  settingsFile =
-    if (osConfig.systemOptions.owner.e.enable) then ./e-settings.nix else ./v-settings.nix;
+  # Only enable on NixOS
+  isLinux = pkgs.stdenv.isLinux;
+
+  wallpaperPath = config.WallpaperPath or "/etc/nixos/hosts/HOSTNAME_PLACEHOLDER/wallpaper.png";
+  isEOwner = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
+  settingsFile = if isEOwner then ./e-settings.nix else ./v-settings.nix;
   importedSettings = import settingsFile { inherit config osConfig; };
   settings = importedSettings.settings;
-  weatherLocation =
-    if (osConfig.systemOptions.owner.e.enable) then "Ann Arbor, Michigan" else "Baton Rouge, Louisiana";
-  weatherCoordinates =
-    if (osConfig.systemOptions.owner.e.enable) then
-      "42.2813722,-83.7484616"
-    else
-      "30.4494155,-91.1869659";
+  weatherLocation = if isEOwner then "Ann Arbor, Michigan" else "Baton Rouge, Louisiana";
+  weatherCoordinates = if isEOwner then "42.2813722,-83.7484616" else "30.4494155,-91.1869659";
 in
 {
-  imports = [
+  imports = lib.optionals isLinux [
     ./colors.nix
     ./dsearch.nix
     ./plugins.nix
   ];
 
-  programs.dank-material-shell = {
+  programs.dank-material-shell = lib.mkIf isLinux {
     enable = true;
     dgop.package = inputs.dgop.packages."x86_64-linux".default;
     systemd = {
