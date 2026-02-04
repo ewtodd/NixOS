@@ -1,7 +1,6 @@
 {
   pkgs,
-  lib,
-  osConfig,
+
   ...
 }:
 {
@@ -15,6 +14,7 @@
     web-devicons = {
       enable = true;
     };
+
     lualine = {
       enable = true;
     };

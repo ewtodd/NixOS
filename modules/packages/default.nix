@@ -6,8 +6,8 @@
   ...
 }:
 let
-  unstable = inputs.unstable.legacyPackages.${pkgs.system};
-  remarkable = inputs.remarkable.packages."x86_64-linux".default;
+  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  remarkable = inputs.remarkable.packages.${pkgs.stdenv.hostPlatform.system}.default;
   e = config.systemOptions.owner.e.enable;
 in
 {
@@ -207,6 +207,9 @@ in
     ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ]
     ++ lib.optionals (!config.systemOptions.owner.e.enable) [
       pavucontrol
+    ]
+    ++ lib.optionals (config.systemOptions.services.ai.enable) [
+      claude-code
     ];
 
   environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {

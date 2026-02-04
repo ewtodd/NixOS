@@ -1,5 +1,6 @@
 {
   description = "Managing all the devices!";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -69,130 +70,73 @@
       nix-darwin,
       ...
     }:
+    let
+      # Helper to create home-manager shared modules
+      mkHomeManagerSharedModules = inputs: [
+        inputs.nixvim.homeModules.nixvim
+        inputs.nix-colors.homeManagerModules.default
+        inputs.dank-material-shell.homeModules.dank-material-shell
+        inputs.danksearch.homeModules.dsearch
+        inputs.dms-plugin-registry.modules.default
+        inputs.niri-nix.homeModules.default
+        {
+          programs.nixvim.nixpkgs.useGlobalPackages = true;
+        }
+      ];
+
+      # Helper to create a NixOS system configuration
+      # hostname: name of the host (e.g., "v-desktop")
+      # useLanzaboote: whether to include lanzaboote module (for secure boot)
+      mkNixSystem =
+        {
+          hostname,
+          useLanzaboote ? false,
+        }:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+            system = "x86_64-linux";
+            unstable = import unstable {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
+          };
+          modules = [
+            ./modules
+            inputs.home-manager.nixosModules.home-manager
+            inputs.dank-material-shell.nixosModules.greeter
+            {
+              nixpkgs.config.allowUnfree = true;
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "hm-backup";
+                sharedModules = mkHomeManagerSharedModules inputs;
+                extraSpecialArgs = {
+                  inherit inputs;
+                };
+                users = import ./hosts/${hostname}/home.nix;
+              };
+            }
+            ./hosts/${hostname}/configuration.nix
+          ]
+          ++ nixpkgs.lib.optionals useLanzaboote [
+            inputs.lanzaboote.nixosModules.lanzaboote
+          ];
+        };
+    in
     {
       nixosConfigurations = {
-        v-desktop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            system = "x86_64-linux";
-          };
-          modules = [
-            ./modules
-            inputs.home-manager.nixosModules.home-manager
-            inputs.dank-material-shell.nixosModules.greeter
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = [
-                  inputs.nixvim.homeModules.nixvim
-                  inputs.nix-colors.homeManagerModules.default
-                  inputs.dank-material-shell.homeModules.dank-material-shell
-                  inputs.danksearch.homeModules.dsearch
-                  inputs.dms-plugin-registry.modules.default
-                  inputs.niri-nix.homeModules.default
-                ];
-                extraSpecialArgs = { inherit inputs; };
-                users = import ./hosts/v-desktop/home.nix;
-              };
-            }
-            ./hosts/v-desktop/configuration.nix
-          ];
+        v-desktop = mkNixSystem { hostname = "v-desktop"; };
+        v-laptop = mkNixSystem { hostname = "v-laptop"; };
+        e-desktop = mkNixSystem {
+          hostname = "e-desktop";
+          useLanzaboote = true;
         };
-        e-desktop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            system = "x86_64-linux";
-            unstable = import unstable { system = "x86_64-linux"; };
-          };
-          modules = [
-            ./modules
-            inputs.lanzaboote.nixosModules.lanzaboote
-            inputs.home-manager.nixosModules.home-manager
-            inputs.dank-material-shell.nixosModules.greeter
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = [
-                  inputs.nixvim.homeModules.nixvim
-                  inputs.nix-colors.homeManagerModules.default
-                  inputs.dank-material-shell.homeModules.dank-material-shell
-                  inputs.danksearch.homeModules.dsearch
-                  inputs.dms-plugin-registry.modules.default
-                  inputs.niri-nix.homeModules.default
-                ];
-                extraSpecialArgs = { inherit inputs; };
-                users = import ./hosts/e-desktop/home.nix;
-              };
-            }
-            ./hosts/e-desktop/configuration.nix
-          ];
-        };
-        v-laptop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            system = "x86_64-linux";
-          };
-          modules = [
-            ./modules
-            inputs.home-manager.nixosModules.home-manager
-            inputs.dank-material-shell.nixosModules.greeter
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = [
-                  inputs.nixvim.homeModules.nixvim
-                  inputs.nix-colors.homeManagerModules.default
-                  inputs.dank-material-shell.homeModules.dank-material-shell
-                  inputs.danksearch.homeModules.dsearch
-                  inputs.dms-plugin-registry.modules.default
-                  inputs.niri-nix.homeModules.default
-                ];
-                extraSpecialArgs = { inherit inputs; };
-                users = import ./hosts/v-laptop/home.nix;
-              };
-            }
-            ./hosts/v-laptop/configuration.nix
-          ];
-        };
-        e-laptop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            system = "x86_64-linux";
-          };
-          modules = [
-            ./modules
-            inputs.home-manager.nixosModules.home-manager
-            inputs.dank-material-shell.nixosModules.greeter
-            inputs.lanzaboote.nixosModules.lanzaboote
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = [
-                  inputs.nixvim.homeModules.nixvim
-                  inputs.nix-colors.homeManagerModules.default
-                  inputs.dank-material-shell.homeModules.dank-material-shell
-                  inputs.danksearch.homeModules.dsearch
-                  inputs.dms-plugin-registry.modules.default
-                  inputs.niri-nix.homeModules.default
-                ];
-                extraSpecialArgs = { inherit inputs; };
-                users = import ./hosts/e-laptop/home.nix;
-              };
-            }
-            ./hosts/e-laptop/configuration.nix
-          ];
+        e-laptop = mkNixSystem {
+          hostname = "e-laptop";
+          useLanzaboote = true;
         };
       };
       darwinConfigurations."e-darwin" = nix-darwin.lib.darwinSystem {
