@@ -1,6 +1,6 @@
-{ lib, pkgs, ... }:
+{ ... }:
 {
-  imports = lib.optionals pkgs.stdenv.isLinux [
+  imports = [
     ./desktopEnvironment
     ./theming
     ./xdg

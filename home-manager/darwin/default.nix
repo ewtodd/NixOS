@@ -4,7 +4,7 @@ let
   isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable or false else false;
 in
 {
-  imports = lib.optionals (isDarwin && isEOwner) [
+  imports = [
     ./amethyst.nix
     ./keyboard.nix
   ];

@@ -1,6 +1,10 @@
-{ ... }:
+{ lib, pkgs, osConfig ? null, ... }:
+let
+  isDarwin = pkgs.stdenv.isDarwin;
+  isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable or false else false;
+in
 {
-  xdg.configFile."karabiner/karabiner.json" = {
+  xdg.configFile."karabiner/karabiner.json" = lib.mkIf (isDarwin && isEOwner) {
     force = true;
     text = builtins.toJSON {
       global = {
