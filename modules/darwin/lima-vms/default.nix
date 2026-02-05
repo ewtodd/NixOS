@@ -17,74 +17,88 @@ let
       memory ? "8GiB",
       disk ? "100GiB",
     }:
-    pkgs.writeText "${name}-lima.yaml" ''
-      # Lima VM configuration for ${name}
-      # Managed by nix-darwin
+    let
+      limaConfigAttr = {
+        vmType = "vz";
+        os = "Linux";
+        arch = "aarch64";
 
-      vmType: "vz"
-      os: "Linux"
-      arch: "aarch64"
+        images = [
+          {
+            location = "https://channels.nixos.org/nixos-25.05/latest-nixos-minimal-aarch64-linux.iso";
+            arch = "aarch64";
+          }
+        ];
 
-      images:
-        # Use NixOS minimal ISO as base
-        - location: "https://channels.nixos.org/nixos-25.05/latest-nixos-minimal-aarch64-linux.iso"
-          arch: "aarch64"
+        inherit cpus memory disk;
 
-      cpus: ${toString cpus}
-      memory: "${memory}"
-      disk: "${disk}"
+        mounts = [
+          {
+            location = "/nix";
+            mountPoint = "/nix";
+            writable = false;
+          }
+          {
+            location = "/etc/nixos";
+            mountPoint = "/etc/nixos";
+            writable = true;
+          }
+          {
+            location = "~";
+            mountPoint = "/mnt/darwin-home";
+            writable = false;
+          }
+        ];
 
-      # Share the Nix store from Darwin (read-only)
-      mounts:
-        - location: "/nix"
-          mountPoint: "/nix"
-          writable: false
-        - location: "/etc/nixos"
-          mountPoint: "/etc/nixos"
-          writable: true
-        - location: "~"
-          mountPoint: "/mnt/darwin-home"
-          writable: false
+        portForwards = [
+          {
+            guestPort = 5900;
+            hostPort = 0;
+          }
+        ];
 
-      # Port forwarding for Wayland
-      portForwards:
-        - guestPort: 5900  # For Wayland/VNC if needed
-          hostPort: 0
+        provision = [
+          {
+            mode = "system";
+            script = ''
+              #!/bin/bash
+              set -eux -o pipefail
 
-      # Provision script to set up NixOS
-      provision:
-        - mode: system
-          script: |
-            #!/bin/bash
-            set -eux -o pipefail
+              # Install Nix if not present
+              if ! command -v nix &> /dev/null; then
+                curl -L https://nixos.org/nix/install | sh -s -- --daemon
+                . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+              fi
 
-            # Install Nix if not present
-            if ! command -v nix &> /dev/null; then
-              curl -L https://nixos.org/nix/install | sh -s -- --daemon
-              . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-            fi
+              # Enable flakes
+              mkdir -p /etc/nix
+              cat > /etc/nix/nix.conf <<EOF
+              experimental-features = nix-command flakes
+              substituters = https://cache.nixos.org
+              trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+              EOF
 
-            # Enable flakes
-            mkdir -p /etc/nix
-            cat > /etc/nix/nix.conf <<EOF
-            experimental-features = nix-command flakes
-            substituters = https://cache.nixos.org
-            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-            EOF
+              # Build and activate the NixOS configuration
+              cd /etc/nixos
+              nix build .#nixosConfigurations.${hostname}.config.system.build.toplevel --extra-experimental-features "nix-command flakes"
+              ./result/bin/switch-to-configuration boot
+            '';
+          }
+        ];
 
-            # Build and activate the NixOS configuration
-            cd /etc/nixos
-            nix build .#nixosConfigurations.${hostname}.config.system.build.toplevel --extra-experimental-features "nix-command flakes"
-            ./result/bin/switch-to-configuration boot
-
-      probes:
-        - description: "SSH"
-          script: |
-            #!/bin/bash
-            ssh -o ConnectTimeout=1 localhost echo "SSH is ready"
-          hint: |
-            Run 'limactl shell ${name}' to open a shell in the VM
-    '';
+        probes = [
+          {
+            description = "SSH";
+            script = ''
+              #!/bin/bash
+              ssh -o ConnectTimeout=1 localhost echo "SSH is ready"
+            '';
+            hint = "Run 'limactl shell ${name}' to open a shell in the VM";
+          }
+        ];
+      };
+    in
+    pkgs.writeText "${name}-lima.yaml" (lib.generators.toYAML { } limaConfigAttr);
 
   # Helper to create VM management scripts
   mkVMScripts =
@@ -96,7 +110,7 @@ let
     in
     {
       create = pkgs.writeScriptBin "vm-${name}-create" ''
-        #!${pkgs.bash}/bin/bash
+        #!${pkgs.zsh}/bin/zsh
         set -e
         echo "Creating Lima VM: ${name}"
 
@@ -110,26 +124,26 @@ let
       '';
 
       start = pkgs.writeScriptBin "vm-${name}-start" ''
-        #!${pkgs.bash}/bin/bash
+        #!${pkgs.zsh}/bin/zsh
         set -e
         echo "Starting Lima VM: ${name}"
         ${pkgs.lima}/bin/limactl start ${name}
       '';
 
       stop = pkgs.writeScriptBin "vm-${name}-stop" ''
-        #!${pkgs.bash}/bin/bash
+        #!${pkgs.zsh}/bin/zsh
         set -e
         echo "Stopping Lima VM: ${name}"
         ${pkgs.lima}/bin/limactl stop ${name}
       '';
 
       shell = pkgs.writeScriptBin "vm-${name}-shell" ''
-        #!${pkgs.bash}/bin/bash
+        #!${pkgs.zsh}/bin/zsh
         ${pkgs.lima}/bin/limactl shell ${name}
       '';
 
       update = pkgs.writeScriptBin "vm-${name}-update" ''
-        #!${pkgs.bash}/bin/bash
+        #!${pkgs.zsh}/bin/zsh
         set -e
         echo "Updating NixOS configuration in VM: ${name}"
         ${pkgs.lima}/bin/limactl shell ${name} -- bash -c "
@@ -140,7 +154,7 @@ let
       '';
 
       rebuild = pkgs.writeScriptBin "vm-${name}-rebuild" ''
-        #!${pkgs.bash}/bin/bash
+        #!${pkgs.zsh}/bin/zsh
         set -e
         echo "Rebuilding VM ${name} from scratch"
         vm-${name}-stop
@@ -158,6 +172,7 @@ in
       [
         lima
         (writeScriptBin "vms-help" ''
+          #!${pkgs.zsh}/bin/zsh
           echo "NixOS Lima VM Management Commands:"
           echo ""
           echo "Global commands:"
@@ -190,7 +205,10 @@ in
           echo "  limactl list       - List all Lima VMs"
           echo "  limactl shell NAME - Open shell in specific VM"
         '')
-        (writeScriptBin "vms-list" ''${pkgs.lima}/bin/limactl list'')
+        (writeScriptBin "vms-list" ''
+          #!${pkgs.zsh}/bin/zsh
+          ${pkgs.lima}/bin/limactl list
+        '')
       ]
       ++ optionals cfg.work.enable (
         let
@@ -220,14 +238,17 @@ in
       )
       ++ [
         (writeScriptBin "vms-start-all" ''
+          #!${pkgs.zsh}/bin/zsh
           ${optionalString cfg.work.enable "vm-work-start"}
           ${optionalString cfg.play.enable "vm-play-start"}
         '')
         (writeScriptBin "vms-stop-all" ''
+          #!${pkgs.zsh}/bin/zsh
           ${optionalString cfg.work.enable "vm-work-stop"}
           ${optionalString cfg.play.enable "vm-play-stop"}
         '')
         (writeScriptBin "vms-update-all" ''
+          #!${pkgs.zsh}/bin/zsh
           ${optionalString cfg.work.enable "vm-work-update"}
           ${optionalString cfg.play.enable "vm-play-update"}
         '')
