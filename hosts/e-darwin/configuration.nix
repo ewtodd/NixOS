@@ -2,6 +2,11 @@
 {
   systemOptions = {
     owner.e.enable = true;
+    nixos-vms.enable = true;
+    nixos-vms.work.enable = true;
+    nixos-vms.work.autoStart = true;
+    nixos-vms.play.enable = true;
+    nixos-vms.play.autoStart = false;
   };
 
   system.primaryUser = "e-darwin";
