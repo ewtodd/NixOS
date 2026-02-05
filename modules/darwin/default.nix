@@ -3,6 +3,7 @@
   imports = [
     ./homebrew
     ./system-defaults
+    ./lima-vms
   ];
 
   config = {

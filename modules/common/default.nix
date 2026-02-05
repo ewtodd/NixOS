@@ -35,6 +35,21 @@ with lib;
 
       # Owner identification (cross-platform)
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
+
+      # NixOS VMs on Darwin (Darwin only)
+      nixos-vms.enable = mkEnableOption "Declarative NixOS Lima VMs on Darwin";
+      nixos-vms.work.enable = mkEnableOption "Work VM";
+      nixos-vms.work.autoStart = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Auto-start work VM on boot";
+      };
+      nixos-vms.play.enable = mkEnableOption "Play VM";
+      nixos-vms.play.autoStart = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Auto-start play VM on boot";
+      };
     };
   };
 }

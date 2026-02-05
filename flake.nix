@@ -184,6 +184,9 @@
           hostname = "e-laptop";
           useLanzaboote = true;
         };
+        # Container configurations for running on Darwin via OrbStack
+        e-work-container = mkNixSystem { hostname = "e-work-container"; };
+        e-play-container = mkNixSystem { hostname = "e-play-container"; };
       };
 
       darwinConfigurations = {
