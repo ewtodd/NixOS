@@ -46,10 +46,8 @@ let
           mountPoint: "/mnt/darwin-home"
           writable: false
 
-      # Port forwarding for SSH and Wayland
+      # Port forwarding for Wayland
       portForwards:
-        - guestPort: 22
-          hostPort: 0  # Auto-assign
         - guestPort: 5900  # For Wayland/VNC if needed
           hostPort: 0
 
