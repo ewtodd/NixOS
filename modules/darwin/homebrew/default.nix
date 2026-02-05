@@ -19,7 +19,6 @@ with lib;
       ];
       casks = [
         "hammerspoon"
-        "orbstack"
         "amethyst"
         "karabiner-elements"
       ];

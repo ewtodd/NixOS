@@ -6,11 +6,14 @@ This repository manages both **NixOS** (Linux) and **nix-darwin** (macOS) system
 <!---->
 The configuration is organized into three main layers per typical conventions:
 <!---->
-1. **modules/** - System-level configuration (common, nixos, darwin)
+1.
+**modules/** - System-level configuration (common, nixos, darwin)
 <!---->
-2. **home-manager/** - User-level configuration (common, nixos, darwin)
+2.
+**home-manager/** - User-level configuration (common, nixos, darwin)
 <!---->
-3. **hosts/** - Per-host specific configuration
+3.
+**hosts/** - Per-host specific configuration
 <!---->
 ```
 /etc/nixos/
@@ -54,7 +57,8 @@ The configuration is organized into three main layers per typical conventions:
 <!---->
 ## Key Design Patterns (according to Claude)
 <!---->
-### 1. Unified `systemOptions`
+### 1.
+Unified `systemOptions`
 <!---->
 All hosts have access to `systemOptions` defined in `modules/common/default.nix`:
 <!---->
@@ -67,7 +71,8 @@ systemOptions = {
 };
 ```
 <!---->
-### 2. Profile System
+### 2.
+Profile System
 <!---->
 Users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
 <!---->
@@ -176,7 +181,7 @@ darwinConfigurations.new-darwin = mkDarwinSystem { hostname = "new-darwin"; };
 ```
 <!---->
 Note that darwin is intended to act only as a host for nixOS containers, which is why it supports only a single user.
-
+<!---->
 ## Modifying Configuration
 <!---->
 ### Add System Feature
@@ -204,7 +209,8 @@ init-analysis-env     # Data analysis tools, semi-deprecated
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
 - [x] Standardize on zsh across all platforms
-- [ ] Declarative containers on darwin via orbstack running regular NixOS, with cocoa-way to pass through graphics.
+- [ ] Declarative containers on darwin running regular NixOS, with cocoa-way to pass through graphics.
+Ideally, figure out how to share one nix store between darwin and containers.
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Expose nixvim configuration as a runnable package (`nix run`)
 - [ ] Add screenshots to README
