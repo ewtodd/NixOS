@@ -49,8 +49,8 @@ in
           xkb = {
             layout = "us";
           };
-          repeat-delay = 600;
-          repeat-rate = 25;
+          repeat-delay = 280;
+          repeat-rate = 30;
           track-layout = "global";
         };
         touchpad = {
