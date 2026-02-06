@@ -23,7 +23,7 @@ let
       };
 
       Service = {
-        ExecStart = "${pkgs.kitty}/bin/kitten panel --edge=background --class kitty-background --output-name HDMI-A-1 btop";
+        ExecStart = "${pkgs.kitty}/bin/kitten panel --edge=center --layer=bottom --class kitty-background --output-name HDMI-A-1 btop";
         Restart = "on-failure";
         RestartSec = 3;
       };
