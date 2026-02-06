@@ -11,7 +11,7 @@ let
     if (pkgs.stdenv.isDarwin) then
       "0.875"
     else
-      (if (osConfig.systemOptions.owner.e.enable) then "1" else "0.925");
+      (if (osConfig.systemOptions.owner.e.enable) then "0.875" else "0.925");
 in
 {
   programs.kitty = {

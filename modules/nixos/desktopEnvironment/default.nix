@@ -9,6 +9,7 @@ let
   unstable = import inputs.unstable {
     system = pkgs.stdenv.hostPlatform.system;
   };
+  niri = inputs.niri.packages."x86_64-linux".default;
   homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
 in
 {
@@ -20,7 +21,7 @@ in
   };
   programs.niri = {
     enable = true;
-    package = unstable.niri;
+    package = niri;
   };
 
   environment.systemPackages = with pkgs; [

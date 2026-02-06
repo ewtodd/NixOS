@@ -1,7 +1,7 @@
 { config, osConfig, ... }:
 let
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
-  profile = config.Profile;
+  opacity = 0.875;
   homeDir = config.home.homeDirectory;
 in
 {
@@ -11,7 +11,7 @@ in
     matugenScheme = "scheme-content";
     runUserMatugenTemplates = false;
     matugenTargetMonitor = "";
-    popupTransparency = 1;
+    popupTransparency = opacity;
     dockTransparency = 1;
     widgetBackgroundColor = "sc";
     widgetColorMode = "default";
@@ -260,13 +260,7 @@ in
     displayNameMode = "system";
     screenPreferences = {
       wallpaper = [
-        {
-          name = "DP-3";
-          model = "Sceptre O34";
-        }
-        {
-          name = "eDP-1";
-        }
+        "all"
       ];
     };
     showOnLastDisplay = { };
@@ -370,13 +364,13 @@ in
         showOnLastDisplay = true;
         spacing = 4;
         squareCorners = false;
-        transparency = 1;
+        transparency = opacity;
         visible = true;
         widgetOutlineColor = "primary";
         widgetOutlineEnabled = false;
         widgetOutlineOpacity = 1;
         widgetOutlineThickness = 1;
-        widgetTransparency = 1;
+        widgetTransparency = 0;
         scrollYBehavior = "none";
         scrollXBehavior = "none";
       }
