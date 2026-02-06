@@ -362,8 +362,8 @@ in
           }
         ];
         showOnLastDisplay = true;
-        spacing = 4;
-        squareCorners = false;
+        spacing = 0;
+        squareCorners = true;
         transparency = opacity;
         visible = true;
         widgetOutlineColor = "primary";
