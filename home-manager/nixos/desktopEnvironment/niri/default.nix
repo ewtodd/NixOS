@@ -10,7 +10,11 @@ let
   isLinux = pkgs.stdenv.isLinux;
   e = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
   colors = config.colorScheme.palette;
-  deviceType = if osConfig != null && (osConfig.systemOptions.deviceType.desktop.enable or false) then "desktop" else "laptop";
+  deviceType =
+    if osConfig != null && (osConfig.systemOptions.deviceType.desktop.enable or false) then
+      "desktop"
+    else
+      "laptop";
   radius = "10";
   open-nix-docs = pkgs.writeShellScript "open-nix-docs-firefox" ''
     ${pkgs.firefox}/bin/firefox --new-window \
@@ -615,7 +619,25 @@ in
       };
     };
     extraConfig = lib.concatStringsSep "\n" (
-      [ ]
+      [
+        ''
+          window-rule {
+              match app-id="kitty"     
+              background-effect {
+                xray true 
+                blur {"on";} 
+              }
+          }
+          layer-rule {
+              match namespace="dms:bar"     
+              match namespace="dms:notification-popup"
+              background-effect {
+                xray true 
+                blur {"on";} 
+              }
+          }
+        ''
+      ]
       ++ lib.optionals (deviceType == "laptop") [ ''include "laptop.kdl"'' ]
       ++ lib.optionals (deviceType == "desktop") [ ''include "desktop.kdl"'' ]
       ++ lib.optionals e [ ''include "profile.kdl"'' ]

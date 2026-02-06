@@ -14,6 +14,7 @@
       url = "github:nix-community/nixvim/nixos-25.11";
     };
     nix-colors.url = "github:misterio77/nix-colors";
+    niri.url = "github:YaLTeR/niri?ref=wip/branch";
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.git-hooks.follows = "";
