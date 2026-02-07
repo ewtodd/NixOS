@@ -190,7 +190,7 @@ Edit `home-manager/common/shell.nix` for cross-platform zsh aliases.
 init-dev-env          # General development
 init-latex-env        # LaTeX
 init-geant4-env       # Geant4 physics simulation
-init-analysis-env     # Data analysis tools, semi-deprecated
+init-analysis-env     # ROOT analysis using custom library
 ```
 <!---->
 ## Roadmap
