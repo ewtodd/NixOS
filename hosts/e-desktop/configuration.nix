@@ -24,6 +24,7 @@
     isNormalUser = true;
     description = "ethan-play";
     extraGroups = [
+      "nixconfig"
       "networkmanager"
       "wheel"
       "dialout"
@@ -37,6 +38,7 @@
     isNormalUser = true;
     description = "ethan-work";
     extraGroups = [
+      "nixconfig"
       "networkmanager"
       "wheel"
       "dialout"
