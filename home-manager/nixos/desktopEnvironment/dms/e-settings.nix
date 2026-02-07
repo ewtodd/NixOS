@@ -312,7 +312,7 @@ in
         maximizeDetection = true;
         name = "Main Bar";
         noBackground = false;
-        openOnOverview = false;
+        openOnOverview = true;
         popupGapsAuto = true;
         popupGapsManual = 4;
         position = 3;

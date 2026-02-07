@@ -624,8 +624,10 @@ in
           window-rule {
               match app-id="kitty"     
               background-effect {
-                xray true 
-                blur {"on";} 
+                xray false 
+                blur {"on";}
+                noise 0.001
+                saturation 3
               }
           }
           layer-rule {
@@ -633,8 +635,10 @@ in
               match namespace="dms:notification-popup"
               match namespace="kitty-background"
               background-effect {
-                xray true 
-                blur {"on";} 
+                xray false 
+                blur {"on";}
+                noise 0.001 
+                saturation 3
               }
           }
         ''
