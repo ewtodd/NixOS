@@ -1,4 +1,9 @@
-{ lib, pkgs, osConfig ? null, ... }:
+{
+  lib,
+  pkgs,
+  osConfig ? null,
+  ...
+}:
 let
   isDarwin = pkgs.stdenv.isDarwin;
   isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable or false else false;

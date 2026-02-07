@@ -15,7 +15,7 @@ with lib;
       hardware.fingerprint.enable = mkEnableOption "Fprintd support";
       hardware.openRGB.enable = mkEnableOption "openRGB support";
 
-      # Device type options (cross-platform)
+      # Device type options (NixOS only, for now)
       deviceType.laptop.enable = mkEnableOption "Laptop-specific features";
       deviceType.desktop.enable = mkEnableOption "Desktop-specific features";
 
@@ -24,7 +24,7 @@ with lib;
       apps.remarkable.enable = mkEnableOption "Remarkable from wrapWine flake";
       apps.quickemu.enable = mkEnableOption "Quickemu";
 
-      # Service options
+      # Service options (cross-platform with the exception of suspend-then-hibernate)
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate.";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
@@ -35,21 +35,6 @@ with lib;
 
       # Owner identification (cross-platform)
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
-
-      # NixOS VMs on Darwin (Darwin only)
-      nixos-vms.enable = mkEnableOption "Declarative NixOS Lima VMs on Darwin";
-      nixos-vms.work.enable = mkEnableOption "Work VM";
-      nixos-vms.work.autoStart = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Auto-start work VM on boot";
-      };
-      nixos-vms.play.enable = mkEnableOption "Play VM";
-      nixos-vms.play.autoStart = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Auto-start play VM on boot";
-      };
     };
   };
 }

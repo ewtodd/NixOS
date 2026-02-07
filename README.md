@@ -1,19 +1,14 @@
 # NixOS & nix-darwin Multi-Host Configuration
 <!---->
-This repository manages both **NixOS** (Linux) and **nix-darwin** (macOS) systems.
+This repository manages both **NixOS** and **nix-darwin** systems.
 <!---->
 ## Overview
 <!---->
 The configuration is organized into three main layers per typical conventions:
 <!---->
-1.
-**modules/** - System-level configuration (common, nixos, darwin)
-<!---->
-2.
-**home-manager/** - User-level configuration (common, nixos, darwin)
-<!---->
-3.
-**hosts/** - Per-host specific configuration
+- **modules/** - System-level configuration (common, nixos, darwin)
+- **home-manager/** - User-level configuration (common, nixos, darwin)
+- **hosts/** - Per-host specific configuration
 <!---->
 ```
 /etc/nixos/
@@ -44,10 +39,7 @@ The configuration is organized into three main layers per typical conventions:
 │   │   ├── theming/                    # GTK & Qt themes
 │   │   └── xdg/                        # XDG directories & MIME types
 │   └── darwin/                         # macOS user configuration
-│       ├── window-management/          # Window manager configuration
-│       │   └── amethyst/               # Amethyst tiling WM
-│       └── input/                      # Input device configuration
-│           └── karabiner/              # Karabiner-Elements keyboard
+│       └── karabiner/              # Karabiner-Elements keyboard
 └── hosts/{hostname}/
     ├── configuration.nix               # Host system config (enables systemOptions)
     ├── hardware-configuration.nix      # NixOS only
@@ -55,10 +47,9 @@ The configuration is organized into three main layers per typical conventions:
     └── home.nix                        # User definitions (imports profiles)
 ```
 <!---->
-## Key Design Patterns (according to Claude)
+## Important Notes
 <!---->
-### 1.
-Unified `systemOptions`
+### Unified `systemOptions`
 <!---->
 All hosts have access to `systemOptions` defined in `modules/common/default.nix`:
 <!---->
@@ -70,11 +61,11 @@ systemOptions = {
   graphics.amd.enable = true;           # NixOS-specific (ignored on Darwin)
 };
 ```
+This will determine for example which graphics drivers are enabled, whether custom security settings should be applied, whether to apply chromebook specific patches, etc.
 <!---->
-### 2.
-Profile System
+### Profile System
 <!---->
-Users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
+The central idea of the home-manager configuration is that users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
 <!---->
 ```nix
 # home-manager/common/profiles/work.nix
@@ -91,8 +82,11 @@ Users are organized into **work**, **play**, or **root** profiles that import al
 <!---->
 Each platform module uses `mkIf pkgs.stdenv.isLinux` or `mkIf pkgs.stdenv.isDarwin` internally to control activation.
 The **root** profile only imports darwin modules since root users don't need desktop environment configurations.
+- **Work:** clang-tools, slack, tools for nuclear physics data analysis
+- **Play:** signal-desktop, mangohud, android-tools, mumble, gaming tools
+Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 <!---->
-### 3. Platform Detection
+### Platform Detection
 <!---->
 Modules use `pkgs.stdenv.isLinux` / `isDarwin` with `mkIf` for conditional activation:
 <!---->
@@ -111,7 +105,7 @@ in
 }
 ```
 <!---->
-### 4. Safe `osConfig` Access
+### `osConfig` Access
 <!---->
 Home-manager modules safely access system options:
 <!---->
@@ -133,9 +127,9 @@ in { /* ... */ }
 - **Config:** `home-manager/nixos/desktopEnvironment/`
 <!---->
 ### Darwin
-- **Window Manager:** Amethyst (tiling)
-- **Keyboard:** Karabiner-Elements
-- **Config:** `home-manager/darwin/window-management/` & `home-manager/darwin/input/`
+- **Window Manager:** Currently macOS staging manager; TBD something else..
+- **Keyboard:** Karabiner-Elements (map caps lock to escape when pressed and to a mix of control/command when held depending on the app)
+- **Config:** `home-manager/darwin/input/`
 - **System:** `modules/darwin/homebrew/` & `modules/darwin/system-defaults/`
 <!---->
 ## Shell & Terminal
@@ -146,13 +140,6 @@ in { /* ... */ }
 - **Editor:** Neovim (Configured via nixvim)
 <!---->
 Configuration in `home-manager/common/packages/shell`.
-<!---->
-## Profiles: Work vs Play
-<!---->
-- **Work:** clang-tools, slack, tools for nuclear physics data analysis
-- **Play:** signal-desktop, mangohud, android-tools, mumble, gaming tools
-<!---->
-Set per-user in `hosts/{hostname}/home.nix` via profile import.
 <!---->
 ## Theming
 <!---->
@@ -180,7 +167,7 @@ Create `hosts/new-darwin/configuration.nix`, then add to flake.nix:
 darwinConfigurations.new-darwin = mkDarwinSystem { hostname = "new-darwin"; };
 ```
 <!---->
-Note that darwin is intended to act only as a host for nixOS containers, which is why it supports only a single user.
+Note that at this moment darwin is intended to act only as a host for containers, which is why it supports only a single user.
 <!---->
 ## Modifying Configuration
 <!---->
@@ -209,8 +196,10 @@ init-analysis-env     # Data analysis tools, semi-deprecated
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
 - [x] Standardize on zsh across all platforms
-- [ ] Declarative containers on darwin running regular NixOS, with cocoa-way to pass through graphics.
+- [ ] Declarative containers on darwin ideally running NixOS with cocoa-way to pass through graphics but otherwise running darwin.
 Ideally, figure out how to share one nix store between darwin and containers.
+Actually, this may not be ideal.
+Figure out whether this is ideal.
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Expose nixvim configuration as a runnable package (`nix run`)
 - [ ] Add screenshots to README

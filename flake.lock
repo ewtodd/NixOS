@@ -757,11 +757,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1767829424,
-        "narHash": "sha256-1cv6FfIvZdkKquoaNLrRs/NZJMhfphHmNYPkOEdYp8g=",
+        "lastModified": 1770435841,
+        "narHash": "sha256-Vb319cE8n2MahkTyuYOASmm1WrXa3qjttKk68H8Q5Nc=",
         "owner": "ewtodd",
         "repo": "reMarkable-nix",
-        "rev": "da56a00b391e6be604d47d82b3d4477cf9936f68",
+        "rev": "d11ce1833748b8ff08429469eeb9d5c1f9dce4d5",
         "type": "github"
       },
       "original": {

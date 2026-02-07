@@ -18,8 +18,6 @@ with lib;
         "j-x-z/tap/waypipe-darwin"
       ];
       casks = [
-        "hammerspoon"
-        "amethyst"
         "karabiner-elements"
       ];
     };

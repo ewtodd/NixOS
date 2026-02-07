@@ -72,7 +72,6 @@
       ...
     }:
     let
-      # Common home-manager modules shared across all platforms
       mkHomeManagerCommonModules = inputs: [
         inputs.nixvim.homeModules.nixvim
         inputs.nix-colors.homeManagerModules.default
@@ -81,7 +80,6 @@
         }
       ];
 
-      # Additional NixOS-specific home-manager modules
       mkHomeManagerNixosModules = inputs: [
         inputs.dank-material-shell.homeModules.dank-material-shell
         inputs.danksearch.homeModules.dsearch
@@ -89,7 +87,6 @@
         inputs.niri-nix.homeModules.default
       ];
 
-      # Helper to create a NixOS system configuration
       mkNixSystem =
         {
           hostname,
@@ -130,7 +127,6 @@
           ];
         };
 
-      # Helper to create a Darwin system configuration
       mkDarwinSystem =
         { hostname }:
         nix-darwin.lib.darwinSystem {
@@ -185,9 +181,6 @@
           hostname = "e-laptop";
           useLanzaboote = true;
         };
-        # Container configurations for running on Darwin via OrbStack
-        e-work-container = mkNixSystem { hostname = "e-work-container"; };
-        e-play-container = mkNixSystem { hostname = "e-play-container"; };
       };
 
       darwinConfigurations = {
