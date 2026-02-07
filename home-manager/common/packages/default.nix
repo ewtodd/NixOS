@@ -47,6 +47,7 @@ in
     ++ lib.optionals (isLinux && profile == "play") [
       signal-desktop
       mangohud
+      gamescope
       android-tools
       mumble
     ]
