@@ -23,6 +23,7 @@
     isNormalUser = true;
     description = "v-play";
     extraGroups = [
+      "nixconfig"
       "networkmanager"
       "wheel"
       "i2c"
@@ -35,6 +36,7 @@
     isNormalUser = true;
     description = "v-work";
     extraGroups = [
+      "nixconfig"
       "networkmanager"
       "wheel"
       "i2c"

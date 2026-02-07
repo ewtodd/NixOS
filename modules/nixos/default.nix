@@ -101,13 +101,17 @@ with lib;
       };
     };
 
+    users.groups = {
+      nixconfig = { };
+    };
+
     environment.variables.EDITOR = "nvim";
 
     environment.shellAliases = {
       vim = "nvim";
       ":q" = "exit";
       nrs = "nh os switch /etc/nixos";
-      fix-nixos-git = "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:users -R /etc/nixos && sudo chown $USER:users -R /etc/nixos/.git";
+      fix-nixos-git = "sudo chown -R root:nixconfig /etc/nixos && sudo chmod -R 2775 /etc/nixos && git config --global --add safe.directory /etc/nixos && git -C /etc/nixos config core.fileMode false";
       init-dev-env = "nix flake init -t github:ewtodd/dev-env --refresh";
       init-latex-env = "nix flake init -t github:ewtodd/latex-env --refresh";
       init-geant4-env = "nix flake init -t github:ewtodd/geant4-env --refresh";

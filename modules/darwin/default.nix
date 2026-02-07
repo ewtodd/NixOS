@@ -17,7 +17,6 @@
       vim = "nvim";
       ":q" = "exit";
       nrs = "nh darwin switch /etc/nixos";
-      fix-nixos-git = "sudo chmod 777 -R /etc/nixos && sudo chmod 777 -R /etc/nixos/.git && sudo chown $USER:staff -R /etc/nixos && sudo chown $USER:staff -R /etc/nixos/.git";
       init-dev-env = "nix flake init -t github:ewtodd/dev-env --refresh";
       init-latex-env = "nix flake init -t github:ewtodd/latex-env --refresh";
       init-geant4-env = "nix flake init -t github:ewtodd/geant4-env --refresh";
