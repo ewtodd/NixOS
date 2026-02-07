@@ -22,4 +22,6 @@
     home = "/Users/e-darwin";
     shell = pkgs.zsh;
   };
+
+  users.groups."nixconfig".members = [ "e-darwin" ];
 }
