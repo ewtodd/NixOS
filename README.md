@@ -129,7 +129,7 @@ in { /* ... */ }
 ### Darwin
 - **Window Manager:** Currently macOS staging manager; TBD something else..
 - **Keyboard:** Karabiner-Elements (map caps lock to escape when pressed and to a mix of control/command when held depending on the app)
-- **Config:** `home-manager/darwin/input/`
+- **Config:** `home-manager/darwin/karabiner/`
 - **System:** `modules/darwin/homebrew/` & `modules/darwin/system-defaults/`
 <!---->
 ## Shell & Terminal
