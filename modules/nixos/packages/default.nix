@@ -162,19 +162,6 @@ in
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
   '';
 
-  programs.starship = {
-    enable = true;
-    settings = {
-      cmd_duration = {
-        show_notifications = false;
-      };
-    };
-  };
-
-  programs.bash = {
-    shellInit = "eval $(${pkgs.starship}/bin/starship init bash)";
-  };
-
   virtualisation.docker.enable = true;
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
@@ -201,16 +188,11 @@ in
       imagemagick
       ghostscript
       spotify
+      pavucontrol
     ]
     ++ lib.optionals (config.systemOptions.apps.zoom.enable) [ zoom-us ]
     ++ lib.optionals (config.systemOptions.apps.remarkable.enable) [ remarkable ]
-    ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ]
-    ++ lib.optionals (!config.systemOptions.owner.e.enable) [
-      pavucontrol
-    ]
-    ++ lib.optionals (config.systemOptions.services.ai.enable) [
-      claude-code
-    ];
+    ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ];
 
   environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {
     windows = "quickemu --vm /home/v-work/.config/qemu/windows-11.conf";

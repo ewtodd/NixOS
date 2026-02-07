@@ -1,9 +1,6 @@
 { ... }:
 {
   imports = [
-    ./window-management
-    ./input
+    ./karabiner
   ];
-
-  # Additional Darwin-specific configurations can go here
 }
