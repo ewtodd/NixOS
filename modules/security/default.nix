@@ -7,7 +7,8 @@
   config = lib.mkIf (config.systemOptions.security.harden.enable) {
     security = {
       protectKernelImage = true;
-      lockKernelModules = if (config.systemOptions.deviceType.laptop.enable) then false else true;
+      lockKernelModules =
+        if (config.systemOptions.deviceType.laptop.enable) then lib.mkForce false else true;
 
       sudo.enable = lib.mkForce false;
       sudo-rs.enable = lib.mkForce true;
@@ -71,7 +72,7 @@
     networking = {
       networkmanager = {
         enable = true;
-        wifi.macAddress = "random";
+        wifi.macAddress = "stable-ssid";
       };
 
       firewall = {
