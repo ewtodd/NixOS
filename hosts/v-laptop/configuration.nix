@@ -14,7 +14,10 @@
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
 
-    services.nixBuilder.client.enable = true;
+    services.nixBuilder.client = {
+      enable = true;
+      builderHostName = "v-desktop";
+    };
   };
 
   users.users.v-play = {
