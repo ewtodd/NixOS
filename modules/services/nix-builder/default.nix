@@ -54,14 +54,14 @@ in
           }
         ];
 
-        # Fallback to local builds if remote is unavailable
         settings.builders-use-substitutes = true;
-
-        # Optional: prefer remote builds
-        extraOptions = ''
-          builders-use-substitutes = true
-        '';
       };
+
+      # SSH config for root to connect to the builder on port 2222
+      programs.ssh.extraConfig = ''
+        Host ${cfg.client.builderHostName}
+          Port 2222
+      '';
     })
   ];
 }
