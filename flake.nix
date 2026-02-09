@@ -8,8 +8,6 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.11";
     };
@@ -44,23 +42,6 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-    homebrew-borders = {
-      url = "github:FelixKratz/homebrew-formulae";
-      flake = false;
-    };
-    homebrew-jxz = {
-      url = "github:J-x-Z/homebrew-tap";
-      flake = false;
-    };
   };
 
   outputs =
@@ -68,23 +49,19 @@
       self,
       nixpkgs,
       unstable,
-      nix-darwin,
       ...
     }:
     let
-      mkHomeManagerCommonModules = inputs: [
+      mkHomeManagerModules = inputs: [
         inputs.nixvim.homeModules.nixvim
         inputs.nix-colors.homeManagerModules.default
-        {
-          programs.nixvim.nixpkgs.useGlobalPackages = true;
-        }
-      ];
-
-      mkHomeManagerNixosModules = inputs: [
         inputs.dank-material-shell.homeModules.dank-material-shell
         inputs.danksearch.homeModules.dsearch
         inputs.dms-plugin-registry.modules.default
         inputs.niri-nix.homeModules.default
+        {
+          programs.nixvim.nixpkgs.useGlobalPackages = true;
+        }
       ];
 
       mkNixSystem =
@@ -103,8 +80,7 @@
             };
           };
           modules = [
-            ./modules/common
-            ./modules/nixos
+            ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
             {
@@ -113,7 +89,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "hm-backup";
-                sharedModules = mkHomeManagerCommonModules inputs ++ mkHomeManagerNixosModules inputs;
+                sharedModules = mkHomeManagerModules inputs;
                 extraSpecialArgs = {
                   inherit inputs;
                 };
@@ -127,47 +103,6 @@
           ];
         };
 
-      mkDarwinSystem =
-        { hostname }:
-        nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./modules/common
-            ./modules/darwin
-            inputs.home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = mkHomeManagerCommonModules inputs;
-                extraSpecialArgs = {
-                  inherit inputs;
-                };
-                users = import ./hosts/${hostname}/home.nix;
-              };
-            }
-            inputs.nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                enable = true;
-                enableRosetta = true;
-                user = "e-darwin";
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "FelixKratz/homebrew-formulae" = inputs.homebrew-borders;
-                  "J-x-Z/homebrew-tap" = inputs.homebrew-jxz;
-                };
-                mutableTaps = false;
-              };
-            }
-            ./hosts/${hostname}/configuration.nix
-          ];
-        };
     in
     {
       nixosConfigurations = {
@@ -181,10 +116,6 @@
           hostname = "e-laptop";
           useLanzaboote = true;
         };
-      };
-
-      darwinConfigurations = {
-        e-darwin = mkDarwinSystem { hostname = "e-darwin"; };
       };
     };
 }

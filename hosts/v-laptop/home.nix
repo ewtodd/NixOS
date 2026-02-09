@@ -6,7 +6,7 @@
       home.homeDirectory = "/home/v-play";
       home.stateVersion = "25.05";
       imports = [
-        ../../home-manager/common/profiles/play.nix
+        ../../home-manager/profiles/play.nix
       ];
       colorScheme = inputs.nix-colors.colorSchemes.eris;
     };
@@ -18,7 +18,7 @@
       home.homeDirectory = "/home/v-work";
       home.stateVersion = "25.05";
       imports = [
-        ../../home-manager/common/profiles/work.nix
+        ../../home-manager/profiles/work.nix
       ];
       home.packages = [ pkgs.signal-desktop ];
       colorScheme = inputs.nix-colors.colorSchemes.atelier-cave;
@@ -29,7 +29,7 @@
     {
       home.username = "root";
       home.stateVersion = "25.05";
-      imports = [ ../../home-manager/common/profiles/root.nix ];
+      imports = [ ../../home-manager/profiles/root.nix ];
     };
 
 }
