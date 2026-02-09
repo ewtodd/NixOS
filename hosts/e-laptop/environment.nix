@@ -1,6 +1,15 @@
-{ pkgs, lib, ... }:
 {
-  boot.kernelPackages = pkgs.linuxPackages_lqx;
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+let
+  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
+{
+  boot.kernelPackages = unstable.linuxPackages_lqx;
+  hardware.firmware = [ unstable.linux-firmware ];
 
   boot.initrd.systemd.enable = true;
 
