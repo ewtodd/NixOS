@@ -16,7 +16,12 @@
     apps.remarkable.enable = true;
     apps.quickemu.enable = true;
 
-    services.nixBuilder.client.enable = true;
+    services.nixBuilder.server = {
+      enable = true;
+      authorizedKeys = [
+        # Add v-laptop's public key here
+      ];
+    };
   };
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];
