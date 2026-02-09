@@ -12,7 +12,10 @@
       url = "github:nix-community/nixvim/nixos-25.11";
     };
     nix-colors.url = "github:misterio77/nix-colors";
-    niri.url = "github:YaLTeR/niri?ref=wip/branch";
+    niri = {
+      url = "github:YaLTeR/niri?ref=wip/branch";
+      inputs.nixpkgs.follows = "unstable";
+    };
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.git-hooks.follows = "";
@@ -35,9 +38,18 @@
       url = "github:AvengeMedia/danksearch";
       inputs.nixpkgs.follows = "unstable";
     };
-    SRIM.url = "github:ewtodd/SRIM-nix";
-    lisepp.url = "github:ewtodd/LISEplusplus-nix";
-    remarkable.url = "github:ewtodd/reMarkable-nix";
+    SRIM = {
+      url = "github:ewtodd/SRIM-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lisepp = {
+      url = "github:ewtodd/LISEplusplus-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    remarkable = {
+      url = "github:ewtodd/reMarkable-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
