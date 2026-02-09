@@ -1,109 +1,84 @@
-# NixOS & nix-darwin Multi-Host Configuration
+# NixOS Multi-Host Configuration
 <!---->
-This repository manages both **NixOS** and **nix-darwin** systems.
+This repository manages **NixOS** systems with multiple hosts and user profiles.
 <!---->
 ## Overview
 <!---->
-The configuration is organized into three main layers per typical conventions:
+The configuration is organized into three main layers:
 <!---->
-- **modules/** - System-level configuration (common, nixos, darwin)
-- **home-manager/** - User-level configuration (common, nixos, darwin)
+- **modules/** - System-level configuration (desktop env, hardware, security, services)
+- **home-manager/** - User-level configuration (packages, theming, desktop settings)
 - **hosts/** - Per-host specific configuration
 <!---->
 ```
 /etc/nixos/
-├── flake.nix                           # Main entry point with mkNixSystem & mkDarwinSystem helpers
+├── flake.nix                           # Main entry point with mkNixSystem helper
 ├── modules/
-│   ├── common/default.nix              # Cross-platform systemOptions definitions
-│   ├── nixos/                          # NixOS: desktop env, hardware, security, services
-│   │   ├── desktopEnvironment/         # Niri compositor & DMS shell
-│   │   ├── hardware/                   # Graphics, audio, fingerprint, etc.
-│   │   ├── packages/                   # System packages
-│   │   ├── security/                   # Security hardening
-│   │   └── services/                   # System services
-│   └── darwin/                         # macOS system configuration
-│       ├── homebrew/                   # Homebrew package management
-│       └── system-defaults/            # macOS system preferences
+│   ├── default.nix                     # systemOptions definitions & imports
+│   ├── desktopEnvironment/             # Niri compositor & DMS shell
+│   ├── hardware/                       # Graphics, audio, fingerprint, etc.
+│   ├── packages/                       # System packages
+│   ├── security/                       # Security hardening
+│   └── services/                       # System services
 ├── home-manager/
-│   ├── common/                         # Cross-platform user configuration
-│   │   ├── profiles/{work,play,root}.nix  # Unified profiles that auto-import platform modules
-│   │   ├── packages/                   # nixvim, git, kitty, zathura, etc.
-│   │   │   ├── nixvim/                 # Neovim configuration
-│   │   │   ├── shell/                  # zsh + starship
-│   │   │   └── ...                     # Other package configs
-│   │   └── system-options/             # Profile & owner options
-│   ├── nixos/                          # NixOS user configuration
-│   │   ├── desktopEnvironment/         # Niri & DMS settings
-│   │   │   ├── dms/                    # DMS colors, plugins, dsearch
-│   │   │   └── niri/                   # Niri keybinds & window rules
-│   │   ├── theming/                    # GTK & Qt themes
-│   │   └── xdg/                        # XDG directories & MIME types
-│   └── darwin/                         # macOS user configuration
-│       └── karabiner/              # Karabiner-Elements keyboard
+│   ├── default.nix                     # Main home-manager entry point
+│   ├── profiles/{work,play,root}.nix   # User profiles
+│   ├── packages/                       # nixvim, git, kitty, zathura, etc.
+│   │   ├── nixvim/                     # Neovim configuration
+│   │   ├── shell/                      # zsh + starship
+│   │   └── ...                         # Other package configs
+│   ├── system-options/                 # Profile & owner options
+│   ├── desktopEnvironment/             # Niri & DMS settings
+│   │   ├── dms/                        # DMS colors, plugins, dsearch
+│   │   └── niri/                       # Niri keybinds & window rules
+│   ├── theming/                        # GTK & Qt themes
+│   └── xdg/                            # XDG directories & MIME types
 └── hosts/{hostname}/
     ├── configuration.nix               # Host system config (enables systemOptions)
-    ├── hardware-configuration.nix      # NixOS only
-    ├── environment.nix                 # NixOS only, handles all things kernel
+    ├── hardware-configuration.nix      # Hardware-specific config
+    ├── environment.nix                 # Kernel & environment settings
     └── home.nix                        # User definitions (imports profiles)
 ```
 <!---->
 ## Important Notes
 <!---->
-### Unified `systemOptions`
+### `systemOptions`
 <!---->
-All hosts have access to `systemOptions` defined in `modules/common/default.nix`:
+All hosts have access to `systemOptions` defined in `modules/default.nix`:
 <!---->
 ```nix
 systemOptions = {
-  owner.e.enable = true;                # Owner identification (cross-platform)
-  deviceType.laptop.enable = true;      # Device type (cross-platform)
-  services.ai.enable = true;            # AI services (cross-platform)
-  graphics.amd.enable = true;           # NixOS-specific (ignored on Darwin)
+  owner.e.enable = true;                # Owner identification
+  deviceType.laptop.enable = true;      # Device type
+  services.ai.enable = true;            # AI services
+  graphics.amd.enable = true;           # Graphics drivers
 };
 ```
-This will determine for example which graphics drivers are enabled, whether custom security settings should be applied, whether to apply chromebook specific patches, etc.
+This determines which graphics drivers are enabled, whether custom security settings should be applied, whether to apply chromebook specific patches, etc.
 <!---->
 ### Profile System
 <!---->
-The central idea of the home-manager configuration is that users are organized into **work**, **play**, or **root** profiles that import all platform modules unconditionally:
+Users are organized into **work**, **play**, or **root** profiles:
 <!---->
 ```nix
-# home-manager/common/profiles/work.nix
+# home-manager/profiles/work.nix
 { lib, ... }:
 {
   imports = [
     ../packages
-    ../../nixos    # Always imported, only activates on Linux
-    ../../darwin   # Always imported, only activates on Darwin
+    ../desktopEnvironment
+    ../theming
+    ../xdg
   ];
   Profile = "work";
 }
 ```
 <!---->
-Each platform module uses `mkIf pkgs.stdenv.isLinux` or `mkIf pkgs.stdenv.isDarwin` internally to control activation.
-The **root** profile only imports darwin modules since root users don't need desktop environment configurations.
 - **Work:** clang-tools, slack, tools for nuclear physics data analysis
 - **Play:** signal-desktop, mangohud, android-tools, mumble, gaming tools
+- **Root:** Minimal profile without desktop environment configurations
+
 Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
-<!---->
-### Platform Detection
-<!---->
-Modules use `pkgs.stdenv.isLinux` / `isDarwin` with `mkIf` for conditional activation:
-<!---->
-```nix
-let
-  isLinux = pkgs.stdenv.isLinux;
-in
-{
-  home.packages = lib.optionals isLinux [ signal-desktop ]
-               ++ lib.optionals isDarwin [ /* macOS packages */ ];
-#
-  programs.dank-material-shell = lib.mkIf isLinux {
-    enable = true;
-    # ... NixOS-only configuration
-  };
-}
-```
 <!---->
 ### `osConfig` Access
 <!---->
@@ -118,28 +93,21 @@ let
 in { /* ... */ }
 ```
 <!---->
-## Desktop Environments
+## Desktop Environment
 <!---->
-### NixOS
 - **Compositor:** niri (scrollable tiling Wayland)
 - **Shell:** DankMaterialShell (DMS)
 - **Greeter:** DMS greeter
-- **Config:** `home-manager/nixos/desktopEnvironment/`
-<!---->
-### Darwin
-- **Window Manager:** Currently macOS staging manager; TBD something else..
-- **Keyboard:** Karabiner-Elements (map caps lock to escape when pressed and to a mix of control/command when held depending on the app)
-- **Config:** `home-manager/darwin/karabiner/`
-- **System:** `modules/darwin/homebrew/` & `modules/darwin/system-defaults/`
+- **Config:** `home-manager/desktopEnvironment/`
 <!---->
 ## Shell & Terminal
 <!---->
-- **Shell:** zsh (all platforms)
+- **Shell:** zsh
 - **Prompt:** Starship
 - **Terminal:** Kitty
-- **Editor:** Neovim (Configured via nixvim)
+- **Editor:** Neovim (configured via nixvim)
 <!---->
-Configuration in `home-manager/common/packages/shell`.
+Configuration in `home-manager/packages/shell/`.
 <!---->
 ## Theming
 <!---->
@@ -151,7 +119,6 @@ colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
 <!---->
 ## Adding a New Host
 <!---->
-### NixOS
 ```bash
 nixos-generate-config --show-hardware-config > hosts/new-host/hardware-configuration.nix
 ```
@@ -161,28 +128,18 @@ Create `hosts/new-host/configuration.nix` with systemOptions, then add to flake.
 nixosConfigurations.new-host = mkNixSystem { hostname = "new-host"; };
 ```
 <!---->
-### Darwin
-Create `hosts/new-darwin/configuration.nix`, then add to flake.nix:
-```nix
-darwinConfigurations.new-darwin = mkDarwinSystem { hostname = "new-darwin"; };
-```
-<!---->
-Note that at this moment darwin is intended to act only as a host for containers, which is why it supports only a single user.
-<!---->
 ## Modifying Configuration
 <!---->
 ### Add System Feature
-1. Add option to `modules/common/default.nix`
-<!---->
-2. Create module in `modules/nixos/` or `modules/darwin/`
-<!---->
+1. Add option to `modules/default.nix`
+2. Create module in `modules/`
 3. Enable in host's `configuration.nix`
 <!---->
 ### Add User Package
-Edit `home-manager/common/packages/default.nix` with platform conditionals.
+Edit `home-manager/packages/default.nix`.
 <!---->
 ### Modify Shell Aliases
-Edit `home-manager/common/shell.nix` for cross-platform zsh aliases.
+Edit `home-manager/packages/shell/default.nix` for zsh aliases.
 <!---->
 ## Development Environments
 <!---->
@@ -195,11 +152,7 @@ init-analysis-env     # ROOT analysis using custom library
 <!---->
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
-- [x] Standardize on zsh across all platforms
-- [ ] Declarative containers on darwin ideally running NixOS with cocoa-way to pass through graphics but otherwise running darwin.
-Ideally, figure out how to share one nix store between darwin and containers.
-Actually, this may not be ideal.
-Figure out whether this is ideal.
+- [x] Standardize on zsh
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Expose nixvim configuration as a runnable package (`nix run`)
 - [ ] Add screenshots to README
