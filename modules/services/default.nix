@@ -21,7 +21,7 @@ in
         settings = {
           PasswordAuthentication = true;
           KbdInteractiveAuthentication = true;
-          AuthenticationMethods = "password";
+          AuthenticationMethods = "publickey password";
           AllowUsers = [
             "e-work"
             "e-play"
