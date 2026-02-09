@@ -14,6 +14,8 @@
     services.tailscale.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
+
+    services.nixBuilder.client.enable = true;
   };
 
   users.users.e-play = {

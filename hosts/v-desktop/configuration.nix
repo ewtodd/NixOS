@@ -15,6 +15,8 @@
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
     apps.quickemu.enable = true;
+
+    services.nixBuilder.client.enable = true;
   };
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];

@@ -13,6 +13,8 @@
     services.tailscale.enable = true;
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
+
+    services.nixBuilder.client.enable = true;
   };
 
   users.users.v-play = {

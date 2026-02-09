@@ -16,6 +16,17 @@
     services.ai.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
+
+    services.nixBuilder.server = {
+      enable = true;
+      # Add public keys from client machines here
+      # Generate on each client with: sudo ssh-keygen -t ed25519 -f /root/.ssh/nix-builder -N ""
+      authorizedKeys = [
+        # "ssh-ed25519 AAAA... root@e-laptop"
+        # "ssh-ed25519 AAAA... root@v-desktop"
+        # "ssh-ed25519 AAAA... root@v-laptop"
+      ];
+    };
   };
 
   nixpkgs.config.rocmTargets = [ "gfx1100" ];

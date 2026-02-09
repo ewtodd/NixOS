@@ -9,6 +9,10 @@ let
   unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
+  imports = [
+    ./nix-builder
+  ];
+
   config = lib.mkMerge [
     (lib.mkIf (config.systemOptions.services.ssh.enable) {
       services.openssh = {
