@@ -360,11 +360,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1770636355,
-        "narHash": "sha256-QYCslLwfN/sghi5pHJcKysumsnPgR5CFQvMcyAsOXdo=",
+        "lastModified": 1770492292,
+        "narHash": "sha256-qjUFBPJG6XRVXP2BxiS9mdRuls/u6c8s9e1AlwmV2lE=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "b8de7686251be4f46f96c1a2d23a278fc94c2c35",
+        "rev": "0afb2152ae04ba6a469600063aba75b3850e30f7",
         "type": "github"
       },
       "original": {
