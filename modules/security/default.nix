@@ -7,7 +7,7 @@
   config = lib.mkIf (config.systemOptions.security.harden.enable) {
     security = {
       protectKernelImage = true;
-      lockKernelModules = true;
+      lockKernelModules = if (config.systemOptions.deviceType.laptop.enable) then false else true;
 
       sudo.enable = lib.mkForce false;
       sudo-rs.enable = lib.mkForce true;
