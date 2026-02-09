@@ -22,8 +22,7 @@
       # Add public keys from client machines here
       # Generate on each client with: sudo ssh-keygen -t ed25519 -f /root/.ssh/nix-builder -N ""
       authorizedKeys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIDdMsBLRd0zADCIK4M2mkMQw5cmVqrcP27vaBgVo838 root@e-laptop" # "ssh-ed25519 AAAA... root@v-desktop"
-        # "ssh-ed25519 AAAA... root@v-laptop"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPAzgPdwGaA6mb++GnW0jw4sp2Y0sMfgT7J26KcMXsc root@e-laptop"
       ];
     };
   };
