@@ -630,8 +630,6 @@ in
               }
           }
           layer-rule {
-              match namespace="dms:bar"     
-              match namespace="dms:notification-popup"
               match namespace="kitty-background"
               background-effect {
                 xray true 

@@ -1,7 +1,6 @@
 { config, osConfig, ... }:
 let
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
-  opacity = 0.875;
   homeDir = config.home.homeDirectory;
 in
 {
@@ -11,7 +10,7 @@ in
     matugenScheme = "scheme-content";
     runUserMatugenTemplates = false;
     matugenTargetMonitor = "";
-    popupTransparency = opacity;
+    popupTransparency = 1;
     dockTransparency = 1;
     widgetBackgroundColor = "sc";
     widgetColorMode = "default";
@@ -293,7 +292,7 @@ in
         fontScale = 1;
         gothCornerRadiusOverride = false;
         gothCornerRadiusValue = 12;
-        gothCornersEnabled = false;
+        gothCornersEnabled = true;
         id = "default";
         innerPadding = 4;
         leftWidgets = [
@@ -365,7 +364,7 @@ in
         showOnLastDisplay = true;
         spacing = 0;
         squareCorners = true;
-        transparency = opacity;
+        transparency = 1;
         visible = true;
         widgetOutlineColor = "primary";
         widgetOutlineEnabled = false;
