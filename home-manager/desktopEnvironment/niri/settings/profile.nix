@@ -11,29 +11,6 @@ with lib;
 let
   inherit (inputs.niri-nix.lib) mkNiriKDL;
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
-  createKittyPanelService = lib.mkIf (deviceType == "desktop") {
-    systemd.user.services.kitty-background-panel = {
-      Unit = {
-        Description = "Kitty background panel with btop";
-        After = [
-          "graphical-session.target"
-          "niri.service"
-        ];
-        PartOf = [ "graphical-session.target" ];
-      };
-
-      Service = {
-        ExecStart = "${pkgs.kitty}/bin/kitten panel --edge=center --layer=bottom --class kitty-background --output-name HDMI-A-1 btop";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
-  };
-
   primaryMonitor = if deviceType == "desktop" then "DP-3" else "eDP-1";
   secondaryMonitor =
     if deviceType == "desktop" then
@@ -79,14 +56,6 @@ let
         };
       }
     ];
-    layer-rule = [
-      {
-        match._props = {
-          namespace = "kitty-background";
-        };
-        place-within-backdrop = true;
-      }
-    ];
     spawn-sh-at-startup = [
       [ "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right" ]
@@ -111,14 +80,6 @@ let
         default-column-width = {
           proportion = 1.0;
         };
-      }
-    ];
-    layer-rule = [
-      {
-        match._props = {
-          namespace = "kitty-background";
-        };
-        place-within-backdrop = true;
       }
     ];
     spawn-sh-at-startup = [
@@ -165,7 +126,6 @@ let
       {
         workspace = playConfigBase.workspace ++ playConfigDesktopAdditions.workspace;
         window-rule = playConfigBase.window-rule ++ playConfigDesktopAdditions.window-rule;
-        layer-rule = playConfigBase.layer-rule ++ playConfigBase.layer-rule;
         spawn-sh-at-startup =
           playConfigBase.spawn-sh-at-startup ++ playConfigDesktopAdditions.spawn-sh-at-startup;
       }
@@ -174,7 +134,6 @@ let
 in
 {
   config = mkIf (osConfig.systemOptions.owner.e.enable) (mkMerge [
-    createKittyPanelService
     {
       xdg.configFile."niri/profile.kdl".text =
         if config.Profile == "work" then
