@@ -229,6 +229,7 @@ in
     osdPosition = 0;
     osdVolumeEnabled = true;
     osdMediaVolumeEnabled = true;
+    osdMediaPlaybackEnabled = false;
     osdBrightnessEnabled = true;
     osdIdleInhibitorEnabled = true;
     osdMicMuteEnabled = true;
