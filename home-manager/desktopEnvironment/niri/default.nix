@@ -199,11 +199,7 @@ in
           spawn = [
             "sh"
             "-c"
-            "systemctl --user restart dms.service ${
-              lib.optionalString (
-                e && deviceType == "desktop"
-              ) "kitty-background-panel.service stack-to-n.service"
-            }"
+            "systemctl --user restart dms.service"
           ];
         };
         "Mod+Shift+e" = {
@@ -587,12 +583,6 @@ in
           };
           open-floating = true;
         }
-        {
-          match._props = {
-            title = "Resident Evil 4";
-          };
-          variable-refresh-rate = true;
-        }
       ];
       layer-rule = [
         {
@@ -626,15 +616,6 @@ in
                 xray true 
                 blur {"on";}
                 noise 0.001
-                saturation 3
-              }
-          }
-          layer-rule {
-              match namespace="kitty-background"
-              background-effect {
-                xray true 
-                blur {"on";}
-                noise 0.001 
                 saturation 3
               }
           }
