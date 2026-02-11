@@ -12,7 +12,7 @@ let
   isLaptop = if osConfig != null then osConfig.systemOptions.deviceType.laptop.enable else false;
 in
 {
-  programs.zsh = {
+  programs.bash = {
     enable = true;
     enableCompletion = true;
 
@@ -29,6 +29,6 @@ in
 
   programs.starship = {
     enable = true;
-    enableZshIntegration = true;
+    enableBashIntegration = true;
   };
 }
