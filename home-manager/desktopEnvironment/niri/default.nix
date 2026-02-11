@@ -608,7 +608,8 @@ in
       };
     };
     extraConfig = lib.concatStringsSep "\n" (
-      [
+      [ ]
+      ++ lib.optionals (osConfig.systemOptions.apps.niri.blur.enable) [
         ''
           window-rule {
               match app-id="kitty"     

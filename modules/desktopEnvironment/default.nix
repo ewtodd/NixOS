@@ -21,7 +21,7 @@ in
   };
   programs.niri = {
     enable = true;
-    package = niri;
+    package = if (config.systemOptions.apps.niri.blur.enable) then niri else unstable.niri;
   };
 
   environment.systemPackages = with pkgs; [
