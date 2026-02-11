@@ -123,9 +123,6 @@ in
 
           CPU_BOOST_ON_BAT = 0;
           CPU_BOOST_ON_AC = 1;
-
-          START_CHARGE_THRESH_BAT0 = 20;
-          STOP_CHARGE_THRESH_BAT0 = 90;
         };
       };
       hardware.fw-fanctrl = {
