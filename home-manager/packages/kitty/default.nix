@@ -1,13 +1,15 @@
 {
   config,
-  pkgs,
   osConfig,
-  lib,
   ...
 }:
 let
   colors = config.colorScheme.palette;
-  opacity = if (osConfig.systemOptions.owner.e.enable) then "0.875" else "0.925";
+  opacity =
+    if (osConfig.systemOptions.owner.e.enable) then
+      (if (osConfig.systemOptions.apps.niri.blur.enable) then "0.875" else "1")
+    else
+      "0.925";
 in
 {
   programs.kitty = {

@@ -27,10 +27,12 @@ with lib;
       apps.remarkable.enable = mkEnableOption "Remarkable from wrapWine flake";
       apps.quickemu.enable = mkEnableOption "Quickemu";
 
+      apps.niri.blur.enable = mkEnableOption "Whether to use WIP git branch of niri with blur support";
+
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
-      services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate.";
+      services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
-      services.ai.enable = mkEnableOption "Local AI.";
+      services.ai.enable = mkEnableOption "Local AI";
 
       services.nixBuilder.server = {
         enable = mkEnableOption "Act as a Nix remote build server";
@@ -60,7 +62,7 @@ with lib;
         };
       };
 
-      security.harden.enable = mkEnableOption "Try to reasonably harden NixOS.";
+      security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
 
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
     };
