@@ -25,7 +25,7 @@ The configuration is organized into three main layers:
 │   ├── profiles/{work,play,root}.nix   # User profiles
 │   ├── packages/                       # nixvim, git, kitty, zathura, etc.
 │   │   ├── nixvim/                     # Neovim configuration
-│   │   ├── shell/                      # zsh + starship
+│   │   ├── shell/                      # bash + starship
 │   │   └── ...                         # Other package configs
 │   ├── system-options/                 # Profile & owner options
 │   ├── desktopEnvironment/             # Niri & DMS settings
@@ -77,7 +77,7 @@ Users are organized into **work**, **play**, or **root** profiles:
 - **Work:** clang-tools, slack, tools for nuclear physics data analysis
 - **Play:** signal-desktop, mangohud, android-tools, mumble, gaming tools
 - **Root:** Minimal profile without desktop environment configurations
-
+<!---->
 Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 <!---->
 ### `osConfig` Access
@@ -102,7 +102,7 @@ in { /* ... */ }
 <!---->
 ## Shell & Terminal
 <!---->
-- **Shell:** zsh
+- **Shell:** bash
 - **Prompt:** Starship
 - **Terminal:** Kitty
 - **Editor:** Neovim (configured via nixvim)
@@ -131,15 +131,18 @@ nixosConfigurations.new-host = mkNixSystem { hostname = "new-host"; };
 ## Modifying Configuration
 <!---->
 ### Add System Feature
-1. Add option to `modules/default.nix`
-2. Create module in `modules/`
-3. Enable in host's `configuration.nix`
+1.
+Add option to `modules/default.nix`
+2.
+Create module in `modules/`
+3.
+Enable in host's `configuration.nix`
 <!---->
 ### Add User Package
 Edit `home-manager/packages/default.nix`.
 <!---->
 ### Modify Shell Aliases
-Edit `home-manager/packages/shell/default.nix` for zsh aliases.
+Edit `home-manager/packages/shell/default.nix` for bash aliases.
 <!---->
 ## Development Environments
 <!---->
@@ -152,7 +155,6 @@ init-analysis-env     # ROOT analysis using custom library
 <!---->
 ## Roadmap
 - [x] Move geant4 development environment into its own repo as a flake
-- [x] Standardize on zsh
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Expose nixvim configuration as a runnable package (`nix run`)
 - [ ] Add screenshots to README
