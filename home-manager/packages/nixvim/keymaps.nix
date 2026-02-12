@@ -330,7 +330,7 @@
       };
     }
     {
-      action.__raw = "function() vim.diagnostic.goto_next({ float = false }) end";
+      action.__raw = "function() vim.diagnostic.goto_next({ }) end";
       key = "<leader>j";
       mode = "n";
       options = {
@@ -339,7 +339,7 @@
       };
     }
     {
-      action.__raw = "function() vim.diagnostic.goto_prev({ float = false }) end";
+      action.__raw = "function() vim.diagnostic.goto_prev({ }) end";
       key = "<leader>k";
       mode = "n";
       options = {

@@ -7,7 +7,6 @@
   programs.nixvim.extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
-    vim.diagnostic.config({ virtual_text = false, virtual_lines=true })
   '';
 
   programs.nixvim.plugins = {
@@ -128,10 +127,6 @@
         gopls.enable = true;
         qmlls.enable = true;
       };
-    };
-
-    lsp-lines = {
-      enable = true;
     };
 
     lsp-format = {
