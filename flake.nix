@@ -104,6 +104,11 @@
                 sharedModules = mkHomeManagerModules inputs;
                 extraSpecialArgs = {
                   inherit inputs;
+                  system = "x86_64-linux";
+                  unstable = import unstable {
+                    system = "x86_64-linux";
+                    config.allowUnfree = true;
+                  };
                 };
                 users = import ./hosts/${hostname}/home.nix;
               };

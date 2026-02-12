@@ -1,13 +1,9 @@
 {
-  inputs,
-  pkgs,
   config,
   lib,
+  unstable,
   ...
 }:
-let
-  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in
 {
   imports = [
     ./nix-builder

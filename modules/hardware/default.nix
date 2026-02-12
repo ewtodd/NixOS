@@ -2,11 +2,10 @@
   lib,
   config,
   pkgs,
-  inputs,
+  unstable,
   ...
 }:
 let
-  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   cb-ucm-conf = pkgs.alsa-ucm-conf.overrideAttrs {
     wttsrc = pkgs.fetchurl {
       url = "https://github.com/WeirdTreeThing/chromebook-ucm-conf/archive/1328e46bfca6db2c609df9c68d37bb418e6fe279.tar.gz";
