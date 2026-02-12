@@ -4,6 +4,7 @@
   config,
   osConfig ? null,
   inputs,
+  unstable,
   ...
 }:
 let
@@ -24,9 +25,6 @@ let
       rootbrowse_desktop
     ];
   };
-  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-
-  # Safely access osConfig
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
 in
 {

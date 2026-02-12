@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ unstable, ... }:
 {
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = with unstable; [
     proton-pass
     protonvpn-gui
   ];

@@ -60,11 +60,11 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1770820295,
-        "narHash": "sha256-dAnxjRdySX+zvdsrPvcHNGcsiqJAl3Tpv31ISTAnwkw=",
+        "lastModified": 1770853352,
+        "narHash": "sha256-S6UObkO6XMPPEpAjLMvalFpWJwTyZJASaBFiwGGZuiM=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "5839a5de30f5ca23f6cfce3b58f68b4ae0005d57",
+        "rev": "bd46d29ff0513742e177e13ea3907c40128c317d",
         "type": "github"
       },
       "original": {
@@ -120,11 +120,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770773056,
-        "narHash": "sha256-/ANVBSTSajzi6qtEVBwQ4lg/vM+WdZH2SeVy3ZrozT8=",
+        "lastModified": 1770859070,
+        "narHash": "sha256-dtlt6E/l3lGGSZx24N8MxOadi2Jdmq6BdgiU4J6FKj4=",
         "owner": "AvengeMedia",
         "repo": "dms-plugin-registry",
-        "rev": "5bb56cdf1027d280b0986c7180f3c40a631ae474",
+        "rev": "c13ae92912837fe747a1e54efbb87c5e919421d3",
         "type": "github"
       },
       "original": {
@@ -366,11 +366,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1770703134,
-        "narHash": "sha256-/clHW4xgCERMv5UZC5FIAOG4Dxeiww1liUiSYVkKRLk=",
+        "lastModified": 1770836183,
+        "narHash": "sha256-YUP5ev6H72DQrNXvXP0t1y5L5Vc6+kOBX6BSdqdZHw0=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "601eacffcb6e43b984b89fd758f0948364eb89e8",
+        "rev": "06a9d920b5da86917ba694e325a526f419dfadd7",
         "type": "github"
       },
       "original": {
@@ -388,11 +388,11 @@
         "xwayland-satellite-unstable": []
       },
       "locked": {
-        "lastModified": 1770769062,
-        "narHash": "sha256-TYH1NovVCgZY3jcFPoLi5nBMRB4ybC+27fjIlDNNn20=",
+        "lastModified": 1770904978,
+        "narHash": "sha256-pFKA2SY0iJkqZV9rZThCaSUmgMzLKn4Bmowodvb3LyU=",
         "ref": "refs/heads/main",
-        "rev": "19e8c4c7ef553f57fcdb264f9447319fbbf9b323",
-        "revCount": 61,
+        "rev": "5b564d0ee04be9efa633b786be810f10626ae2a6",
+        "revCount": 63,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
@@ -453,11 +453,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1770617025,
-        "narHash": "sha256-1jZvgZoAagZZB6NwGRv2T2ezPy+X6EFDsJm+YSlsvEs=",
+        "lastModified": 1770770419,
+        "narHash": "sha256-iKZMkr6Cm9JzWlRYW/VPoL0A9jVKtZYiU4zSrVeetIs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "2db38e08fdadcc0ce3232f7279bab59a15b94482",
+        "rev": "6c5e707c6b5339359a9a9e215c5e66d6d802fd7a",
         "type": "github"
       },
       "original": {
@@ -732,11 +732,11 @@
     },
     "unstable": {
       "locked": {
-        "lastModified": 1770781623,
-        "narHash": "sha256-RYEMTlGCVc67pxVxjOlGd8w6fpF7Bur7gKL88FB0WTs=",
+        "lastModified": 1770843696,
+        "narHash": "sha256-LovWTGDwXhkfCOmbgLVA10bvsi/P8eDDpRudgk68HA8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c05d2232d2feaa4c7a07f1168606917402868195",
+        "rev": "2343bbb58f99267223bc2aac4fc9ea301a155a16",
         "type": "github"
       },
       "original": {

@@ -1,12 +1,9 @@
 {
   pkgs,
   lib,
-  inputs,
+  unstable,
   ...
 }:
-let
-  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in
 {
   boot.kernelPackages = unstable.linuxPackages_lqx;
   hardware.firmware = [ unstable.linux-firmware ];

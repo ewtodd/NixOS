@@ -1,12 +1,12 @@
 {
   pkgs,
   inputs,
+  unstable,
   config,
   lib,
   ...
 }:
 let
-  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   remarkable = inputs.remarkable.packages.${pkgs.stdenv.hostPlatform.system}.default;
   e = config.systemOptions.owner.e.enable;
 in

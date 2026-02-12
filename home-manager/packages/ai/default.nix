@@ -1,12 +1,10 @@
 {
   lib,
   osConfig ? null,
-  inputs,
-  pkgs,
+  unstable,
   ...
 }:
 let
-  unstable = inputs.unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   hasAI = if osConfig != null then (osConfig.systemOptions.services.ai.enable or false) else false;
 in
 {
