@@ -329,5 +329,23 @@
         nowait = true;
       };
     }
+    {
+      action.__raw = "function() vim.diagnostic.goto_next({ float = false }) end";
+      key = "<leader>j";
+      mode = "n";
+      options = {
+        desc = "Next diagnostic";
+        silent = true;
+      };
+    }
+    {
+      action.__raw = "function() vim.diagnostic.goto_prev({ float = false }) end";
+      key = "<leader>k";
+      mode = "n";
+      options = {
+        desc = "Previous diagnostic";
+        silent = true;
+      };
+    }
   ];
 }

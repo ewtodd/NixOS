@@ -104,13 +104,4 @@ in
     name = "Steam";
     noDisplay = true;
   };
-  xdg.configFile = lib.mkIf (profile == "work") {
-    "clangd/config.yaml".text = ''
-      CompileFlags:
-        Add: [
-          "-I${pkgs.root}/include",
-          "-I${pkgs.geant4}/include/Geant4"
-        ]
-    '';
-  };
 }

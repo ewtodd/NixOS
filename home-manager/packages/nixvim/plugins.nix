@@ -1,6 +1,5 @@
 {
   pkgs,
-
   ...
 }:
 {
@@ -8,6 +7,7 @@
   programs.nixvim.extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
+    vim.diagnostic.config({ virtual_text = false, virtual_lines=true })
   '';
 
   programs.nixvim.plugins = {
@@ -110,22 +110,28 @@
       enable = true;
       servers = {
         dockerls.enable = false;
-        clangd.enable = true;
+        clangd = {
+          enable = true;
+          onAttach.function = ''
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+          '';
+        };
         nixd.enable = true;
-        # pylsp.enable = true;
+        pylsp.enable = true;
         yamlls.enable = true;
         bashls.enable = true;
         texlab.enable = true;
-        #       cmake.enable = true;
+        cmake.enable = true;
         jsonls.enable = true;
         zls.enable = true;
         gopls.enable = true;
         qmlls.enable = true;
       };
-      keymaps.diagnostic = {
-        "<space>j" = "goto_next";
-        "<space>k" = "goto_prev";
-      };
+    };
+
+    lsp-lines = {
+      enable = true;
     };
 
     lsp-format = {
@@ -140,11 +146,17 @@
         package = pkgs.nixfmt;
       };
       sources.formatting = {
-        #   black.enable = true;
+        black.enable = true;
         bibclean.enable = true;
-        #  cmake_format.enable = true;
+        cmake_format.enable = true;
         biome.enable = true;
         qmlformat.enable = true;
+        clang_format = {
+          enable = true;
+          settings = {
+            extra_args = [ "--style={BasedOnStyle: LLVM, BreakStringLiterals: false}" ];
+          };
+        };
       };
     };
 
