@@ -272,27 +272,6 @@ in
         "Mod+Tab" = {
           toggle-overview = [ ];
         };
-        "Mod+a" = {
-          spawn = [
-            "sh"
-            "-c"
-            "${unstable.nirius}/bin/nirius toggle-follow-mode"
-          ];
-        };
-        "Mod+s" = {
-          spawn = [
-            "sh"
-            "-c"
-            "${unstable.nirius}/bin/nirius scratchpad-show"
-          ];
-        };
-        "Mod+Ctrl+s" = {
-          spawn = [
-            "sh"
-            "-c"
-            "${unstable.nirius}/bin/nirius scratchpad-toggle --no-move"
-          ];
-        };
         "Mod+c" = {
           consume-or-expel-window-left = [ ];
         };
@@ -393,9 +372,6 @@ in
           ];
         };
       };
-      spawn-at-startup = [
-        [ "${unstable.nirius}/bin/niriusd" ]
-      ];
       spawn-sh-at-startup = [
         [ "${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme prefer-dark" ]
       ];

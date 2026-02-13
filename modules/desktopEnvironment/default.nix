@@ -23,7 +23,6 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    unstable.nirius
     xwayland-satellite
     jq
     libnotify
