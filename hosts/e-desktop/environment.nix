@@ -4,7 +4,7 @@
   ...
 }:
 {
-  boot.kernelPackages = unstable.linuxPackages_lqx;
+  boot.kernelPackages = unstable.linuxPackages_latest;
   hardware.firmware = [ unstable.linux-firmware ];
 
   boot.initrd.systemd.enable = true;
