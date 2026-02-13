@@ -33,10 +33,11 @@ let
     executable = "thunderbird";
     wrapArgs = "-d -n -a -b -p -w ${home}/.thunderbird -w ${home}/Downloads ${themeArgs}";
   };
-  workConfig = {
+
+  workConfigBase = {
     workspace = [
       {
-        _args = [ "b-chat" ];
+        _args = [ "a-chat" ];
         open-on-output = primaryMonitor;
       }
     ];
@@ -45,7 +46,7 @@ let
         match._props = {
           app-id = "Slack";
         };
-        open-on-workspace = "b-chat";
+        open-on-workspace = "a-chat";
         default-column-width = {
           proportion = alt-proportion;
         };
@@ -55,7 +56,7 @@ let
         match._props = {
           app-id = "thunderbird";
         };
-        open-on-workspace = "b-chat";
+        open-on-workspace = "a-chat";
         default-column-width = {
           proportion = alt-proportion;
         };
@@ -71,17 +72,38 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "${wrapped-thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
+      [ "sleep 2 && ${wrapped-thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
       [ "sleep 2 && ${wrapped-slack}/bin/slack && niri msg action move-column-right" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
 
   };
 
+  workConfigDesktopAdditions = {
+    workspace = [
+      {
+        _args = [ "b-btop" ];
+        open-on-output = secondaryMonitor;
+      }
+    ];
+    window-rule = [
+      {
+        match._props = {
+          app-id = "btopkitty";
+        };
+        open-on-workspace = "b-btop";
+        open-fullscreen = true;
+      }
+    ];
+    spawn-sh-at-startup = [
+      [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
+    ];
+  };
+
   playConfigBase = {
     workspace = [
       {
-        _args = [ "c-chat" ];
+        _args = [ "b-chat" ];
         open-on-output = secondaryMonitor;
       }
     ];
@@ -90,7 +112,7 @@ let
         match._props = {
           app-id = "signal";
         };
-        open-on-workspace = "c-chat";
+        open-on-workspace = "b-chat";
         default-column-width = {
           proportion = 1.0;
         };
@@ -105,8 +127,12 @@ let
   playConfigDesktopAdditions = {
     workspace = [
       {
-        _args = [ "b-media" ];
+        _args = [ "a-media" ];
         open-on-output = primaryMonitor;
+      }
+      {
+        _args = [ "c-btop" ];
+        open-on-output = secondaryMonitor;
       }
     ];
     window-rule = [
@@ -114,7 +140,7 @@ let
         match._props = {
           app-id = "steam";
         };
-        open-on-workspace = "b-media";
+        open-on-workspace = "a-media";
         default-column-width = {
           proportion = alt-proportion;
         };
@@ -123,15 +149,24 @@ let
         match._props = {
           app-id = "spotify";
         };
-        open-on-workspace = "b-media";
+        open-on-workspace = "a-media";
         default-column-width = {
           proportion = alt-proportion;
         };
       }
+      {
+        match._props = {
+          app-id = "btopkitty";
+        };
+        open-on-workspace = "c-btop";
+        open-fullscreen = true;
+      }
+
     ];
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
       [ "sleep 2 && ${wrapped-spotify}/bin/spotify && niri msg action move-column-right" ]
+      [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
     ];
   };
 
@@ -145,6 +180,17 @@ let
       }
     else
       playConfigBase;
+
+  workConfig =
+    if deviceType == "desktop" then
+      {
+        workspace = workConfigBase.workspace ++ workConfigDesktopAdditions.workspace;
+        window-rule = workConfigBase.window-rule ++ workConfigDesktopAdditions.window-rule;
+        spawn-sh-at-startup =
+          workConfigBase.spawn-sh-at-startup ++ workConfigDesktopAdditions.spawn-sh-at-startup;
+      }
+    else
+      workConfigBase;
 in
 {
   config = mkIf (osConfig.systemOptions.owner.e.enable) (mkMerge [
