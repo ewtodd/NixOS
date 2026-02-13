@@ -7,6 +7,11 @@
   ...
 }:
 let
+  wrapped-firefox = inputs.nix-wrap.lib.${pkgs.stdenv.hostPlatform.system}.wrap {
+    package = config.programs.firefox.finalPackage;
+    executable = "firefox";
+    wrapArgs = "-d -n -a -b -p -w ${config.home.homeDirectory}/Downloads -w ${config.home.homeDirectory}/.mozilla -r ${config.home.homeDirectory}/.config/gtk-3.0 -r ${config.home.homeDirectory}/.config/gtk-4.0 -r ${config.home.homeDirectory}/.config/dconf -r ${config.home.homeDirectory}/.config/fontconfig";
+  };
   e = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
   colors = config.colorScheme.palette;
   deviceType =
@@ -16,18 +21,18 @@ let
       "laptop";
   radius = "10";
   open-nix-docs = pkgs.writeShellScript "open-nix-docs-firefox" ''
-    ${pkgs.firefox}/bin/firefox --new-window \
+    ${wrapped-firefox}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ \
       -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" ''
-      ${pkgs.firefox}/bin/firefox --new-window \
+      ${wrapped-firefox}/bin/firefox --new-window \
     -url https://monkeytype.com 
   '';
-  open-browser-window = "${pkgs.firefox}/bin/firefox";
-  open-private-window = "${pkgs.firefox}/bin/firefox --private-window";
+  open-browser-window = "${wrapped-firefox}/bin/firefox";
+  open-private-window = "${wrapped-firefox}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
   unstable = import inputs.unstable {
