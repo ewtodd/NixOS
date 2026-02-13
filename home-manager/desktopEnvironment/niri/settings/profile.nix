@@ -18,7 +18,21 @@ let
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-3");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
-
+  home = config.home.homeDirectory;
+  wrap = inputs.nix-wrap.lib.${pkgs.stdenv.hostPlatform.system}.wrap;
+  themeArgs = "-r ${home}/.config/gtk-3.0 -r ${home}/.config/gtk-4.0 -r ${home}/.config/dconf";
+  wrapped-slack = pkgs.slack;
+  wrapped-signal = pkgs.signal-desktop;
+  wrapped-spotify = wrap {
+    package = pkgs.spotify;
+    executable = "spotify";
+    wrapArgs = "-d -n -a -b -p -w ${home}/.config/spotify -w ${home}/.cache/spotify -r ${home}/.config/dconf";
+  };
+  wrapped-thunderbird = wrap {
+    package = pkgs.thunderbird;
+    executable = "thunderbird";
+    wrapArgs = "-d -n -a -b -p -w ${home}/.thunderbird -w ${home}/Downloads ${themeArgs}";
+  };
   workConfig = {
     workspace = [
       {
@@ -57,8 +71,8 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "${pkgs.thunderbird-latest}/bin/thunderbird && niri msg action move-column-left" ]
-      [ "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right" ]
+      [ "${wrapped-thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
+      [ "sleep 2 && ${wrapped-slack}/bin/slack && niri msg action move-column-right" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
 
@@ -83,7 +97,7 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon" ]
+      [ "${wrapped-signal}/bin/signal-desktop --use-tray-icon" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
   };
@@ -117,7 +131,7 @@ let
     ];
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
-      [ "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right" ]
+      [ "sleep 2 && ${wrapped-spotify}/bin/spotify && niri msg action move-column-right" ]
     ];
   };
 

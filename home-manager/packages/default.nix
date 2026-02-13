@@ -26,11 +26,25 @@ let
     ];
   };
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
+  home = config.home.homeDirectory;
+  wrap = inputs.nix-wrap.lib.${pkgs.stdenv.hostPlatform.system}.wrap;
+  themeArgs = "-r ${home}/.config/gtk-3.0 -r ${home}/.config/gtk-4.0 -r ${home}/.config/dconf";
+  wrapped-thunderbird = wrap {
+    package = pkgs.thunderbird;
+    executable = "thunderbird";
+    wrapArgs = "-d -n -a -b -p -w ${home}/.thunderbird -w ${home}/Downloads ${themeArgs}";
+  };
+  wrapped-spotify = wrap {
+    package = pkgs.spotify;
+    executable = "spotify";
+    wrapArgs = "-d -n -a -b -p -w ${home}/.config/spotify -w ${home}/.cache/spotify -r ${home}/.config/dconf";
+  };
 in
 {
   imports = [
     ./ai
     ./fastfetch
+    ./firefox
     ./git
     ./kitty
     ./nixvim
@@ -40,20 +54,23 @@ in
 
   home.packages =
     with pkgs;
-    [ ]
+    [
+      wrapped-spotify
+      libreoffice
+    ]
     ++ lib.optionals (profile == "play") [
       signal-desktop
       mangohud
       gamescope
       android-tools
-      mumble
     ]
     ++ lib.optionals (profile == "work") [
-      pkgs.clang-tools
-      pkgs.slack
+      clang-tools
+      slack
       lisepp
       SRIM
       rootbrowse_package
+      wrapped-thunderbird
     ];
 
   programs.btop = {

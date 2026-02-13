@@ -29,7 +29,6 @@ in
     libnotify
     gthumb
     nautilus
-    thunderbird-latest
     glib
     gnome-themes-extra
   ];
