@@ -8,11 +8,12 @@
 }:
 let
   e = osConfig.systemOptions.owner.e.enable;
-  wrapped-firefox = inputs.nix-wrap.lib.${pkgs.stdenv.hostPlatform.system}.wrap {
-    package = config.programs.firefox.finalPackage;
-    executable = "firefox";
-    wrapArgs = "-d -n -a -b -p -w ${config.home.homeDirectory}/Downloads -w ${config.home.homeDirectory}/.mozilla -r ${config.home.homeDirectory}/.config/gtk-3.0 -r ${config.home.homeDirectory}/.config/gtk-4.0 -r ${config.home.homeDirectory}/.config/dconf -r ${config.home.homeDirectory}/.config/fontconfig";
-  };
+  wrapped-firefox = config.programs.firefox.finalPackage;
+  ##    inputs.nix-wrap.lib.${pkgs.stdenv.hostPlatform.system}.wrap {
+  ##    package = config.programs.firefox.finalPackage;
+  ##    executable = "firefox";
+  ##    wrapArgs = "-d -n -a -b -p -w ${config.home.homeDirectory}/Downloads -w ${config.home.homeDirectory}/.mozilla -r ${config.home.homeDirectory}/.config/gtk-3.0 -r ${config.home.homeDirectory}/.config/gtk-4.0 -r ${config.home.homeDirectory}/.config/dconf -r ${config.home.homeDirectory}/.config/fontconfig";
+  ##  };
 in
 {
   home.packages = [ (lib.hiPrio wrapped-firefox) ];
