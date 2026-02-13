@@ -32,15 +32,16 @@ in
     (lib.mkIf (config.systemOptions.graphics.amd.enable) {
       hardware.graphics = {
         enable = true;
-        package = pkgs.mesa;
+        package = unstable.mesa;
         enable32Bit = true;
-        extraPackages = with pkgs; [
+        package32 = unstable.mesa32;
+        extraPackages = with unstable; [
           vulkan-tools
           rocmPackages.clr.icd
         ];
       };
 
-      environment.systemPackages = with pkgs; [
+      environment.systemPackages = with unstable; [
         rocmPackages.rocminfo
         rocmPackages.rocm-smi
         lm_sensors
@@ -49,13 +50,14 @@ in
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
       hardware.graphics = {
         enable = true;
-        package = pkgs.mesa;
+        package = unstable.mesa;
         enable32Bit = true;
-        extraPackages = with pkgs; [
+        package32 = unstable.mesa;
+        extraPackages = with unstable; [
           vpl-gpu-rt
           intel-media-driver
-          vulkan-tools
         ];
+
         extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
       };
       environment.systemPackages = with pkgs; [
