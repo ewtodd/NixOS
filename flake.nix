@@ -54,8 +54,8 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-wrap = {
-      url = "github:rti/nixwrap";
+    nixpak = {
+      url = "github:nixpak/nixpak";
     };
   };
 
