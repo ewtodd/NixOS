@@ -1,10 +1,9 @@
-{ pkgs, ... }:
+{ unstable, ... }:
 {
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.kernelPackages = pkgs.linuxPackages_lqx;
+  boot.kernelPackages = unstable.linuxPackages_latest;
 
   boot.kernelParams = [
     "quiet"
