@@ -29,8 +29,7 @@ let
       -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" ''
-      ${wrapped-firefox}/bin/firefox --new-window \
-    -url https://monkeytype.com 
+    ${wrapped-firefox}/bin/firefox --private-window -new-tab -url https://monkeytype.com 
   '';
   open-browser-window = "${wrapped-firefox}/bin/firefox";
   open-private-window = "${wrapped-firefox}/bin/firefox --private-window";
