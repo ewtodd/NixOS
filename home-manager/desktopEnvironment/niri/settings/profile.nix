@@ -19,11 +19,6 @@ let
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-3");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
 
-  wrapped-spotify = pkgs.spotify;
-  wrapped-slack = pkgs.slack;
-  wrapped-thunderbird = pkgs.thunderbird;
-  wrapped-signal-desktop = pkgs.signal-desktop;
-
   workConfigBase = {
     workspace = [
       {
@@ -62,8 +57,8 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "sleep 2 && ${wrapped-thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
-      [ "sleep 2 && ${wrapped-slack}/bin/slack && niri msg action move-column-right" ]
+      [ "sleep 2 && ${pkgs.thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
+      [ "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
 
@@ -109,7 +104,7 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "${wrapped-signal-desktop}/bin/signal-desktop --use-tray-icon" ]
+      [ "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
   };
@@ -155,7 +150,7 @@ let
     ];
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
-      [ "sleep 2 && ${wrapped-spotify}/bin/spotify && niri msg action move-column-right" ]
+      [ "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right" ]
       [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
     ];
   };
