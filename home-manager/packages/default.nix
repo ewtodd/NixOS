@@ -26,11 +26,6 @@ let
     ];
   };
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
-  wrapped-spotify = pkgs.spotify;
-  wrapped-libreoffice = pkgs.libreoffice;
-  wrapped-slack = pkgs.slack;
-  wrapped-thunderbird = pkgs.thunderbird;
-  wrapped-signal-desktop = pkgs.signal-desktop;
 in
 {
   imports = [
@@ -47,17 +42,17 @@ in
   home.packages =
     with pkgs;
     [
-      wrapped-spotify
-      wrapped-libreoffice
+      spotify
+      libreoffice
     ]
     ++ lib.optionals (profile == "play") [
-      wrapped-signal-desktop
+      signal-desktop
       mangohud
       android-tools
     ]
     ++ lib.optionals (profile == "work") [
-      wrapped-slack
-      wrapped-thunderbird
+      slack
+      thunderbird
       lisepp
       SRIM
       rootbrowse_package
