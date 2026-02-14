@@ -15,17 +15,17 @@ let
       "laptop";
   radius = "10";
   open-nix-docs = pkgs.writeShellScript "open-nix-docs-firefox" ''
-    ${pkgs.firefox}/bin/firefox --new-window \
+    ${config.programs.firefox.finalPackage}/bin/firefox --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ \
       -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" ''
-    ${pkgs.firefox}/bin/firefox --private-window -new-tab -url https://monkeytype.com 
+    ${config.programs.firefox.finalPackage}/bin/firefox --private-window -new-tab -url https://monkeytype.com 
   '';
-  open-browser-window = "${pkgs.firefox}/bin/firefox";
-  open-private-window = "${pkgs.firefox}/bin/firefox --private-window";
+  open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox";
+  open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
 in
