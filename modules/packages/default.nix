@@ -12,7 +12,6 @@ in
 {
   programs.steam = {
     enable = true;
-    package = unstable.steam;
     extraCompatPackages = with unstable; [ proton-ge-bin ];
   };
 

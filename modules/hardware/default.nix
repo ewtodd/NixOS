@@ -34,7 +34,7 @@ in
         enable = true;
         package = unstable.mesa;
         enable32Bit = true;
-        package32 = unstable.mesa32;
+        package32 = unstable.driversi686Linux.mesa;
         extraPackages = with unstable; [
           vulkan-tools
           rocmPackages.clr.icd
@@ -52,7 +52,7 @@ in
         enable = true;
         package = unstable.mesa;
         enable32Bit = true;
-        package32 = unstable.mesa;
+        package32 = unstable.driversi686Linux.mesa;
         extraPackages = with unstable; [
           vpl-gpu-rt
           intel-media-driver
@@ -80,6 +80,7 @@ in
       environment.systemPackages = with pkgs; [
         openocd
         screen
+        minicom
         usbutils
         libusb1
         flashrom

@@ -18,21 +18,11 @@ let
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-3");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
-  home = config.home.homeDirectory;
-  wrap = inputs.nix-wrap.lib.${pkgs.stdenv.hostPlatform.system}.wrap;
-  themeArgs = "-r ${home}/.config/gtk-3.0 -r ${home}/.config/gtk-4.0 -r ${home}/.config/dconf";
+
+  wrapped-spotify = pkgs.spotify;
   wrapped-slack = pkgs.slack;
-  wrapped-signal = pkgs.signal-desktop;
-  wrapped-spotify = wrap {
-    package = pkgs.spotify;
-    executable = "spotify";
-    wrapArgs = "-d -n -a -b -p -w ${home}/.config/spotify -w ${home}/.cache/spotify -r ${home}/.config/dconf";
-  };
-  wrapped-thunderbird = wrap {
-    package = pkgs.thunderbird;
-    executable = "thunderbird";
-    wrapArgs = "-d -n -a -b -p -w ${home}/.thunderbird -w ${home}/Downloads ${themeArgs}";
-  };
+  wrapped-thunderbird = pkgs.thunderbird;
+  wrapped-signal-desktop = pkgs.signal-desktop;
 
   workConfigBase = {
     workspace = [
@@ -119,7 +109,7 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "${wrapped-signal}/bin/signal-desktop --use-tray-icon" ]
+      [ "${wrapped-signal-desktop}/bin/signal-desktop --use-tray-icon" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
   };
