@@ -42,6 +42,7 @@ in
       tree
       usbutils
       poppler-utils
+      mpv
       pciutils
       unzip
       wineWowPackages.stable
