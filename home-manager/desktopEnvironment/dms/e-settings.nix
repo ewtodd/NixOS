@@ -360,6 +360,10 @@ in
             name = "DP-3";
             model = "Sceptre O34";
           }
+          {
+            name = "eDP-1";
+            model = "BOE 0x095F Unknown";
+          }
         ];
         showOnLastDisplay = true;
         spacing = 0;
