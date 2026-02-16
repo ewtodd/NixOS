@@ -1,5 +1,4 @@
 {
-  pkgs,
   osConfig,
   lib,
   config,
@@ -58,6 +57,18 @@ in
       "image/tiff" = "org.gnome.gThumb.desktop";
       "image/svg+xml" = "org.gnome.gThumb.desktop";
       "image/avif" = "org.gnome.gThumb.desktop";
+
+      "video/mp4" = "mpv.desktop";
+      "video/x-matroska" = "mpv.desktop";
+      "video/webm" = "mpv.desktop";
+      "video/x-msvideo" = "mpv.desktop";
+      "video/mpeg" = "mpv.desktop";
+      "video/ogg" = "mpv.desktop";
+      "video/quicktime" = "mpv.desktop";
+      "video/x-flv" = "mpv.desktop";
+      "video/3gpp" = "mpv.desktop";
+      "video/3gpp2" = "mpv.desktop";
+      "video/mp2t" = "mpv.desktop";
 
       "inode/directory" = "org.gnome.Nautilus.desktop";
 
