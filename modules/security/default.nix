@@ -89,7 +89,6 @@ with lib;
     boot.kernelParams = [
       "slab_nomerge"
       "vsyscall=none"
-      "debugfs=off"
     ];
 
     boot.kernel.sysctl."kernel.kptr_restrict" = mkOverride 500 2;
