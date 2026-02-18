@@ -50,6 +50,7 @@ All hosts have access to `systemOptions` defined in `modules/default.nix`:
 systemOptions = {
   owner.e.enable = true;                # Owner identification
   deviceType.laptop.enable = true;      # Device type
+  services.ai.enable = true;            # AI services
   graphics.amd.enable = true;           # Graphics drivers
 };
 ```
@@ -78,6 +79,19 @@ Users are organized into **work**, **play**, or **root** profiles:
 - **Root:** Minimal profile without desktop environment configurations
 <!---->
 Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
+<!---->
+### `osConfig` Access
+<!---->
+Home-manager modules safely access system options:
+<!---->
+```nix
+{ osConfig ? null, ... }:
+let
+  hasAI = if osConfig != null
+    then osConfig.systemOptions.services.ai.enable
+    else false;
+in { /* ... */ }
+```
 <!---->
 ## Desktop Environment
 <!---->
