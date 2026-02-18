@@ -48,6 +48,7 @@ in
     ++ lib.optionals (profile == "play") [
       signal-desktop
       mangohud
+      gamescope
       android-tools
     ]
     ++ lib.optionals (profile == "work") [
