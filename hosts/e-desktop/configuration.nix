@@ -13,7 +13,6 @@
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.tailscale.enable = true;
-    services.ai.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
 

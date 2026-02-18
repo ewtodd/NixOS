@@ -32,7 +32,6 @@ in
   environment.systemPackages =
     with pkgs;
     [
-      bubblewrap
       git
       gh
       nh
