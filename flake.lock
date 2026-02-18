@@ -37,6 +37,7 @@
         "type": "github"
       }
     },
+<<<<<<< HEAD
     "cachyos-kernel": {
       "flake": false,
       "locked": {
@@ -69,6 +70,8 @@
         "type": "github"
       }
     },
+=======
+>>>>>>> parent of 5ec0c4b (revert)
     "crane": {
       "locked": {
         "lastModified": 1765145449,
@@ -92,11 +95,19 @@
         "quickshell": "quickshell"
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1771429545,
         "narHash": "sha256-bus5jLpKZDN7Wf+P8xdplfBLRDgl4W970mnyWJH+4xo=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
         "rev": "81cba7ad97afae59a5aa6485f2a53944cc88b6e3",
+=======
+        "lastModified": 1771367062,
+        "narHash": "sha256-QBc+TYaWw2Hv4dDqMkg7G8zKjhcOPR3UF7URXXZiXlY=",
+        "owner": "AvengeMedia",
+        "repo": "DankMaterialShell",
+        "rev": "3d35af2a87652151ad22628f1422fd5e56ced13a",
+>>>>>>> parent of 5ec0c4b (revert)
         "type": "github"
       },
       "original": {
@@ -152,11 +163,19 @@
         ]
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1771377493,
         "narHash": "sha256-b9D9zBQBLZirBqOOan7NHN8ceqSgCQLZ3Az4Uu+sdAE=",
         "owner": "AvengeMedia",
         "repo": "dms-plugin-registry",
         "rev": "efc83556690f3227f1279ba439ad6a227ff3ca59",
+=======
+        "lastModified": 1771290999,
+        "narHash": "sha256-WlHRxPZC4VbWw1VPZLcMKWbuGHOtsHuAyga4C3ZypA0=",
+        "owner": "AvengeMedia",
+        "repo": "dms-plugin-registry",
+        "rev": "a71dcfd0a64ced30ead2b43a8111e2c821cd376e",
+>>>>>>> parent of 5ec0c4b (revert)
         "type": "github"
       },
       "original": {
@@ -181,6 +200,7 @@
         "type": "github"
       }
     },
+<<<<<<< HEAD
     "flake-compat_2": {
       "flake": false,
       "locked": {
@@ -217,6 +237,10 @@
     },
     "flake-parts_2": {
       "inputs": {
+=======
+    "flake-parts": {
+      "inputs": {
+>>>>>>> parent of 5ec0c4b (revert)
         "nixpkgs-lib": [
           "nixvim",
           "nixpkgs"
@@ -432,11 +456,19 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1771391793,
         "narHash": "sha256-gI0mrOnAGq4OAXAewHxu3AuF+l12I4ZNgsXDoJcIiYo=",
         "owner": "YaLTeR",
         "repo": "niri",
         "rev": "9ec5d72c95b1052335a60dbe797557c94b75def3",
+=======
+        "lastModified": 1771343214,
+        "narHash": "sha256-DpfzkgboXN+Lm83gb2knzNPKPhjOKrp5fMcDMldrDCk=",
+        "owner": "YaLTeR",
+        "repo": "niri",
+        "rev": "a4abb0bd5e898c7c3ed38540bb0fc117f28ea266",
+>>>>>>> parent of 5ec0c4b (revert)
         "type": "github"
       },
       "original": {
@@ -450,7 +482,13 @@
       "inputs": {
         "git-hooks": [],
         "niri-unstable": [],
+<<<<<<< HEAD
         "nixpkgs": "nixpkgs",
+=======
+        "nixpkgs": [
+          "unstable"
+        ],
+>>>>>>> parent of 5ec0c4b (revert)
         "xwayland-satellite-unstable": []
       },
       "locked": {
@@ -467,6 +505,7 @@
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       }
     },
+<<<<<<< HEAD
     "nix-cachyos-kernel": {
       "inputs": {
         "cachyos-kernel": "cachyos-kernel",
@@ -494,6 +533,12 @@
       "inputs": {
         "base16-schemes": "base16-schemes",
         "nixpkgs-lib": "nixpkgs-lib_2"
+=======
+    "nix-colors": {
+      "inputs": {
+        "base16-schemes": "base16-schemes",
+        "nixpkgs-lib": "nixpkgs-lib"
+>>>>>>> parent of 5ec0c4b (revert)
       },
       "locked": {
         "lastModified": 1707825078,
@@ -511,6 +556,7 @@
     },
     "nixpkgs": {
       "locked": {
+<<<<<<< HEAD
         "lastModified": 1771008912,
         "narHash": "sha256-gf2AmWVTs8lEq7z/3ZAsgnZDhWIckkb+ZnAo5RzSxJg=",
         "owner": "nixos",
@@ -573,6 +619,8 @@
     },
     "nixpkgs_3": {
       "locked": {
+=======
+>>>>>>> parent of 5ec0c4b (revert)
         "lastModified": 1771208521,
         "narHash": "sha256-X01Q3DgSpjeBpapoGA4rzKOn25qdKxbPnxHeMLNoHTU=",
         "owner": "NixOS",
@@ -587,9 +635,30 @@
         "type": "github"
       }
     },
+<<<<<<< HEAD
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts_2",
+=======
+    "nixpkgs-lib": {
+      "locked": {
+        "lastModified": 1697935651,
+        "narHash": "sha256-qOfWjQ2JQSQL15KLh6D7xQhx0qgZlYZTYlcEiRuAMMw=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "e1e11fdbb01113d85c7f41cada9d2847660e3902",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
+    "nixvim": {
+      "inputs": {
+        "flake-parts": "flake-parts",
+>>>>>>> parent of 5ec0c4b (revert)
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -712,9 +781,14 @@
         "lisepp": "lisepp",
         "niri": "niri",
         "niri-nix": "niri-nix",
+<<<<<<< HEAD
         "nix-cachyos-kernel": "nix-cachyos-kernel",
         "nix-colors": "nix-colors",
         "nixpkgs": "nixpkgs_3",
+=======
+        "nix-colors": "nix-colors",
+        "nixpkgs": "nixpkgs",
+>>>>>>> parent of 5ec0c4b (revert)
         "nixvim": "nixvim",
         "remarkable": "remarkable",
         "unstable": "unstable"
