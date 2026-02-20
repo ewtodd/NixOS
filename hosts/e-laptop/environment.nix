@@ -27,6 +27,8 @@
   boot.kernelParams = [
     "mem_sleep_default=deep"
     "acpi.ec_no_wakeup=1"
+    "i915.force_probe=!4626"
+    "xe.force_probe=4626"
   ];
 
   systemd.services.disable-all-wakeups = {
