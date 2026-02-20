@@ -32,7 +32,6 @@ with lib;
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
-      services.ai.enable = mkEnableOption "Local AI";
 
       services.nixBuilder.server = {
         enable = mkEnableOption "Act as a Nix remote build server";
