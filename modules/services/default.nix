@@ -44,15 +44,5 @@
         enable = true;
       };
     })
-    (lib.mkIf (config.systemOptions.services.ai.enable) {
-      services.ollama = {
-        enable = true;
-        package = unstable.ollama-rocm;
-        acceleration = "rocm";
-      };
-      services.nextjs-ollama-llm-ui = {
-        enable = true;
-      };
-    })
   ];
 }

@@ -1,10 +1,12 @@
 {
   lib,
+  inputs,
   unstable,
   ...
 }:
 {
-  boot.kernelPackages = unstable.linuxPackages_latest;
+  boot.kernelPackages =
+    inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-latest-lto-x86_64-v3;
   hardware.firmware = [ unstable.linux-firmware ];
 
   boot.initrd.systemd.enable = true;

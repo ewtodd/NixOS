@@ -10,14 +10,18 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim/nixos-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-colors.url = "github:misterio77/nix-colors";
+    nix-colors = {
+      url = "github:misterio77/nix-colors";
+    };
     niri = {
       url = "github:YaLTeR/niri?ref=wip/branch";
       inputs.nixpkgs.follows = "unstable";
     };
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
+      inputs.nixpkgs.follows = "unstable";
       inputs.git-hooks.follows = "";
       inputs.niri-unstable.follows = "";
       inputs.xwayland-satellite-unstable.follows = "";
@@ -54,6 +58,7 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 
   outputs =
