@@ -117,15 +117,17 @@
           '';
         };
         nixd.enable = true;
-        pylsp.enable = true;
+        pylsp = {
+          enable = true;
+          settings = {
+            plugins.yapf.enable = true;
+          };
+        };
         yamlls.enable = true;
         bashls.enable = true;
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
-        zls.enable = true;
-        gopls.enable = true;
-        qmlls.enable = true;
       };
     };
 
@@ -141,11 +143,9 @@
         package = pkgs.nixfmt;
       };
       sources.formatting = {
-        black.enable = true;
+        yapf.enable = true;
         bibclean.enable = true;
         cmake_format.enable = true;
-        biome.enable = true;
-        qmlformat.enable = true;
         clang_format = {
           enable = true;
           settings = {
