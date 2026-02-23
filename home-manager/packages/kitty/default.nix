@@ -5,11 +5,7 @@
 }:
 let
   colors = config.colorScheme.palette;
-  opacity =
-    if (osConfig.systemOptions.owner.e.enable) then
-      (if (osConfig.systemOptions.apps.niri.blur.enable) then "0.875" else "1")
-    else
-      "0.925";
+  opacity = if (osConfig.systemOptions.owner.e.enable) then "0.9" else "0.925";
 in
 {
   programs.kitty = {
@@ -38,6 +34,7 @@ in
       confirm_os_window_close = "-1";
       notify_on_cmd_finish = "unfocused 90.0 notify";
       hide_window_decorations = "no";
+      background_blur = 1;
 
       # Use nix-colors palette
       background = "#${colors.base00}";

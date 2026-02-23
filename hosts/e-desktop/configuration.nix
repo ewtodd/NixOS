@@ -18,8 +18,6 @@
 
     services.nixBuilder.server = {
       enable = true;
-      # Add public keys from client machines here
-      # Generate on each client with: sudo ssh-keygen -t ed25519 -f /root/.ssh/nix-builder -N ""
       authorizedKeys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPAzgPdwGaA6mb++GnW0jw4sp2Y0sMfgT7J26KcMXsc root@e-laptop"
       ];

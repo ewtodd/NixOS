@@ -577,22 +577,13 @@ in
       animations = {
         slowdown = 0.75;
       };
+      blur = {
+        passes = 4;
+        saturation = 1.2;
+      };
     };
     extraConfig = lib.concatStringsSep "\n" (
       [ ]
-      ++ lib.optionals (osConfig.systemOptions.apps.niri.blur.enable) [
-        ''
-          window-rule {
-              match app-id="kitty"     
-              background-effect {
-                xray true 
-                blur {"on";}
-                noise 0.001
-                saturation 3
-              }
-          }
-        ''
-      ]
       ++ lib.optionals (deviceType == "laptop") [ ''include "laptop.kdl"'' ]
       ++ lib.optionals (deviceType == "desktop") [ ''include "desktop.kdl"'' ]
       ++ lib.optionals e [ ''include "profile.kdl"'' ]

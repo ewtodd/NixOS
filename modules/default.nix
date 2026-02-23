@@ -27,8 +27,6 @@ with lib;
       apps.remarkable.enable = mkEnableOption "Remarkable from wrapWine flake";
       apps.quickemu.enable = mkEnableOption "Quickemu";
 
-      apps.niri.blur.enable = mkEnableOption "Whether to use WIP git branch of niri with blur support";
-
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
