@@ -2,7 +2,6 @@
   pkgs,
   lib,
   inputs,
-  unstable,
   config,
   ...
 }:
@@ -19,7 +18,7 @@ in
   };
   programs.niri = {
     enable = true;
-    package = if (config.systemOptions.apps.niri.blur.enable) then niri else unstable.niri;
+    package = niri;
   };
 
   environment.systemPackages = with pkgs; [
