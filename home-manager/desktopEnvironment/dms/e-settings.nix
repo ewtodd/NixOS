@@ -1,4 +1,9 @@
-{ config, osConfig, ... }:
+{
+  config,
+  osConfig,
+  lib,
+  ...
+}:
 let
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
   homeDir = config.home.homeDirectory;
@@ -356,10 +361,14 @@ in
           }
         ];
         screenPreferences = [
+        ]
+        ++ lib.optionals (deviceType == "desktop") [
           {
             name = "DP-3";
             model = "Sceptre O34";
           }
+        ]
+        ++ lib.optionals (deviceType == "laptop") [
           {
             name = "eDP-1";
             model = "BOE 0x095F Unknown";

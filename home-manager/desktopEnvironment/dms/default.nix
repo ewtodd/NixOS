@@ -1,6 +1,7 @@
 {
   osConfig ? null,
   config,
+  lib,
   inputs,
   ...
 }:
@@ -8,7 +9,7 @@ let
   wallpaperPath = config.WallpaperPath or "/etc/nixos/hosts/HOSTNAME_PLACEHOLDER/wallpaper.png";
   isEOwner = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
   settingsFile = if isEOwner then ./e-settings.nix else ./v-settings.nix;
-  importedSettings = import settingsFile { inherit config osConfig; };
+  importedSettings = import settingsFile { inherit config osConfig lib; };
   settings = importedSettings.settings;
   weatherLocation = if isEOwner then "Ann Arbor, Michigan" else "Baton Rouge, Louisiana";
   weatherCoordinates = if isEOwner then "42.2813722,-83.7484616" else "30.4494155,-91.1869659";
