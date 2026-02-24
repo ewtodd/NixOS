@@ -23,9 +23,15 @@ in
     }
     // lib.optionalAttrs (isEOwner && isLaptop) {
       phone-home = "ssh ${config.home.username}@ssh.ethanwtodd.com -p 2222";
-      files-home = "sftp -P 2222 ${config.home.username}@ssh.ethanwtodd.com";
+      files-home = "${pkgs.sshfs}/bin/sshfs -p 2222 ${config.home.username}@ssh.ethanwtodd.com:/${config.home.homeDirectory} /${config.home.homeDirectory}/remoteHome";
     };
   };
+
+  home.activation.createDirs = lib.mkIf (isEOwner && isLaptop) (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mkdir -p $HOME/remoteHome
+    ''
+  );
 
   programs.starship = {
     enable = true;
