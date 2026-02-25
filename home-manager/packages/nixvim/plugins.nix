@@ -4,12 +4,12 @@
 }:
 {
 
-  programs.nixvim.extraConfigLua = ''
+  extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
   '';
 
-  programs.nixvim.plugins = {
+  plugins = {
     web-devicons = {
       enable = true;
     };

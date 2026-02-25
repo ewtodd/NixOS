@@ -130,8 +130,39 @@
           ];
         };
 
+      mkNeovim =
+        colorScheme:
+        inputs.nixvim.legacyPackages.x86_64-linux.makeNixvimWithModule {
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          module = {
+            imports = [
+              ./home-manager/packages/nixvim/opts.nix
+              ./home-manager/packages/nixvim/keymaps.nix
+              ./home-manager/packages/nixvim/plugins.nix
+              ./home-manager/packages/nixvim/performance.nix
+              ./home-manager/packages/nixvim/split.nix
+            ];
+            colorschemes.base16 = {
+              enable = true;
+              colorscheme = builtins.mapAttrs (name: value: "#${value}") colorScheme.palette;
+              settings.telescope_borders = true;
+            };
+          };
+        };
+
     in
     {
+      lib = {
+        inherit mkNeovim;
+      };
+
+      packages.x86_64-linux = {
+        neovim = mkNeovim inputs.nix-colors.colorSchemes.harmonic16-dark;
+      };
+
       nixosConfigurations = {
         v-desktop = mkNixSystem { hostname = "v-desktop"; };
         v-laptop = mkNixSystem { hostname = "v-laptop"; };
