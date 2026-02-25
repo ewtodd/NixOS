@@ -83,16 +83,17 @@ in
           bottom = 0;
         };
         focus-ring = {
+          off = [ ];
+        };
+        border = {
           width = 3;
+          inactive-color = "#${colors.base03}";
           active-gradient._props = {
             angle = 180;
             from = "#${colors.base0D}";
             relative-to = "window";
             to = "#${colors.base0E}";
           };
-        };
-        border = {
-          off = [ ];
         };
         background-color = "transparent";
         default-column-width = {
@@ -117,51 +118,37 @@ in
 
       binds = {
         "Alt+Ctrl+3" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms screenshot full --no-notify --no-file"
           ];
         };
         "Alt+Ctrl+4" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms screenshot --no-notify --no-file"
           ];
         };
         "Alt+Ctrl+Shift+3" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms screenshot full"
           ];
         };
         "Alt+Ctrl+Shift+4" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms screenshot"
           ];
         };
         "Alt+l" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms ipc lock lock"
           ];
         };
         F7 = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             ''dms ipc brightness decrement 5 "" ''
           ];
         };
         F8 = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             ''dms ipc brightness increment 5 "" ''
           ];
         };
@@ -181,26 +168,25 @@ in
           move-window-to-monitor-next = [ ];
         };
         "Mod+Shift+Return" = {
-          spawn = [
-            "${pkgs.kitty}/bin/kitty"
-            "--class"
-            "floatingkitty"
+          spawn-sh = [
+            "${pkgs.kitty}/bin/kitty --class floatingkitty"
           ];
         };
         "Mod+Shift+Space" = {
           center-window = [ ];
         };
+        "Mod+Shift+a" = {
+          spawn-sh = [
+            "${config.programs.niri-sidebar.package}/bin/niri-sidebar cycle"
+          ];
+        };
         "Mod+Shift+c" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "systemctl --user restart dms.service"
           ];
         };
         "Mod+Shift+e" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms ipc call notifications clearAll"
           ];
         };
@@ -220,16 +206,12 @@ in
           move-column-right-or-to-monitor-right = [ ];
         };
         "Mod+Shift+n" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms ipc notifications toggle"
           ];
         };
         "Mod+Shift+p" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "${open-private-window}"
           ];
         };
@@ -237,18 +219,15 @@ in
           close-window = [ ];
         };
         "Mod+Shift+r" = {
-          set-column-width = "100%";
-        };
-        "Mod+Shift+a" = {
-          move-window-to-workspace-up = [ ];
+          expand-column-to-available-width = [ ];
         };
         "Mod+Shift+s" = {
-          move-window-to-workspace-down = [ ];
+          spawn-sh = [
+            "${config.programs.niri-sidebar.package}/bin/niri-sidebar toggle-visibility"
+          ];
         };
         "Mod+Shift+t" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "${open-fidget-window}"
           ];
         };
@@ -261,23 +240,18 @@ in
         "Mod+Tab" = {
           toggle-overview = [ ];
         };
-        "Mod+c" = {
-          consume-or-expel-window-left = [ ];
+        "Mod+a" = {
+          spawn-sh = [
+            "${config.programs.niri-sidebar.package}/bin/niri-sidebar focus"
+          ];
         };
         "Mod+d" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "dms ipc spotlight toggle"
           ];
         };
-        "Mod+e" = {
-          expand-column-to-available-width = [ ];
-        };
         "Mod+f" = {
-          spawn = [
-            "sh"
-            "-c"
+          spawn-sh = [
             "${open-browser-window}"
           ];
         };
@@ -310,20 +284,22 @@ in
         "Mod+r" = {
           switch-preset-column-width-back = [ ];
         };
+        "Mod+s" = {
+          spawn-sh = [
+            "${config.programs.niri-sidebar.package}/bin/niri-sidebar toggle-window"
+          ];
+        };
         "Mod+t" = {
           switch-focus-between-floating-and-tiling = [ ];
         };
-        "Mod+v" = {
-          consume-or-expel-window-right = [ ];
+        "Mod+w" = {
+          center-column = [ ];
         };
         "Mod+x" = {
           spawn = [ "${pkgs.proton-pass}/bin/proton-pass" ];
         };
         "Mod+z" = {
           spawn = [ "${pkgs.zathura}/bin/zathura" ];
-        };
-        "Mod+w" = {
-          center-column = [ ];
         };
         XF86AudioLowerVolume = {
           spawn = [
