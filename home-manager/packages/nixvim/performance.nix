@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  programs.nixvim.performance = {
+  performance = {
     combinePlugins = {
       enable = true;
       standalonePlugins = [

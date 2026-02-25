@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
-  programs.nixvim = {
-    extraPlugins = [
+  extraPlugins = [
       (pkgs.vimUtils.buildVimPlugin {
         name = "split.nvim";
         src = pkgs.fetchFromGitHub {
@@ -40,5 +39,4 @@
         end,
       })
     '';
-  };
 }

@@ -1,7 +1,7 @@
 { ... }:
 {
 
-  programs.nixvim.keymaps = [
+  keymaps = [
     {
       action = "<C-f>";
       key = "<S-j>";
