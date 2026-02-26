@@ -230,6 +230,16 @@ in
     notificationTimeoutCritical = 0;
     notificationPopupPosition = 0;
     notificationHistoryEnabled = false;
+    notificationRules = [
+      {
+        enabled = true;
+        field = "body";
+        pattern = "Claude";
+        matchType = "contains";
+        action = "ignore";
+        urgency = "default";
+      }
+    ];
     osdAlwaysShowValue = false;
     osdPosition = 0;
     osdVolumeEnabled = true;
