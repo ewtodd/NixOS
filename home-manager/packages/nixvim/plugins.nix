@@ -116,13 +116,13 @@
             client.server_capabilities.documentRangeFormattingProvider = false
           '';
         };
-        nixd.enable = true;
-        pylsp = {
+        rust_analyzer = {
           enable = true;
-          settings = {
-            plugins.yapf.enable = true;
-          };
+          installCargo = false;
+          installRustc = false;
         };
+        nixd.enable = true;
+        pylsp.enable = true;
         yamlls.enable = true;
         bashls.enable = true;
         texlab.enable = true;
