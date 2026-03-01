@@ -12,7 +12,6 @@ in
 {
   programs.steam = {
     enable = true;
-    extraCompatPackages = with unstable; [ proton-ge-bin ];
   };
 
   programs.obs-studio = {
