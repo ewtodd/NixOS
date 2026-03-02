@@ -26,10 +26,6 @@
       inputs.niri-unstable.follows = "";
       inputs.xwayland-satellite-unstable.follows = "";
     };
-    niri-sidebar = {
-      url = "github:ewtodd/niri-sidebar";
-      inputs.nixpkgs.follows = "unstable";
-    };
     dgop = {
       url = "github:AvengeMedia/dgop";
       inputs.nixpkgs.follows = "unstable";
@@ -79,7 +75,6 @@
         inputs.danksearch.homeModules.dsearch
         inputs.dms-plugin-registry.modules.default
         inputs.niri-nix.homeModules.default
-        inputs.niri-sidebar.homeModules.default
         {
           programs.nixvim.nixpkgs.useGlobalPackages = true;
         }

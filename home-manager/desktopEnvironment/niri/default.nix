@@ -175,11 +175,6 @@ in
         "Mod+Shift+Space" = {
           center-window = [ ];
         };
-        "Mod+Shift+a" = {
-          spawn-sh = [
-            "${config.programs.niri-sidebar.package}/bin/niri-sidebar cycle"
-          ];
-        };
         "Mod+Shift+c" = {
           spawn-sh = [
             "systemctl --user restart dms.service"
@@ -221,11 +216,6 @@ in
         "Mod+Shift+r" = {
           expand-column-to-available-width = [ ];
         };
-        "Mod+Shift+s" = {
-          spawn-sh = [
-            "${config.programs.niri-sidebar.package}/bin/niri-sidebar toggle-visibility"
-          ];
-        };
         "Mod+Shift+t" = {
           spawn-sh = [
             "${open-fidget-window}"
@@ -239,11 +229,6 @@ in
         };
         "Mod+Tab" = {
           toggle-overview = [ ];
-        };
-        "Mod+a" = {
-          spawn-sh = [
-            "${config.programs.niri-sidebar.package}/bin/niri-sidebar focus"
-          ];
         };
         "Mod+d" = {
           spawn-sh = [
@@ -283,11 +268,6 @@ in
         };
         "Mod+r" = {
           switch-preset-column-width-back = [ ];
-        };
-        "Mod+s" = {
-          spawn-sh = [
-            "${config.programs.niri-sidebar.package}/bin/niri-sidebar toggle-window"
-          ];
         };
         "Mod+t" = {
           switch-focus-between-floating-and-tiling = [ ];
