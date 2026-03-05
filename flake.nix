@@ -30,8 +30,13 @@
       url = "github:AvengeMedia/dgop";
       inputs.nixpkgs.follows = "unstable";
     };
+    quickshell = {
+      url = "github:quickshell-mirror/quickshell";
+      inputs.nixpkgs.follows = "unstable";
+    };
     dank-material-shell = {
       url = "github:AvengeMedia/DankMaterialShell";
+      inputs.quickshell.follows = "quickshell";
       inputs.nixpkgs.follows = "unstable";
     };
     dms-plugin-registry = {
