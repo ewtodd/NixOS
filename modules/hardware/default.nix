@@ -64,7 +64,7 @@ in
         lm_sensors
       ];
     })
-    (lib.mkIf (config.systemOptions.audio.chromebook.enable) {
+    (lib.mkIf (config.systemOptions.hardware.chromebook-audio.enable) {
       environment = {
         systemPackages = [ pkgs.sof-firmware ];
         sessionVariables.ALSA_CONFIG_UCM2 = "${cb-ucm-conf}/share/alsa/ucm2";
@@ -75,6 +75,17 @@ in
           replacement = cb-ucm-conf;
         }
       ];
+    })
+    (lib.mkIf (config.systemOptions.hardware.xbox.enable) {
+      hardware.xpadneo.enable = true;
+      hardware.bluetooth.settings = {
+        General = {
+          Privacy = "device";
+          JustWorksRepairing = "always";
+          Class = "0x000100";
+          FastConnectable = "true";
+        };
+      };
     })
     (lib.mkIf (config.systemOptions.hardware.suzyqable.enable) {
       environment.systemPackages = with pkgs; [

@@ -10,6 +10,7 @@
   systemOptions = {
     graphics.amd.enable = true;
     hardware.suzyqable.enable = true;
+    hardware.xbox.enable = true;
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.tailscale.enable = true;

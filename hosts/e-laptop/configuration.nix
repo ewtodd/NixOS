@@ -8,8 +8,9 @@
 
   systemOptions = {
     graphics.intel.enable = true;
-    audio.chromebook.enable = true;
+    hardware.chromebook-audio.enable = true;
     hardware.suzyqable.enable = true;
+    hardware.xbox.enable = true;
     deviceType.laptop.enable = true;
     services.tailscale.enable = true;
     security.harden.enable = true;
