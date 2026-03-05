@@ -50,6 +50,7 @@ in
       imagemagick
       ghostscript
       pavucontrol
+      waypipe
     ]
     ++ lib.optionals (config.systemOptions.apps.zoom.enable) [ zoom-us ]
     ++ lib.optionals (config.systemOptions.apps.remarkable.enable) [ remarkable ]
