@@ -14,11 +14,11 @@ with lib;
       graphics.amd.enable = mkEnableOption "AMD graphics";
       graphics.intel.enable = mkEnableOption "Intel graphics";
 
-      audio.chromebook.enable = mkEnableOption "Chromebook audio fixes";
-
+      hardware.chromebook-audio.enable = mkEnableOption "Chromebook audio fixes";
       hardware.suzyqable.enable = mkEnableOption "Suzyqable chromebook debugging support";
       hardware.fingerprint.enable = mkEnableOption "Fprintd support";
       hardware.openRGB.enable = mkEnableOption "openRGB support";
+      hardware.xbox.enable = mkEnableOption "xbox controller support";
 
       deviceType.laptop.enable = mkEnableOption "Laptop-specific features";
       deviceType.desktop.enable = mkEnableOption "Desktop-specific features";
