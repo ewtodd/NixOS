@@ -21,6 +21,26 @@
         "type": "github"
       }
     },
+    "banshee-ucm-conf": {
+      "inputs": {
+        "nixpkgs": [
+          "unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772821190,
+        "narHash": "sha256-SLl0VT0B4Y1XF4yWWT1jd2MAvpDMD3kSFJzS2wtE/bc=",
+        "owner": "ewtodd",
+        "repo": "banshee-ucm-conf",
+        "rev": "0a88e8be1d710171ab08dd3ab01e88140f653320",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "banshee-ucm-conf",
+        "type": "github"
+      }
+    },
     "base16-schemes": {
       "flake": false,
       "locked": {
@@ -62,11 +82,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772651876,
-        "narHash": "sha256-GF0+dP5GoagtYRuHwCyVFSj21R2JSUDT49Ew9gecSd8=",
+        "lastModified": 1772770107,
+        "narHash": "sha256-n9M5XYpSzmNY7jz8mftGQ3DYb2hFCKrfM/FqkwsUUfo=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "32d16d067364e3181922bba5f5a5a4f2b0515a7b",
+        "rev": "1eca9b4c2cc1972d01bdb332a3e2668337c88459",
         "type": "github"
       },
       "original": {
@@ -122,11 +142,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772586807,
-        "narHash": "sha256-cZdSLq02zoTC2rFISJ76hOY0J5ADD+NMC7JK1J3Jlto=",
+        "lastModified": 1772737500,
+        "narHash": "sha256-i4zlWSQdOMkpd9br1H4jO8sSv5phKNU1GsHUEb5CHAI=",
         "owner": "AvengeMedia",
         "repo": "dms-plugin-registry",
-        "rev": "961c1e55201d2fe041b857be4640db8eb1ec6ec4",
+        "rev": "0cbfa0a235bfe60c0e9a58c00f9f352faf5c2f44",
         "type": "github"
       },
       "original": {
@@ -532,11 +552,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772695593,
-        "narHash": "sha256-kS8IgyBauCuOIgUcX4ajko6Szn4FPLCfwcEGfTv7RDc=",
+        "lastModified": 1772795720,
+        "narHash": "sha256-jAmJlxVl+dy3OgF9zn0MVmeXSmblRaDMMV1X1hzRN5g=",
         "owner": "quickshell-mirror",
         "repo": "quickshell",
-        "rev": "5721955686a474b814c27bc0ec743f86e473ac4f",
+        "rev": "6bcd3d9bbf81efdd8620409b268b90310bc1374c",
         "type": "github"
       },
       "original": {
@@ -569,6 +589,7 @@
     "root": {
       "inputs": {
         "SRIM": "SRIM",
+        "banshee-ucm-conf": "banshee-ucm-conf",
         "dank-material-shell": "dank-material-shell",
         "danksearch": "danksearch",
         "dgop": "dgop",
@@ -705,11 +726,11 @@
     },
     "unstable": {
       "locked": {
-        "lastModified": 1772674223,
-        "narHash": "sha256-/suKbHSaSmuC9UY7G0VRQ3aO+QKqxAQPQ19wG7QNkF8=",
+        "lastModified": 1772736753,
+        "narHash": "sha256-au/m3+EuBLoSzWUCb64a/MZq6QUtOV8oC0D9tY2scPQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "66d9241e3dc2296726dc522e62dbfe89c7b449f3",
+        "rev": "917fec990948658ef1ccd07cef2a1ef060786846",
         "type": "github"
       },
       "original": {

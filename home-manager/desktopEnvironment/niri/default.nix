@@ -468,31 +468,10 @@ in
         }
         {
           match._props = {
-            title = "Settings";
-            app-id = "org.quickshell";
-          };
-          open-floating = true;
-        }
-        {
-          match._props = {
             app-id = "com.obsproject.Studio";
           };
           default-column-width = [ ];
           default-window-height = [ ];
-        }
-        {
-          match._props = {
-            app-id = "Proton Pass";
-            title = "Proton Pass";
-          };
-          default-column-width = {
-            proportion = 0.4;
-          };
-          default-window-height = {
-            proportion = 0.7;
-          };
-          open-floating = true;
-          block-out-from = "screen-capture";
         }
         {
           match._props = {
