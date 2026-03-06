@@ -24,12 +24,22 @@ in
     // lib.optionalAttrs (isEOwner && isLaptop) {
       phone-home = "ssh ${config.home.username}@ssh.ethanwtodd.com -p 2222";
       files-home = "${pkgs.sshfs}/bin/sshfs -p 2222 ${config.home.username}@ssh.ethanwtodd.com:/${config.home.homeDirectory} /${config.home.homeDirectory}/remoteHome";
+    }
+    // lib.optionalAttrs (isEOwner && isLaptop && profile == "work") {
+      plots-home = "${pkgs.waypipe}/bin/waypipe --compress lz4 ssh -p 2222 e-work@ssh.ethanwtodd.com gthumb";
     };
   };
 
-  home.activation.createDirs = lib.mkIf (isEOwner && isLaptop) (
+  home.activation.createDir = lib.mkIf (isEOwner && isLaptop) (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p $HOME/remoteHome
+    ''
+  );
+
+  # to be removed once Thunderbird fixes itself
+  home.activation.removeDir = lib.mkIf isEOwner (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      rm -rf $HOME/Thunderbird
     ''
   );
 
