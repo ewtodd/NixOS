@@ -31,10 +31,10 @@ let
         _args = [ "HDMI-A-5" ];
         transform = "normal";
         position._props = {
-          x = 0;
+          x = -1920;
           y = 0;
         };
-        mode = "1920x1080@75.000";
+        mode = "1920x1080@144.002";
       }
       {
         _args = [ "HDMI-A-1" ];
@@ -53,10 +53,10 @@ let
         _args = [ "DP-4" ];
         transform = "normal";
         position._props = {
-          x = -1920;
+          x = 0;
           y = 0;
         };
-        mode = "1920x1080@144.002";
+        mode = "1920x1080@75.000";
       }
     ];
   };
