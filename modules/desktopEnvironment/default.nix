@@ -16,6 +16,7 @@ in
     configHome = "${homeDirectory}";
     logs.save = true;
   };
+
   programs.niri = {
     enable = true;
     package = niri;

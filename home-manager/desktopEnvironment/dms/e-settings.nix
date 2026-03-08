@@ -123,6 +123,8 @@ in
     centeringMode = "index";
     clockDateFormat = "ddd MMM d";
     lockDateFormat = "";
+    greeterRememberLastSession = false;
+    greeterRememberLastUser = false;
     mediaSize = 1;
     appLauncherViewMode = "list";
     spotlightModalViewMode = "list";
