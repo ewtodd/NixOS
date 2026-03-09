@@ -111,10 +111,11 @@ let
       mkdir -p $out/share/themes/${themeName}
       cp -r . $out/share/themes/${themeName}
       cat ${pkgs.writeText "gtk.css" gtkCss} | tee -a \
-        $out/share/themes/${themeName}/gtk-3.0/gtk.css \
-        $out/share/themes/${themeName}/gtk-4.0/gtk.css \
-        $out/share/themes/${themeName}/gtk-4.0/gtk-dark.css \
-        > /dev/null
+      $out/share/themes/${themeName}/gtk-3.0/gtk.css \
+      $out/share/themes/${themeName}/gtk-3.0/gtk-dark.css \
+      $out/share/themes/${themeName}/gtk-4.0/gtk.css \
+      $out/share/themes/${themeName}/gtk-4.0/gtk-dark.css \
+      > /dev/null
     '';
   };
 in
@@ -136,6 +137,10 @@ in
         name = fontFamily;
         size = 13;
       };
+
+      gtk2.extraConfig = ''
+        gtk-color-scheme = "bg_color:#${colors.base00}\nfg_color:#${colors.base05}\nbase_color:#${colors.base01}\ntext_color:#${colors.base05}\nselected_bg_color:#${colors.base0D}\nselected_fg_color:#${colors.base00}\ntooltip_bg_color:#${colors.base01}\ntooltip_fg_color:#${colors.base05}"
+      '';
 
       gtk3.extraCss = ''
         .nautilus-window placessidebar.sidebar,
