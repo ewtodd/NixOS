@@ -12,9 +12,14 @@ let
   fontFamily = "Ubuntu Nerd Font";
   themeName = "base16-custom";
 
+  # Mapping based on materia-theme (nix-colors gtkThemeFromScheme):
+  # BG=base00 FG=base05 HDR_BG=base02 HDR_FG=base05
+  # SURFACE=base02 VIEW=base01 BTN_BG=base02 BTN_FG=base06
+  # TXT_BG=base02 TXT_FG=base06 MENU_BG=base02 MENU_FG=base06
+  # ACCENT_BG=base0B SEL_BG=base0D WM_BORDER=base05/base03
   gtkCss = ''
     @define-color accent_color #${colors.base0D};
-    @define-color accent_bg_color #${colors.base0D};
+    @define-color accent_bg_color #${colors.base0B};
     @define-color accent_fg_color #${colors.base00};
     @define-color destructive_color #${colors.base08};
     @define-color destructive_bg_color #${colors.base08};
@@ -22,8 +27,8 @@ let
     @define-color success_color #${colors.base0B};
     @define-color success_bg_color #${colors.base0B};
     @define-color success_fg_color #${colors.base00};
-    @define-color warning_color #${colors.base0E};
-    @define-color warning_bg_color #${colors.base0E};
+    @define-color warning_color #${colors.base0A};
+    @define-color warning_bg_color #${colors.base0A};
     @define-color warning_fg_color #${colors.base00};
     @define-color error_color #${colors.base08};
     @define-color error_bg_color #${colors.base08};
@@ -31,7 +36,7 @@ let
     @define-color window_bg_color #${colors.base00};
     @define-color window_fg_color #${colors.base05};
     @define-color view_bg_color #${colors.base01};
-    @define-color view_fg_color #${colors.base05};
+    @define-color view_fg_color #${colors.base06};
     @define-color headerbar_bg_color #${colors.base02};
     @define-color headerbar_fg_color #${colors.base05};
     @define-color headerbar_border_color rgba(${colors."base02-rgb-r"}, ${colors."base02-rgb-g"}, ${colors."base02-rgb-b"}, 0.7);
@@ -39,7 +44,7 @@ let
     @define-color headerbar_shade_color rgba(0, 0, 0, 0.07);
     @define-color headerbar_darker_shade_color rgba(0, 0, 0, 0.07);
     @define-color sidebar_bg_color #${colors.base02};
-    @define-color sidebar_fg_color #${colors.base05};
+    @define-color sidebar_fg_color #${colors.base06};
     @define-color sidebar_backdrop_color @window_bg_color;
     @define-color sidebar_shade_color rgba(0, 0, 0, 0.07);
     @define-color secondary_sidebar_bg_color @sidebar_bg_color;
@@ -47,12 +52,12 @@ let
     @define-color secondary_sidebar_backdrop_color @sidebar_backdrop_color;
     @define-color secondary_sidebar_shade_color @sidebar_shade_color;
     @define-color card_bg_color #${colors.base02};
-    @define-color card_fg_color #${colors.base05};
+    @define-color card_fg_color #${colors.base06};
     @define-color card_shade_color rgba(0, 0, 0, 0.07);
     @define-color dialog_bg_color #${colors.base02};
-    @define-color dialog_fg_color #${colors.base05};
+    @define-color dialog_fg_color #${colors.base06};
     @define-color popover_bg_color #${colors.base02};
-    @define-color popover_fg_color #${colors.base05};
+    @define-color popover_fg_color #${colors.base06};
     @define-color popover_shade_color rgba(0, 0, 0, 0.07);
     @define-color shade_color rgba(0, 0, 0, 0.07);
     @define-color scrollbar_outline_color #${colors.base03};
@@ -91,16 +96,16 @@ let
     @define-color brown_3 #${colors.base0F};
     @define-color brown_4 #${colors.base0F};
     @define-color brown_5 #${colors.base0F};
-    @define-color light_1 #${colors.base05};
-    @define-color light_2 #${colors.base05};
+    @define-color light_1 #${colors.base06};
+    @define-color light_2 #${colors.base06};
     @define-color light_3 #${colors.base05};
     @define-color light_4 #${colors.base05};
-    @define-color light_5 #${colors.base05};
-    @define-color dark_1 #${colors.base05};
-    @define-color dark_2 #${colors.base05};
-    @define-color dark_3 #${colors.base05};
-    @define-color dark_4 #${colors.base05};
-    @define-color dark_5 #${colors.base05};
+    @define-color light_5 #${colors.base04};
+    @define-color dark_1 #${colors.base01};
+    @define-color dark_2 #${colors.base01};
+    @define-color dark_3 #${colors.base00};
+    @define-color dark_4 #${colors.base00};
+    @define-color dark_5 #${colors.base00};
   '';
 
   themePackage = pkgs.stdenvNoCC.mkDerivation {
@@ -139,7 +144,7 @@ in
       };
 
       gtk2.extraConfig = ''
-        gtk-color-scheme = "bg_color:#${colors.base00}\nfg_color:#${colors.base05}\nbase_color:#${colors.base01}\ntext_color:#${colors.base05}\nselected_bg_color:#${colors.base0D}\nselected_fg_color:#${colors.base00}\ntooltip_bg_color:#${colors.base01}\ntooltip_fg_color:#${colors.base05}"
+        gtk-color-scheme = "bg_color:#${colors.base00}\nfg_color:#${colors.base05}\nbase_color:#${colors.base01}\ntext_color:#${colors.base06}\nselected_bg_color:#${colors.base0D}\nselected_fg_color:#${colors.base00}\ntooltip_bg_color:#${colors.base02}\ntooltip_fg_color:#${colors.base06}"
       '';
 
       gtk3.extraCss = ''
