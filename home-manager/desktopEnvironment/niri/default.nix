@@ -7,7 +7,7 @@
 }:
 let
   e = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
-  colors = config.colorScheme.palette;
+  colors = config.scheme;
   deviceType =
     if osConfig != null && (osConfig.systemOptions.deviceType.desktop.enable or false) then
       "desktop"

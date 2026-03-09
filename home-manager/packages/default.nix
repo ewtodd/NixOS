@@ -4,7 +4,6 @@
   config,
   osConfig ? null,
   inputs,
-  unstable,
   ...
 }:
 let
@@ -61,7 +60,7 @@ in
 
   programs.btop = {
     enable = true;
-    package = if hasAMD then unstable.btop-rocm else unstable.btop;
+    package = if hasAMD then pkgs.btop-rocm else pkgs.btop;
     settings = {
       color_theme = "TTY";
       vim_keys = true;

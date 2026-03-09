@@ -2,7 +2,7 @@
   osConfig ? null,
   config,
   lib,
-  inputs,
+  pkgs,
   ...
 }:
 let
@@ -23,7 +23,7 @@ in
 
   programs.dank-material-shell = {
     enable = true;
-    dgop.package = inputs.dgop.packages."x86_64-linux".default;
+    dgop.package = pkgs.dgop;
     systemd = {
       enable = true;
       restartIfChanged = true;

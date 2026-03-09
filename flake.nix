@@ -2,50 +2,45 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.11";
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-colors = {
-      url = "github:misterio77/nix-colors";
+    base16 = {
+      url = "github:SenchoPens/base16.nix";
     };
     niri = {
       url = "github:YaLTeR/niri?ref=wip/branch";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.git-hooks.follows = "";
       inputs.niri-unstable.follows = "";
       inputs.xwayland-satellite-unstable.follows = "";
     };
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "unstable";
-    };
     quickshell = {
       url = "github:quickshell-mirror/quickshell";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     dank-material-shell = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.quickshell.follows = "quickshell";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     dms-plugin-registry = {
       url = "github:AvengeMedia/dms-plugin-registry";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     danksearch = {
       url = "github:AvengeMedia/danksearch";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     SRIM = {
       url = "github:ewtodd/SRIM-nix";
@@ -65,21 +60,21 @@
     };
     banshee-ucm-conf = {
       url = "github:ewtodd/banshee-ucm-conf";
-      inputs.nixpkgs.follows = "unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
   };
 
   outputs =
     inputs@{
       self,
       nixpkgs,
-      unstable,
       ...
     }:
     let
       mkHomeManagerModules = inputs: [
         inputs.nixvim.homeModules.nixvim
-        inputs.nix-colors.homeManagerModules.default
+        inputs.base16.homeManagerModule
         inputs.dank-material-shell.homeModules.dank-material-shell
         inputs.danksearch.homeModules.dsearch
         inputs.dms-plugin-registry.modules.default
@@ -99,10 +94,6 @@
           specialArgs = {
             inherit inputs;
             system = "x86_64-linux";
-            unstable = import unstable {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-            };
           };
           modules = [
             ./modules
@@ -110,6 +101,11 @@
             inputs.dank-material-shell.nixosModules.greeter
             inputs.banshee-ucm-conf.nixosModules.default
             {
+              nixpkgs.overlays = [
+                (final: prev: {
+                  dwarfs = (import inputs.nixpkgs-master { system = "x86_64-linux"; }).dwarfs;
+                })
+              ];
               nixpkgs.config.allowUnfree = true;
               home-manager = {
                 useGlobalPkgs = true;
@@ -119,10 +115,6 @@
                 extraSpecialArgs = {
                   inherit inputs;
                   system = "x86_64-linux";
-                  unstable = import unstable {
-                    system = "x86_64-linux";
-                    config.allowUnfree = true;
-                  };
                 };
                 users = import ./hosts/${hostname}/home.nix;
               };
@@ -134,28 +126,24 @@
           ];
         };
 
-      mkNeovim =
-        colorScheme:
-        inputs.nixvim.legacyPackages.x86_64-linux.makeNixvimWithModule {
-          pkgs = import nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
-          module = {
-            imports = [
-              ./home-manager/packages/nixvim/opts.nix
-              ./home-manager/packages/nixvim/keymaps.nix
-              ./home-manager/packages/nixvim/plugins.nix
-              ./home-manager/packages/nixvim/performance.nix
-              ./home-manager/packages/nixvim/split.nix
-            ];
-            colorschemes.base16 = {
-              enable = true;
-              colorscheme = builtins.mapAttrs (name: value: "#${value}") colorScheme.palette;
-              settings.telescope_borders = true;
-            };
+      mkNeovim = inputs.nixvim.legacyPackages.x86_64-linux.makeNixvimWithModule {
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
+        module = {
+          imports = [
+            ./home-manager/packages/nixvim/opts.nix
+            ./home-manager/packages/nixvim/keymaps.nix
+            ./home-manager/packages/nixvim/plugins.nix
+            ./home-manager/packages/nixvim/performance.nix
+            ./home-manager/packages/nixvim/split.nix
+          ];
+          colorschemes.kanagawa = {
+            enable = true;
           };
         };
+      };
 
     in
     {
@@ -164,7 +152,7 @@
       };
 
       packages.x86_64-linux = {
-        neovim = mkNeovim inputs.nix-colors.colorSchemes.harmonic16-dark;
+        neovim = mkNeovim;
       };
 
       nixosConfigurations = {

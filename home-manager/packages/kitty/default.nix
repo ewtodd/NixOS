@@ -4,7 +4,7 @@
   ...
 }:
 let
-  colors = config.colorScheme.palette;
+  colors = config.scheme;
   opacity = if (osConfig.systemOptions.owner.e.enable) then "0.9" else "0.925";
 in
 {
@@ -36,7 +36,7 @@ in
       hide_window_decorations = "no";
       background_blur = 1;
 
-      # Use nix-colors palette
+      # Base16 palette
       background = "#${colors.base00}";
       foreground = "#${colors.base05}";
 

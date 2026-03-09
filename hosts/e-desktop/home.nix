@@ -1,6 +1,6 @@
 {
   "e-play" =
-    { inputs, ... }:
+    { pkgs, ... }:
     {
       home.username = "e-play";
       home.homeDirectory = "/home/e-play";
@@ -8,10 +8,10 @@
       imports = [
         ../../home-manager/profiles/play.nix
       ];
-      colorScheme = inputs.nix-colors.colorSchemes.harmonic16-dark;
+      scheme = "${pkgs.base16-schemes}/share/themes/harmonic16-dark.yaml";
     };
   "e-work" =
-    { inputs, ... }:
+    { pkgs, ... }:
     {
       home.username = "e-work";
       home.homeDirectory = "/home/e-work";
@@ -19,7 +19,7 @@
       imports = [
         ../../home-manager/profiles/work.nix
       ];
-      colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
+      scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
     };
   "root" =
     { ... }:

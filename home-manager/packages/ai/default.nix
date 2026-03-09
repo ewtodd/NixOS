@@ -1,7 +1,6 @@
 {
   lib,
   osConfig ? null,
-  unstable,
   ...
 }:
 let
@@ -11,7 +10,6 @@ in
   config = lib.mkIf hasAI {
     services.ollama = {
       enable = true;
-      package = unstable.ollama;
       acceleration = "rocm";
       environmentVariables = {
         OLLAMA_CONTEXT_LENGTH = "16384";
