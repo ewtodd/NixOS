@@ -41,7 +41,7 @@ in
       mpv
       pciutils
       unzip
-      wineWowPackages.stable
+      wineWow64Packages.stable
       winetricks
       zip
       gearlever
