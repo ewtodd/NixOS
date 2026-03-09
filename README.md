@@ -97,10 +97,10 @@ Configuration in `home-manager/packages/shell/`.
 <!---->
 ## Theming
 <!---->
-Colors managed via **nix-colors** on a per-profile basis.
+Colors managed via **base16.nix** with schemes from `pkgs.base16-schemes` on a per-profile basis.
 <!---->
 ```nix
-colorScheme = inputs.nix-colors.colorSchemes.kanagawa;
+scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
 ```
 <!---->
 ## Adding a New Host
@@ -140,6 +140,7 @@ init-analysis-env     # ROOT analysis using custom library
 ```
 <!---->
 ## Roadmap
+- [x] Switch from nix-colors to base16.nix since that is actually maintained
 - [x] Move geant4 development environment into its own repo as a flake
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [x] Expose nixvim configuration as a runnable package (`nix run`)
