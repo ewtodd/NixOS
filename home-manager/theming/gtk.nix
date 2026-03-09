@@ -10,6 +10,7 @@ with lib;
 let
   colors = config.scheme;
   fontFamily = "Ubuntu Nerd Font";
+  themeName = "base16-custom";
 
   gtkCss = ''
     @define-color accent_color #${colors.base0D};
@@ -100,30 +101,30 @@ let
     @define-color dark_3 #${colors.base05};
     @define-color dark_4 #${colors.base05};
     @define-color dark_5 #${colors.base05};
-
-    .nautilus-window placessidebar.sidebar,
-    .nautilus-window.maximized placessidebar.sidebar {
-      background-color: @theme_bg_color;
-    }
-
-    .nautilus-window placessidebar.sidebar row.sidebar-row {
-      background-color: transparent;
-    }
-
-    .nautilus-window placessidebar.sidebar row.sidebar-row:selected {
-      background-color: @theme_selected_bg_color;
-    }
   '';
 
-  cssFile = pkgs.writeText "gtk.css" gtkCss;
+  themePackage = pkgs.stdenvNoCC.mkDerivation {
+    name = "base16-gtk-theme";
+    src = "${pkgs.adw-gtk3}/share/themes/adw-gtk3";
+    dontBuild = true;
+    installPhase = ''
+      mkdir -p $out/share/themes/${themeName}
+      cp -r . $out/share/themes/${themeName}
+      cat ${pkgs.writeText "gtk.css" gtkCss} | tee -a \
+        $out/share/themes/${themeName}/gtk-3.0/gtk.css \
+        $out/share/themes/${themeName}/gtk-4.0/gtk.css \
+        $out/share/themes/${themeName}/gtk-4.0/gtk-dark.css \
+        > /dev/null
+    '';
+  };
 in
 {
   config = mkIf config.gtk.enable {
     home.packages = with pkgs; [ morewaita-icon-theme ];
     gtk = {
       theme = {
-        package = pkgs.adw-gtk3;
-        name = "adw-gtk3";
+        package = themePackage;
+        name = themeName;
       };
 
       iconTheme = {
@@ -135,15 +136,50 @@ in
         name = fontFamily;
         size = 13;
       };
+
+      gtk3.extraCss = ''
+        .nautilus-window placessidebar.sidebar,
+        .nautilus-window.maximized placessidebar.sidebar {
+          background-color: @theme_bg_color;
+        }
+
+        .nautilus-window placessidebar.sidebar row.sidebar-row {
+          background-color: transparent;
+        }
+
+        .nautilus-window placessidebar.sidebar row.sidebar-row:selected {
+          background-color: @theme_selected_bg_color;
+        }
+      '';
+
+      gtk4.extraCss = ''
+        .nautilus-window placessidebar.sidebar,
+        .nautilus-window.maximized placessidebar.sidebar {
+          background-color: @theme_bg_color;
+        }
+
+        .nautilus-window placessidebar.sidebar row.sidebar-row {
+          background-color: transparent;
+        }
+
+        .nautilus-window placessidebar.sidebar row.sidebar-row:selected {
+          background-color: @theme_selected_bg_color;
+        }
+      '';
     };
 
     home.sessionVariables = {
       XDG_DATA_DIRS = "$XDG_DATA_DIRS:${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}";
     };
 
-    xdg.configFile = {
-      "gtk-3.0/gtk.css".source = cssFile;
-      "gtk-4.0/gtk.css".source = cssFile;
-    };
+    xdg.configFile =
+      let
+        gtk4Dir = "${themePackage}/share/themes/${themeName}/gtk-4.0";
+      in
+      {
+        "gtk-4.0/assets".source = "${gtk4Dir}/assets";
+        "gtk-4.0/gtk.css".source = "${gtk4Dir}/gtk.css";
+        "gtk-4.0/gtk-dark.css".source = "${gtk4Dir}/gtk-dark.css";
+      };
   };
 }
