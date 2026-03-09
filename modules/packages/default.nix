@@ -1,7 +1,6 @@
 {
   pkgs,
   inputs,
-  unstable,
   config,
   lib,
   ...
@@ -16,7 +15,6 @@ in
 
   programs.obs-studio = {
     enable = true;
-    package = unstable.obs-studio;
   };
 
   boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];

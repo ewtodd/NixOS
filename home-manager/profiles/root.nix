@@ -1,9 +1,9 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 {
   imports = [
     ../default.nix
   ];
 
   Profile = "root";
-  colorScheme = inputs.nix-colors.colorSchemes.dracula;
+  scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
 }

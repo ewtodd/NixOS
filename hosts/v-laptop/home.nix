@@ -1,6 +1,6 @@
 {
   "v-play" =
-    { inputs, ... }:
+    { inputs, pkgs, ... }:
     {
       home.username = "v-play";
       home.homeDirectory = "/home/v-play";
@@ -8,7 +8,7 @@
       imports = [
         ../../home-manager/profiles/play.nix
       ];
-      colorScheme = inputs.nix-colors.colorSchemes.eris;
+      scheme = "${pkgs.base16-schemes}/share/themes/eris.yaml";
     };
 
   "v-work" =
@@ -21,7 +21,7 @@
         ../../home-manager/profiles/work.nix
       ];
       home.packages = [ pkgs.signal-desktop ];
-      colorScheme = inputs.nix-colors.colorSchemes.atelier-cave;
+      scheme = "${pkgs.base16-schemes}/share/themes/atelier-cave.yaml";
     };
 
   "root" =

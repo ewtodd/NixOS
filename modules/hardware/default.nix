@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  unstable,
   ...
 }:
 {
@@ -10,16 +9,16 @@
     (lib.mkIf (config.systemOptions.graphics.amd.enable) {
       hardware.graphics = {
         enable = true;
-        package = unstable.mesa;
+        package = pkgs.mesa;
         enable32Bit = true;
-        package32 = unstable.driversi686Linux.mesa;
-        extraPackages = with unstable; [
+        package32 = pkgs.driversi686Linux.mesa;
+        extraPackages = with pkgs; [
           vulkan-tools
           rocmPackages.clr.icd
         ];
       };
 
-      environment.systemPackages = with unstable; [
+      environment.systemPackages = with pkgs; [
         rocmPackages.rocminfo
         rocmPackages.rocm-smi
         lm_sensors
@@ -28,10 +27,10 @@
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
       hardware.graphics = {
         enable = true;
-        package = unstable.mesa;
+        package = pkgs.mesa;
         enable32Bit = true;
-        package32 = unstable.driversi686Linux.mesa;
-        extraPackages = with unstable; [
+        package32 = pkgs.driversi686Linux.mesa;
+        extraPackages = with pkgs; [
           vpl-gpu-rt
           intel-media-driver
         ];
@@ -79,12 +78,12 @@
       services.fprintd.enable = true;
 
     })
-      (lib.mkIf (config.systemOptions.hardware.openRGB.enable) {
-      environment.systemPackages = with unstable; [ i2c-tools ];
+    (lib.mkIf (config.systemOptions.hardware.openRGB.enable) {
+      environment.systemPackages = with pkgs; [ i2c-tools ];
       services.hardware.openrgb = {
         enable = true;
         motherboard = "intel";
-        package = unstable.openrgb-with-all-plugins;
+        package = pkgs.openrgb-with-all-plugins;
       };
       hardware.i2c.enable = true;
     })

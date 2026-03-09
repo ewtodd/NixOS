@@ -4,7 +4,7 @@
   ...
 }:
 let
-  colors = config.colorScheme.palette;
+  colors = config.scheme;
   jsonFormat = pkgs.formats.json { };
 in
 {

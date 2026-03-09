@@ -1,12 +1,11 @@
 {
   pkgs,
   lib,
-  unstable,
   ...
 }:
 {
-  boot.kernelPackages = unstable.linuxPackages_latest;
-  hardware.firmware = [ unstable.linux-firmware ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  hardware.firmware = [ pkgs.linux-firmware ];
 
   boot.initrd.systemd.enable = true;
 

@@ -6,7 +6,7 @@
 }:
 
 let
-  colors = config.colorScheme.palette;
+  colors = config.scheme;
 in
 {
   programs.nixvim = {
@@ -21,7 +21,8 @@ in
     colorschemes = {
       base16 = {
         enable = true;
-        colorscheme = builtins.mapAttrs (name: value: "#${value}") colors;
+        colorscheme = lib.mapAttrs' (name: value: lib.nameValuePair name "#${value}")
+          (lib.filterAttrs (name: _: builtins.match "base0[0-9A-F]" name != null) colors);
         settings = {
           telescope_borders = true;
         };
