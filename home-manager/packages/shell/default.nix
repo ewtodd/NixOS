@@ -36,13 +36,6 @@ in
     ''
   );
 
-  # to be removed once Thunderbird fixes itself
-  home.activation.removeDir = lib.mkIf isEOwner (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      rm -rf $HOME/Thunderbird
-    ''
-  );
-
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
