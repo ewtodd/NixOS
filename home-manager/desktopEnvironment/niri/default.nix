@@ -341,6 +341,19 @@ in
         }
         {
           match._props = {
+            app-id = "thunderbird";
+            title._raw = ''"^Write:" '';
+          };
+          default-column-width = {
+            proportion = 0.4;
+          };
+          default-window-height = {
+            proportion = 0.7;
+          };
+          open-floating = true;
+        }
+        {
+          match._props = {
             title = "Volume Control";
           };
           default-column-width = {
