@@ -62,7 +62,6 @@
       url = "github:ewtodd/banshee-ucm-conf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
   };
 
   outputs =
@@ -101,11 +100,6 @@
             inputs.dank-material-shell.nixosModules.greeter
             inputs.banshee-ucm-conf.nixosModules.default
             {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  dwarfs = (import inputs.nixpkgs-master { system = "x86_64-linux"; }).dwarfs;
-                })
-              ];
               nixpkgs.config.allowUnfree = true;
               home-manager = {
                 useGlobalPkgs = true;

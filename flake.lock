@@ -392,22 +392,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-master": {
-      "locked": {
-        "lastModified": 1773156578,
-        "narHash": "sha256-JKSeo3g+zaeRkYNNoyklcGIvecLBW2H9+jxpyMVmKIA=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "88cec82a3c77dff4fe82fcf560c7b42e452d54e2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -508,7 +492,6 @@
         "niri": "niri",
         "niri-nix": "niri-nix",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-master": "nixpkgs-master",
         "nixvim": "nixvim",
         "quickshell": "quickshell",
         "remarkable": "remarkable"
