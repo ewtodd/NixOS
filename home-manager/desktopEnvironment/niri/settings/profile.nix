@@ -39,7 +39,7 @@ let
       }
       {
         match._props = {
-          app-id = "thunderbird";
+          app-id = "geary";
         };
         open-on-workspace = "a-chat";
         default-column-width = {
@@ -57,7 +57,7 @@ let
       }
     ];
     spawn-sh-at-startup = [
-      [ "sleep 2 && ${pkgs.thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
+      [ "sleep 2 && ${pkgs.geary}/bin/geary && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right" ]
       [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
