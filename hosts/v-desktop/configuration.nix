@@ -9,6 +9,7 @@
   systemOptions = {
     graphics.amd.enable = true;
     hardware.openRGB.enable = true;
+    hardware.xbox.enable = true;
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.tailscale.enable = true;
