@@ -232,6 +232,7 @@ in
     notificationTimeoutCritical = 0;
     notificationPopupPosition = 0;
     notificationHistoryEnabled = false;
+    notificationFocusedMonitor = true;
     notificationRules = [
       {
         enabled = true;

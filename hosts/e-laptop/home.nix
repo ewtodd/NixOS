@@ -1,6 +1,6 @@
 {
   "e-play" =
-    { inputs, pkgs, ... }:
+    { pkgs, ... }:
     {
       home.username = "e-play";
       home.homeDirectory = "/home/e-play";
@@ -11,7 +11,7 @@
       scheme = "${pkgs.base16-schemes}/share/themes/harmonic16-dark.yaml";
     };
   "e-work" =
-    { inputs, pkgs, ... }:
+    { pkgs, ... }:
     {
       home.username = "e-work";
       home.homeDirectory = "/home/e-work";
