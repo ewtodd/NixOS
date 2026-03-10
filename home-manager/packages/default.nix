@@ -52,9 +52,7 @@ in
     ]
     ++ lib.optionals (profile == "work") [
       slack
-      gnome-online-accounts
-      gnome-control-center
-      geary 
+      thunderbird
       lisepp
       SRIM
       rootbrowse_package
