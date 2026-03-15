@@ -475,16 +475,6 @@ in
         }
         {
           match._props = {
-            title = "Proton VPN";
-            app-id = ".protonvpn-app-wrapped";
-          };
-          default-window-height = {
-            proportion = 0.5;
-          };
-          open-floating = true;
-        }
-        {
-          match._props = {
             app-id = "Matplotlib";
           };
           open-floating = true;

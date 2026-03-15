@@ -59,7 +59,6 @@ let
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.slack}/bin/slack && niri msg action move-column-right" ]
-      [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
 
   };
@@ -105,7 +104,6 @@ let
     ];
     spawn-sh-at-startup = [
       [ "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon" ]
-      [ "${pkgs.protonvpn-gui}/bin/protonvpn-app --start-minimized" ]
     ];
   };
 
