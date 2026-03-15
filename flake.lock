@@ -339,11 +339,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1773171230,
-        "narHash": "sha256-ZiGGjRL2H67GcL6BvZV99khW++aHpJ2NA4n71qZiJ9A=",
+        "lastModified": 1773559367,
+        "narHash": "sha256-q3NwYzd/qxcCr2m37uQCnc5BHvC3hsJ4fK5KN5aNSGc=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "4a7e443b6c816e4f673f6e25cc0a5aa37697d667",
+        "rev": "92c168f56d6653c4899222c235fdd6467c1c351b",
         "type": "github"
       },
       "original": {
@@ -363,11 +363,11 @@
         "xwayland-satellite-unstable": []
       },
       "locked": {
-        "lastModified": 1773067062,
-        "narHash": "sha256-tejurku4yJGfHjleCRMK9AzyA0L9EXTTmpno12701iU=",
+        "lastModified": 1773533646,
+        "narHash": "sha256-1TvbeEHY+o0euRT4UQ7N5dw3aSGEAgt1GqJrmCmzdas=",
         "ref": "refs/heads/main",
-        "rev": "e5b01841c13789e724626342dfe7fee9c54522d2",
-        "revCount": 72,
+        "rev": "777246778cf0e6470a5f2620762d6ff9128e4f9c",
+        "revCount": 73,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
