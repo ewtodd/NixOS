@@ -224,6 +224,9 @@ in
         "Mod+Shift+w" = {
           center-visible-columns = [ ];
         };
+        "Mod+Shift+z" = {
+          spawn-sh = [ "${pkgs.wooz}/bin/wooz" ];
+        };
         "Mod+Space" = {
           toggle-window-floating = [ ];
         };
