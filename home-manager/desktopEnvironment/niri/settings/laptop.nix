@@ -11,6 +11,16 @@ let
         { proportion = 0.75; }
       ];
     };
+    window-rule = [
+      {
+        match._props = {
+          app-id = "kitty";
+        };
+        default-column-width = {
+          proportion = 0.5;
+        };
+      }
+    ];
     output = [
       {
         _args = [ "DP-3" ];
