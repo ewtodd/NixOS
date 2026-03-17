@@ -35,7 +35,7 @@ in
       notify_on_cmd_finish = "unfocused 90.0 notify";
       hide_window_decorations = "no";
       background_blur = 1;
-      paste_actions = "replace-dangerous-control-codes,replace-newline,confirm-if-large";
+      paste_actions = "replace-dangerous-control-codes,confirm-if-large";
 
       # Base16 palette
       background = "#${colors.base00}";
