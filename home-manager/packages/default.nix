@@ -28,7 +28,6 @@ let
 in
 {
   imports = [
-    ./ai
     ./fastfetch
     ./firefox
     ./git
