@@ -14,13 +14,13 @@
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.tailscale.enable = true;
+    apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
 
     services.nixBuilder.server = {
       enable = true;
       authorizedKeys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPAzgPdwGaA6mb++GnW0jw4sp2Y0sMfgT7J26KcMXsc root@e-laptop"
       ];
     };
   };

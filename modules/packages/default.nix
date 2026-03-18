@@ -22,7 +22,6 @@ in
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
   '';
 
-  virtualisation.docker.enable = true;
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
 
@@ -53,6 +52,8 @@ in
     ++ lib.optionals (config.systemOptions.apps.zoom.enable) [ zoom-us ]
     ++ lib.optionals (config.systemOptions.apps.remarkable.enable) [ remarkable ]
     ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ];
+
+  virtualisation.docker.enable = lib.mkIf (config.systemOptions.apps.docker.enable) true;
 
   environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {
     windows = "quickemu --vm /home/v-work/.config/qemu/windows-11.conf";

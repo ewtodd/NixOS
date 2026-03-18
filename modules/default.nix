@@ -19,6 +19,8 @@ with lib;
       hardware.fingerprint.enable = mkEnableOption "Fprintd support";
       hardware.openRGB.enable = mkEnableOption "openRGB support";
       hardware.xbox.enable = mkEnableOption "xbox controller support";
+      hardware.framework.enable = mkEnableOption "Framework laptop specific features";
+      hardware.twoinone.enable = mkEnableOption "2-in-1 specific features";
 
       deviceType.laptop.enable = mkEnableOption "Laptop-specific features";
       deviceType.desktop.enable = mkEnableOption "Desktop-specific features";
@@ -26,6 +28,7 @@ with lib;
       apps.zoom.enable = mkEnableOption "Zoom";
       apps.remarkable.enable = mkEnableOption "Remarkable from wrapWine flake";
       apps.quickemu.enable = mkEnableOption "Quickemu";
+      apps.docker.enable = mkEnableOption "Docker";
 
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";

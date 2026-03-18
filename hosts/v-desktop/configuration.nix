@@ -16,6 +16,7 @@
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
     apps.quickemu.enable = true;
+    apps.docker.enable = true;
 
     services.nixBuilder.server = {
       enable = true;
