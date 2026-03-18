@@ -1,6 +1,12 @@
-{ inputs, ... }:
+{
+  inputs,
+  osConfig,
+  pkgs,
+  ...
+}:
 let
   inherit (inputs.niri-nix.lib) mkNiriKDL;
+  e = osConfig.systemOptions.owner.e.enable;
   laptopConfig = {
     layout = {
       default-column-width = {
@@ -10,6 +16,22 @@ let
         { proportion = 0.5; }
         { proportion = 0.75; }
       ];
+    };
+    switch-events = {
+      tablet-mode-on = {
+        spawn._args = [
+          "sh"
+          "-c"
+          "pkill wvkbd-mobintl; ${pkgs.wvkbd}/bin/wvkbd-mobintl &"
+        ];
+      };
+      tablet-mode-off = {
+        spawn._args = [
+          "sh"
+          "-c"
+          "pkill wvkbd-mobintl"
+        ];
+      };
     };
     window-rule = [
       {
@@ -51,13 +73,13 @@ let
       }
       {
         _args = [ "eDP-1" ];
-        scale = 1.35;
+        scale = if e then 1.75 else 1.35;
         transform = "normal";
         position._props = {
           x = 0;
           y = 0;
         };
-        mode = "2256x1504@47.998000";
+        mode = if e then "2880x1800@120.000" else "2256x1504@47.998000";
       }
     ];
   };
