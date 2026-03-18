@@ -21,7 +21,7 @@ let
       -new-tab -url https://home-manager-options.extranix.com/ \
       -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
   '';
-  open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window -new-tab -url https://monkeytype.com";
+  open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";
   open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox";
   open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
