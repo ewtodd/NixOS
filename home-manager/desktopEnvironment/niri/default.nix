@@ -503,7 +503,7 @@ in
       ];
       gestures = {
         hot-corners = {
-          off = [ ];
+          top-left = [ ];
         };
       };
       animations = {
