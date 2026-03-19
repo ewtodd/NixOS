@@ -13,16 +13,11 @@
     hardware.xbox.enable = true;
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
+    services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
-
-    services.nixBuilder.server = {
-      enable = true;
-      authorizedKeys = [
-      ];
-    };
   };
 
   nixpkgs.config.rocmTargets = [ "gfx1100" ];
