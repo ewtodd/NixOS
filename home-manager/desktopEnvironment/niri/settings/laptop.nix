@@ -17,22 +17,6 @@ let
         { proportion = 0.75; }
       ];
     };
-    switch-events = {
-      tablet-mode-on = {
-        spawn._args = [
-          "sh"
-          "-c"
-          "pkill wvkbd-mobintl; ${pkgs.wvkbd}/bin/wvkbd-mobintl &"
-        ];
-      };
-      tablet-mode-off = {
-        spawn._args = [
-          "sh"
-          "-c"
-          "pkill wvkbd-mobintl"
-        ];
-      };
-    };
     window-rule = [
       {
         match._props = {

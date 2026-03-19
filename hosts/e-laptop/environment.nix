@@ -38,4 +38,12 @@ in
   };
 
   boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.resumeDevice = "/dev/disk/by-uuid/63cf64c5-e1bd-42ed-a0c6-e3e8cc21634d";
+
+  systemd.sleep.settings.Sleep = {
+    AllowHibernation = "yes";
+    AllowSuspendThenHibernate = "yes";
+    HibernateDelaySec = "1800";
+  };
 }
