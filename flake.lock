@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773016196,
-        "narHash": "sha256-e3ET5X65K9OLDu2/8bCR6InWfGvQ6ODVZL8tA4eCEFs=",
+        "lastModified": 1773948248,
+        "narHash": "sha256-vKbHaWDA9XQAABWsd6uLIBftBF07oTA7+/ZgLt7h04I=",
         "owner": "ewtodd",
         "repo": "SRIM-nix",
-        "rev": "78b93fb533a67bd7083d8e7761c134812fd63444",
+        "rev": "ef26ce40f732135d5721e4da0b08f6ddbe379c66",
         "type": "github"
       },
       "original": {
