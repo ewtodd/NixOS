@@ -7,9 +7,13 @@ with lib;
 {
   config = mkIf (config.systemOptions.security.harden.enable) {
     security = {
-      protectKernelImage = true;
       sudo.enable = mkForce false;
-      sudo-rs.enable = mkForce true;
+      sudo-rs = {
+        enable = mkForce true;
+        extraConfig = ''
+          Defaults !pwfeedback
+        '';
+      };
     };
 
     security.pam.loginLimits = [
