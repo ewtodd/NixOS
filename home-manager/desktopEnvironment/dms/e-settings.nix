@@ -125,6 +125,7 @@ in
     lockDateFormat = "";
     greeterRememberLastSession = false;
     greeterRememberLastUser = false;
+    greeterEnableFprint = if (deviceType == "laptop") then true else false;
     mediaSize = 1;
     appLauncherViewMode = "list";
     spotlightModalViewMode = "list";
@@ -221,7 +222,7 @@ in
     lockScreenShowDate = true;
     lockScreenShowProfileImage = false;
     lockScreenShowPasswordField = false;
-    enableFprint = false;
+    enableFprint = if (deviceType == "laptop") then true else false;
     maxFprintTries = 15;
     lockScreenActiveMonitor = "all";
     lockScreenInactiveColor = "#000000";
