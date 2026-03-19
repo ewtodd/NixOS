@@ -1,7 +1,7 @@
 {
+  lib,
   inputs,
   osConfig,
-  pkgs,
   ...
 }:
 let
@@ -17,16 +17,6 @@ let
         { proportion = 0.75; }
       ];
     };
-    window-rule = [
-      {
-        match._props = {
-          app-id = "kitty";
-        };
-        default-column-width = {
-          proportion = 0.5;
-        };
-      }
-    ];
     output = [
       {
         _args = [ "DP-3" ];
@@ -64,6 +54,18 @@ let
           y = 0;
         };
         mode = if e then "2880x1800@120.000" else "2256x1504@47.998000";
+      }
+    ];
+  }
+  // lib.optionalAttrs (!e) {
+    window-rule = [
+      {
+        match._props = {
+          app-id = "kitty";
+        };
+        default-column-width = {
+          proportion = 0.5;
+        };
       }
     ];
   };

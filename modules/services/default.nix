@@ -4,10 +4,6 @@
   ...
 }:
 {
-  imports = [
-    ./nix-builder
-  ];
-
   config = lib.mkMerge [
     (lib.mkIf (config.systemOptions.services.ssh.enable) {
       services.openssh = {
@@ -16,7 +12,7 @@
         settings = {
           PasswordAuthentication = true;
           KbdInteractiveAuthentication = true;
-          AuthenticationMethods = "publickey password";
+          AuthenticationMethods = "password";
           AllowUsers = [
             "e-work"
             "e-play"
@@ -31,12 +27,14 @@
       };
     })
     (lib.mkIf (config.systemOptions.services.suspend-then-hibernate.enable) {
-      services.logind.lidSwitch = lib.mkIf (config.systemOptions.deviceType.laptop.enable) "suspend-then-hibernate";
+      services.logind.settings.Login.HandleLidSwitch =
+        lib.mkIf (config.systemOptions.deviceType.laptop.enable) "suspend-then-hibernate";
 
-      systemd.sleep.extraConfig = ''
-        HibernateDelaySec=30m
-        SuspendState=mem
-      '';
+      systemd.sleep.settings.Sleep = {
+        AllowHibernation = "yes";
+        AllowSuspendThenHibernate = "yes";
+        HibernateDelaySec = if (config.systemOptions.deviceType.laptop.enable) then "1800" else "3600";
+      };
     })
     (lib.mkIf (config.systemOptions.services.tailscale.enable) {
       services.tailscale = {

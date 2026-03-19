@@ -11,15 +11,11 @@
     deviceType.laptop.enable = true;
     hardware.fingerprint.enable = true;
     hardware.framework.enable = true;
+    services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
     apps.docker.enable = true;
-
-    services.nixBuilder.client = {
-      enable = true;
-      builderHostName = "v-desktop";
-    };
   };
 
   users.users.v-play = {

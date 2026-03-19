@@ -10,12 +10,12 @@
     graphics.intel.enable = true;
     hardware.xbox.enable = true;
     hardware.twoinone.enable = true;
+    hardware.fingerprint.enable = true;
     deviceType.laptop.enable = true;
+    services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
-
-#    services.nixBuilder.client.enable = true;
   };
 
   users.users.e-play = {

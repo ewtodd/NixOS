@@ -34,36 +34,7 @@ with lib;
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
 
-      services.nixBuilder.server = {
-        enable = mkEnableOption "Act as a Nix remote build server";
-        authorizedKeys = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          description = "SSH public keys authorized to submit builds";
-        };
-      };
-
-      services.nixBuilder.client = {
-        enable = mkEnableOption "Use a remote Nix builder";
-        builderHostName = mkOption {
-          type = types.str;
-          default = "e-desktop";
-          description = "Hostname of the build server (use Tailscale hostname)";
-        };
-        sshKeyPath = mkOption {
-          type = types.str;
-          default = "/root/.ssh/nix-builder";
-          description = "Path to the SSH private key for connecting to the builder";
-        };
-        maxJobs = mkOption {
-          type = types.int;
-          default = 16;
-          description = "Max parallel jobs on the remote builder";
-        };
-      };
-
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
-
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
     };
   };

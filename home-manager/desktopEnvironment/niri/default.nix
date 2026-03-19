@@ -57,6 +57,9 @@ in
         mouse = {
           natural-scroll = [ ];
         };
+        trackpoint = {
+          accel-speed = -0.5;
+        };
         focus-follows-mouse._props = {
           max-scroll-amount = "15%";
         };

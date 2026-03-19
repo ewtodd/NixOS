@@ -13,17 +13,11 @@
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.tailscale.enable = true;
+    services.suspend-then-hibernate.enable = true;
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
     apps.quickemu.enable = true;
     apps.docker.enable = true;
-
-    services.nixBuilder.server = {
-      enable = true;
-      authorizedKeys = [
-        # Add v-laptop's public key here
-      ];
-    };
   };
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];
