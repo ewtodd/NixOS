@@ -231,46 +231,46 @@ in
         "Mod+Space" = {
           toggle-window-floating = [ ];
         };
-        "Mod+Tab" = {
+        "Ctrl+Tab" = {
           toggle-overview = [ ];
         };
-        "Mod+d" = {
+        "Ctrl+d" = {
           spawn-sh = [
             "dms ipc spotlight toggle"
           ];
         };
-        "Mod+f" = {
+        "Ctrl+f" = {
           spawn-sh = [
             "${open-browser-window}"
           ];
         };
-        "Mod+h" = {
+        "Ctrl+h" = {
           focus-column-or-monitor-left = [ ];
         };
-        "Mod+j" = {
+        "Ctrl+j" = {
           focus-window-or-workspace-down = [ ];
         };
-        "Mod+k" = {
+        "Ctrl+k" = {
           focus-window-or-workspace-up = [ ];
         };
-        "Mod+l" = {
+        "Ctrl+l" = {
           focus-column-or-monitor-right = [ ];
         };
-        "Mod+m" = {
+        "Ctrl+m" = {
           spawn = [
             "sh"
             "-c"
             "dms ipc powermenu toggle"
           ];
         };
-        "Mod+p" = {
+        "Ctrl+p" = {
           spawn = [
             "sh"
             "-c"
             "${open-nix-docs}"
           ];
         };
-        "Mod+r" = {
+        "Ctrl+r" = {
           switch-preset-column-width-back = [ ];
         };
         "Mod+t" = {
