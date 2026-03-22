@@ -104,6 +104,7 @@
           "eDP-1"
         ];
       };
+      environment.systemPackages = with pkgs; [ xournalpp ];
     })
   ];
 }
