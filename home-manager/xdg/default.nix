@@ -13,6 +13,7 @@ in
   xdg.userDirs = lib.mkIf e {
     enable = true;
     createDirectories = true;
+    setSessionVariables = true;
     download = "$HOME/Downloads";
     desktop = "$HOME/.misc";
     documents = "$HOME/.misc";

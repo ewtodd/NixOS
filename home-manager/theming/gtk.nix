@@ -12,11 +12,6 @@ let
   fontFamily = "Ubuntu Nerd Font";
   themeName = "base16-custom";
 
-  # Mapping based on materia-theme (nix-colors gtkThemeFromScheme):
-  # BG=base00 FG=base05 HDR_BG=base02 HDR_FG=base05
-  # SURFACE=base02 VIEW=base01 BTN_BG=base02 BTN_FG=base06
-  # TXT_BG=base02 TXT_FG=base06 MENU_BG=base02 MENU_FG=base06
-  # ACCENT_BG=base0B SEL_BG=base0D WM_BORDER=base05/base03
   gtkCss = ''
     @define-color accent_color #${colors.base0D};
     @define-color accent_bg_color #${colors.base0B};
@@ -132,6 +127,7 @@ in
         package = themePackage;
         name = themeName;
       };
+      gtk4.theme = config.gtk.theme;
 
       iconTheme = {
         package = pkgs.adwaita-icon-theme;
