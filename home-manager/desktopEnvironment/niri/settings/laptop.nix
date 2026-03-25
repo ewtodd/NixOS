@@ -46,6 +46,15 @@ let
         mode = "1920x1080";
       }
       {
+        _args = [ "HDMI-A-1" ];
+        transform = "normal";
+        position._props = {
+          x = -1920;
+          y = 0;
+        };
+        mode = "1920x1080";
+      }
+      {
         _args = [ "eDP-1" ];
         scale = if e then 1.75 else 1.35;
         transform = "normal";
