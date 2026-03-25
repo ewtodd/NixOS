@@ -497,9 +497,8 @@ in
             proportion = 0.66667;
           };
           default-window-height = {
-            proportion = 0.75;
+            proportion = 1.0;
           };
-          open-floating = true;
         }
       ];
       layer-rule = [
