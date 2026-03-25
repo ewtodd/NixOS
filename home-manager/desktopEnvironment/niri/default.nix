@@ -489,6 +489,14 @@ in
           };
           open-floating = true;
         }
+        {
+          match._props = {
+            title = "Interactive Fit Editor";
+          };
+          default-column-width = [ ];
+          default-window-height = [ ];
+          open-floating = true;
+        }
       ];
       layer-rule = [
         {
