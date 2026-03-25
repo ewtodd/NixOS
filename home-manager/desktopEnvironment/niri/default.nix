@@ -493,8 +493,12 @@ in
           match._props = {
             title = "Interactive Fit Editor";
           };
-          default-column-width = [ ];
-          default-window-height = [ ];
+          default-column-width = {
+            proportion = 0.66667;
+          };
+          default-window-height = {
+            proportion = 0.75;
+          };
           open-floating = true;
         }
       ];
