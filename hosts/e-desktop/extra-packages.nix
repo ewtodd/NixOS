@@ -6,5 +6,6 @@
   environment.systemPackages = with pkgs; [
     proton-pass
     claude-code
+  losslesscut-bin
   ];
 }
