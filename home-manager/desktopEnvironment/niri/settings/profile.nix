@@ -69,6 +69,10 @@ let
         _args = [ "b-btop" ];
         open-on-output = secondaryMonitor;
       }
+      {
+        _args = [ "c-spotify" ];
+        open-on-output = secondaryMonitor;
+      }
     ];
     window-rule = [
       {
@@ -78,9 +82,16 @@ let
         open-on-workspace = "b-btop";
         open-fullscreen = true;
       }
+      {
+        match._props = {
+          app-id = "spotify";
+        };
+        open-on-workspace = "c-spotify";
+      }
     ];
     spawn-sh-at-startup = [
       [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
+      [ "sleep 2 && ${pkgs.spotify}/bin/spotify" ]
     ];
   };
 
