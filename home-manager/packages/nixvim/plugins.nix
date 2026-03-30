@@ -89,6 +89,23 @@
       enable = true;
       nixvimInjections = true;
       settings.highlight.enable = true;
+      grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+        c
+        cpp
+        rust
+        nix
+        python
+        yaml
+        bash
+        latex
+        bibtex
+        cmake
+        json
+        lua
+        toml
+        markdown
+        markdown_inline
+      ];
     };
 
     nix.enable = true;
