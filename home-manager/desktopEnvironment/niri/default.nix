@@ -525,7 +525,7 @@ in
       };
       blur = {
         passes = 4;
-        saturation = 1.2;
+        saturation = 1.8;
       };
     };
     extraConfig = lib.concatStringsSep "\n" (
