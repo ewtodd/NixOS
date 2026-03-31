@@ -80,7 +80,9 @@ let
           app-id = "btopkitty";
         };
         open-on-workspace = "b-btop";
-        open-fullscreen = true;
+        default-column-width = {
+          proportion = 1.0;
+        };
       }
       {
         match._props = {
@@ -153,7 +155,9 @@ let
           app-id = "btopkitty";
         };
         open-on-workspace = "c-btop";
-        open-fullscreen = true;
+        default-column-width = {
+          proportion = 1.0;
+        };
       }
 
     ];
