@@ -244,6 +244,9 @@ in
             "${open-browser-window}"
           ];
         };
+        "Mod+g" = {
+          spawn-sh = [ "${pkgs.gthumb}/bin/gthumb" ];
+        };
         "Mod+h" = {
           focus-column-or-monitor-left = [ ];
         };
