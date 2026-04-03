@@ -6,7 +6,18 @@
   ...
 }:
 let
-  niri = inputs.niri.packages."x86_64-linux".default;
+  niri =
+    if (config.systemOptions.hardware.twoinone.enable) then
+      inputs.niri.packages."x86_64-linux".default.overrideAttrs (old: {
+        patches = (old.patches or [ ]) ++ [
+          (pkgs.fetchpatch {
+            url = "https://github.com/niri-wm/niri/pull/3745.patch";
+            hash = "sha256-K9L8AeijUDAwKC81AYBop20WtBsFZ6msx2E2Yx0LrRs=";
+          })
+        ];
+      })
+    else
+      inputs.niri.packages."x86_64-linux".default;
   homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
 in
 {
