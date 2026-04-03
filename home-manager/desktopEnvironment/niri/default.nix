@@ -329,6 +329,9 @@ in
         Page_Down = {
           spawn = [ ];
         };
+        TabletStylusPrimary = {
+          maximize-column = [ ];
+        };
       };
       spawn-sh-at-startup = [
         [ "${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme prefer-dark" ]
