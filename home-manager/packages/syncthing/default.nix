@@ -18,6 +18,14 @@
               params.keep = "5";
             };
           };
+          "Reading" = {
+            path = "~/Reading";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };
+          };
+
         };
       };
     };
