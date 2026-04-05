@@ -119,11 +119,6 @@
             template = "* %?\n  %U";
             target = "~/org/refile.org";
           };
-          i = {
-            description = "Inbox";
-            template = "* %?";
-            target = "~/org/refile.org";
-          };
         };
       };
     };
