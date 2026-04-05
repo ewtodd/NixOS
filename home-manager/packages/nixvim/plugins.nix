@@ -105,8 +105,7 @@
     orgmode = {
       enable = true;
       settings = {
-        win_split_mode = "float";
-        win_border = "rounded";
+        win_split_mode = "tabnew";
         org_agenda_files = "~/org/**/*";
         org_default_notes_file = "~/org/refile.org";
         org_capture_templates = {
