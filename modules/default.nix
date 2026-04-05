@@ -32,6 +32,7 @@ with lib;
 
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
+      services.orgmode-sync.enable = mkEnableOption "Syncthing-based orgmode file sync";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
