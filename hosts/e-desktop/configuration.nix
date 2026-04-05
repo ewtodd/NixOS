@@ -14,7 +14,6 @@
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.suspend-then-hibernate.enable = true;
-    services.orgmode-sync.enable = true;
     services.tailscale.enable = true;
     apps.docker.enable = true;
     security.harden.enable = true;
