@@ -34,6 +34,7 @@ in
     ./kitty
     ./nixvim
     ./shell
+    ./syncthing
     ./zathura
   ];
 
