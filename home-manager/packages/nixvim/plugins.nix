@@ -9,6 +9,8 @@
     vim.o.splitright = false
   '';
 
+  extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
+
   plugins = {
     web-devicons = {
       enable = true;
@@ -21,6 +23,10 @@
     telescope = {
       enable = true;
       extensions.file-browser.enable = true;
+    };
+
+    plenary = {
+      enable = true;
     };
 
     which-key = {
@@ -128,10 +134,6 @@
         dockerls.enable = false;
         clangd = {
           enable = true;
-          onAttach.function = ''
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          '';
         };
         rust_analyzer = {
           enable = true;
@@ -148,25 +150,25 @@
       };
     };
 
-    lsp-format = {
+    conform-nvim = {
       enable = true;
-    };
-
-    none-ls = {
-      enable = true;
-      enableLspFormat = true;
-      sources.formatting.nixfmt = {
-        enable = true;
-        package = pkgs.nixfmt;
-      };
-      sources.formatting = {
-        yapf.enable = true;
-        bibclean.enable = true;
-        cmake_format.enable = true;
-        clang_format = {
-          enable = true;
-          settings = {
-            extra_args = [ "--style={BasedOnStyle: LLVM, BreakStringLiterals: false}" ];
+      autoInstall.enable = true;
+      settings = {
+        format_on_save = {
+          timeout_ms = 500;
+          lsp_format = "fallback";
+        };
+        formatters_by_ft = {
+          nix = [ "nixfmt" ];
+          python = [ "yapf" ];
+          bib = [ "bibclean" ];
+          cmake = [ "cmake_format" ];
+          c = [ "clang_format" ];
+          cpp = [ "clang_format" ];
+        };
+        formatters = {
+          clang_format = {
+            prepend_args = [ "--style={BasedOnStyle: LLVM, BreakStringLiterals: false}" ];
           };
         };
       };
