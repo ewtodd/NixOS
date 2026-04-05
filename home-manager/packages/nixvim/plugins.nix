@@ -25,8 +25,19 @@
       extensions.file-browser.enable = true;
     };
 
-    plenary = {
+    undotree = {
       enable = true;
+      settings = {
+        WindowLayout = 3;
+        SetFocusWhenToggle = true;
+        ShortIndicators = true;
+        DiffAutoOpen = true;
+        DiffpanelHeight = 10;
+        SplitWidth = 35;
+        RelativeTimestamp = true;
+        CursorLine = true;
+        HelpLine = false;
+      };
     };
 
     which-key = {
@@ -88,6 +99,31 @@
         clickable = true;
         focus_on_close = "left";
         insert_at_end = true;
+      };
+    };
+
+    orgmode = {
+      enable = true;
+      settings = {
+        org_agenda_files = "~/org/**/*";
+        org_default_notes_file = "~/org/refile.org";
+        org_capture_templates = {
+          t = {
+            description = "Todo";
+            template = "* TODO %?\n  DEADLINE: %t";
+            target = "~/org/refile.org";
+          };
+          n = {
+            description = "Note";
+            template = "* %?\n  %U";
+            target = "~/org/refile.org";
+          };
+          i = {
+            description = "Inbox";
+            template = "* %?";
+            target = "~/org/refile.org";
+          };
+        };
       };
     };
 

@@ -12,6 +12,7 @@
     concealcursor = "nc";
     ignorecase = true;
     smartcase = true;
+    undofile = true;
   };
   globals = {
     mapleader = " ";

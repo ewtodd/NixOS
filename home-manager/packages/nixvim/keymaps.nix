@@ -347,5 +347,28 @@
         silent = true;
       };
     }
+    {
+      key = "<leader>u";
+      action = "<cmd>UndotreeToggle<cr>";
+      mode = "n";
+    }
+    {
+      action.__raw = "function() require('orgmode').action('agenda.prompt') end";
+      key = "<leader>oa";
+      mode = "n";
+      options = {
+        desc = "Org agenda";
+        silent = true;
+      };
+    }
+    {
+      action.__raw = "function() require('orgmode').action('capture.prompt') end";
+      key = "<leader>oc";
+      mode = "n";
+      options = {
+        desc = "Org capture";
+        silent = true;
+      };
+    }
   ];
 }

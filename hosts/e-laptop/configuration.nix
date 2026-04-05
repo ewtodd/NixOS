@@ -13,6 +13,7 @@
     hardware.fingerprint.enable = true;
     deviceType.laptop.enable = true;
     services.suspend-then-hibernate.enable = true;
+    services.orgmode-sync.enable = true;
     services.tailscale.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;

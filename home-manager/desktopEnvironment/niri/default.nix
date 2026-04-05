@@ -19,7 +19,7 @@ let
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ \
-      -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
+      -new-tab -url https://nix-community.github.io/nixvim &
   '';
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";
   open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox";
