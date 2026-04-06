@@ -25,6 +25,20 @@
       extensions.file-browser.enable = true;
     };
 
+    oil = {
+      enable = true;
+      settings = {
+        win_options = {
+          signcolumn = "yes:2";
+        };
+        skip_confirm_for_simple_edits = false;
+      };
+    };
+
+    oil-git-status = {
+      enable = true;
+    };
+
     undotree = {
       enable = true;
       settings = {

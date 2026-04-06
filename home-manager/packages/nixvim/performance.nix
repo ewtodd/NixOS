@@ -14,6 +14,7 @@
           };
         })
         pkgs.vimPlugins.snacks-nvim
+        pkgs.vimPlugins.oil-nvim
       ];
     };
 
