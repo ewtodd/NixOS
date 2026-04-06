@@ -125,7 +125,7 @@
         org_capture_templates = {
           t = {
             description = "Todo";
-            template = "* TODO %?\n  DEADLINE: %t";
+            template = "* TODO %?\n  DEADLINE: %^T";
             target = "~/org/refile.org";
           };
           n = {
