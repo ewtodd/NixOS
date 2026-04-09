@@ -39,6 +39,13 @@
       enable = true;
     };
 
+    tiny-inline-diagnostic = {
+      enable = true;
+      settings = {
+        preset = "simple";
+      };
+    };
+
     undotree = {
       enable = true;
       settings = {
