@@ -26,6 +26,7 @@ let
   open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
+  homeDir = config.home.homeDirectory;
 in
 {
   imports = [
@@ -141,6 +142,11 @@ in
         "Alt+l" = {
           spawn-sh = [
             "dms ipc lock lock"
+          ];
+        };
+        "Alt+r" = {
+          spawn-sh = [
+            "${pkgs.kitty}/bin/kitty nvim ${homeDir}/org/refile.org"
           ];
         };
         F7 = {
@@ -266,6 +272,9 @@ in
             "dms ipc powermenu toggle"
           ];
         };
+        "Mod+o" = {
+          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim +\"lua require('orgmode').action('capture.prompt')\"" ];
+        };
         "Mod+p" = {
           spawn = [
             "sh"
@@ -278,6 +287,9 @@ in
         };
         "Mod+t" = {
           switch-focus-between-floating-and-tiling = [ ];
+        };
+        "Mod+v" = {
+          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim" ];
         };
         "Mod+w" = {
           center-column = [ ];
