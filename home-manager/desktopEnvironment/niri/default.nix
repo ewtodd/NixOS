@@ -511,7 +511,7 @@ in
         }
         {
           match._props = {
-            title = "Interactive Fit Editor";
+            title = ".*Editor$";
           };
           default-column-width = {
             proportion = 0.66667;
@@ -520,18 +520,6 @@ in
             proportion = 1.0;
           };
         }
-        {
-          match._props = {
-            title = "Background Subtraction Editor";
-          };
-          default-column-width = {
-            proportion = 0.66667;
-          };
-          default-window-height = {
-            proportion = 1.0;
-          };
-        }
-
       ];
       layer-rule = [
         {
