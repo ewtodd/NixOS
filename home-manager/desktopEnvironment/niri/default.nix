@@ -341,11 +341,6 @@ in
         Page_Down = {
           spawn = [ ];
         };
-      }
-      // lib.optionalAttrs (osConfig.systemOptions.hardware.twoinone.enable) {
-        TabletStylusPrimary = {
-          maximize-column = [ ];
-        };
       };
       spawn-sh-at-startup = [
         [ "${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme prefer-dark" ]
