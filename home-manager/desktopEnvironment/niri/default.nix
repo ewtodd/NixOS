@@ -152,11 +152,6 @@ in
             "dms ipc lock lock"
           ];
         };
-        "Alt+r" = {
-          spawn-sh = [
-            "${pkgs.kitty}/bin/kitty nvim ${homeDir}/org/refile.org"
-          ];
-        };
         F7 = {
           spawn-sh = [
             ''dms ipc brightness decrement 5 "" ''
@@ -281,7 +276,7 @@ in
           ];
         };
         "Mod+o" = {
-          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim +\"lua require('orgmode').action('capture.prompt')\"" ];
+          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim ${homeDir}/org" ];
         };
         "Mod+p" = {
           spawn = [
