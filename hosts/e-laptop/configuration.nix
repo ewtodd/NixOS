@@ -22,6 +22,7 @@
     isNormalUser = true;
     description = "ethan-play";
     extraGroups = [
+      "input"
       "nixconfig"
       "networkmanager"
       "wheel"
@@ -37,6 +38,7 @@
     isNormalUser = true;
     description = "ethan-work";
     extraGroups = [
+      "input"
       "nixconfig"
       "networkmanager"
       "wheel"
