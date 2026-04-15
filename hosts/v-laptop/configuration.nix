@@ -13,6 +13,7 @@
     hardware.framework.enable = true;
     services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
+    services.binaryCache.consume = true;
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
     apps.docker.enable = true;

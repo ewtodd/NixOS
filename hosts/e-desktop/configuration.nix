@@ -15,6 +15,7 @@
     services.ssh.enable = true;
     services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
+    services.binaryCache.serve = true;
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
