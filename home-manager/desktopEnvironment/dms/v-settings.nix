@@ -226,6 +226,16 @@ in
     notificationPopupPosition = 0;
     notificationHistoryEnabled = false;
     notificationFocusedMonitor = true;
+    notificationRules = [
+      {
+        enabled = true;
+        field = "appName";
+        pattern = "Xpra";
+        matchType = "contains";
+        action = "ignore";
+        urgency = "default";
+      }
+    ];
     osdAlwaysShowValue = false;
     osdPosition = 0;
     osdVolumeEnabled = true;
