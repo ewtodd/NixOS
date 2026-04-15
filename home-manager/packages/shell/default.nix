@@ -18,7 +18,7 @@ in
     initExtra = lib.optionalString (isEOwner && !isLaptop) ''
       # Start xwayland-satellite for waypipe sessions so X11 apps (e.g. ROOT) work
       if [ -n "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-        ${pkgs.xwayland-satellite}/bin/xwayland-satellite :1 &
+        ${pkgs.xwayland-satellite}/bin/xwayland-satellite :1 > /dev/null 2>&1 &
         export DISPLAY=:1
       fi
     '';
