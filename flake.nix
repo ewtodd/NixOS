@@ -15,7 +15,7 @@
       url = "github:SenchoPens/base16.nix";
     };
     niri = {
-      url = "github:YaLTeR/niri?ref=wip/branch";
+      url = "github:niri-wm/niri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri-nix = {
