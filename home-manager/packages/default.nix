@@ -10,11 +10,13 @@ let
   profile = config.Profile;
   lisepp = inputs.lisepp.packages.${pkgs.stdenv.hostPlatform.system}.default;
   SRIM = inputs.SRIM.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  rootbrowse_bin =
-    if (osConfig.systemOptions.deviceType.laptop.enable) then
-      pkgs.writeShellScriptBin "rootbrowse_bin" "${pkgs.xpra}/bin/run_scaled ${pkgs.root}/bin/rootbrowse --web=off"
+  rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin" ''
+    if [ -n "$RUN_SCALED" ]; then
+      exec ${pkgs.xpra}/bin/run_scaled ${pkgs.root}/bin/rootbrowse --web=off
     else
-      pkgs.writeShellScriptBin "rootbrowse_bin" "${pkgs.root}/bin/rootbrowse --web=off";
+      exec ${pkgs.root}/bin/rootbrowse --web=off
+    fi
+  '';
   rootbrowse_desktop = pkgs.makeDesktopItem {
     name = "rootbrowse";
     desktopName = "rootbrowse";

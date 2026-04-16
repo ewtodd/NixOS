@@ -15,13 +15,27 @@ in
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    initExtra = lib.optionalString (isEOwner && !isLaptop) ''
-      # Start xwayland-satellite for waypipe sessions so X11 apps (e.g. ROOT) work
-      if [ -n "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
-        ${pkgs.xwayland-satellite}/bin/xwayland-satellite :1 > /dev/null 2>&1 &
-        export DISPLAY=:1
-      fi
-    '';
+    initExtra =
+      (lib.optionalString (isEOwner && !isLaptop) ''
+        # Start xwayland-satellite for waypipe sessions so X11 apps (e.g. ROOT) work
+        if [ -n "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
+          ${pkgs.xwayland-satellite}/bin/xwayland-satellite :1 > /dev/null 2>&1 &
+          export DISPLAY=:1
+          export RUN_SCALED=1
+        fi
+      '')
+      + (lib.optionalString isLaptop ''
+        export RUN_SCALED=1
+      '')
+      + (lib.optionalString (profile == "work") ''
+        root() {
+          if [ -n "$RUN_SCALED" ]; then
+            ${pkgs.xpra}/bin/run_scaled "$(type -P root)" "$@"
+          else
+            command root "$@"
+          fi
+        }
+      '');
     shellAliases = {
     }
     // lib.optionalAttrs (profile == "work" && isEOwner) {
