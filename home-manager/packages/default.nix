@@ -54,6 +54,9 @@ in
       signal-desktop
       mangohud
       gamescope
+      lsfg-vk
+      lsfg-vk-ui
+      vulkan-tools
       android-tools
     ]
     ++ lib.optionals (profile == "work") [
