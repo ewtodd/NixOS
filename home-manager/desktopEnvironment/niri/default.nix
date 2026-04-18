@@ -518,6 +518,12 @@ in
             proportion = 1.0;
           };
         }
+        {
+          match._props = {
+            app-id = "^steam_app_";
+          };
+          variable-refresh-rate = true;
+        }
       ];
       layer-rule = [
         {
