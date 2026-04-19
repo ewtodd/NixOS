@@ -524,6 +524,12 @@ in
           };
           variable-refresh-rate = true;
         }
+        {
+          match._props = {
+            title = "Skyrim Special Edition – Mod Organizer v2.5.0";
+          };
+          variable-refresh-rate = false;
+        }
       ];
       layer-rule = [
         {
