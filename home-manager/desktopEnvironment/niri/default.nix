@@ -526,7 +526,7 @@ in
         }
         {
           match._props = {
-            title = "Skyrim Special Edition – Mod Organizer v2.5.0";
+            title = "Skyrim Special Edition – Mod Organizer v2.5.2";
           };
           variable-refresh-rate = false;
         }

@@ -43,6 +43,7 @@ in
     selectedGpuIndex = 0;
     enabledGpuPciIds = [ ];
     showSystemTray = true;
+    systemTrayMonochromeIcons = true;
     showClock = true;
     showNotificationButton = true;
     showBattery = (deviceType == "laptop");
