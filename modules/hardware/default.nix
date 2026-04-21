@@ -41,6 +41,9 @@
         lm_sensors
       ];
     })
+    (lib.mkIf (config.systemOptions.hardware.chromebook-audio.enable) {
+      hardware.banshee-audio.enable = true;
+    })
     (lib.mkIf (config.systemOptions.hardware.xbox.enable) {
       hardware.xpadneo.enable = true;
       hardware.bluetooth.settings = {
@@ -97,17 +100,6 @@
         enable = true;
         config.strategies = { };
       };
-    })
-    (lib.mkIf (config.systemOptions.hardware.twoinone.enable) {
-      hardware.sensor.iio.enable = true;
-      services.iio-niri = {
-        enable = true;
-        extraArgs = [
-          "--monitor"
-          "eDP-1"
-        ];
-      };
-      environment.systemPackages = with pkgs; [ xournalpp ];
     })
   ];
 }
