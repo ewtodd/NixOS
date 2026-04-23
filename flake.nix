@@ -15,7 +15,7 @@
       url = "github:SenchoPens/base16.nix";
     };
     niri = {
-      url = "github:YaLTeR/niri?ref=wip/branch";
+      url = "github:niri-wm/niri";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri-nix = {
@@ -58,6 +58,18 @@
       url = "github:nix-community/lanzaboote/v1.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    banshee-ucm-conf = {
+      url = "github:ewtodd/banshee-ucm-conf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    proton-cachyos = {
+      url = "github:powerofthe69/proton-cachyos-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -94,8 +106,14 @@
             ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
+            inputs.banshee-ucm-conf.nixosModules.default
             {
-              nixpkgs.config.allowUnfree = true;
+              nixpkgs = {
+                overlays = [
+                  inputs.nix-cachyos-kernel.overlays.default
+                ];
+                config.allowUnfree = true;
+              };
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
