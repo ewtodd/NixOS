@@ -117,11 +117,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776868325,
-        "narHash": "sha256-p5IqaxTTVB7mOpsKENNJbmKoqGiW5KBv4JfZ4VtV6lE=",
+        "lastModified": 1776950906,
+        "narHash": "sha256-jiPj3d62hEgIaZSA4jW+12DGs0Up/SKBZt0sEb7uVCY=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "97fa86d8f0f73232119040dca264566f1dc22772",
+        "rev": "f4c11bc2ffc1c6fd8ac3307d6054b88f3e1156d9",
         "type": "github"
       },
       "original": {
@@ -157,11 +157,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776821429,
-        "narHash": "sha256-A9BhLm0dyfAlCM7b1NMDx/fLN/m8V//ihrnMMkLiCR4=",
+        "lastModified": 1776971311,
+        "narHash": "sha256-j9PFEfvkX7AvGmFjacmPlvMq+p26kRiNKv5RMQtqDUA=",
         "owner": "AvengeMedia",
         "repo": "dms-plugin-registry",
-        "rev": "956cea9b7bb01346ebeebbac512aa71b90fd1365",
+        "rev": "03e5f8504f52f9c7f203a64323865b638abb2d6b",
         "type": "github"
       },
       "original": {
@@ -356,11 +356,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776869996,
-        "narHash": "sha256-1OBvTrMpG3aVYkfRv3reM+vGWS5zQCUpuOZ1HCc46ig=",
+        "lastModified": 1776964438,
+        "narHash": "sha256-AF0cby9Xuijr5qaFpYKbm1mExV956Hk233bel6QxpFw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "afd5607108220437abc9d9568538fdda5347a6f8",
+        "rev": "e09259dd2e147d35ef889784b51e89b0a10ffe15",
         "type": "github"
       },
       "original": {
@@ -445,11 +445,11 @@
         "xwayland-satellite-unstable": []
       },
       "locked": {
-        "lastModified": 1776817123,
-        "narHash": "sha256-+ZXEIDavU6/5jtwMCRbylq4z6ZAu9w3vM0jZO592V0Y=",
+        "lastModified": 1776903425,
+        "narHash": "sha256-ZNv4axAuY55/EKG5eKP4CIbieGFh2cXWLqtutWJwPJg=",
         "ref": "refs/heads/main",
-        "rev": "af206edf7efa7c25f00e2ec030b23d3141fe5220",
-        "revCount": 94,
+        "rev": "b672c36e2dab55071804629fb3018ab0ab1a3dc4",
+        "revCount": 95,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
@@ -464,14 +464,16 @@
         "cachyos-kernel-patches": "cachyos-kernel-patches",
         "flake-compat": "flake-compat_3",
         "flake-parts": "flake-parts",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1776883415,
-        "narHash": "sha256-E0jXK/AZpjimObFRYHhQ9uMfc6KRdfKn/yVCfkQnd0A=",
+        "lastModified": 1776969909,
+        "narHash": "sha256-SlcvxK7uxQJUf1NLcmSwonAh4gYA3Y+hOo2Qhr0eoOE=",
         "owner": "xddxdd",
         "repo": "nix-cachyos-kernel",
-        "rev": "bdf1cec8001039a6c6c9a35c27bc56a9f5f03143",
+        "rev": "f3cbb61b11f57e2cde0fdc7e74a715c7a6d3e859",
         "type": "github"
       },
       "original": {
@@ -482,11 +484,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1776864103,
-        "narHash": "sha256-osZwVCgGCfxrdi3W4x+zM31B60NvfDNe7oR3FPi+qyI=",
+        "lastModified": 1776791558,
+        "narHash": "sha256-NMlwGUnH5Srr+j/quFkbcgLaLvoKiX71jFFPrxLQx4k=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "9cadaf6932b7c926e468f777549d57f04a7212da",
+        "rev": "8d1daef70dcad2dc6b5e52426caf744489cea4db",
         "type": "github"
       },
       "original": {
@@ -508,22 +510,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixpkgs.lib",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1776791558,
-        "narHash": "sha256-NMlwGUnH5Srr+j/quFkbcgLaLvoKiX71jFFPrxLQx4k=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "8d1daef70dcad2dc6b5e52426caf744489cea4db",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable-small",
-        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -647,7 +633,7 @@
         "niri": "niri",
         "niri-nix": "niri-nix",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "proton-cachyos": "proton-cachyos",
         "quickshell": "quickshell",
