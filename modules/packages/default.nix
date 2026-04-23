@@ -11,6 +11,9 @@ in
 {
   programs.steam = {
     enable = true;
+    extraCompatPackages = [
+      inputs.proton-cachyos.packages.x86_64-linux.proton-cachyos-x86_64_v3
+    ];
   };
 
   programs.obs-studio = {

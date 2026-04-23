@@ -65,6 +65,10 @@
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel";
     };
+    proton-cachyos = {
+      url = "github:powerofthe69/proton-cachyos-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -104,7 +108,9 @@
             inputs.banshee-ucm-conf.nixosModules.default
             {
               nixpkgs = {
-                overlays = [ inputs.nix-cachyos-kernel.overlays.default ];
+                overlays = [
+                  inputs.nix-cachyos-kernel.overlays.default
+                ];
                 config.allowUnfree = true;
               };
               home-manager = {

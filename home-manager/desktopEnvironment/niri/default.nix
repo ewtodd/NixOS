@@ -76,6 +76,10 @@ in
         };
       };
 
+      recent-windows = {
+        off = [ ];
+      };
+
       layout = {
         gaps = lib.toInt gaps;
         struts = {
