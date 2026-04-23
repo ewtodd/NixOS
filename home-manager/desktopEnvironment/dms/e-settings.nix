@@ -43,6 +43,7 @@ in
     selectedGpuIndex = 0;
     enabledGpuPciIds = [ ];
     showSystemTray = true;
+    systemTrayMonochromeIcons = false;
     showClock = true;
     showNotificationButton = true;
     showBattery = (deviceType == "laptop");
@@ -239,6 +240,14 @@ in
         enabled = true;
         field = "body";
         pattern = "Claude";
+        matchType = "contains";
+        action = "ignore";
+        urgency = "default";
+      }
+      {
+        enabled = true;
+        field = "appName";
+        pattern = "Xpra";
         matchType = "contains";
         action = "ignore";
         urgency = "default";

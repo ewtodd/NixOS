@@ -9,6 +9,8 @@
     vim.o.splitright = false
   '';
 
+  extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
+
   plugins = {
     web-devicons = {
       enable = true;
@@ -21,6 +23,42 @@
     telescope = {
       enable = true;
       extensions.file-browser.enable = true;
+    };
+
+    oil = {
+      enable = true;
+      settings = {
+        win_options = {
+          signcolumn = "yes:2";
+        };
+        skip_confirm_for_simple_edits = false;
+      };
+    };
+
+    oil-git-status = {
+      enable = true;
+    };
+
+    tiny-inline-diagnostic = {
+      enable = true;
+      settings = {
+        preset = "simple";
+      };
+    };
+
+    undotree = {
+      enable = true;
+      settings = {
+        WindowLayout = 3;
+        SetFocusWhenToggle = true;
+        ShortIndicators = true;
+        DiffAutoOpen = true;
+        DiffpanelHeight = 10;
+        SplitWidth = 35;
+        RelativeTimestamp = true;
+        CursorLine = true;
+        HelpLine = false;
+      };
     };
 
     which-key = {
@@ -85,6 +123,27 @@
       };
     };
 
+    orgmode = {
+      enable = true;
+      settings = {
+        win_split_mode = "tabnew";
+        org_agenda_files = "~/org/**/*";
+        org_default_notes_file = "~/org/refile.org";
+        org_capture_templates = {
+          t = {
+            description = "Todo";
+            template = "* TODO %?\n  DEADLINE: %^t";
+            target = "~/org/refile.org";
+          };
+          n = {
+            description = "Note";
+            template = "* %?\n  %U";
+            target = "~/org/refile.org";
+          };
+        };
+      };
+    };
+
     treesitter = {
       enable = true;
       nixvimInjections = true;
@@ -128,10 +187,6 @@
         dockerls.enable = false;
         clangd = {
           enable = true;
-          onAttach.function = ''
-            client.server_capabilities.documentFormattingProvider = false
-            client.server_capabilities.documentRangeFormattingProvider = false
-          '';
         };
         rust_analyzer = {
           enable = true;
@@ -148,25 +203,25 @@
       };
     };
 
-    lsp-format = {
+    conform-nvim = {
       enable = true;
-    };
-
-    none-ls = {
-      enable = true;
-      enableLspFormat = true;
-      sources.formatting.nixfmt = {
-        enable = true;
-        package = pkgs.nixfmt;
-      };
-      sources.formatting = {
-        yapf.enable = true;
-        bibclean.enable = true;
-        cmake_format.enable = true;
-        clang_format = {
-          enable = true;
-          settings = {
-            extra_args = [ "--style={BasedOnStyle: LLVM, BreakStringLiterals: false}" ];
+      autoInstall.enable = true;
+      settings = {
+        format_on_save = {
+          timeout_ms = 500;
+          lsp_format = "fallback";
+        };
+        formatters_by_ft = {
+          nix = [ "nixfmt" ];
+          python = [ "yapf" ];
+          bib = [ "bibclean" ];
+          cmake = [ "cmake_format" ];
+          c = [ "clang_format" ];
+          cpp = [ "clang_format" ];
+        };
+        formatters = {
+          clang_format = {
+            prepend_args = [ "--style={BasedOnStyle: LLVM, BreakStringLiterals: false}" ];
           };
         };
       };

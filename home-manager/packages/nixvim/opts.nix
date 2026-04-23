@@ -1,5 +1,9 @@
 { ... }:
 {
+  diagnostic.settings = {
+    virtual_text = false;
+  };
+
   opts = {
     number = true;
     shiftwidth = 4;
@@ -12,7 +16,10 @@
     concealcursor = "nc";
     ignorecase = true;
     smartcase = true;
+    undofile = true;
+    updatetime = 300;
   };
+
   globals = {
     mapleader = " ";
     maplocalleader = " ";

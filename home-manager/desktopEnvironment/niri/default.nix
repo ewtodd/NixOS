@@ -19,13 +19,14 @@ let
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ \
-      -new-tab -url https://nix-community.github.io/nixvim/25.11/ &
+      -new-tab -url https://nix-community.github.io/nixvim &
   '';
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";
   open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox";
   open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
+  homeDir = config.home.homeDirectory;
 in
 {
   imports = [
@@ -73,6 +74,10 @@ in
         workspace-shadow = {
           color = "#${colors.base00}99";
         };
+      };
+
+      recent-windows = {
+        off = [ ];
       };
 
       layout = {
@@ -266,6 +271,9 @@ in
             "dms ipc powermenu toggle"
           ];
         };
+        "Mod+o" = {
+          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim ${homeDir}/org" ];
+        };
         "Mod+p" = {
           spawn = [
             "sh"
@@ -278,6 +286,9 @@ in
         };
         "Mod+t" = {
           switch-focus-between-floating-and-tiling = [ ];
+        };
+        "Mod+v" = {
+          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim" ];
         };
         "Mod+w" = {
           center-column = [ ];
@@ -328,11 +339,6 @@ in
         };
         Page_Down = {
           spawn = [ ];
-        };
-      }
-      // lib.optionalAttrs (osConfig.systemOptions.hardware.twoinone.enable) {
-        TabletStylusPrimary = {
-          maximize-column = [ ];
         };
       };
       spawn-sh-at-startup = [
@@ -499,7 +505,7 @@ in
         }
         {
           match._props = {
-            title = "Interactive Fit Editor";
+            title = ".*Editor$";
           };
           default-column-width = {
             proportion = 0.66667;
@@ -507,6 +513,18 @@ in
           default-window-height = {
             proportion = 1.0;
           };
+        }
+        {
+          match._props = {
+            app-id = "^steam_app_";
+          };
+          variable-refresh-rate = true;
+        }
+        {
+          match._props = {
+            title = "Skyrim Special Edition – Mod Organizer v2.5.2";
+          };
+          variable-refresh-rate = false;
         }
       ];
       layer-rule = [
