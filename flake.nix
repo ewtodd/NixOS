@@ -62,6 +62,9 @@
       url = "github:ewtodd/banshee-ucm-conf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel";
+    };
   };
 
   outputs =
@@ -100,7 +103,10 @@
             inputs.dank-material-shell.nixosModules.greeter
             inputs.banshee-ucm-conf.nixosModules.default
             {
-              nixpkgs.config.allowUnfree = true;
+              nixpkgs = {
+                overlays = [ inputs.nix-cachyos-kernel.overlays.default ];
+                config.allowUnfree = true;
+              };
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
