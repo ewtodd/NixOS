@@ -9,11 +9,11 @@
   systemOptions = {
     graphics.intel.enable = true;
     hardware.xbox.enable = true;
-    hardware.twoinone.enable = true;
-    hardware.fingerprint.enable = true;
+    hardware.chromebook-audio.enable = true;
     deviceType.laptop.enable = true;
     services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
+    services.binaryCache.consume = true;
     security.harden.enable = true;
     owner.e.enable = true;
   };
@@ -22,6 +22,7 @@
     isNormalUser = true;
     description = "ethan-play";
     extraGroups = [
+      "input"
       "nixconfig"
       "networkmanager"
       "wheel"
@@ -37,6 +38,7 @@
     isNormalUser = true;
     description = "ethan-work";
     extraGroups = [
+      "input"
       "nixconfig"
       "networkmanager"
       "wheel"

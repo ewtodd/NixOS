@@ -20,7 +20,6 @@ with lib;
       hardware.openRGB.enable = mkEnableOption "openRGB support";
       hardware.xbox.enable = mkEnableOption "xbox controller support";
       hardware.framework.enable = mkEnableOption "Framework laptop specific features";
-      hardware.twoinone.enable = mkEnableOption "2-in-1 specific features";
 
       deviceType.laptop.enable = mkEnableOption "Laptop-specific features";
       deviceType.desktop.enable = mkEnableOption "Desktop-specific features";
@@ -33,6 +32,8 @@ with lib;
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
+      services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve + Tailscale Funnel";
+      services.binaryCache.consume = mkEnableOption "Use the e-desktop binary cache as a substituter";
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";

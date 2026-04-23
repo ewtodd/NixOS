@@ -1,8 +1,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
+let
+  cachePort = 5000;
+  cachePublicKey = "e-desktop:35K0AY3HcDOSHVQ/lklmbvmrXjIspM/LYf7yek5lyVA=";
+  cacheUrl = "https://e-desktop.tail624128.ts.net";
+in
 {
   config = lib.mkMerge [
     (lib.mkIf (config.systemOptions.services.ssh.enable) {
@@ -39,6 +45,28 @@
     (lib.mkIf (config.systemOptions.services.tailscale.enable) {
       services.tailscale = {
         enable = true;
+      };
+    })
+
+    # Binary cache server (e-desktop)
+    (lib.mkIf (config.systemOptions.services.binaryCache.serve) {
+      services.nix-serve = {
+        enable = true;
+        port = cachePort;
+        secretKeyFile = "/etc/nix/cache-priv-key.pem";
+        package = pkgs.nix-serve-ng;
+      };
+
+      services.tailscale = {
+        enable = true;
+      };
+    })
+
+    # Binary cache client (all other hosts)
+    (lib.mkIf (config.systemOptions.services.binaryCache.consume) {
+      nix.settings = {
+        substituters = [ cacheUrl ];
+        trusted-public-keys = [ cachePublicKey ];
       };
     })
   ];
