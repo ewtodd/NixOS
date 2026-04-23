@@ -130,6 +130,27 @@ Edit `home-manager/packages/default.nix`.
 ### Modify Shell Aliases
 Edit `home-manager/packages/shell/default.nix` for bash aliases.
 <!---->
+## Binary Cache
+<!---->
+**e-desktop** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source. This is especially useful for git-versioned packages like niri, quickshell, and DMS.
+<!---->
+- **Server:** `nix-serve-ng` on e-desktop, exposed to the internet via [Tailscale Funnel](https://tailscale.com/kb/1223/funnel)
+- **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
+- **URL:** `https://e-desktop.tail624128.ts.net`
+<!---->
+### Setup
+<!---->
+The signing keypair lives at `/etc/nix/cache-priv-key.pem` (server) and `/etc/nix/cache-pub-key.pem` (public key baked into client config). To regenerate:
+```bash
+sudo nix-store --generate-binary-cache-key e-desktop /etc/nix/cache-priv-key.pem /etc/nix/cache-pub-key.pem
+```
+If regenerated, update the public key in `modules/services/default.nix` and rebuild all clients.
+<!---->
+Tailscale Funnel must be enabled in the e-tailnet ACL (`nodeAttrs` with `funnel` attr) and started once on e-desktop:
+```bash
+sudo tailscale funnel --bg 5000
+```
+<!---->
 ## Development Environments
 <!---->
 ```bash
