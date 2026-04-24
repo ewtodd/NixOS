@@ -19,6 +19,7 @@ in
     documents = "$HOME/.misc";
     music = "$HOME/.misc";
     pictures = "$HOME/.misc";
+    projects = "$HOME/.misc";
     publicShare = "$HOME/.misc";
     templates = "$HOME/.misc";
     videos = "$HOME/.misc";
