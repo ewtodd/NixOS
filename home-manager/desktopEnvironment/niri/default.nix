@@ -65,6 +65,14 @@ in
           max-scroll-amount = "15%";
         };
         disable-power-key-handling = [ ];
+      }
+      // lib.optionalAttrs (osConfig.systemOptions.hardware.twoinone.enable) {
+        touch = {
+          map-to-output = "eDP-1";
+        };
+        tablet = {
+          map-to-output = "eDP-1";
+        };
       };
 
       screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";

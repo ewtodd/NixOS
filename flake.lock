@@ -21,26 +21,6 @@
         "type": "github"
       }
     },
-    "banshee-ucm-conf": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1776807797,
-        "narHash": "sha256-3maJoU8llhga639XHz+UrsW3rhYQZMr4RiLCcTuT/as=",
-        "owner": "ewtodd",
-        "repo": "banshee-ucm-conf",
-        "rev": "bc3c79e8564ea6c6720eed5afcac4fa63950412e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ewtodd",
-        "repo": "banshee-ucm-conf",
-        "type": "github"
-      }
-    },
     "base16": {
       "inputs": {
         "fromYaml": "fromYaml"
@@ -622,7 +602,6 @@
     "root": {
       "inputs": {
         "SRIM": "SRIM",
-        "banshee-ucm-conf": "banshee-ucm-conf",
         "base16": "base16",
         "dank-material-shell": "dank-material-shell",
         "danksearch": "danksearch",

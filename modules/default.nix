@@ -20,6 +20,7 @@ with lib;
       hardware.openRGB.enable = mkEnableOption "openRGB support";
       hardware.xbox.enable = mkEnableOption "xbox controller support";
       hardware.framework.enable = mkEnableOption "Framework laptop specific features";
+      hardware.twoinone.enable = mkEnableOption "2-in-1 specific features";
 
       deviceType.laptop.enable = mkEnableOption "Laptop-specific features";
       deviceType.desktop.enable = mkEnableOption "Desktop-specific features";
