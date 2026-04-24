@@ -56,13 +56,13 @@ let
       }
       {
         _args = [ "eDP-1" ];
-        scale = 1.35;
+        scale = if e then 1.75 else 1.35;
         transform = "normal";
         position._props = {
           x = 0;
           y = 0;
         };
-        mode = "2256x1504@47.998000";
+        mode = if e then "2880x1800@120.000" else "2256x1504@47.998000";
       }
     ];
   }
