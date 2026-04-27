@@ -11,11 +11,7 @@ let
   lisepp = inputs.lisepp.packages.${pkgs.stdenv.hostPlatform.system}.default;
   SRIM = inputs.SRIM.packages.${pkgs.stdenv.hostPlatform.system}.default;
   rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin" ''
-    if [ -n "$RUN_SCALED" ]; then
-      exec ${pkgs.xpra}/bin/run_scaled ${pkgs.root}/bin/rootbrowse --web=off
-    else
-      exec ${pkgs.root}/bin/rootbrowse --web=off
-    fi
+    exec ${pkgs.root}/bin/rootbrowse --web=off
   '';
   rootbrowse_desktop = pkgs.makeDesktopItem {
     name = "rootbrowse";

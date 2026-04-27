@@ -11,6 +11,7 @@ in
   programs = {
     firefox = {
       enable = true;
+      configPath = ".mozilla/firefox";
       policies = lib.mkIf e {
         DisableTelemetry = true;
         DisableFirefoxStudies = true;
