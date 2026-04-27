@@ -13,6 +13,7 @@ with lib;
     systemOptions = {
       graphics.amd.enable = mkEnableOption "AMD graphics";
       graphics.intel.enable = mkEnableOption "Intel graphics";
+      graphics.nvidia.enable = mkEnableOption "NVIDIA proprietary graphics (latest driver)";
 
       hardware.chromebook-audio.enable = mkEnableOption "Chromebook audio fixes";
       hardware.suzyqable.enable = mkEnableOption "Suzyqable chromebook debugging support";

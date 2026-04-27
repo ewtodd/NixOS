@@ -39,11 +39,11 @@
   boot.initrd.kernelModules = [
     "dm_mod"
     "btrfs"
-    "amdgpu"
   ];
   boot.kernelModules = [
     "kvm-intel"
     "v4l2loopback"
+    "acpi_enforce_resources=lax"
   ];
 
   boot.supportedFilesystems = [ "btrfs" ];

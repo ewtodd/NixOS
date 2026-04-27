@@ -10,6 +10,9 @@
 with lib;
 let
   inherit (inputs.niri-nix.lib) mkNiriKDL;
+  niri-tile-to-n = pkgs.writers.writePython3Bin "niri-tile-to-n" { doCheck = false; } (
+    builtins.readFile ../scripts/niri_tile_to_n.py
+  );
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
   primaryMonitor = if deviceType == "desktop" then "DP-3" else "eDP-1";
   secondaryMonitor =
@@ -94,6 +97,7 @@ let
     spawn-sh-at-startup = [
       [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
       [ "sleep 2 && ${pkgs.spotify}/bin/spotify" ]
+      [ "${niri-tile-to-n}/bin/niri-tile-to-n -n 2 --output HDMI-A-1" ]
     ];
   };
 
@@ -165,6 +169,7 @@ let
       [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right" ]
       [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
+      [ "${niri-tile-to-n}/bin/niri-tile-to-n -n 2 --output HDMI-A-1" ]
     ];
   };
 

@@ -54,10 +54,6 @@
       url = "github:ewtodd/reMarkable-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote/v1.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
    nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -90,7 +86,6 @@
       mkNixSystem =
         {
           hostname,
-          useLanzaboote ? false,
         }:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -122,9 +117,6 @@
               };
             }
             ./hosts/${hostname}/configuration.nix
-          ]
-          ++ nixpkgs.lib.optionals useLanzaboote [
-            inputs.lanzaboote.nixosModules.lanzaboote
           ];
         };
 
@@ -160,14 +152,8 @@
       nixosConfigurations = {
         v-desktop = mkNixSystem { hostname = "v-desktop"; };
         v-laptop = mkNixSystem { hostname = "v-laptop"; };
-        e-desktop = mkNixSystem {
-          hostname = "e-desktop";
-          useLanzaboote = true;
-        };
-        e-laptop = mkNixSystem {
-          hostname = "e-laptop";
-          useLanzaboote = true;
-        };
+        e-desktop = mkNixSystem { hostname = "e-desktop"; };
+        e-laptop = mkNixSystem { hostname = "e-laptop"; };
       };
     };
 }

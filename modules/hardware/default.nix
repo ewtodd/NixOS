@@ -24,6 +24,24 @@
         lm_sensors
       ];
     })
+    (lib.mkIf (config.systemOptions.graphics.nvidia.enable) {
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
+      services.xserver.videoDrivers = [ "nvidia" ];
+      hardware.nvidia = {
+        modesetting.enable = true;
+        open = true;
+        nvidiaSettings = false;
+        package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+        nvidiaPersistenced = true;
+      };
+      environment.systemPackages = with pkgs; [
+        vulkan-tools
+        lm_sensors
+      ];
+    })
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
       hardware.graphics = {
         enable = true;

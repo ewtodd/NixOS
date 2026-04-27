@@ -31,6 +31,7 @@ let
     ];
   };
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
+  hasNvidia = if osConfig != null then (osConfig.systemOptions.graphics.nvidia.enable or false) else false;
 in
 {
   imports = [
@@ -69,7 +70,13 @@ in
 
   programs.btop = {
     enable = true;
-    package = if hasAMD then pkgs.btop-rocm else pkgs.btop;
+    package =
+      if hasNvidia then
+        pkgs.btop-cuda
+      else if hasAMD then
+        pkgs.btop-rocm
+      else
+        pkgs.btop;
     settings = {
       color_theme = "TTY";
       vim_keys = true;
