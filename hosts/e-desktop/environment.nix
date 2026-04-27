@@ -1,20 +1,14 @@
 {
-  lib,
   pkgs,
   ...
 }:
 {
 
-  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto-x86_64-v3;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   hardware.firmware = [ pkgs.linux-firmware ];
 
   boot.initrd.systemd.enable = true;
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-
-  boot.lanzaboote = {
-    enable = true;
-    pkiBundle = "/var/lib/sbctl";
-  };
+  boot.loader.systemd-boot.enable = true;
 
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";

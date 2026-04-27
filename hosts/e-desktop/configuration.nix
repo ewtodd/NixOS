@@ -8,7 +8,9 @@
   ];
 
   systemOptions = {
-    graphics.amd.enable = true;
+    graphics.nvidia.enable = true;
+
+    hardware.openRGB.enable = true;
     hardware.suzyqable.enable = true;
     hardware.xbox.enable = true;
     deviceType.desktop.enable = true;
@@ -21,8 +23,6 @@
     owner.e.enable = true;
   };
 
-  nixpkgs.config.rocmTargets = [ "gfx1100" ];
-
   users.users.e-play = {
     isNormalUser = true;
     description = "ethan-play";
@@ -34,6 +34,7 @@
       "video"
       "lp"
       "docker"
+      "i2c"
     ];
   };
 
@@ -48,10 +49,11 @@
       "video"
       "lp"
       "docker"
+      "i2c"
     ];
   };
 
-  time.timeZone = "America/New_York";
+  time.timeZone = "America/Chicago";
   networking.hostName = "e-desktop";
   system.stateVersion = "24.11";
 

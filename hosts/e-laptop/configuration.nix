@@ -50,7 +50,7 @@
     ];
   };
 
-  time.timeZone = "America/New_York";
+  time.timeZone = "America/Chicago";
   networking.hostName = "e-laptop";
   system.stateVersion = "25.11";
 

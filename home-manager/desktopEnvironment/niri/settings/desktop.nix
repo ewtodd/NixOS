@@ -38,6 +38,7 @@ let
       }
       {
         _args = [ "HDMI-A-1" ];
+        transform = "270";
         position._props = {
           x = -1080;
           y = 0;
@@ -45,7 +46,7 @@ let
         mode = "1920x1080@74.973";
         layout = {
           default-column-width = {
-            proportion = 0.75;
+            proportion = 1.0;
           };
         };
       }
