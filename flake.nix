@@ -54,15 +54,11 @@
       url = "github:ewtodd/reMarkable-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-   nix-cachyos-kernel = {
-      url = "github:xddxdd/nix-cachyos-kernel";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     proton-cachyos = {
       url = "github:powerofthe69/proton-cachyos-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
- };
+  };
 
   outputs =
     inputs@{
@@ -99,9 +95,6 @@
             inputs.dank-material-shell.nixosModules.greeter
             {
               nixpkgs = {
-                overlays = [
-                  inputs.nix-cachyos-kernel.overlays.default
-                ];
                 config.allowUnfree = true;
               };
               home-manager = {
