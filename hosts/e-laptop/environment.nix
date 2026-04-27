@@ -4,7 +4,7 @@
 }:
 {
 
-  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto-x86_64-v3;
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
   hardware.firmware = [ pkgs.linux-firmware ];
 
   services.fwupd = {
