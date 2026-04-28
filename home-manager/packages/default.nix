@@ -36,6 +36,7 @@ in
     ./git
     ./kitty
     ./nixvim
+    ./rgb-load
     ./shell
     ./syncthing
     ./zathura
