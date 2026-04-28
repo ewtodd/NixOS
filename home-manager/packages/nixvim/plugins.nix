@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 {
@@ -148,7 +149,7 @@
       enable = true;
       nixvimInjections = true;
       settings.highlight.enable = true;
-      grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      grammarPackages = with config.plugins.treesitter.package.builtGrammars; [
         c
         cpp
         rust

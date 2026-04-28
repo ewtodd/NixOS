@@ -7,12 +7,31 @@
 }:
 let
   niri = inputs.niri.packages."x86_64-linux".default;
+  inherit (inputs.niri-nix.lib) mkNiriKDL;
   homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
+
+  eDesktopGreeterNiriConfig = mkNiriKDL {
+    output = [
+      {
+        _args = [ "HDMI-A-1" ];
+        transform = "270";
+        position._props = {
+          x = -1080;
+          y = 0;
+        };
+        mode = "1920x1080@74.973";
+      }
+    ];
+    hotkey-overlay = {
+      skip-at-startup = [ ];
+    };
+  };
 in
 {
   programs.dank-material-shell.greeter = {
     enable = true;
     compositor.name = "niri";
+    compositor.customConfig = lib.optionalString config.systemOptions.owner.e.enable eDesktopGreeterNiriConfig;
     configHome = "${homeDirectory}";
     logs.save = true;
   };

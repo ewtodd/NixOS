@@ -69,11 +69,7 @@ let
   workConfigDesktopAdditions = {
     workspace = [
       {
-        _args = [ "b-btop" ];
-        open-on-output = secondaryMonitor;
-      }
-      {
-        _args = [ "c-spotify" ];
+        _args = [ "b-aux" ];
         open-on-output = secondaryMonitor;
       }
     ];
@@ -82,7 +78,7 @@ let
         match._props = {
           app-id = "btopkitty";
         };
-        open-on-workspace = "b-btop";
+        open-on-workspace = "b-aux";
         default-column-width = {
           proportion = 1.0;
         };
@@ -91,12 +87,12 @@ let
         match._props = {
           app-id = "spotify";
         };
-        open-on-workspace = "c-spotify";
+        open-on-workspace = "b-aux";
       }
     ];
     spawn-sh-at-startup = [
-      [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
       [ "sleep 2 && ${pkgs.spotify}/bin/spotify" ]
+      [ "sleep 5 && ${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
       [ "${niri-tile-to-n}/bin/niri-tile-to-n -n 2 --output HDMI-A-1" ]
     ];
   };
@@ -104,7 +100,7 @@ let
   playConfigBase = {
     workspace = [
       {
-        _args = [ "b-chat" ];
+        _args = [ "b-aux" ];
         open-on-output = secondaryMonitor;
       }
     ];
@@ -113,14 +109,14 @@ let
         match._props = {
           app-id = "signal";
         };
-        open-on-workspace = "b-chat";
+        open-on-workspace = "b-aux";
         default-column-width = {
           proportion = 1.0;
         };
       }
     ];
     spawn-sh-at-startup = [
-      [ "${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon" ]
+      [ "sleep 2 && ${pkgs.signal-desktop}/bin/signal-desktop --use-tray-icon" ]
     ];
   };
 
@@ -129,10 +125,6 @@ let
       {
         _args = [ "a-media" ];
         open-on-output = primaryMonitor;
-      }
-      {
-        _args = [ "c-btop" ];
-        open-on-output = secondaryMonitor;
       }
     ];
     window-rule = [
@@ -158,7 +150,7 @@ let
         match._props = {
           app-id = "btopkitty";
         };
-        open-on-workspace = "c-btop";
+        open-on-workspace = "b-aux";
         default-column-width = {
           proportion = 1.0;
         };
@@ -168,7 +160,7 @@ let
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right" ]
-      [ "${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
+      [ "sleep 5 && ${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
       [ "${niri-tile-to-n}/bin/niri-tile-to-n -n 2 --output HDMI-A-1" ]
     ];
   };

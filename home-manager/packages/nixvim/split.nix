@@ -2,7 +2,8 @@
 {
   extraPlugins = [
       (pkgs.vimUtils.buildVimPlugin {
-        name = "split.nvim";
+        pname = "split.nvim";
+        version = "0-unstable-main";
         src = pkgs.fetchFromGitHub {
           owner = "wurli";
           repo = "split.nvim";

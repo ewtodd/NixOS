@@ -35,6 +35,7 @@
     "ahci"
     "nvme"
     "usbhid"
+    "nvidia"
   ];
   boot.initrd.kernelModules = [
     "dm_mod"
@@ -43,9 +44,12 @@
   boot.kernelModules = [
     "kvm-intel"
     "v4l2loopback"
-    "acpi_enforce_resources=lax"
   ];
+  boot.kernelParams = [
+    "nvidia_uvm.uvm_disable_hmm=1"
 
+    "split_lock_detect=off"
+  ];
   boot.supportedFilesystems = [ "btrfs" ];
 
   fileSystems."/" = {
