@@ -21,7 +21,6 @@
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.git-hooks.follows = "";
       inputs.niri-unstable.follows = "";
       inputs.xwayland-satellite-unstable.follows = "";
     };
