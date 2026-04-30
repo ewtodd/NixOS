@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import time
-import colorsys
 from openrgb import OpenRGBClient
 from openrgb.utils import RGBColor
 
@@ -15,10 +14,24 @@ RAPL_PATH     = "/sys/class/powercap/intel-rapl:0/energy_uj"
 RAPL_MAX_PATH = "/sys/class/powercap/intel-rapl:0/max_energy_range_uj"
 
 
+PINK_STOPS = (
+    (255, 255, 255),
+    (255, 182, 193),
+    (190, 15, 110),
+)
+
+
 def load_to_color(load):
-    hue = (1.0 - min(load, 100) / 100.0) * (120.0 / 360.0)
-    r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 1.0)
-    return RGBColor(int(r * 255), int(g * 255), int(b * 255))
+    t = min(max(load, 0), 100) / 100.0
+    seg = t * (len(PINK_STOPS) - 1)
+    i = min(int(seg), len(PINK_STOPS) - 2)
+    f = seg - i
+    a, b = PINK_STOPS[i], PINK_STOPS[i + 1]
+    return RGBColor(
+        int(a[0] + (b[0] - a[0]) * f),
+        int(a[1] + (b[1] - a[1]) * f),
+        int(a[2] + (b[2] - a[2]) * f),
+    )
 
 
 def make_cpu_reader():

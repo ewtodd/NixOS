@@ -46,10 +46,9 @@
     "v4l2loopback"
   ];
   boot.kernelParams = [
-    "nvidia_uvm.uvm_disable_hmm=1"
-
     "split_lock_detect=off"
   ];
+  boot.blacklistedKernelModules = [ "nouveau" ];
   boot.supportedFilesystems = [ "btrfs" ];
 
   fileSystems."/" = {
