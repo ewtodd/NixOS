@@ -120,6 +120,7 @@
       services.tuned = {
         enable = true;
       };
+      services.hardware.bolt.enable = true;
     })
     (lib.mkIf (config.systemOptions.hardware.framework.enable) {
       hardware.fw-fanctrl = {
