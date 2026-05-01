@@ -247,6 +247,9 @@ in
         "Mod+Tab" = {
           toggle-overview = [ ];
         };
+        "Mod+c" = {
+          consume-or-expel-window-left = [ ];
+        };
         "Mod+d" = {
           spawn-sh = [
             "dms ipc spotlight toggle"
@@ -296,7 +299,7 @@ in
           switch-focus-between-floating-and-tiling = [ ];
         };
         "Mod+v" = {
-          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim" ];
+          consume-or-expel-window-right = [ ];
         };
         "Mod+w" = {
           center-column = [ ];
