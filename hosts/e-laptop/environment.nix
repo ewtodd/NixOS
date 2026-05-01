@@ -2,10 +2,20 @@
   pkgs,
   ...
 }:
+let
+  lenovo-ish = pkgs.stdenvNoCC.mkDerivation {
+    name = "lenovo-ish-firmware";
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out/lib/firmware/intel/ish
+      cp ${pkgs.linux-firmware}/lib/firmware/intel/ish/ish_lnlm_53c4ffad_cb391961.bin $out/lib/firmware/intel/ish/ish_lnlm.bin
+    '';
+  };
+in
 {
 
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-  hardware.firmware = [ pkgs.linux-firmware ];
+  hardware.firmware = [ lenovo-ish ];
 
   services.fwupd = {
     enable = true;
