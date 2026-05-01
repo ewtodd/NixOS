@@ -20,7 +20,10 @@
   systemd.services.systemd-tpm2-setup.enable = false;
   systemd.services.systemd-tpm2-setup-early.enable = false;
 
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot = {
+    enable = true;
+    configurationLimit = 3;
+  };
 
   boot.loader.efi.canTouchEfiVariables = true;
 
