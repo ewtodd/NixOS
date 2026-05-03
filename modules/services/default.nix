@@ -67,6 +67,8 @@ in
       nix.settings = {
         substituters = [ cacheUrl ];
         trusted-public-keys = [ cachePublicKey ];
+        connect-timeout = 5;
+        download-attempts = 1;
       };
     })
   ];
