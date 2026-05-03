@@ -50,6 +50,17 @@
     ];
   };
 
+  ##### REMOVE WHEN nixpkgs PR #479283 LANDS #####
+  # MIPI webcam via Intel IPU7 (Lunar Lake). Vendored from nixpkgs PR #479283
+  # because that PR is unmerged and conflicts against master. See
+  # ../../modules/hardware/ipu7/ for the overlay; delete that whole directory
+  # along with this block once #479283 lands.
+  hardware.ipu7 = {
+    enable = true;
+    platform = "ipu7x";
+  };
+  ##### END REMOVE #####
+
   time.timeZone = "America/Chicago";
   networking.hostName = "e-laptop";
   system.stateVersion = "25.11";

@@ -4,6 +4,9 @@ with lib;
   imports = [
     ./desktopEnvironment
     ./hardware
+    ##### REMOVE WHEN nixpkgs PR #479283 LANDS #####
+    ./hardware/ipu7
+    ##### END REMOVE #####
     ./packages
     ./security
     ./services
