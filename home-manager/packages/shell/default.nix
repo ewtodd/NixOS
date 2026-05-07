@@ -28,7 +28,7 @@ in
       vpn = "sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup=\"UMVPN-Only U-M Traffic alt\" umvpn.umnet.umich.edu";
     }
     // lib.optionalAttrs (isEOwner && isLaptop) {
-      phone-home = "${pkgs.waypipe}/bin/waypipe --no-gpu ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty";
+      phone-home = "${pkgs.waypipe}/bin/waypipe ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty";
       files-home = "${pkgs.sshfs}/bin/sshfs -p 2222 ${config.home.username}@ssh.ethanwtodd.com:/${config.home.homeDirectory} /${config.home.homeDirectory}/remoteHome";
     }
     // lib.optionalAttrs (isEOwner && isLaptop && profile == "work") {
@@ -45,6 +45,7 @@ in
   home.activation.removeDir = lib.mkIf isEOwner (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       rm -rf $HOME/Thunderbird
+      rm -rf $HOME/thunderbird
     ''
   );
 
