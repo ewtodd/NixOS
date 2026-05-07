@@ -7,6 +7,7 @@
 }:
 let
   remarkable = inputs.remarkable.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  agenix = inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   programs.steam = {
@@ -28,6 +29,7 @@ in
   environment.systemPackages =
     with pkgs;
     [
+      agenix
       claude-code
       git
       gh

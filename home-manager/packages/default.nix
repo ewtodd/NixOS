@@ -27,7 +27,8 @@ let
     ];
   };
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
-  hasNvidia = if osConfig != null then (osConfig.systemOptions.graphics.nvidia.enable or false) else false;
+  hasNvidia =
+    if osConfig != null then (osConfig.systemOptions.graphics.nvidia.enable or false) else false;
 in
 {
   imports = [

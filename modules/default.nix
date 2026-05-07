@@ -8,6 +8,7 @@ with lib;
     ./hardware/ipu7
     ##### END REMOVE #####
     ./packages
+    ./secrets
     ./security
     ./services
   ];
