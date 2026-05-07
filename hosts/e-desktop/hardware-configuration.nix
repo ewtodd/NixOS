@@ -30,6 +30,18 @@
     };
   };
 
+  systemd.services.cpu-power-limit = {
+    description = "Set CPU package PL1 to 200W";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      echo 200000000 > /sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
+    '';
+  };
+
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "ahci"
