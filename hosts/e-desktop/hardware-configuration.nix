@@ -60,7 +60,7 @@
   boot.kernelParams = [
     "split_lock_detect=off"
   ];
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.blacklistedKernelModules = lib.mkIf config.systemOptions.graphics.nvidia.enable [ "nouveau" ];
   boot.supportedFilesystems = [ "btrfs" ];
 
   fileSystems."/" = {

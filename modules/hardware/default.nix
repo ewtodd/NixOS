@@ -41,17 +41,38 @@
         nvidiaPersistenced = true;
         package = config.boot.kernelPackages.nvidiaPackages.production;
       };
-
       boot.extraModprobeConfig = ''
         options nvidia-uvm uvm_disable_hmm=1
         options nvidia NVreg_UsePageAttributeTable=1 NVreg_InitializeSystemMemoryAllocations=0
       '';
       boot.blacklistedKernelModules = [ "nouveau" ];
-
       environment.systemPackages = with pkgs; [
         vulkan-tools
         lm_sensors
       ];
+
+      specialisation.nouveau.configuration = {
+        system.nixos.tags = [ "nouveau" ];
+
+        services.xserver.videoDrivers = lib.mkForce [ "nouveau" ];
+        hardware.nvidia.modesetting.enable = lib.mkForce false;
+        hardware.nvidia.open = lib.mkForce false;
+        hardware.nvidia.nvidiaPersistenced = lib.mkForce false;
+        hardware.nvidia.powerManagement.enable = lib.mkForce false;
+
+        boot.blacklistedKernelModules = lib.mkForce [ ];
+        boot.kernelModules = [ "nouveau" ];
+        boot.extraModprobeConfig = lib.mkForce "";
+
+        boot.initrd.kernelModules = [ "nouveau" ];
+        boot.initrd.availableKernelModules = lib.mkForce [
+          "xhci_pci"
+          "ahci"
+          "nvme"
+          "usbhid"
+          "nouveau"
+        ];
+      };
     })
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
       hardware.graphics = {
