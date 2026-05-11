@@ -18,6 +18,7 @@
     services.suspend-then-hibernate.enable = true;
     services.tailscale.enable = true;
     services.binaryCache.serve = true;
+    services.localAI.enable = true;
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
@@ -35,6 +36,7 @@
       "lp"
       "docker"
       "i2c"
+      "llama"
     ];
   };
 
@@ -50,6 +52,7 @@
       "lp"
       "docker"
       "i2c"
+      "llama"
     ];
   };
 
