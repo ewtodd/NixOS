@@ -30,7 +30,6 @@ in
     with pkgs;
     [
       agenix
-      aider-chat
       claude-code
       git
       gh

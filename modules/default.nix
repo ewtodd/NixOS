@@ -40,7 +40,6 @@ with lib;
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
       services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve + Tailscale Funnel";
       services.binaryCache.consume = mkEnableOption "Use the e-desktop binary cache as a substituter";
-      services.localAI.enable = mkEnableOption "Local AI inference (llama.cpp foreground/background tiers + aider config)";
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
