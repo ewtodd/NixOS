@@ -10,8 +10,6 @@ let
   cacheUrl = "https://e-desktop.tail624128.ts.net";
 in
 {
-  imports = [ ./local-ai ];
-
   config = lib.mkMerge [
     (lib.mkIf (config.systemOptions.services.ssh.enable) {
       services.openssh = {
