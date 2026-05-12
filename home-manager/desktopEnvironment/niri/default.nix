@@ -21,6 +21,16 @@ let
       -new-tab -url https://home-manager-options.extranix.com/ \
       -new-tab -url https://nix-community.github.io/nixvim &
   '';
+  phone-home = pkgs.writeShellScriptBin "phone-home" ''
+    SOCKET="${config.home.homeDirectory}/.ssh/sockets/${config.home.username}@ssh.ethanwtodd.com-2222"
+
+    if [ ! -S "$SOCKET" ]; then
+      ${pkgs.kitty}/bin/kitty ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com exit
+    fi
+
+    setsid ${pkgs.waypipe}/bin/waypipe --compress lz4 ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty
+  '';
+
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";
   open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox";
   open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
@@ -150,6 +160,9 @@ in
           spawn-sh = [
             "dms screenshot"
           ];
+        };
+        "Alt+Return" = lib.mkIf (e && deviceType == "laptop") {
+          spawn = [ "${phone-home}/bin/phone-home" ];
         };
         "Alt+l" = {
           spawn-sh = [
