@@ -47,12 +47,15 @@
     "ahci"
     "nvme"
     "usbhid"
-    "nvidia"
   ];
+
   boot.initrd.kernelModules = [
     "dm_mod"
     "btrfs"
+    "usbhid"
+    "hid"
   ];
+
   boot.kernelModules = [
     "kvm-intel"
     "v4l2loopback"
@@ -60,6 +63,7 @@
   boot.kernelParams = [
     "split_lock_detect=off"
   ];
+
   boot.blacklistedKernelModules = lib.mkIf config.systemOptions.graphics.nvidia.enable [ "nouveau" ];
   boot.supportedFilesystems = [ "btrfs" ];
 
@@ -73,13 +77,13 @@
 
   boot.initrd.luks.devices."home" = {
     device = "/dev/disk/by-uuid/bfbb0513-7cd7-4d1e-9cb5-315208156e57";
-    allowDiscards = true; # Enable TRIM (if using SSD)
+    allowDiscards = true;
   };
 
   boot.initrd.luks.devices."games".device = "/dev/disk/by-uuid/f9219808-ffc7-41c7-854e-aaaf3d45a675";
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/29FA-BB43";
+    device = "/dev/disk/by-uuid/12CE-A600";
     fsType = "vfat";
     options = [
       "fmask=0077"
@@ -103,8 +107,6 @@
     fsType = "btrfs";
     depends = [ "/dev/mapper/games" ];
   };
-
-  swapDevices = [ { device = "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f"; } ];
 
   networking.useDHCP = lib.mkDefault true;
 
