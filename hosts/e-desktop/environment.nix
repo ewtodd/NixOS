@@ -10,13 +10,9 @@
   boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot = {
     enable = true;
-    configurationLimit = 3;
+    configurationLimit = 5;
   };
 
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
-  boot.initrd.luks.devices."luks-0c8c96c9-7128-4635-8958-2e2cead680a0".device =
-    "/dev/disk/by-uuid/0c8c96c9-7128-4635-8958-2e2cead680a0";
-
-  boot.resumeDevice = "/dev/disk/by-uuid/7a17f4e4-8dca-427f-9138-340e6b4b778f";
 }
