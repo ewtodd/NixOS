@@ -64,6 +64,7 @@ in
       lisepp
       SRIM
       rootbrowse_package
+      gost
     ];
 
   programs.btop = {
