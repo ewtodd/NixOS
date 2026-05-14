@@ -219,6 +219,7 @@
           cmake = [ "cmake_format" ];
           c = [ "clang_format" ];
           cpp = [ "clang_format" ];
+          toml = [ "taplo" ];
         };
         formatters = {
           clang_format = {
