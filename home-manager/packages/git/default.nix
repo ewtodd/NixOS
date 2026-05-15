@@ -1,4 +1,4 @@
-{ osConfig, ... }:
+{ osConfig, lib, ... }:
 {
   programs.git = {
     enable = true;
@@ -13,7 +13,10 @@
         defaultBranch = "main";
       };
       safe.directory = "/etc/nixos";
-      core.sharedRepository = "group";
+      core = {
+        sharedRepository = "group";
+        hooksPath = lib.mkIf (osConfig.systemOptions.owner.e.enable) ".githooks";
+      };
       credential.helper = "store";
     };
   };
