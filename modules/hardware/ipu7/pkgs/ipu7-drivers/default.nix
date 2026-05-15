@@ -2,7 +2,6 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  fetchurl,
   ivsc-driver,
   kernel,
   kernelModuleMakeFlags,
