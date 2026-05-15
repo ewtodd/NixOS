@@ -37,6 +37,7 @@ in
       wget
       tree
       nixfmt
+      deadnix
       tree
       usbutils
       poppler-utils

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Pre-commit: format staged .nix files with nixfmt; warn about dead Nix code.
+set -e
+
+files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.nix$' || true)
+[ -z "$files" ] && exit 0
+
+for f in $files; do
+    nixfmt "$f"
+    git add "$f"
+done
+
+if command -v deadnix >/dev/null 2>&1; then
+    out=$(deadnix $files || true)
+    if [ -n "$out" ]; then
+        printf 'warning: deadnix found unused Nix code:\n%s\n' "$out" >&2
+    fi
+fi
