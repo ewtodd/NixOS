@@ -2,7 +2,6 @@
   config,
   lib,
   modulesPath,
-  pkgs,
   ...
 }:
 {
@@ -18,35 +17,12 @@
     cpuFreqGovernor = lib.mkForce "performance";
   };
 
-  systemd.services.cpu-performance-bias = {
-    description = "Set CPU energy performance bias to performance";
-    wantedBy = [ "multi-user.target" ];
-    script = ''
-      ${pkgs.linuxPackages.cpupower}/bin/cpupower set -b 0
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-  };
-
-  systemd.services.cpu-power-limit = {
-    description = "Set CPU package PL1 to 200W";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      echo 200000000 > /sys/class/powercap/intel-rapl/intel-rapl:0/constraint_0_power_limit_uw
-    '';
-  };
-
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "ahci"
     "nvme"
     "usbhid"
+    "thunderbolt"
   ];
 
   boot.initrd.kernelModules = [
@@ -57,15 +33,39 @@
   ];
 
   boot.kernelModules = [
-    "kvm-intel"
+    "kvm-amd"
     "v4l2loopback"
   ];
   boot.kernelParams = [
-    "split_lock_detect=off"
+    "amd_pstate=active"
   ];
 
+  services.udev.extraRules = ''
+    SUBSYSTEM=="drm", KERNEL=="renderD*", ATTRS{vendor}=="0x1002", ATTRS{device}=="0x13c0", SYMLINK+="dri/igpu-render"
+  '';
   boot.blacklistedKernelModules = lib.mkIf config.systemOptions.graphics.nvidia.enable [ "nouveau" ];
   boot.supportedFilesystems = [ "btrfs" ];
+
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 10;
+    priority = 100;
+  };
+
+  swapDevices = [
+    {
+      device = "/var/swap";
+      size = 8192;
+      priority = 10;
+    }
+  ];
+
+  boot.kernel.sysctl = {
+    "vm.swappiness" = 10; # don't swap eagerly
+    "vm.vfs_cache_pressure" = 50;
+    "vm.watermark_scale_factor" = 200; # start reclaim earlier
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/23f3ce0e-1ec6-4c43-99c5-e3168f00f08f";
@@ -111,5 +111,5 @@
   networking.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

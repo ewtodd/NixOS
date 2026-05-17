@@ -45,26 +45,12 @@
         options nvidia-uvm uvm_disable_hmm=1
         options nvidia NVreg_UsePageAttributeTable=1 NVreg_InitializeSystemMemoryAllocations=0
       '';
+      boot.initrd.kernelModules = [ "nouveau" ];
       boot.blacklistedKernelModules = [ "nouveau" ];
       environment.systemPackages = with pkgs; [
         vulkan-tools
         lm_sensors
       ];
-      specialisation.nouveau.configuration = {
-        hardware.nvidia.modesetting.enable = lib.mkForce false;
-        hardware.nvidia.open = lib.mkForce false;
-        hardware.nvidia.powerManagement.enable = lib.mkForce false;
-        hardware.nvidia.powerManagement.finegrained = lib.mkForce false;
-        hardware.nvidia.nvidiaPersistenced = lib.mkForce false;
-        services.xserver.videoDrivers = lib.mkForce [ "nouveau" ];
-        boot.blacklistedKernelModules = lib.mkForce [
-          "nvidia"
-          "nvidia_modeset"
-          "nvidia_uvm"
-          "nvidia_drm"
-        ];
-        boot.initrd.kernelModules = [ "nouveau" ];
-      };
     })
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
       hardware.graphics = {
