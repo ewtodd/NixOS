@@ -28,7 +28,7 @@ let
       ${pkgs.kitty}/bin/kitty ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com exit
     fi
 
-    setsid ${pkgs.waypipe}/bin/waypipe --compress lz4 ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty
+    setsid ${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render --compress lz4 ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty
   '';
 
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";

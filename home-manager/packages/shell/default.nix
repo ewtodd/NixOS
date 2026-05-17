@@ -28,11 +28,12 @@ in
       vpn = "sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup=\"UMVPN-Only U-M Traffic alt\" umvpn.umnet.umich.edu";
     }
     // lib.optionalAttrs (isEOwner && isLaptop) {
-      phone-home = "${pkgs.waypipe}/bin/waypipe ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty";
+      phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty";
       files-home = "${pkgs.sshfs}/bin/sshfs -p 2222 ${config.home.username}@ssh.ethanwtodd.com:/${config.home.homeDirectory} /${config.home.homeDirectory}/remoteHome";
     }
     // lib.optionalAttrs (isEOwner && isLaptop && profile == "work") {
-      plots-home = "${pkgs.waypipe}/bin/waypipe --compress lz4 ssh -p 2222 e-work@ssh.ethanwtodd.com gthumb";
+      plots-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render
+      --compress lz4 ssh -p 2222 e-work@ssh.ethanwtodd.com gthumb";
     };
   };
 
