@@ -49,14 +49,14 @@
   zramSwap = {
     enable = true;
     algorithm = "zstd";
-    memoryPercent = 30;
+    memoryPercent = 50;
     priority = 100;
   };
 
   swapDevices = [
     {
       device = "/var/swap";
-      size = 8192;
+      size = 32768;
       priority = 10;
     }
   ];
