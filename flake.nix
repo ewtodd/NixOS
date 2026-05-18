@@ -24,13 +24,8 @@
       inputs.niri-unstable.follows = "";
       inputs.xwayland-satellite-unstable.follows = "";
     };
-    quickshell = {
-      url = "github:quickshell-mirror/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     dank-material-shell = {
       url = "github:AvengeMedia/DankMaterialShell";
-      inputs.quickshell.follows = "quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dms-plugin-registry = {

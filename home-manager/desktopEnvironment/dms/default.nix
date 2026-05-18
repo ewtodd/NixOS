@@ -24,6 +24,7 @@ in
   programs.dank-material-shell = {
     enable = true;
     dgop.package = pkgs.dgop;
+    quickshell.package = pkgs.quickshell;
     systemd = {
       enable = true;
       restartIfChanged = true;
