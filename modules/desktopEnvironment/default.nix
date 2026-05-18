@@ -13,7 +13,7 @@ let
   eDesktopGreeterNiriConfig = mkNiriKDL {
     output = [
       {
-        _args = [ "HDMI-A-3" ];
+        _args = [ "HDMI-A-1" ];
         transform = "270";
         position._props = {
           x = -1080;
