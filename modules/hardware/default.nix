@@ -45,7 +45,6 @@
         options nvidia-uvm uvm_disable_hmm=1
         options nvidia NVreg_UsePageAttributeTable=1 NVreg_InitializeSystemMemoryAllocations=0
       '';
-      boot.initrd.kernelModules = [ "nouveau" ];
       boot.blacklistedKernelModules = [ "nouveau" ];
       environment.systemPackages = with pkgs; [
         vulkan-tools
