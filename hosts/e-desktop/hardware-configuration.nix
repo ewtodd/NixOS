@@ -16,6 +16,7 @@
     powertop.enable = false;
     cpuFreqGovernor = lib.mkForce "performance";
   };
+  services.hardware.bolt.enable = true;
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
@@ -36,8 +37,10 @@
     "kvm-amd"
     "v4l2loopback"
   ];
+
   boot.kernelParams = [
     "amd_pstate=active"
+    "r8169.aspm=0"
   ];
 
   services.udev.extraRules = ''
