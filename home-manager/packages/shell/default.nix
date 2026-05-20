@@ -55,7 +55,7 @@ in
     enableDefaultConfig = false;
     includes = [ "/run/agenix/onyx-ssh-config" ];
 
-    matchBlocks."ssh.ethanwtodd.com" = {
+    settings."ssh.ethanwtodd.com" = {
       port = 2222;
       controlMaster = "auto";
       controlPath = "${config.home.homeDirectory}/.ssh/sockets/%r@%h-%p";

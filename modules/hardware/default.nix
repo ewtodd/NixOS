@@ -21,6 +21,7 @@
       environment.systemPackages = with pkgs; [
         rocmPackages.rocminfo
         rocmPackages.rocm-smi
+        nvtopPackages.amd
         lm_sensors
       ];
     })
@@ -49,6 +50,7 @@
       environment.systemPackages = with pkgs; [
         vulkan-tools
         lm_sensors
+        nvtopPackages.nvidia
       ];
     })
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
