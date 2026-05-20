@@ -61,7 +61,7 @@ in
     ++ lib.optionals (profile == "work") [
       slack
       thunderbird
-      #      lisepp
+      lisepp
       SRIM
       rootbrowse_package
       gost
