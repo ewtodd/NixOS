@@ -387,7 +387,7 @@ in
         ]
         ++ lib.optionals (deviceType == "desktop") [
           {
-            name = "DP-5";
+            name = "DP-3";
             model = "Sceptre O34";
           }
         ]
