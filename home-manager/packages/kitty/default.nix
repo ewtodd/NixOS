@@ -5,7 +5,7 @@
 }:
 let
   colors = config.scheme;
-  opacity = if (osConfig.systemOptions.owner.e.enable) then "0.9" else "0.925";
+  opacity = if (osConfig.systemOptions.owner.e.enable) then "1" else "0.925";
 in
 {
   programs.kitty = {
