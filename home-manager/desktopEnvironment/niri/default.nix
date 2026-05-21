@@ -573,7 +573,7 @@ in
       animations = {
         slowdown = 0.75;
       };
-      blur = {
+      blur = lib.mkIf (!e) {
         passes = 4;
         saturation = 1.8;
       };

@@ -52,6 +52,24 @@
         lm_sensors
         nvtopPackages.nvidia
       ];
+      environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool.json".text = ''
+        {
+          "rules": [
+            {
+              "pattern": { "feature": "procname", "matches": "niri" },
+              "profile": "Limit Free Buffer Pool"
+            },
+            {
+              "pattern": { "feature": "procname", "matches": "quickshell" },
+              "profile": "Limit Free Buffer Pool"
+            }
+          ],
+          "profiles": [{
+            "name": "Limit Free Buffer Pool",
+            "settings": [{ "key": "GLVidHeapReuseRatio", "value": 0 }]
+          }]
+        }
+      '';
     })
     (lib.mkIf (config.systemOptions.graphics.intel.enable) {
       hardware.graphics = {
