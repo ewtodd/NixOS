@@ -8,7 +8,7 @@
       imports = [
         ../../home-manager/profiles/play.nix
       ];
-      scheme = "${pkgs.base16-schemes}/share/themes/harmonic16-dark.yaml";
+      scheme = "${pkgs.base16-schemes}/share/themes/isotope.yaml";
     };
   "e-work" =
     { pkgs, ... }:

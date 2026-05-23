@@ -314,27 +314,6 @@
         "type": "github"
       }
     },
-    "niri": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1778858756,
-        "narHash": "sha256-9VvAHNoi2wd0fxLfJOPChZMS7l6rhCtAJmpd59Hv5rw=",
-        "owner": "niri-wm",
-        "repo": "niri",
-        "rev": "cd5ac3e5e04bb5a11276d3c755fa25242818e05f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "niri-wm",
-        "repo": "niri",
-        "type": "github"
-      }
-    },
     "niri-nix": {
       "inputs": {
         "niri-unstable": [],
@@ -426,32 +405,10 @@
         "dms-plugin-registry": "dms-plugin-registry",
         "home-manager": "home-manager_2",
         "lisepp": "lisepp",
-        "niri": "niri",
         "niri-nix": "niri-nix",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "remarkable": "remarkable"
-      }
-    },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": [
-          "niri",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1757989933,
-        "narHash": "sha256-9cpKYWWPCFhgwQTww8S94rTXgg8Q8ydFv9fXM6I8xQM=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "8249aa3442fb9b45e615a35f39eca2fe5510d7c3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
       }
     },
     "systems": {
