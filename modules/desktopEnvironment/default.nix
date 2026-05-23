@@ -6,7 +6,6 @@
   ...
 }:
 let
-  niri = inputs.niri.packages."x86_64-linux".default;
   inherit (inputs.niri-nix.lib) mkNiriKDL;
   homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
 
@@ -38,7 +37,6 @@ in
 
   programs.niri = {
     enable = true;
-    package = niri;
   };
 
   environment.systemPackages = with pkgs; [

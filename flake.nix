@@ -14,10 +14,6 @@
     base16 = {
       url = "github:SenchoPens/base16.nix";
     };
-    niri = {
-      url = "github:niri-wm/niri";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -23,6 +23,7 @@ in
 
   programs.dank-material-shell = {
     enable = true;
+    package = pkgs.dms-shell;
     dgop.package = pkgs.dgop;
     quickshell.package = pkgs.quickshell;
     systemd = {
@@ -94,5 +95,7 @@ in
     };
     settings = settings;
   };
+
+  systemd.user.services.dms.Service.Environment = "DMS_DISABLE_MATUGEN=1";
 
 }
