@@ -24,6 +24,8 @@ in
             "e-play"
             "v-work"
             "v-play"
+            "nu"
+            "mu"
           ];
         };
       };

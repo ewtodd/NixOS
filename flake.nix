@@ -69,6 +69,14 @@
         }
       ];
 
+      mkHeadlessHomeManagerModules = inputs: [
+        inputs.nixvim.homeModules.nixvim
+        inputs.base16.homeManagerModule
+        {
+          programs.nixvim.nixpkgs.useGlobalPackages = true;
+        }
+      ];
+
       mkNixSystem =
         {
           hostname,
@@ -92,6 +100,40 @@
                 useUserPackages = true;
                 backupFileExtension = "hm-backup";
                 sharedModules = mkHomeManagerModules inputs;
+                extraSpecialArgs = {
+                  inherit inputs;
+                  system = "x86_64-linux";
+                };
+                users = import ./hosts/${hostname}/home.nix;
+              };
+            }
+            ./hosts/${hostname}/configuration.nix
+          ];
+        };
+
+      mkHeadlessSystem =
+        {
+          hostname,
+        }:
+        nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+            system = "x86_64-linux";
+          };
+          modules = [
+            ./modules
+            inputs.home-manager.nixosModules.home-manager
+            inputs.dank-material-shell.nixosModules.greeter
+            {
+              nixpkgs = {
+                config.allowUnfree = true;
+              };
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "hm-backup";
+                sharedModules = mkHeadlessHomeManagerModules inputs;
                 extraSpecialArgs = {
                   inherit inputs;
                   system = "x86_64-linux";
@@ -137,6 +179,8 @@
         v-laptop = mkNixSystem { hostname = "v-laptop"; };
         e-desktop = mkNixSystem { hostname = "e-desktop"; };
         e-laptop = mkNixSystem { hostname = "e-laptop"; };
+        server-nu = mkHeadlessSystem { hostname = "server-nu"; };
+        server-mu = mkHeadlessSystem { hostname = "server-mu"; };
       };
     };
 }

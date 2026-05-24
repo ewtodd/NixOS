@@ -8,65 +8,70 @@
 let
   remarkable = inputs.remarkable.packages.${pkgs.stdenv.hostPlatform.system}.default;
   agenix = inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hasDesktop =
+    config.systemOptions.deviceType.desktop.enable || config.systemOptions.deviceType.laptop.enable;
 in
 {
-  programs.steam = {
-    enable = true;
-  };
+  config = lib.mkMerge [
+    {
+      environment.systemPackages = with pkgs; [
+        agenix
+        claude-code
+        git
+        gh
+        nh
+        wget
+        tree
+        nixfmt
+        deadnix
+        usbutils
+        pciutils
+        unzip
+        zip
+      ];
 
-  programs.obs-studio = {
-    enable = true;
-  };
+      virtualisation.docker.enable = lib.mkIf (config.systemOptions.apps.docker.enable) true;
+    }
 
-  boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-  boot.extraModprobeConfig = ''
-    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
-  '';
+    (lib.mkIf hasDesktop {
+      programs.steam.enable = true;
+      programs.obs-studio.enable = true;
 
-  programs.appimage.enable = true;
-  programs.appimage.binfmt = true;
+      boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
+      boot.extraModprobeConfig = ''
+        options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+      '';
 
-  environment.systemPackages =
-    with pkgs;
-    [
-      agenix
-      claude-code
-      git
-      gh
-      nh
-      wget
-      tree
-      nixfmt
-      deadnix
-      tree
-      usbutils
-      poppler-utils
-      mpv
-      pciutils
-      unzip
-      wineWow64Packages.stable
-      winetricks
-      zip
-      gearlever
-      imagemagick
-      ghostscript
-      pavucontrol
-      waypipe
-    ]
-    ++ lib.optionals (config.systemOptions.apps.zoom.enable) [ zoom-us ]
-    ++ lib.optionals (config.systemOptions.apps.remarkable.enable) [ remarkable ]
-    ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ];
+      programs.appimage.enable = true;
+      programs.appimage.binfmt = true;
 
-  virtualisation.docker.enable = lib.mkIf (config.systemOptions.apps.docker.enable) true;
+      environment.systemPackages =
+        with pkgs;
+        [
+          poppler-utils
+          mpv
+          wineWow64Packages.stable
+          winetricks
+          gearlever
+          imagemagick
+          ghostscript
+          pavucontrol
+          waypipe
+        ]
+        ++ lib.optionals (config.systemOptions.apps.zoom.enable) [ zoom-us ]
+        ++ lib.optionals (config.systemOptions.apps.remarkable.enable) [ remarkable ]
+        ++ lib.optionals (config.systemOptions.apps.quickemu.enable) [ quickemu ];
 
-  environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {
-    windows = "quickemu --vm /home/v-work/.config/qemu/windows-11.conf";
-  };
+      environment.shellAliases = lib.mkIf (config.systemOptions.apps.quickemu.enable) {
+        windows = "quickemu --vm /home/v-work/.config/qemu/windows-11.conf";
+      };
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.fira-code
-    nerd-fonts.ubuntu
-    fira-code
-    fira-code-symbols
+      fonts.packages = with pkgs; [
+        nerd-fonts.fira-code
+        nerd-fonts.ubuntu
+        fira-code
+        fira-code-symbols
+      ];
+    })
   ];
 }
