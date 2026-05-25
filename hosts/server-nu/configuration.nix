@@ -11,6 +11,9 @@
     services.ssh.enable = true;
     services.tailscale.enable = true;
     services.binaryCache.consume = true;
+    services.router.enable = true;
+    services.adguard.enable = true;
+    #    services.reverseProxy.enable = true;
     security.harden.enable = true;
   };
 

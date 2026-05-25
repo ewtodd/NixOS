@@ -7,9 +7,15 @@
 let
   cachePort = 5000;
   cachePublicKey = "e-desktop:35K0AY3HcDOSHVQ/lklmbvmrXjIspM/LYf7yek5lyVA=";
-  cacheUrl = "https://e-desktop.tail624128.ts.net";
+  cacheUrl = "https://cache.ethanwtodd.com";
 in
 {
+  imports = [
+    ./adguard
+    ./reverse-proxy
+    ./router
+  ];
+
   config = lib.mkMerge [
     (lib.mkIf (config.systemOptions.services.ssh.enable) {
       services.openssh = {
@@ -50,7 +56,10 @@ in
       };
     })
 
-    # Binary cache server (e-desktop)
+    # Binary cache server (e-desktop). Public traffic terminates at Caddy on
+    # the router (server-nu) and is forwarded over the trusted LAN, so we
+    # open the cache port on the firewall — the Tailscale funnel that used
+    # to front this is no longer needed.
     (lib.mkIf (config.systemOptions.services.binaryCache.serve) {
       services.nix-serve = {
         enable = true;
@@ -59,9 +68,7 @@ in
         package = pkgs.nix-serve-ng;
       };
 
-      services.tailscale = {
-        enable = true;
-      };
+      networking.firewall.allowedTCPPorts = [ cachePort ];
     })
 
     # Binary cache client (all other hosts)
