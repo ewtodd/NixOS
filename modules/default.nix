@@ -46,6 +46,9 @@ with lib;
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
       services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve + Tailscale Funnel";
       services.binaryCache.consume = mkEnableOption "Use the e-desktop binary cache as a substituter";
+      services.router.enable = mkEnableOption "Act as a NAT router (WAN DHCP, LAN static, dnsmasq DHCP+DNS)";
+      services.adguard.enable = mkEnableOption "AdGuard Home DNS ad-blocker (sits behind dnsmasq)";
+      services.reverseProxy.enable = mkEnableOption "Caddy reverse proxy with auto-TLS";
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
@@ -115,6 +118,21 @@ with lib;
         fix-nixos-git = "sudo chown -R root:nixconfig /etc/nixos && sudo chmod -R 2775 /etc/nixos && git config --global --add safe.directory /etc/nixos && git -C /etc/nixos config core.fileMode false";
       };
 
+      services.interception-tools = {
+        enable = true;
+        plugins = with pkgs.interception-tools-plugins; [
+          caps2esc
+          dual-function-keys
+        ];
+        udevmonConfig = ''
+          - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.caps2esc}/bin/caps2esc -m 1 | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
+            DEVICE:
+              NAME: "(?!Wacom).*"
+              EVENTS:
+                EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+        '';
+      };
+
       nixpkgs.config.allowUnfree = true;
     }
 
@@ -129,21 +147,6 @@ with lib;
         systemd.tmpfiles.rules = [
           "Z /sys/class/powercap/intel-rapl:0/energy_uj 0444 root root - -"
         ];
-
-        services.interception-tools = {
-          enable = true;
-          plugins = with pkgs.interception-tools-plugins; [
-            caps2esc
-            dual-function-keys
-          ];
-          udevmonConfig = ''
-            - JOB: "${pkgs.interception-tools}/bin/intercept -g $DEVNODE | ${pkgs.interception-tools-plugins.caps2esc}/bin/caps2esc -m 1 | ${pkgs.interception-tools}/bin/uinput -d $DEVNODE"
-              DEVICE:
-                NAME: "(?!Wacom).*"
-                EVENTS:
-                  EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
-          '';
-        };
 
         services.printing.enable = true;
         services.avahi.enable = true;

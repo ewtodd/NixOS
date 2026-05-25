@@ -28,6 +28,7 @@ in
         pciutils
         unzip
         zip
+        kitty.terminfo
       ];
 
       virtualisation.docker.enable = lib.mkIf (config.systemOptions.apps.docker.enable) true;
