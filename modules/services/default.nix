@@ -14,6 +14,7 @@ in
     ./adguard
     ./bastion
     ./dyndns
+    ./grafana
     ./nextcloud
     ./node-exporter
     ./ntfy
