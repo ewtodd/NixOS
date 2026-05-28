@@ -41,7 +41,20 @@ in
       enable = true;
       externalInterface = wan;
       internalInterfaces = [ lan ];
+      # Public SSH for the bastion. Forward WAN:2222 to mu (10.0.0.2:2222),
+      # which is where the bastion's hardened sshd lives.
+      forwardPorts = [
+        {
+          sourcePort = 2222;
+          proto = "tcp";
+          destination = "10.0.0.2:2222";
+        }
+      ];
     };
+
+    # Open the port on the WAN-facing firewall — the trustedInterfaces below
+    # already accepts LAN traffic unconditionally.
+    networking.firewall.allowedTCPPorts = [ 2222 ];
 
     networking.firewall.trustedInterfaces = [ lan ];
 

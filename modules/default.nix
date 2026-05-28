@@ -49,6 +49,11 @@ with lib;
       services.router.enable = mkEnableOption "Act as a NAT router (WAN DHCP, LAN static, dnsmasq DHCP+DNS)";
       services.adguard.enable = mkEnableOption "AdGuard Home DNS ad-blocker (sits behind dnsmasq)";
       services.reverseProxy.enable = mkEnableOption "Caddy reverse proxy with auto-TLS";
+      services.dyndns.enable = mkEnableOption "Namecheap dynamic DNS updater for ethanwtodd.com subdomains";
+      services.bastion.enable = mkEnableOption "SSH bastion: hardened sshd + fail2ban + WoL helpers for inner hosts";
+      services.wakeable.enable = mkEnableOption "Wake-on-LAN + initrd-SSH for remote unlock";
+      services.nextcloud.enable = mkEnableOption "Nextcloud personal cloud (cloud.ethanwtodd.com)";
+      services.ntfy.enable = mkEnableOption "ntfy push-notification server (ntfy.ethanwtodd.com)";
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
