@@ -52,7 +52,7 @@ let
       }
       {
         match._props = {
-          app-id = "spotify";
+          app-id = "Spotify";
         };
         default-column-width = {
           proportion = 1.0;
@@ -85,7 +85,7 @@ let
       }
       {
         match._props = {
-          app-id = "spotify";
+          app-id = "Spotify";
         };
         open-on-workspace = "b-aux";
       }
@@ -139,7 +139,7 @@ let
       }
       {
         match._props = {
-          app-id = "spotify";
+          app-id = "Spotify";
         };
         open-on-workspace = "a-media";
         default-column-width = {
