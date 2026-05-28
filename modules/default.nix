@@ -54,6 +54,8 @@ with lib;
       services.wakeable.enable = mkEnableOption "Wake-on-LAN + initrd-SSH for remote unlock";
       services.nextcloud.enable = mkEnableOption "Nextcloud personal cloud (cloud.ethanwtodd.com)";
       services.ntfy.enable = mkEnableOption "ntfy push-notification server (ntfy.ethanwtodd.com)";
+      services.prometheus.enable = mkEnableOption "Prometheus metrics server (scrapes node_exporters)";
+      services.nodeExporter.enable = mkEnableOption "Prometheus node_exporter (system metrics on :9100)";
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";

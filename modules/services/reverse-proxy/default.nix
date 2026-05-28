@@ -20,10 +20,10 @@
         reverse_proxy http://10.0.0.2:80
       '';
 
-      # ntfy on mu. reverse_proxy handles the WebSocket/SSE upgrade for live
-      # subscriptions automatically.
+      # ntfy runs locally on nu. reverse_proxy handles the WebSocket/SSE
+      # upgrade for live subscriptions automatically.
       virtualHosts."ntfy.ethanwtodd.com".extraConfig = ''
-        reverse_proxy http://10.0.0.2:2586
+        reverse_proxy http://127.0.0.1:2586
       '';
 
       # Collabora Online (Nextcloud Office) on mu. Caddy v2 auto-upgrades the
