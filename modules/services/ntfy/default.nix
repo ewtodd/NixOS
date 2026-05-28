@@ -10,12 +10,12 @@
       settings = {
         base-url = "https://ntfy.ethanwtodd.com";
 
-        # Bind all interfaces; exposure is controlled by the firewall (mu has
-        # no WAN interface — only nu does — and reaches us over the trusted
-        # LAN). Same rationale as the AdGuard module.
-        listen-http = "0.0.0.0:2586";
+        # Co-located with Caddy on nu, so bind loopback only — Caddy proxies
+        # to it locally and nothing else should reach it. No firewall opening
+        # (important: nu is WAN-facing).
+        listen-http = "127.0.0.1:2586";
 
-        # TLS terminates at Caddy on nu; trust its X-Forwarded-* headers for
+        # TLS terminates at Caddy; trust its X-Forwarded-* headers for
         # rate-limiting and visitor accounting.
         behind-proxy = true;
 
@@ -25,8 +25,5 @@
         auth-default-access = "read-only";
       };
     };
-
-    # Reachable from Caddy on nu over the trusted LAN.
-    networking.firewall.allowedTCPPorts = [ 2586 ];
   };
 }

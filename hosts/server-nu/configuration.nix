@@ -22,6 +22,9 @@ in
     services.adguard.enable = true;
     services.dyndns.enable = true;
     services.reverseProxy.enable = true;
+    services.ntfy.enable = true;
+    services.prometheus.enable = true;
+    services.nodeExporter.enable = true;
     security.harden.enable = true;
   };
 

@@ -20,7 +20,7 @@ in
     services.binaryCache.consume = true;
     services.bastion.enable = true;
     services.nextcloud.enable = true;
-    services.ntfy.enable = true;
+    services.nodeExporter.enable = true;
     security.harden.enable = true;
   };
 
