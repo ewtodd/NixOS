@@ -26,6 +26,12 @@
         reverse_proxy http://127.0.0.1:2586
       '';
 
+      # Grafana runs locally on nu. Login-gated; Caddy auto-upgrades the
+      # websocket Grafana Live uses.
+      virtualHosts."status.ethanwtodd.com".extraConfig = ''
+        reverse_proxy http://127.0.0.1:3001
+      '';
+
       # Collabora Online (Nextcloud Office) on mu. Caddy v2 auto-upgrades the
       # websocket connections coolwsd needs.
       virtualHosts."office.ethanwtodd.com".extraConfig = ''
