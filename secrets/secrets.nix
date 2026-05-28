@@ -23,4 +23,6 @@ in
     server-mu
     server-nu
   ];
+  "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
+  "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
 }

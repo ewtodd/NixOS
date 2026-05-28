@@ -55,5 +55,18 @@
         mode = "0400";
       };
     })
+    (lib.mkIf config.systemOptions.services.grafana.enable {
+      # Read at startup by the grafana service (runs as the grafana user).
+      grafana-admin-password = {
+        file = ../../secrets/grafana-admin-password.age;
+        owner = "grafana";
+        mode = "0400";
+      };
+      grafana-secret-key = {
+        file = ../../secrets/grafana-secret-key.age;
+        owner = "grafana";
+        mode = "0400";
+      };
+    })
   ];
 }

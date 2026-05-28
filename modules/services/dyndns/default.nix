@@ -12,6 +12,7 @@ let
     "ntfy"
     "office"
     "ssh"
+    "status"
   ];
 in
 {

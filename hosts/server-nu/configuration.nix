@@ -25,6 +25,7 @@ in
     services.ntfy.enable = true;
     services.prometheus.enable = true;
     services.nodeExporter.enable = true;
+    services.grafana.enable = true;
     security.harden.enable = true;
   };
 
