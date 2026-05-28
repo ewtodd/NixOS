@@ -28,12 +28,11 @@ in
       vpn = "sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup=\"UMVPN-Only U-M Traffic alt\" umvpn.umnet.umich.edu";
     }
     // lib.optionalAttrs (isEOwner && isLaptop) {
-      phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh -p 2222 ${config.home.username}@ssh.ethanwtodd.com kitty";
-      files-home = "${pkgs.sshfs}/bin/sshfs -p 2222 ${config.home.username}@ssh.ethanwtodd.com:/${config.home.homeDirectory} /${config.home.homeDirectory}/remoteHome";
+      phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh e-desktop kitty";
+      files-home = "${pkgs.sshfs}/bin/sshfs e-desktop:${config.home.homeDirectory} ${config.home.homeDirectory}/remoteHome";
     }
     // lib.optionalAttrs (isEOwner && isLaptop && profile == "work") {
-      plots-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render
-      --compress lz4 ssh -p 2222 e-work@ssh.ethanwtodd.com gthumb";
+      plots-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render --compress lz4 ssh e-desktop gthumb";
     };
   };
 
@@ -50,16 +49,48 @@ in
     ''
   );
 
-  programs.ssh = lib.mkIf (isEOwner && profile == "work") {
+  programs.ssh = lib.mkIf isEOwner {
     enable = true;
     enableDefaultConfig = false;
-    includes = [ "/run/agenix/onyx-ssh-config" ];
 
-    settings."ssh.ethanwtodd.com" = {
-      port = 2222;
-      controlMaster = "auto";
-      controlPath = "${config.home.homeDirectory}/.ssh/sockets/%r@%h-%p";
-      controlPersist = "10m";
+    includes = lib.optionals (profile == "work") [ "/run/agenix/onyx-ssh-config" ];
+
+    settings = {
+      # The public-facing bastion. Connection multiplexing here so ProxyJump
+      # / ProxyCommand into inner hosts reuses the same TCP+TLS to mu.
+      bastion = {
+        Hostname = "ssh.ethanwtodd.com";
+        Port = 2222;
+        User = "mu";
+        ControlMaster = "auto";
+        ControlPath = "${config.home.homeDirectory}/.ssh/sockets/%r@%h-%p";
+        ControlPersist = "10m";
+      };
+
+      # The workstation behind the bastion. ProxyCommand runs the wake script
+      # on mu first, so `ssh e-desktop` from anywhere transparently boots /
+      # unlocks the box if it's cold.
+      "e-desktop" = {
+        Hostname = "10.0.0.4";
+        User = config.home.username;
+        ProxyCommand = "ssh bastion wake-and-relay-e-desktop";
+      };
+
+      # Admin shells on the infra hosts. No wake dance — these stay up.
+      # Port 2222 is the inner sshd port (matches services.ssh.enable config);
+      # without this, ProxyJump's %p defaults to 22 and the tunnel goes nowhere.
+      "mu-admin" = {
+        Hostname = "10.0.0.2";
+        Port = 2222;
+        User = "mu";
+        ProxyJump = "bastion";
+      };
+      "nu-admin" = {
+        Hostname = "10.0.0.7";
+        Port = 2222;
+        User = "nu";
+        ProxyJump = "bastion";
+      };
     };
   };
 
