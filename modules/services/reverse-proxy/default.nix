@@ -13,6 +13,24 @@
       virtualHosts."cache.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.4:5000
       '';
+
+      # Nextcloud on mu. Nextcloud's own nginx vhost serves the .well-known
+      # CalDAV/CardDAV redirects, so Caddy just passes through.
+      virtualHosts."cloud.ethanwtodd.com".extraConfig = ''
+        reverse_proxy http://10.0.0.2:80
+      '';
+
+      # ntfy on mu. reverse_proxy handles the WebSocket/SSE upgrade for live
+      # subscriptions automatically.
+      virtualHosts."ntfy.ethanwtodd.com".extraConfig = ''
+        reverse_proxy http://10.0.0.2:2586
+      '';
+
+      # Collabora Online (Nextcloud Office) on mu. Caddy v2 auto-upgrades the
+      # websocket connections coolwsd needs.
+      virtualHosts."office.ethanwtodd.com".extraConfig = ''
+        reverse_proxy http://10.0.0.2:9980
+      '';
     };
 
     networking.firewall.allowedTCPPorts = [

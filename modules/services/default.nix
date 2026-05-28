@@ -12,8 +12,13 @@ in
 {
   imports = [
     ./adguard
+    ./bastion
+    ./dyndns
+    ./nextcloud
+    ./ntfy
     ./reverse-proxy
     ./router
+    ./wakeable
   ];
 
   config = lib.mkMerge [
@@ -24,7 +29,11 @@ in
         settings = {
           PasswordAuthentication = true;
           KbdInteractiveAuthentication = true;
-          AuthenticationMethods = "password";
+          # Default behavior (no AuthenticationMethods set) is "any one method
+          # works" — both publickey and password are accepted. ProxyJump from
+          # outside needs publickey to succeed non-interactively; password
+          # stays as a fallback for recovery. The bastion module overrides
+          # this with mkForce "publickey" on mu.
           AllowUsers = [
             "e-work"
             "e-play"
