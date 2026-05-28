@@ -15,7 +15,9 @@ in
     ./bastion
     ./dyndns
     ./nextcloud
+    ./node-exporter
     ./ntfy
+    ./prometheus
     ./reverse-proxy
     ./router
     ./wakeable

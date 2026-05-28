@@ -26,6 +26,7 @@ in
     services.tailscale.enable = true;
     services.binaryCache.serve = true;
     services.wakeable.enable = true;
+    services.nodeExporter.enable = true;
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
