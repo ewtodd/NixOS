@@ -22,6 +22,7 @@ in
     ./prometheus
     ./reverse-proxy
     ./router
+    ./scheduled-reboot
     ./wakeable
   ];
 

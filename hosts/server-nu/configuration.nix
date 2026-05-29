@@ -26,6 +26,8 @@ in
     services.prometheus.enable = true;
     services.nodeExporter.enable = true;
     services.grafana.enable = true;
+    services.scheduledReboot.enable = true;
+    services.scheduledReboot.calendar = "*-*-* 04:00:00";
     security.harden.enable = true;
   };
 
