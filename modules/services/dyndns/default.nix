@@ -28,7 +28,6 @@ in
       script = ''
         set -eu
         PW=$(cat "$CREDENTIALS_DIRECTORY/pw")
-        # Omitting the ip param: Namecheap uses the request's source IP.
         for HOST in ${lib.concatStringsSep " " subdomains}; do
           RESP=$(${pkgs.curl}/bin/curl -fsS \
             "https://dynamicdns.park-your-domain.com/update?host=$HOST&domain=${domain}&password=$PW")
