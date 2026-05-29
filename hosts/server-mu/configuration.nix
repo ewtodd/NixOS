@@ -20,6 +20,7 @@ in
     services.binaryCache.consume = true;
     services.bastion.enable = true;
     services.nextcloud.enable = true;
+    services.minecraft.enable = true;
     services.nodeExporter.enable = true;
     security.harden.enable = true;
   };

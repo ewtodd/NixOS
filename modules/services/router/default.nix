@@ -47,6 +47,11 @@ in
           proto = "tcp";
           destination = "10.0.0.2:2222";
         }
+        {
+          sourcePort = 25565;
+          proto = "tcp";
+          destination = "10.0.0.2:25565";
+        }
       ];
     };
 
