@@ -22,6 +22,8 @@ in
     services.nextcloud.enable = true;
     services.minecraft.enable = true;
     services.nodeExporter.enable = true;
+    services.scheduledReboot.enable = true;
+    services.scheduledReboot.calendar = "*-*-* 04:30:00";
     security.harden.enable = true;
   };
 

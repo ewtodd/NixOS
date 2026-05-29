@@ -5,8 +5,6 @@
   ...
 }:
 let
-  cfg = config.systemOptions.services.bastion;
-
   eDesktopIp = "10.0.0.4";
   eDesktopMac = "30:56:0f:4b:ac:de";
   innerSshPort = 2222;
@@ -69,7 +67,7 @@ let
   };
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf config.systemOptions.services.bastion.enable {
     services.openssh.settings = {
       PasswordAuthentication = lib.mkForce false;
       KbdInteractiveAuthentication = lib.mkForce false;

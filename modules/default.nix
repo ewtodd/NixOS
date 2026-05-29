@@ -58,6 +58,13 @@ with lib;
       services.nodeExporter.enable = mkEnableOption "Prometheus node_exporter (system metrics on :9100)";
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
+      services.scheduledReboot.enable = mkEnableOption "Reboot the machine on a systemd OnCalendar schedule";
+      services.scheduledReboot.calendar = mkOption {
+        type = types.str;
+        default = "*-*-* 04:00:00";
+        example = "*-*-* 04:30:00";
+        description = "systemd OnCalendar expression for the scheduled reboot (time zone follows time.timeZone).";
+      };
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
