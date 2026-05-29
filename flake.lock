@@ -70,11 +70,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779675754,
-        "narHash": "sha256-yjXux9IpgxLhgdSeZzaH29PTb6VjAmJ4Qdb0iIvp1as=",
+        "lastModified": 1780003574,
+        "narHash": "sha256-nBMlNRXl6hMXW4crXTm3a1LMonFnbZ878lX/2rajXaA=",
         "owner": "AvengeMedia",
         "repo": "DankMaterialShell",
-        "rev": "d9525908f1042fc8b0a6dc6895b9a5ac4dc5888b",
+        "rev": "d819865853ff5cf40a8b60d6d14eaed929971685",
         "type": "github"
       },
       "original": {
@@ -132,11 +132,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779676562,
-        "narHash": "sha256-Jv3mFCsTEWfPsWCSyx6wzSbYAGuhQmIIaUO6qmQX1CI=",
+        "lastModified": 1780070880,
+        "narHash": "sha256-OTxK1H6eeMaggoMm0oLSsx70vpCIQnj+T5fttVmw65U=",
         "owner": "AvengeMedia",
         "repo": "dms-plugin-registry",
-        "rev": "c021449c5f98f444bc6625e68d5616b71798a5dd",
+        "rev": "f71182b27e091927209075dbb812e0b7b09b8451",
         "type": "github"
       },
       "original": {
@@ -280,11 +280,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779726696,
-        "narHash": "sha256-/p37CB5n6Wpw250b0Lq0CYwNq2D8uGKzDoBulyLcQqA=",
+        "lastModified": 1779969295,
+        "narHash": "sha256-HwIJ3tOcwSMiV75L7KqJXciXR9UfT+d7rwOZMX7cTnA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "1a95e2efb477959b70b4a14c51035975c0481df6",
+        "rev": "61e2c9659324181e0f0ed911958c536333b1d4f6",
         "type": "github"
       },
       "original": {
@@ -323,11 +323,11 @@
         "xwayland-satellite-unstable": []
       },
       "locked": {
-        "lastModified": 1779755131,
-        "narHash": "sha256-I/sw4t/ZiAkErPzrEHoN3Gi4oh5o/omD50Qu4mQXuN0=",
+        "lastModified": 1780014005,
+        "narHash": "sha256-CW2IFwxBVvzeYxpttv5+Bx++xtzllWb2MrqvTSSJ7Os=",
         "ref": "refs/heads/main",
-        "rev": "06ecf24d15ec95ef9c8bc2a08d366b0fc68adbec",
-        "revCount": 124,
+        "rev": "8a021362573b3d53750ae9dea17926e998aa5edc",
+        "revCount": 125,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
@@ -338,16 +338,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1779560665,
-        "narHash": "sha256-tpyBcxPpcQb8ukyNF7DoCwfSY3VPsxHoYwj00Cayv5o=",
+        "lastModified": 1780011192,
+        "narHash": "sha256-luHrZG6I7Mwdt413XoDOYBpp9z1z6X23/5SNktwjM+k=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "64c08a7ca051951c8eae34e3e3cb1e202fe36786",
+        "rev": "3242faf14b7611a62ce0f0071619438a08b65c12",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-unstable",
+        "ref": "nixos-unstable-small",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -361,11 +361,11 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1779683452,
-        "narHash": "sha256-Ksx8jghpDBCPDiTaTyGhYUXG1BUwqPjf5pajl0q0cqA=",
+        "lastModified": 1780079678,
+        "narHash": "sha256-Ld9FNgUvM3jzpyhqnb5hb3Ql42+/Tgsm+wMWtDmwBkA=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "afec1bae0e6f7983a5c03ec559f7ed2ec0e714a9",
+        "rev": "bbadbd7319055d3633607a83b7d5a21550af2657",
         "type": "github"
       },
       "original": {
@@ -458,15 +458,16 @@
     },
     "systems_4": {
       "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "lastModified": 1774449309,
+        "narHash": "sha256-brhZ8DmuGtzkCYHJg4HEd602amKm89Y9ytsFZ5uWD1w=",
         "owner": "nix-systems",
         "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "rev": "c29398b59d2048c4ab79345812849c9bd15e9150",
         "type": "github"
       },
       "original": {
         "owner": "nix-systems",
+        "ref": "future-26.11",
         "repo": "default",
         "type": "github"
       }
