@@ -9,9 +9,6 @@
       enable = true;
       port = 9090;
 
-      # UI/API on loopback only. Grafana (co-located on nu) queries it via
-      # localhost; reach the UI through an SSH tunnel when debugging PromQL.
-      # No public exposure, no firewall opening.
       listenAddress = "127.0.0.1";
 
       retentionTime = "15d";
@@ -25,8 +22,6 @@
               labels.instance = "mu";
             }
             {
-              # nu scrapes its own exporter over loopback (9100 isn't opened on
-              # the router's firewall).
               targets = [ "127.0.0.1:9100" ];
               labels.instance = "nu";
             }

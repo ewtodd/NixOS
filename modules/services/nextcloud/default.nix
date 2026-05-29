@@ -14,14 +14,10 @@
       home = "/var/lib/nextcloud";
       https = true;
 
-      # PostgreSQL via peer-socket auth — no DB password secret needed. The
-      # module asserts createLocally is incompatible with dbpassFile.
       database.createLocally = true;
       configureRedis = true;
       maxUploadSize = "2G";
 
-      # Strict declarative apps. Pre-packaged in nixpkgs and version-locked to
-      # the chosen Nextcloud package.
       extraApps = with config.services.nextcloud.package.packages.apps; {
         inherit calendar contacts richdocuments;
       };
@@ -43,15 +39,10 @@
       };
     };
 
-    # Nextcloud Office backend. The browser talks to Collabora directly, so it
-    # gets its own public subdomain (office.ethanwtodd.com) via the same
-    # Caddy/dyndns pattern as cloud. TLS terminates at Caddy on nu — Collabora
-    # listens plain HTTP on the LAN and is told it sits behind a TLS proxy.
+    # Nextcloud Office backend
     services.collabora-online = {
       enable = true;
       port = 9980;
-      # WOPI host allowlist: Collabora only accepts edit sessions originating
-      # from Nextcloud's host. Fed to coolwsd as the aliasgroup env vars.
       aliasGroups = [ { host = "https://cloud.ethanwtodd.com"; } ];
       settings = {
         server_name = "office.ethanwtodd.com";
@@ -64,9 +55,6 @@
       };
     };
 
-    # Point the richdocuments app at the Collabora server declaratively. There
-    # is no first-class NixOS option for app config, so run occ once after
-    # nextcloud-setup has installed/enabled the app.
     systemd.services.nextcloud-richdocuments-config = {
       description = "Configure Nextcloud Office (richdocuments) WOPI server URL";
       wantedBy = [ "multi-user.target" ];
@@ -80,8 +68,6 @@
       '';
     };
 
-    # Caddy on nu reaches us on plain HTTP over the trusted LAN. mu has no
-    # public interface, so this is LAN-only by topology. 9980 is Collabora.
     networking.firewall.allowedTCPPorts = [
       80
       9980
