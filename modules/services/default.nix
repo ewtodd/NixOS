@@ -15,6 +15,7 @@ in
     ./bastion
     ./dyndns
     ./grafana
+    ./minecraft
     ./nextcloud
     ./node-exporter
     ./ntfy
