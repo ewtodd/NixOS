@@ -41,8 +41,6 @@ in
       enable = true;
       externalInterface = wan;
       internalInterfaces = [ lan ];
-      # Public SSH for the bastion. Forward WAN:2222 to mu (10.0.0.2:2222),
-      # which is where the bastion's hardened sshd lives.
       forwardPorts = [
         {
           sourcePort = 2222;
@@ -52,26 +50,16 @@ in
       ];
     };
 
-    # Open the port on the WAN-facing firewall — the trustedInterfaces below
-    # already accepts LAN traffic unconditionally.
     networking.firewall.allowedTCPPorts = [ 2222 ];
 
     networking.firewall.trustedInterfaces = [ lan ];
 
     services.dnsmasq = {
       enable = true;
-      # The module default rewrites /etc/resolv.conf to 127.0.0.1; if dnsmasq
-      # then fails to start, nu has no DNS for itself (tailscale, nix, etc.).
-      # Let nu use whatever upstream WAN DHCP gives it.
       resolveLocalQueries = false;
       settings = {
         interface = lan;
-        # bind-dynamic listens on interfaces as they come up; bind-interfaces
-        # requires the address to be present at start and races with the
-        # network-addresses-${lan}.service unit.
         bind-dynamic = true;
-        # Don't read /etc/resolv.conf — forward everything to AdGuard, which
-        # in turn forwards to the real upstreams.
         no-resolv = true;
         server = [ "127.0.0.1#${toString adguardDnsPort}" ];
         domain-needed = true;
