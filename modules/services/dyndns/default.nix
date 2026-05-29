@@ -9,6 +9,7 @@ let
   subdomains = [
     "cache"
     "cloud"
+    "mc"
     "ntfy"
     "office"
     "ssh"
