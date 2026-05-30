@@ -26,9 +26,11 @@
           motd = "ethanwtodd.com";
           max-players = 10;
           online-mode = true;
+          level-seed = "712262452098460";
           white-list = true;
           enforce-whitelist = false;
           difficulty = "normal";
+          view-distance = 20;
         };
       };
     };
