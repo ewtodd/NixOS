@@ -13,7 +13,6 @@
     hardware.fingerprint.enable = true;
     deviceType.laptop.enable = true;
     services.suspend-then-hibernate.enable = true;
-    services.tailscale.enable = true;
     services.binaryCache.consume = true;
     security.harden.enable = true;
     owner.e.enable = true;
