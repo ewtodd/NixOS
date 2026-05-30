@@ -71,6 +71,11 @@ in
         bogus-priv = true;
         cache-size = 0;
 
+        address = [
+          "/mc.ethanwtodd.com/10.0.0.2"
+          "/ssh.ethanwtodd.com/10.0.0.2"
+        ];
+
         dhcp-authoritative = true;
         dhcp-range = [ "10.0.0.100,10.0.0.250,24h" ];
         dhcp-option = [
