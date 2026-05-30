@@ -23,7 +23,6 @@ in
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.suspend-then-hibernate.enable = true;
-    services.tailscale.enable = true;
     services.binaryCache.serve = true;
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
