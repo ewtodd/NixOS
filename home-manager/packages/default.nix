@@ -57,6 +57,7 @@ in
       lsfg-vk-ui
       vulkan-tools
       android-tools
+      lunar-client
     ]
     ++ lib.optionals (profile == "work") [
       slack

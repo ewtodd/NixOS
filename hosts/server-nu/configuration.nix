@@ -16,7 +16,6 @@ in
   systemOptions = {
     deviceType.server.enable = true;
     services.ssh.enable = true;
-    services.tailscale.enable = true;
     services.binaryCache.consume = true;
     services.router.enable = true;
     services.adguard.enable = true;
