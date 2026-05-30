@@ -43,6 +43,11 @@
     "r8169.aspm=0"
   ];
 
+  systemd.watchdog = {
+    runtimeTime = "30s";
+    rebootTime = "10min";
+  };
+
   services.udev.extraRules = ''
     SUBSYSTEM=="drm", KERNEL=="renderD*", ATTRS{vendor}=="0x1002", ATTRS{device}=="0x13c0", SYMLINK+="dri/igpu-render"
   '';

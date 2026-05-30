@@ -57,6 +57,7 @@ in
       lsfg-vk-ui
       vulkan-tools
       android-tools
+      prismlauncher
     ]
     ++ lib.optionals (profile == "work") [
       slack
