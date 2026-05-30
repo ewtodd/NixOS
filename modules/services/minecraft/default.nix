@@ -27,7 +27,7 @@
           max-players = 10;
           online-mode = true;
           white-list = true;
-          enforce-whitelist = true;
+          enforce-whitelist = false;
           difficulty = "normal";
           view-distance = 10;
         };
