@@ -17,6 +17,8 @@
         sharedRepository = "group";
         hooksPath = lib.mkIf (osConfig.systemOptions.owner.e.enable) ".githooks";
       };
+      diff.tool = "nvimdiff";
+      difftool.prompt = false;
       credential.helper = "store";
     };
   };
