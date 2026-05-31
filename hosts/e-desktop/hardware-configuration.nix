@@ -43,9 +43,9 @@
     "r8169.aspm=0"
   ];
 
-  systemd.watchdog = {
-    runtimeTime = "30s";
-    rebootTime = "10min";
+  systemd.settings.Manager = {
+    RuntimeWatchdogSec = "30s";
+    RebootWatchdogSec = "10min";
   };
 
   services.udev.extraRules = ''
