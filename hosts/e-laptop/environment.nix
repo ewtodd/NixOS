@@ -17,14 +17,6 @@ in
   boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
   hardware.firmware = [ lenovo-ish ];
 
-  services.fwupd = {
-    enable = true;
-  };
-
-  security.tpm2 = {
-    enable = false;
-  };
-
   boot.initrd.systemd.enable = true;
   systemd.units."dev-tpm0.device".enable = false;
   systemd.services.systemd-tpm2-setup.enable = false;
