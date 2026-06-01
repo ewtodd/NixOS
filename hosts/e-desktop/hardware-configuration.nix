@@ -11,6 +11,14 @@
     enable = false;
   };
 
+  services.fwupd = {
+    enable = true;
+  };
+
+  security.tpm2 = {
+    enable = false;
+  };
+
   powerManagement = {
     enable = true;
     powertop.enable = false;
