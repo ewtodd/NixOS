@@ -32,7 +32,7 @@ let
     window-rule = [
       {
         match._props = {
-          app-id = "Slack";
+          app-id = "slack";
         };
         open-on-workspace = "a-chat";
         default-column-width = {
