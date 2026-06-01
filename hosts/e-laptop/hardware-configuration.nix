@@ -10,6 +10,14 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  services.fwupd = {
+    enable = true;
+  };
+
+  security.tpm2 = {
+    enable = false;
+  };
+
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "thunderbolt"
