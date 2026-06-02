@@ -19,7 +19,7 @@
       maxUploadSize = "2G";
 
       extraApps = with config.services.nextcloud.package.packages.apps; {
-        inherit calendar contacts richdocuments;
+        inherit calendar contacts cookbook deck richdocuments;
       };
       extraAppsEnable = true;
       appstoreEnable = false;
