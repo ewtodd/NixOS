@@ -40,7 +40,7 @@
           finegrained = false;
         };
         nvidiaPersistenced = true;
-        package = config.boot.kernelPackages.nvidiaPackages.production;
+        package = config.boot.kernelPackages.nvidiaPackages.new_feature;
       };
       boot.extraModprobeConfig = ''
         options nvidia-uvm uvm_disable_hmm=1
