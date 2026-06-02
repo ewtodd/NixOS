@@ -79,6 +79,7 @@
 
   services.udev.extraRules = ''
     SUBSYSTEM=="drm", KERNEL=="renderD*", ATTRS{vendor}=="0x1002", ATTRS{device}=="0x13c0", SYMLINK+="dri/igpu-render"
+    SUBSYSTEM=="input", ACTION=="add|change", ATTRS{idVendor}=="3554", ATTRS{idProduct}=="fa09", TAG-="power-switch"
   '';
   boot.blacklistedKernelModules = lib.mkIf config.systemOptions.graphics.nvidia.enable [ "nouveau" ];
   boot.supportedFilesystems = [ "btrfs" ];
