@@ -24,7 +24,28 @@
     powertop.enable = false;
     cpuFreqGovernor = lib.mkForce "performance";
   };
+
   services.hardware.bolt.enable = true;
+
+  services.lact.settings = {
+    version = 5;
+    daemon = {
+      log_level = "info";
+      admin_group = "wheel";
+      disable_clocks_cleanup = false;
+    };
+    apply_settings_timer = 5;
+    gpus."10DE:2C02-19DA:1762-0000:01:00.0" = {
+      fan_control_enabled = false;
+      power_cap = 330.0;
+      gpu_clock_offsets = {
+        "0" = 175;
+      };
+      mem_clock_offsets = {
+        "0" = 4000;
+      };
+    };
+  };
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
