@@ -47,11 +47,15 @@
         options nvidia NVreg_UsePageAttributeTable=1 NVreg_InitializeSystemMemoryAllocations=0
       '';
       boot.blacklistedKernelModules = [ "nouveau" ];
+
+      services.lact.enable = true;
+
       environment.systemPackages = with pkgs; [
         vulkan-tools
         lm_sensors
         nvtopPackages.nvidia
       ];
+
       environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool.json".text = ''
         {
           "rules": [
