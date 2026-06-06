@@ -12,6 +12,7 @@ in
     ./extra-packages.nix
     ./hardware-configuration.nix
     ./environment.nix
+    ./encrypted-volumes.nix
   ];
 
   systemOptions = {
