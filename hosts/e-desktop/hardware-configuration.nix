@@ -118,8 +118,6 @@
     allowDiscards = true;
   };
 
-  boot.initrd.luks.devices."games".device = "/dev/disk/by-uuid/f9219808-ffc7-41c7-854e-aaaf3d45a675";
-
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/12CE-A600";
     fsType = "vfat";
@@ -138,12 +136,6 @@
       "subvol=@home"
     ];
     depends = [ "/dev/mapper/home" ];
-  };
-
-  fileSystems."/games" = {
-    device = "/dev/mapper/games";
-    fsType = "btrfs";
-    depends = [ "/dev/mapper/games" ];
   };
 
   networking.useDHCP = lib.mkDefault true;
