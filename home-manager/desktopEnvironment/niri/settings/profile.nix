@@ -14,10 +14,10 @@ let
     builtins.readFile ../scripts/niri_tile_to_n.py
   );
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
-  primaryMonitor = if deviceType == "desktop" then "DP-3" else "eDP-1";
+  primaryMonitor = if deviceType == "desktop" then "DP-5" else "eDP-1";
   secondaryMonitor =
     if deviceType == "desktop" then
-      "HDMI-A-1"
+      "HDMI-A-3"
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-3");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
