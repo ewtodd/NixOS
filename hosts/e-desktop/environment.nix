@@ -5,7 +5,7 @@
 }:
 {
 
-  boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   hardware.firmware = [ pkgs.linux-firmware ];
 
   boot.initrd.systemd.enable = true;

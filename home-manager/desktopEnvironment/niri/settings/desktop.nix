@@ -5,7 +5,7 @@ let
 
   eOutputs = [
     {
-      _args = [ "DP-3" ];
+      _args = [ "DP-5" ];
       transform = "normal";
       position._props = {
         x = 0;
@@ -28,7 +28,7 @@ let
       };
     }
     {
-      _args = [ "HDMI-A-1" ];
+      _args = [ "HDMI-A-3" ];
       transform = "270";
       position._props = {
         x = -1080;

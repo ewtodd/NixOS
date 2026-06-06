@@ -14,7 +14,7 @@ let
 in
 {
 
-  boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   hardware.firmware = [ lenovo-ish ];
 
   boot.initrd.systemd.enable = true;
