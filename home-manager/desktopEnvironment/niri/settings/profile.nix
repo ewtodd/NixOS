@@ -67,6 +67,9 @@ let
   };
 
   workConfigDesktopAdditions = {
+    debug = {
+      render-drm-device = "/dev/dri/igpu-render";
+    };
     workspace = [
       {
         _args = [ "b-aux" ];
@@ -121,6 +124,9 @@ let
   };
 
   playConfigDesktopAdditions = {
+    debug = {
+      render-drm-device = "/dev/dri/igpu-render";
+    };
     workspace = [
       {
         _args = [ "a-media" ];
@@ -168,6 +174,7 @@ let
   playConfig =
     if deviceType == "desktop" then
       {
+        debug = playConfigDesktopAdditions.debug;
         workspace = playConfigBase.workspace ++ playConfigDesktopAdditions.workspace;
         window-rule = playConfigBase.window-rule ++ playConfigDesktopAdditions.window-rule;
         spawn-sh-at-startup =
@@ -179,6 +186,7 @@ let
   workConfig =
     if deviceType == "desktop" then
       {
+        debug = workConfigDesktopAdditions.debug;
         workspace = workConfigBase.workspace ++ workConfigDesktopAdditions.workspace;
         window-rule = workConfigBase.window-rule ++ workConfigDesktopAdditions.window-rule;
         spawn-sh-at-startup =
