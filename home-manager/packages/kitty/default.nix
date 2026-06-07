@@ -16,6 +16,7 @@ in
     };
 
     settings = {
+      auto_reload_config = -1;
       bold_font = "auto";
       italic_font = "auto";
       bold_italic_font = "auto";
