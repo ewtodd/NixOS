@@ -9,8 +9,7 @@
   systemOptions = {
     graphics.intel.enable = true;
     hardware.xbox.enable = true;
-    hardware.twoinone.enable = true;
-    hardware.fingerprint.enable = true;
+    hardware.chromebook-audio.enable = true;
     deviceType.laptop.enable = true;
     services.suspend-then-hibernate.enable = true;
     services.binaryCache.consume = true;
@@ -30,7 +29,6 @@
       "render"
       "video"
       "lp"
-      "tss"
     ];
   };
 
@@ -45,20 +43,8 @@
       "dialout"
       "video"
       "lp"
-      "tss"
     ];
   };
-
-  ##### REMOVE WHEN nixpkgs PR #479283 LANDS #####
-  # MIPI webcam via Intel IPU7 (Lunar Lake). Vendored from nixpkgs PR #479283
-  # because that PR is unmerged and conflicts against master. See
-  # ../../modules/hardware/ipu7/ for the overlay; delete that whole directory
-  # along with this block once #479283 lands.
-  hardware.ipu7 = {
-    enable = true;
-    platform = "ipu7x";
-  };
-  ##### END REMOVE #####
 
   time.timeZone = "America/Chicago";
   networking.hostName = "e-laptop";
