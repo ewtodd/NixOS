@@ -51,6 +51,10 @@
     nix-minecraft = {
       url = "github:Infinidoge/nix-minecraft";
     };
+    banshee-ucm-conf = {
+      url = "github:ewtodd/banshee-ucm-conf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -94,6 +98,7 @@
             ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
+            inputs.banshee-ucm-conf.nixosModules.default
             {
               nixpkgs = {
                 config.allowUnfree = true;
@@ -128,6 +133,7 @@
             ./modules
             inputs.home-manager.nixosModules.home-manager
             inputs.dank-material-shell.nixosModules.greeter
+            inputs.banshee-ucm-conf.nixosModules.default
             {
               nixpkgs = {
                 config.allowUnfree = true;
