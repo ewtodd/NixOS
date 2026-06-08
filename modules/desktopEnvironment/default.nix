@@ -24,6 +24,9 @@ let
     hotkey-overlay = {
       skip-at-startup = [ ];
     };
+    debug = {
+      render-drm-device = "/dev/dri/igpu-render";
+    };
   };
 in
 {
