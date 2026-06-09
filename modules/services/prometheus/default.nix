@@ -29,6 +29,10 @@
               targets = [ "10.0.0.4:9100" ];
               labels.instance = "e-desktop";
             }
+            {
+              targets = [ "10.0.0.3:9100" ];
+              labels.instance = "anton";
+            }
           ];
         }
         {
