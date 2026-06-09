@@ -17,7 +17,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.resumeDevice = "/dev/disk/by-uuid/dd69ebd9-22ff-45c6-8af6-69757eec2508";
   boot.kernelParams = [
-    "mem_sleep_default=deep"
+    "mem_sleep_default=s2idle"
     "acpi.ec_no_wakeup=1"
     "i915.enable_psr=1"
     "i915.enable_fbc=1"
