@@ -190,6 +190,7 @@
         e-laptop = mkNixSystem { hostname = "e-laptop"; };
         server-nu = mkHeadlessSystem { hostname = "server-nu"; };
         server-mu = mkHeadlessSystem { hostname = "server-mu"; };
+        anton = mkHeadlessSystem { hostname = "anton"; };
       };
     };
 }
