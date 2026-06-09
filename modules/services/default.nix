@@ -46,6 +46,7 @@ in
             "v-play"
             "nu"
             "mu"
+            "anton"
           ];
         };
       };
