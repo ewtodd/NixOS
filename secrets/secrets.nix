@@ -5,7 +5,7 @@ let
   ethan-laptop-eplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA";
   server-nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@server-nu";
   server-mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@server-mu";
-
+  server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
   personal = [
     ethan-desktop-ework
     ethan-desktop-eplay
@@ -22,6 +22,7 @@ in
   "ntfy-publish-token.age".publicKeys = personal ++ [
     server-mu
     server-nu
+    server-anton
   ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
