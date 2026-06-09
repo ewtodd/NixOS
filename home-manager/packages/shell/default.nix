@@ -91,6 +91,12 @@ in
         User = "nu";
         ProxyJump = "bastion";
       };
+      "anton-admin" = {
+        Hostname = "10.0.0.3";
+        Port = 2222;
+        User = "anton";
+        ProxyJump = "bastion";
+      };
     };
   };
 
