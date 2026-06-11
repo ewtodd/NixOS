@@ -6,6 +6,7 @@ let
   server-nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@server-nu";
   server-mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@server-mu";
   server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
+  server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICY75cWf+2GLiTlKSouy2l5bkeSm7t2PM3f+rSYqCXrl root@son-of-anton";
   personal = [
     ethan-desktop-ework
     ethan-desktop-eplay
@@ -23,6 +24,7 @@ in
     server-mu
     server-nu
     server-anton
+    server-son-of-anton
   ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];

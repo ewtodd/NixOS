@@ -191,6 +191,7 @@
         server-nu = mkHeadlessSystem { hostname = "server-nu"; };
         server-mu = mkHeadlessSystem { hostname = "server-mu"; };
         anton = mkHeadlessSystem { hostname = "anton"; };
+        son-of-anton = mkHeadlessSystem { hostname = "son-of-anton"; };
       };
     };
 }

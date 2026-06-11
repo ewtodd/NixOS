@@ -19,7 +19,7 @@ in
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
-    # NAS — reboot monthly (1st of the month at 04:15), not nightly like mu/nu.
+    # reboot monthly (1st of the month at 04:15)
     services.scheduledReboot.calendar = "*-*-01 04:15:00";
     security.harden.enable = true;
   };
@@ -38,7 +38,6 @@ in
   time.timeZone = "America/Chicago";
   networking.hostName = "anton";
   # Unique ID required by ZFS to detect pool ownership across machines.
-  # Hard-coded (generated with `head -c4 /dev/urandom | od -A none -t x4`).
   networking.hostId = "ce97c19c";
   system.stateVersion = "25.11";
 }

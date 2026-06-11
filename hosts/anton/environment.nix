@@ -3,9 +3,7 @@
   ...
 }:
 {
-  # Deliberately NOT pkgs.linuxPackages_latest (as mu/nu use): ZFS lags the
-  # newest mainline kernel, so forcing latest can make the box fail to build.
-  # We use the nixpkgs default kernel, which is kept ZFS-compatible.
+  # Normally would use pkgs.linuxPackages_latest, but nixpkgs default kernel is kept ZFS-compatible.
   hardware.firmware = [ pkgs.linux-firmware ];
 
   # ZFS support for the future data pool. hostId lives in configuration.nix.
