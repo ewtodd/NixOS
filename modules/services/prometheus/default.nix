@@ -33,6 +33,10 @@
               targets = [ "10.0.0.3:9100" ];
               labels.instance = "anton";
             }
+            {
+              targets = [ "10.0.0.5:9100" ];
+              labels.instance = "son-of-anton";
+            }
           ];
         }
         {

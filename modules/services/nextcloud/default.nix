@@ -19,7 +19,13 @@
       maxUploadSize = "2G";
 
       extraApps = with config.services.nextcloud.package.packages.apps; {
-        inherit calendar contacts cookbook deck richdocuments;
+        inherit
+          calendar
+          contacts
+          cookbook
+          deck
+          richdocuments
+          ;
 
         # Google Synchronization (import Drive/Calendar/Contacts from Google).
         # Not in the packaged app set, so fetched from upstream releases.

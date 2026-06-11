@@ -19,6 +19,10 @@ in
     graphics.nvidia.enable = true;
 
     hardware.openRGB.enable = true;
+    services.rgbLoad = {
+      enable = true;
+      backend = "openrgb";
+    };
     hardware.suzyqable.enable = true;
     hardware.xbox.enable = true;
     deviceType.desktop.enable = true;

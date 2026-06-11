@@ -29,7 +29,7 @@ with lib;
       hardware.fingerprint.enable = mkEnableOption "Fprintd support";
       hardware.openRGB.enable = mkEnableOption "openRGB support";
       hardware.xbox.enable = mkEnableOption "xbox controller support";
-      hardware.framework.enable = mkEnableOption "Framework laptop specific features";
+      hardware.frameworkLaptop.enable = mkEnableOption "Framework laptop specific features (fw-fanctrl)";
       hardware.twoinone.enable = mkEnableOption "2-in-1 specific features";
 
       deviceType.laptop.enable = mkEnableOption "Laptop-specific features";
@@ -64,6 +64,15 @@ with lib;
         default = "*-*-* 04:00:00";
         example = "*-*-* 04:30:00";
         description = "systemd OnCalendar expression for the scheduled reboot (time zone follows time.timeZone).";
+      };
+      services.rgbLoad.enable = mkEnableOption "load-reactive RGB lighting (drives color from max of CPU/GPU utilization)";
+      services.rgbLoad.backend = mkOption {
+        type = types.enum [
+          "openrgb"
+          "framework"
+        ];
+        default = "openrgb";
+        description = "Lighting backend: the OpenRGB SDK server, or `framework_tool --rgbkbd`.";
       };
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";

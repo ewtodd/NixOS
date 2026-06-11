@@ -14,30 +14,38 @@ in
   ];
 
   systemOptions = {
+    graphics.amd.enable = true;
     deviceType.server.enable = true;
+    services.rgbLoad = {
+      enable = true;
+      backend = "framework";
+    };
     services.ssh.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
-    services.scheduledReboot.enable = true;
-    # reboot monthly (1st of the month at 04:15)
-    services.scheduledReboot.calendar = "*-*-01 04:15:00";
     security.harden.enable = true;
   };
 
-  users.users.anton = {
+  nixpkgs.config.rocmTargets = [ "gfx1151" ];
+
+  users.users.son-of-anton = {
     isNormalUser = true;
-    description = "anton";
+    description = "son-of-anton";
     extraGroups = [
       "nixconfig"
       "networkmanager"
       "wheel"
+      "video"
+      "render"
     ];
     openssh.authorizedKeys.keys = personalKeys;
   };
 
+  systemd.tmpfiles.rules = [
+    "d /scratch 0775 son-of-anton users - -"
+  ];
+
   time.timeZone = "America/Chicago";
-  networking.hostName = "anton";
-  # Unique ID required by ZFS to detect pool ownership across machines.
-  networking.hostId = "ce97c19c";
+  networking.hostName = "son-of-anton";
   system.stateVersion = "25.11";
 }
