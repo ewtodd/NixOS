@@ -147,7 +147,7 @@
       };
       services.hardware.bolt.enable = true;
     })
-    (lib.mkIf (config.systemOptions.hardware.framework.enable) {
+    (lib.mkIf (config.systemOptions.hardware.frameworkLaptop.enable) {
       hardware.fw-fanctrl = {
         enable = true;
         config.strategies = { };

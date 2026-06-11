@@ -21,6 +21,7 @@ in
     ./ntfy
     ./prometheus
     ./reverse-proxy
+    ./rgb-load
     ./router
     ./scheduled-reboot
     ./wakeable
@@ -47,6 +48,7 @@ in
             "nu"
             "mu"
             "anton"
+            "son-of-anton"
           ];
         };
       };

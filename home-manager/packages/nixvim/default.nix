@@ -21,8 +21,9 @@ in
     colorschemes = {
       base16 = {
         enable = true;
-        colorscheme = lib.mapAttrs' (name: value: lib.nameValuePair name "#${value}")
-          (lib.filterAttrs (name: _: builtins.match "base0[0-9A-F]" name != null) colors);
+        colorscheme = lib.mapAttrs' (name: value: lib.nameValuePair name "#${value}") (
+          lib.filterAttrs (name: _: builtins.match "base0[0-9A-F]" name != null) colors
+        );
         settings = {
           telescope_borders = true;
         };
