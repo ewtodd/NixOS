@@ -47,10 +47,10 @@ in
             name = "auto";
           };
           fast-coder = {
-            name = "qwen3-coder-14B";
+            name = "e-desktop qwen3-coder-14B";
           };
           smart-coder = {
-            name = "smart-coder qwen3-coder-next-80B-A3B";
+            name = "son-of-anton qwen3-coder-next-80B-A3B";
           };
           ultra-fast = {
             name = "son-of-anton qwen3-30B-A3B";
@@ -60,9 +60,6 @@ in
           };
           "gpt-oss-120b" = {
             name = "son-of-anton gpt-oss-120b";
-          };
-          minimax = {
-            name = "son-of-anton minimax-m2.5";
           };
         };
       };
