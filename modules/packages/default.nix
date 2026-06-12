@@ -23,6 +23,8 @@ in
         wget
         tree
         nixfmt
+        nixfmt-tree
+        openssl
         deadnix
         usbutils
         pciutils

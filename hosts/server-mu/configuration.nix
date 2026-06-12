@@ -20,6 +20,7 @@ in
     services.bastion.enable = true;
     services.nextcloud.enable = true;
     services.minecraft.enable = true;
+    services.litellmProxy.enable = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 04:30:00";

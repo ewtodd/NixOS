@@ -28,4 +28,6 @@ in
   ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
+  # mu runs the LiteLLM proxy; personal so e-devices can read it for opencode.
+  "litellm-master-key.age".publicKeys = personal ++ [ server-mu ];
 }

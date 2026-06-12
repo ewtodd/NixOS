@@ -68,5 +68,24 @@
         mode = "0400";
       };
     })
+    # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
+    (lib.mkIf config.systemOptions.services.litellmProxy.enable {
+      # mu: read by the proxy as a systemd EnvironmentFile (as root, then
+      # bind-mounted into the litellm container). Root-only.
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        mode = "0400";
+      };
+    })
+    (lib.mkIf config.systemOptions.owner.e.enable {
+      # e-devices: sourced into the user shell so opencode reads it via
+      # {env:LITELLM_MASTER_KEY}. Group `users` so e-work and e-play both read it.
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        owner = "e-work";
+        group = "users";
+        mode = "0440";
+      };
+    })
   ];
 }
