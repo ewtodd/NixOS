@@ -34,7 +34,46 @@
 
               litellm_settings.callbacks = [ "classifier.router" ];
 
-              router_settings.fallbacks = [ { fast-coder = [ "big-moe" ]; } ];
+              router_settings.fallbacks = [
+                {
+                  fast-coder = [
+                    "smart-coder"
+                    "big-moe"
+                  ];
+                }
+                {
+                  smart-coder = [
+                    "big-moe"
+                    "fast-coder"
+                  ];
+                }
+                {
+                  ultra-fast = [
+                    "fast-coder"
+                    "big-moe"
+                  ];
+                }
+                {
+                  big-moe = [
+                    "gpt-oss-120b"
+                    "fast-coder"
+                  ];
+                }
+                {
+                  gpt-oss-120b = [
+                    "big-moe"
+                    "fast-coder"
+                  ];
+                }
+                # auto is rewritten to a tier by the pre-call hook; this only
+                # matters if the hook is ever bypassed.
+                {
+                  auto = [
+                    "big-moe"
+                    "fast-coder"
+                  ];
+                }
+              ];
 
               model_list = [
                 {
