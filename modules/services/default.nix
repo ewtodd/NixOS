@@ -15,6 +15,8 @@ in
     ./bastion
     ./dyndns
     ./grafana
+    ./litellm-proxy
+    ./llama-swap
     ./minecraft
     ./nextcloud
     ./node-exporter

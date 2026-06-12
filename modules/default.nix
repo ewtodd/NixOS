@@ -58,6 +58,66 @@ with lib;
       services.nodeExporter.enable = mkEnableOption "Prometheus node_exporter (system metrics on :9100)";
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
+      services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
+      services.llamaSwap.backend = mkOption {
+        type = types.enum [
+          "vulkan"
+          "cuda"
+        ];
+        default = "vulkan";
+        description = "llama.cpp GPU backend: Vulkan/RADV (AMD) or CUDA (NVIDIA).";
+      };
+      services.llamaSwap.cacheDir = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "/scratch/llama-cache";
+        description = ''
+          Directory for -hf model downloads (LLAMA_CACHE). Null uses a
+          systemd-managed CacheDirectory under /var/cache; set this to keep large
+          models on a big mount (the module provisions it with a shared group so
+          the sandboxed service can write to it).
+        '';
+      };
+      services.llamaSwap.models = mkOption {
+        default = { };
+        description = "Models served via llama-swap; the module builds each llama-server command.";
+        type = types.attrsOf (
+          types.submodule {
+            options = {
+              path = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "Local GGUF path (first shard). Mutually exclusive with `hf`.";
+              };
+              hf = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  Hugging Face repo[:quant] for llama.cpp -hf auto-download
+                  (e.g. "Qwen/Qwen2.5-Coder-14B-Instruct-GGUF:Q5_K_M").
+                  Mutually exclusive with `path`.
+                '';
+              };
+              ctxSize = mkOption {
+                type = types.ints.positive;
+                default = 32768;
+                description = "Context size (--ctx-size), sized for agentic/MCP use.";
+              };
+              ttl = mkOption {
+                type = types.nullOr types.ints.positive;
+                default = null;
+                description = "Idle seconds before llama-swap unloads the model (frees VRAM). Null = keep loaded.";
+              };
+              extraFlags = mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+                description = "Extra llama-server flags.";
+              };
+            };
+          }
+        );
+      };
+      services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + content-based classifier router (containerized, mu)";
       services.scheduledReboot.enable = mkEnableOption "Reboot the machine on a systemd OnCalendar schedule";
       services.scheduledReboot.calendar = mkOption {
         type = types.str;
@@ -134,6 +194,14 @@ with lib;
         nixconfig = { };
       };
 
+      # btop reads CPU power from the RAPL energy counter, which the kernel locks
+      # to 0400 root. Relax it so power shows in btop on every host (re-opens the
+      # RAPL power side-channel — accepted tradeoff fleet-wide). systemd-tmpfiles
+      # silently skips the path on hosts without a RAPL node.
+      systemd.tmpfiles.rules = [
+        "Z /sys/class/powercap/intel-rapl:0/energy_uj 0444 root root - -"
+      ];
+
       environment.variables.EDITOR = "nvim";
 
       environment.shellAliases = {
@@ -168,10 +236,6 @@ with lib;
           layout = "us";
           variant = "";
         };
-
-        systemd.tmpfiles.rules = [
-          "Z /sys/class/powercap/intel-rapl:0/energy_uj 0444 root root - -"
-        ];
 
         services.printing.enable = true;
         services.avahi.enable = true;
