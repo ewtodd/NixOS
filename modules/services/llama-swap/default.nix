@@ -46,6 +46,9 @@ in
       port = 8080;
       listenAddress = "0.0.0.0"; # LAN-bound so the LiteLLM proxy on mu can reach it
       openFirewall = true; # opens 8080 (inner host; no public port-forward on the router)
+      # Large-ctx warmups (shader compile + empty run) can exceed the 120s
+      # default, and llama-swap kills the server mid-load when they do.
+      settings.healthCheckTimeout = 600;
       settings.models = lib.mapAttrs (
         _name: m: { cmd = mkCmd m; } // lib.optionalAttrs (m.ttl != null) { inherit (m) ttl; }
       ) cfg.models;
@@ -66,7 +69,12 @@ in
     systemd.services.llama-swap = {
       environment = lib.mkMerge [
         { LLAMA_CACHE = cacheDir; }
-        (lib.mkIf (cfg.backend == "vulkan") { VK_ICD_FILENAMES = radvIcd; })
+        (lib.mkIf (cfg.backend == "vulkan") {
+          VK_ICD_FILENAMES = radvIcd;
+          # The unit has no writable HOME, so Mesa disables its shader cache and
+          # RADV recompiles every pipeline on each model load.
+          MESA_SHADER_CACHE_DIR = "${cacheDir}/mesa-shader-cache";
+        })
       ];
       serviceConfig = lib.mkMerge [
         {
