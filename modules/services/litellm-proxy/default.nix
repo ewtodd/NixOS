@@ -64,22 +64,21 @@
                 {
                   model_name = "big-moe"; # general + complex / orchestrator default
                   litellm_params = {
-                    model = "openai/gpt-oss-120b";
-                    api_base = "http://10.0.0.5:8080/v1";
-                    api_key = "none";
-                  };
-                }
-                # name-selectable only (never chosen by `auto`)
-                {
-                  model_name = "qwen3.5-122b"; # orchestrator head-to-head vs gpt-oss
-                  litellm_params = {
                     model = "openai/qwen3.5-122b";
                     api_base = "http://10.0.0.5:8080/v1";
                     api_key = "none";
                   };
                 }
                 {
-                  model_name = "minimax"; # ~230B capability experiment
+                  model_name = "gpt-oss-120b";
+                  litellm_params = {
+                    model = "openai/gpt-oss-120b";
+                    api_base = "http://10.0.0.5:8080/v1";
+                    api_key = "none";
+                  };
+                }
+                {
+                  model_name = "minimax";
                   litellm_params = {
                     model = "openai/minimax-m2.5";
                     api_base = "http://10.0.0.5:8080/v1";
@@ -92,7 +91,7 @@
                   # only a safe default if the hook is ever bypassed.
                   model_name = "auto";
                   litellm_params = {
-                    model = "openai/gpt-oss-120b";
+                    model = "openai/qwen3.5-122b";
                     api_base = "http://10.0.0.5:8080/v1";
                     api_key = "none";
                   };
