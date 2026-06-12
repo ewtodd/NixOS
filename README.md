@@ -38,7 +38,7 @@ The configuration is organized into three main layers:
     ├── hardware-configuration.nix      # Hardware-specific config
     ├── environment.nix                 # Kernel & environment settings
     └── home.nix                        # User definitions (imports profiles)
-
+<!---->
 Hosts:
 - **v-desktop, v-laptop** - AMD/Intel workstations (v-owner)
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
@@ -95,18 +95,18 @@ Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 - **Config:** `home-manager/desktopEnvironment/`
 <!---->
 ## Shell & Terminal
-
+<!---->
 - **Shell:** bash
 - **Prompt:** Starship
 - **Terminal:** Kitty
 - **Editor:** Neovim (configured via nixvim)
-
+<!---->
 Configuration in `home-manager/packages/shell/`.
-
+<!---->
 ## AI Assistant
-
+<!---->
 `opencode` CLI is configured for e-owner devices with:
-
+<!---->
 - LiteLLM provider pointing to `https://llm.ethanwtodd.com/v1`
 - All 6 models accessible (`auto` routing + explicit selection)
 - MCP nixos integration for Nix/NixOS package and option lookups
@@ -149,16 +149,18 @@ Edit `home-manager/packages/default.nix`.
 Edit `home-manager/packages/shell/default.nix` for bash aliases.
 <!---->
 ## Binary Cache
-
-**e-desktop** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source. This is especially useful for git-versioned packages like niri, quickshell, and DMS.
-
+<!---->
+**e-desktop** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source.
+This is especially useful for git-versioned packages like niri, quickshell, and DMS.
+<!---->
 - **Server:** `nix-serve-ng` on e-desktop, exposed via Caddy reverse proxy on server-nu
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`
 <!---->
 ### Setup
 <!---->
-The signing keypair lives at `/etc/nix/cache-priv-key.pem` (server) and `/etc/nix/cache-pub-key.pem` (public key baked into client config). To regenerate:
+The signing keypair lives at `/etc/nix/cache-priv-key.pem` (server) and `/etc/nix/cache-pub-key.pem` (public key baked into client config).
+To regenerate:
 ```bash
 sudo nix-store --generate-binary-cache-key e-desktop /etc/nix/cache-priv-key.pem /etc/nix/cache-pub-key.pem
 ```
@@ -168,26 +170,25 @@ Tailscale Funnel must be enabled in the e-tailnet ACL (`nodeAttrs` with `funnel`
 ```bash
 sudo tailscale funnel --bg 5000
 ```
-
+<!---->
 ## AI/LLM Infrastructure
-
+<!---->
 The fleet includes dedicated AI servers running llama-swap and LiteLLM:
-
+<!---->
 - **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend
   - `gpt-oss-120b` - big-moe / orchestrator default (65536 context)
   - `qwen3-coder-next` - Qwen3-Coder-Next-80B-A3B smart-coder (65536 context)
   - `qwen3-30b-a3b` - ultra-fast general tier ~100 t/s (65536 context)
   - `qwen3.5-122b` - orchestrator alternate Qwen3.5-122B-A10B (65536 context)
-  - `minimax-m2.5` - ~230B capability experiment (32768 context)
-
+<!---->
 - **e-desktop** (RTX 5080 16GB): Fast coder model via CUDA backend
   - `qwen-coder` - Qwen2.5-Coder-14B (32768 context, ttl=300s)
-
+<!---->
 - **server-mu**: LiteLLM proxy with content-based classifier routing
   - Routes `auto` model to appropriate tier based on request complexity
   - Fallback chain: fast-coder → big-moe (when 5080 busy/unloaded)
   - Single entry point: `https://llm.ethanwtodd.com/v1`
-
+<!---->
 The `opencode` CLI tool is pre-configured to use this infrastructure via the LiteLLM endpoint.
 <!---->
 ## Development Environments
