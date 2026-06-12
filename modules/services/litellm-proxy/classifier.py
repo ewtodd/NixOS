@@ -22,7 +22,7 @@ Routing policy (priority order):
      role, far larger context). The son-of-anton tiers have ample context, so
      they need no overflow guard.
 
-``qwen3.5-122b`` and ``minimax`` are intentionally NOT reachable via ``auto`` --
+``gpt-oss-120b`` and ``minimax`` are intentionally NOT reachable via ``auto`` --
 they are name-selectable only.
 
 The classifier is pure-Python string heuristics (sub-millisecond, no model); it
