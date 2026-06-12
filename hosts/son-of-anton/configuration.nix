@@ -25,19 +25,17 @@ in
     services.nodeExporter.enable = true;
     services.llamaSwap = {
       enable = true;
-      backend = "vulkan"; # Strix Halo iGPU via RADV
+      backend = "vulkan";
       cacheDir = "/scratch/llama-cache";
       models = {
         "gpt-oss-120b" = {
           path = "/scratch/llama.cpp/models--ggml-org--gpt-oss-120b-GGUF/snapshots/d932fcea62f83e088d8f076a2cd2d7eb02dfa682/gpt-oss-120b-mxfp4-00001-of-00003.gguf";
           ctxSize = 131072;
         };
-        # smart-coder: 80B-A3B coder brain at A3B decode speed (~42 t/s).
         "qwen3-coder-next" = {
           hf = "unsloth/Qwen3-Coder-Next-GGUF:Q4_K_M";
-          ctxSize = 262144;
+          ctxSize = 131072;
         };
-        # ultra-fast: general 30B-A3B, ~100 t/s; the snappy non-coding tier.
         "qwen3-30b-a3b" = {
           hf = "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_M";
           ctxSize = 65536;
