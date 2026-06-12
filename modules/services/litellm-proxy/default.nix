@@ -78,14 +78,6 @@
                   };
                 }
                 {
-                  model_name = "minimax";
-                  litellm_params = {
-                    model = "openai/minimax-m2.5";
-                    api_base = "http://10.0.0.5:8080/v1";
-                    api_key = "none";
-                  };
-                }
-                {
                   # Routed entry point. The async_pre_call_hook rewrites this to one
                   # of the four tiers before dispatch; the big-moe mapping here is
                   # only a safe default if the hook is ever bypassed.
