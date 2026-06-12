@@ -58,6 +58,8 @@ in
         };
       };
     };
+    services.scheduledReboot.enable = true;
+    services.scheduledReboot.calendar = "*-*-* 04:45:00";
     security.harden.enable = true;
   };
 
