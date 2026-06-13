@@ -6,7 +6,7 @@ container shares the host network namespace, so ``SEARXNG_URL`` reaches the
 host-local SearXNG instance (127.0.0.1:8888).
 
 Exposes a single ``web_search`` tool over SearXNG's JSON API. The aggregated
-gateway (LiteLLM ``/mcp``) presents it to both opencode and LibreChat alongside
+gateway (LiteLLM ``/mcp``) presents it to both qwen-code and LibreChat alongside
 the ``fetch`` server, so the models gain internet search + URL fetch.
 
 Pure stdlib + httpx + the MCP SDK's FastMCP helper; no build-time network.

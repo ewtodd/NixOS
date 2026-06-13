@@ -34,7 +34,7 @@ in
     ./git
     ./kitty
     ./nixvim
-    ./opencode
+    ./qwen-code
     ./shell
     ./syncthing
     ./zathura

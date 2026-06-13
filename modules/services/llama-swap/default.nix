@@ -30,15 +30,47 @@ let
     lib.concatStringsSep " " (
       [ "${llamaCpp}/bin/llama-server" ]
       ++ (if m.path != null then [ "-m ${m.path}" ] else [ "-hf ${m.hf}" ])
-      ++ [
-        "-ngl 999"
-        "--jinja"
-        "-fa on"
-        "--ctx-size ${toString m.ctxSize}"
-      ]
+      ++ [ "-ngl 999" ]
+      # --jinja (chat template) and -fa (flash attention) are generative-only and
+      # break non-causal encoder embedding models; --embeddings turns on the
+      # /v1/embeddings endpoint instead.
+      ++ (
+        if m.embedding then
+          [ "--embeddings" ]
+        else
+          [
+            "--jinja"
+            "-fa on"
+          ]
+      )
+      ++ [ "--ctx-size ${toString m.ctxSize}" ]
+      # Vision projector (Qwen3-VL etc.): -hf doesn't auto-pull it for every
+      # repo, so we point at an explicitly-fetched mmproj GGUF when set.
+      ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
       ++ m.extraFlags
       ++ [ "--host 0.0.0.0 --port \${PORT}" ]
     );
+
+  # llama-swap's `matrix` solver lets models run concurrently. We only need it
+  # when there's an embedding model: a RAG query embeds (bge-m3) and then the
+  # chat model generates, and we must not evict the (huge, slow-to-load) chat
+  # model to load the tiny embedder, or vice-versa. The generated set allows any
+  # single chat model to coexist with the embedding model(s); subset semantics
+  # keep "chat alone" and "embed alone" valid, and two chat models still never
+  # co-run. Without an embedding model the matrix is omitted (plain swap).
+  modelList = lib.imap0 (i: name: {
+    inherit name;
+    var = "m${toString i}";
+  }) (lib.attrNames cfg.models);
+  isEmbed = name: cfg.models.${name}.embedding;
+  chatVars = map (e: e.var) (lib.filter (e: !isEmbed e.name) modelList);
+  embedVars = map (e: e.var) (lib.filter (e: isEmbed e.name) modelList);
+  matrixVars = lib.listToAttrs (map (e: lib.nameValuePair e.var e.name) modelList);
+  matrixSet =
+    let
+      embedExpr = lib.concatStringsSep " & " embedVars;
+    in
+    if chatVars == [ ] then embedExpr else "(${lib.concatStringsSep " | " chatVars}) & ${embedExpr}";
 in
 {
   config = lib.mkIf cfg.enable {
@@ -60,6 +92,10 @@ in
       settings.models = lib.mapAttrs (
         _name: m: { cmd = mkCmd m; } // lib.optionalAttrs (m.ttl != null) { inherit (m) ttl; }
       ) cfg.models;
+      settings.matrix = lib.mkIf (embedVars != [ ]) {
+        vars = matrixVars;
+        sets.default = matrixSet;
+      };
     };
 
     # Custom cache dir: a shared group lets the unit's transient DynamicUser

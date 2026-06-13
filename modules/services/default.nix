@@ -24,6 +24,7 @@ in
     ./node-exporter
     ./ntfy
     ./prometheus
+    ./rag-api
     ./reverse-proxy
     ./rgb-load
     ./router

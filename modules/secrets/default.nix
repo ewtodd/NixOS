@@ -94,10 +94,31 @@
         owner = "librechat";
         mode = "0400";
       };
+      # Meilisearch master key, shared by both the meilisearch daemon and
+      # LibreChat (the librechat module wires it into MEILI_MASTER_KEY). Both
+      # read it via systemd LoadCredential as root, and meilisearch runs under
+      # DynamicUser, so it must stay owned by root (a `meilisearch` owner would
+      # not exist at agenix-decrypt time). Content is the raw key, no KEY= prefix.
+      meilisearch-api-key = {
+        file = ../../secrets/meilisearch-api-key.age;
+        mode = "0400";
+      };
+    })
+    (lib.mkIf config.systemOptions.services.ragApi.enable {
+      # Env file shared by the rag-api and pgvector containers, read by root as
+      # the podman units' EnvironmentFile. KEY=value lines: POSTGRES_PASSWORD,
+      # RAG_OPENAI_API_KEY (a valid LiteLLM key; must be named exactly
+      # RAG_OPENAI_API_KEY), and JWT_SECRET (must equal LibreChat's JWT_SECRET so
+      # rag_api can verify forwarded user tokens).
+      rag-api-env = {
+        file = ../../secrets/rag-api-env.age;
+        mode = "0400";
+      };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
-      # e-devices: sourced into the user shell so opencode reads it via
-      # {env:LITELLM_MASTER_KEY}. Group `users` so e-work and e-play both read it.
+      # e-devices: read by the qwen-code wrapper, which sources it and exports
+      # OPENAI_API_KEY (+ bakes the Bearer token into qwen's MCP config). Group
+      # `users` so e-work and e-play both read it.
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;
         owner = "e-work";
