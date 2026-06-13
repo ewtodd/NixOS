@@ -246,6 +246,14 @@ in
       }
       {
         enabled = true;
+        field = "body";
+        pattern = "Qwen";
+        matchType = "contains";
+        action = "ignore";
+        urgency = "default";
+      }
+      {
+        enabled = true;
         field = "appName";
         pattern = "Xpra";
         matchType = "contains";
