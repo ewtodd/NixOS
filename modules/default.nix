@@ -59,13 +59,18 @@ with lib;
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
       services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
+      services.llamaSwap.lanExpose = mkEnableOption ''
+        expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
+        default) binds 127.0.0.1 only — correct for hosts where the sole consumer
+        is local nvim FIM. Enable it on hosts another machine must reach (e.g.
+        son-of-anton, served to the LiteLLM proxy on mu)'';
       services.llamaSwap.backend = mkOption {
         type = types.enum [
           "vulkan"
           "cuda"
         ];
         default = "vulkan";
-        description = "llama.cpp GPU backend: Vulkan/RADV (AMD) or CUDA (NVIDIA).";
+        description = "llama.cpp GPU backend: Vulkan (AMD RADV or Intel ANV) or CUDA (NVIDIA).";
       };
       services.llamaSwap.cacheDir = mkOption {
         type = types.nullOr types.str;
@@ -117,7 +122,13 @@ with lib;
           }
         );
       };
-      services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + content-based classifier router (containerized, mu)";
+      services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + content-based classifier router + MCP gateway (containerized, son-of-anton)";
+      services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
+      services.librechat.enable = mkEnableOption "LibreChat chat UI + local MongoDB (ai.ethanwtodd.com, served via nu)";
+      services.deploy.enable = mkEnableOption ''
+        colmena deploy target: a key-only `deploy` user with scoped NOPASSWD sudo
+        (just the activation commands) and nix trusted-user, so the build host
+        (e-desktop) can push and switch closures remotely'';
       services.scheduledReboot.enable = mkEnableOption "Reboot the machine on a systemd OnCalendar schedule";
       services.scheduledReboot.calendar = mkOption {
         type = types.str;

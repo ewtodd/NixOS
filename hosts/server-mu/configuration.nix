@@ -16,11 +16,11 @@ in
   systemOptions = {
     deviceType.server.enable = true;
     services.ssh.enable = true;
+    services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.bastion.enable = true;
     services.nextcloud.enable = true;
     services.minecraft.enable = true;
-    services.litellmProxy.enable = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 04:30:00";

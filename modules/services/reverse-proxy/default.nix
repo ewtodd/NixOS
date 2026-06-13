@@ -28,7 +28,11 @@
       '';
 
       virtualHosts."llm.ethanwtodd.com".extraConfig = ''
-        reverse_proxy http://10.0.0.2:4000
+        reverse_proxy http://10.0.0.5:4000
+      '';
+
+      virtualHosts."ai.ethanwtodd.com".extraConfig = ''
+        reverse_proxy http://10.0.0.5:3080
       '';
     };
 

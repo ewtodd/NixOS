@@ -11,7 +11,7 @@ in
     enable = true;
     tui.theme = "system";
     context = ''
-      # House rules (mandatory)
+      # Mandatory Rules
 
       ## C++ / ROOT
       - In C++ that uses ROOT, use ROOT data types, and pick the *correct* one for
@@ -46,9 +46,6 @@ in
           auto = {
             name = "auto";
           };
-          fast-coder = {
-            name = "e-desktop qwen3-coder-14B";
-          };
           smart-coder = {
             name = "son-of-anton qwen3-coder-next-80B-A3B";
           };
@@ -72,17 +69,22 @@ in
           "git log*" = "allow";
           "grep *" = "allow";
           "rg *" = "allow";
+          "ls *" = "allow";
+          "ls -la *" = "allow";
         };
       };
       model = "litellm/auto";
 
-      mcp.nixos = {
-        type = "local";
-        command = [
-          "nix"
-          "run"
-          "github:utensils/mcp-nixos"
-        ];
+      # fetch + SearXNG web_search + nixos lookups, served by the LiteLLM MCP
+      # gateway on son-of-anton (the same tools LibreChat gets) — nixos used to
+      # be a local `nix run` here but is now centralized on the gateway. Auth
+      # via the master key.
+      mcp.litellm = {
+        type = "remote";
+        # Trailing slash avoids LiteLLM's /mcp -> /mcp/ redirect; Bearer auth is
+        # what LiteLLM's MCP endpoint requires (not x-litellm-api-key).
+        url = "https://llm.ethanwtodd.com/mcp/";
+        headers.Authorization = "Bearer {env:LITELLM_MASTER_KEY}";
         enabled = true;
       };
     };

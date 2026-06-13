@@ -1,29 +1,27 @@
 """LiteLLM content-based router for the ``auto`` model.
 
 Registered via ``litellm_settings.callbacks = ["classifier.router"]``. Runs inside
-the LiteLLM proxy container on mu. Rewrites ``data["model"]`` when the client asks
-for ``auto``; explicit model names pass through untouched.
+the LiteLLM proxy container on son-of-anton. Rewrites ``data["model"]`` when the
+client asks for ``auto``; explicit model names pass through untouched.
 
-Tiers (the classifier picks one; session-sticky so a tool-loop never bounces):
-  fast-coder  - coding  + simple    (e-desktop 14B, isolated, instant)
-  smart-coder - coding  + complex   (son-of-anton 80B-A3B)
-  ultra-fast  - general + simple    (son-of-anton 30B-A3B)
-  big-moe     - general + complex   (son-of-anton orchestrator)
+Tiers (the classifier picks one; session-sticky so a tool-loop never bounces).
+All three live on son-of-anton, so routing is purely about speed-vs-brains:
+  smart-coder - coding (any complexity)  (80B-A3B coder, ~42 t/s)
+  ultra-fast  - general + simple         (30B-A3B, ~100 t/s)
+  big-moe     - general + complex        (122B-A10B orchestrator)
 
-Routing policy (priority order):
-  1. CLASSIFY on the *stable* conversation prefix (system prompt + first user
-     message): coding-vs-general x simple-vs-complex -> one of the four tiers.
-     The verdict is cached on the prefix, so an agentic tool-loop (many requests
-     sharing that prefix) stays pinned to one backend -> consistent behaviour,
-     KV reuse, and no mid-session model swap on son-of-anton.
-  2. HARD RULE (per request): only ``fast-coder`` runs on the 16GB box with a
-     32k context; if a request's estimated prompt tokens exceed what it can hold
-     with KV headroom, escalate that one request to ``smart-coder`` (same coding
-     role, far larger context). The son-of-anton tiers have ample context, so
-     they need no overflow guard.
+Routing policy: CLASSIFY on the *stable* conversation prefix (system prompt +
+first user message): coding-vs-general, and simple-vs-complex for the general
+side. The verdict is cached on the prefix, so an agentic tool-loop (many
+requests sharing that prefix) stays pinned to one backend -> consistent
+behaviour, KV reuse, and no mid-session model swap on son-of-anton.
 
-``gpt-oss-120b`` and ``minimax`` are intentionally NOT reachable via ``auto`` --
-they are name-selectable only.
+All tiers run with >=64k context on son-of-anton, so there is no per-request
+token-overflow escalation (the old 16GB fast-coder hard rule is gone along
+with the e-desktop backend, which now only serves nvim FIM completion).
+
+``gpt-oss-120b`` is intentionally NOT reachable via ``auto`` -- it is
+name-selectable only.
 
 The classifier is pure-Python string heuristics (sub-millisecond, no model); it
 can be swapped for embedding similarity later without changing this hook.
@@ -32,30 +30,21 @@ can be swapped for embedding similarity later without changing this hook.
 import hashlib
 from collections import OrderedDict
 
-import litellm
 from litellm.integrations.custom_logger import CustomLogger
 
-FAST_CODER = "fast-coder"
 SMART_CODER = "smart-coder"
 ULTRA_FAST = "ultra-fast"
 BIG_MOE = "big-moe"
 ROUTED_NAME = "auto"
 
-# -- Hard-rule threshold ------------------------------------------------------
-# Only fast-coder is constrained: Qwen2.5-Coder-14B (Q5_K_M GGUF) on llama.cpp,
-# 16GB 5080, served with --ctx-size 32768. Escalate at 75% of that, leaving
-# headroom for generation: 32768 * 0.75 = 24576 -> 24000 (round down). The
-# son-of-anton tiers (--ctx-size 65536) have no such limit at these sizes.
-HARD_TOKEN_THRESHOLD = 24000
-
-# Complexity signals -> the "complex" half of each pair.
+# Complexity signals -> the "complex" half of the general pair.
 COMPLEX_KEYWORDS = (
     "architect", "design", "refactor", "rewrite", "migrate", "debug",
     "root cause", "trace through", "why does", "why is", "explain how",
     "step by step", "multi-step", "across the codebase", "whole repo",
     "entire codebase", "trade-off", "tradeoff", "high-level plan",
 )
-# Coding signals -> the "coding" half. opencode's system prompt is code-centric,
+# Coding signals -> smart-coder. opencode's system prompt is code-centric,
 # so its requests land here; a general chat client falls to the general tiers.
 CODING_KEYWORDS = (
     "code", "coding", "function", "class ", "method", "compile", "bug",
@@ -84,11 +73,11 @@ def _stable_prefix(messages):
 def _classify(prefix: str) -> str:
     low = prefix.lower()
     coding = ("```" in prefix) or any(k in low for k in CODING_KEYWORDS)
+    if coding:
+        return SMART_CODER
     complex_ = len(prefix) >= COMPLEX_PREFIX_CHARS or any(
         k in low for k in COMPLEX_KEYWORDS
     )
-    if coding:
-        return SMART_CODER if complex_ else FAST_CODER
     return BIG_MOE if complex_ else ULTRA_FAST
 
 
@@ -113,20 +102,7 @@ class _Router(CustomLogger):
         if data.get("model") != ROUTED_NAME:
             return data
         messages = data.get("messages") or []
-
-        target = self._sticky(_stable_prefix(messages))
-
-        # HARD RULE: fast-coder (16GB, 32k ctx) can't hold huge prompts -> bump
-        # this request to smart-coder (same role, 64k ctx on son-of-anton).
-        if target == FAST_CODER:
-            try:
-                est = litellm.token_counter(model=FAST_CODER, messages=messages)
-            except Exception:
-                est = sum(len(m.get("content") or "") for m in messages) // 4
-            if est > HARD_TOKEN_THRESHOLD:
-                target = SMART_CODER
-
-        data["model"] = target
+        data["model"] = self._sticky(_stable_prefix(messages))
         return data
 
 

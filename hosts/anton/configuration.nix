@@ -16,6 +16,7 @@ in
   systemOptions = {
     deviceType.server.enable = true;
     services.ssh.enable = true;
+    services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;

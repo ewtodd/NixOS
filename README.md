@@ -43,9 +43,9 @@ Hosts:
 - **v-desktop, v-laptop** - AMD/Intel workstations (v-owner)
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
 - **server-nu** - Router, AdGuard, reverse proxy, dynamic DNS
-- **server-mu** - SSH bastion, Nextcloud, Minecraft, LiteLLM proxy
+- **server-mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - ZFS storage server
-- **son-of-anton** - AI model server (128GB AMD Strix Halo)
+- **son-of-anton** - AI stack (128GB AMD Strix Halo): llama-swap models, LiteLLM proxy + MCP gateway, SearXNG, LibreChat
 ```
 <!---->
 ## Important Notes
@@ -108,8 +108,8 @@ Configuration in `home-manager/packages/shell/`.
 `opencode` CLI is configured for e-owner devices with:
 <!---->
 - LiteLLM provider pointing to `https://llm.ethanwtodd.com/v1`
-- All 6 models accessible (`auto` routing + explicit selection)
-- MCP nixos integration for Nix/NixOS package and option lookups
+- All 5 models accessible (`auto` routing + explicit selection)
+- MCP tools from the LiteLLM gateway (`https://llm.ethanwtodd.com/mcp`): URL `fetch`, SearXNG `web_search`, and Nix/NixOS package/option lookups (`mcp-nixos`)
 - Pre-loaded house rules for ROOT/C++ development (explicit types, no modern C++ in ROOT code)
 - Bash activation loads `LITELLM_MASTER_KEY` from agenix secret
 <!---->
@@ -176,20 +176,48 @@ sudo tailscale funnel --bg 5000
 The fleet includes dedicated AI servers running llama-swap and LiteLLM:
 <!---->
 - **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend
-  - `gpt-oss-120b` - big-moe / orchestrator default (65536 context)
-  - `qwen3-coder-next` - Qwen3-Coder-Next-80B-A3B smart-coder (65536 context)
+  - `gpt-oss-120b` - name-selectable only, not routed via `auto` (131072 context)
+  - `qwen3-coder-next` - Qwen3-Coder-Next-80B-A3B smart-coder (131072 context)
   - `qwen3-30b-a3b` - ultra-fast general tier ~100 t/s (65536 context)
-  - `qwen3.5-122b` - orchestrator alternate Qwen3.5-122B-A10B (65536 context)
+  - `qwen3.5-122b` - big-moe / orchestrator Qwen3.5-122B-A10B (131072 context)
 <!---->
-- **e-desktop** (RTX 5080 16GB): Fast coder model via CUDA backend
-  - `qwen-coder` - Qwen2.5-Coder-14B (32768 context, ttl=300s)
+- **e-desktop** (RTX 5080 16GB): FIM completion server via CUDA backend, not part of the LiteLLM fleet
+  - `qwen-fim` - Qwen2.5-Coder-7B base Q8_0 (32768 context, ttl=300s), serves `/infill` for llama.vim ghost text in nvim
 <!---->
-- **server-mu**: LiteLLM proxy with content-based classifier routing
-  - Routes `auto` model to appropriate tier based on request complexity
-  - Fallback chain: fast-coder → big-moe (when 5080 busy/unloaded)
-  - Single entry point: `https://llm.ethanwtodd.com/v1`
+- **son-of-anton** also hosts the rest of the AI stack (consolidated — every hop is localhost):
+  - **LiteLLM proxy** with content-based classifier routing
+    - Routes `auto` to smart-coder (coding), ultra-fast (general+simple), or big-moe (general+complex)
+    - Fallbacks between the local models cover load failures
+    - Single entry point: `https://llm.ethanwtodd.com/v1`
+  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both opencode and LibreChat.
+  - **SearXNG** metasearch, localhost-only, backing the searxng MCP.
+  - **LibreChat** chat UI at `https://ai.ethanwtodd.com` (local MongoDB), wired to the LiteLLM models + MCP gateway.
 <!---->
 The `opencode` CLI tool is pre-configured to use this infrastructure via the LiteLLM endpoint.
+<!---->
+## Deployment (Colmena)
+<!---->
+The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
+The hive (`colmena` / `colmenaHive` flake outputs) reuses each host's NixOS
+modules, so it never drifts from `nixosConfigurations`.
+**e-desktop is the build host** — it builds every closure and pushes the result,
+so the servers and laptops never compile.
+<!---->
+```bash
+colmena apply --on @server   # build on e-desktop, push to the 4 servers
+colmena apply-local          # rebuild the local workstation (e-desktop / e-laptop)
+colmena apply --on anton     # a single node
+```
+<!---->
+- **Scope:** the 6 e-owner nodes (v-devices excluded). The headless servers are
+  pushed over SSH; the two workstations deploy locally (`apply-local`, which
+  also sidesteps e-laptop's dynamic IP).
+- **Auth:** a key-only `deploy` user (`systemOptions.services.deploy.enable`)
+  with scoped NOPASSWD sudo (only the activation commands) and nix trusted-user.
+  Connections jump through the `server-mu` bastion via the `*-deploy` SSH
+  aliases, so deploys work on- and off-LAN.
+- **Bootstrap:** the `deploy` user is created *by* this config, so a brand-new
+  server must be switched once by other means before Colmena can take it over.
 <!---->
 ## Development Environments
 <!---->

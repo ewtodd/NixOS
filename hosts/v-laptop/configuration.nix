@@ -8,6 +8,10 @@
 
   systemOptions = {
     graphics.intel.enable = true;
+    # FIM completion (llama.vim in nvim) is supported but left off here: it
+    # would mean compiling vulkan llama.cpp locally until v-devices can pull
+    # builds from e-desktop. To enable, add a `qwen-fim` llamaSwap model (1.5B
+    # for the Intel iGPU — see e-laptop's block for the shape); nixvim detects it.
     deviceType.laptop.enable = true;
     hardware.fingerprint.enable = true;
     hardware.frameworkLaptop.enable = true;

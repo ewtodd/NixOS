@@ -34,13 +34,16 @@ in
     services.llamaSwap = {
       enable = true;
       backend = "cuda"; # RTX 5080 (SM120)
-      # Dense coder for the 16GB card; -hf auto-downloads the GGUF into the
-      # service cache on first load. Q5_K_M (~10-11GB) leaves real KV room in
-      # 16GB; ttl unloads it after 5 min idle so the card is free for gaming.
-      models."qwen-coder" = {
-        hf = "Qwen/Qwen2.5-Coder-14B-Instruct-GGUF:Q5_K_M";
+      models."qwen-fim" = {
+        hf = "ggml-org/Qwen2.5-Coder-7B-Q8_0-GGUF";
         ctxSize = 32768;
         ttl = 300;
+        extraFlags = [
+          "-ub 1024"
+          "-b 1024"
+          "-dt 0.1"
+          "--cache-reuse 256"
+        ];
       };
     };
     apps.docker.enable = true;
@@ -48,9 +51,6 @@ in
     owner.e.enable = true;
   };
 
-  # llama.cpp's CUDA build (a scoped override in modules/services/llama-swap)
-  # pulls the CUDA toolchain; this community cache serves those prebuilt so we
-  # don't compile CUDA from source on this box.
   nix.settings = {
     substituters = [ "https://cache.nixos-cuda.org" ];
     trusted-public-keys = [ "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=" ];
