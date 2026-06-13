@@ -70,10 +70,28 @@
     })
     # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
     (lib.mkIf config.systemOptions.services.litellmProxy.enable {
-      # mu: read by the proxy as a systemd EnvironmentFile (as root, then
-      # bind-mounted into the litellm container). Root-only.
+      # son-of-anton: read by the proxy as a systemd EnvironmentFile (as root,
+      # then bind-mounted into the litellm container). Root-only.
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;
+        mode = "0400";
+      };
+    })
+    (lib.mkIf config.systemOptions.services.searxng.enable {
+      # Read by the searx service (runs as user `searx`) as an EnvironmentFile;
+      # provides $SEARX_SECRET_KEY referenced from settings.server.secret_key.
+      searxng-secret-key = {
+        file = ../../secrets/searxng-secret-key.age;
+        owner = "searx";
+        mode = "0400";
+      };
+    })
+    (lib.mkIf config.systemOptions.services.librechat.enable {
+      # Read by the librechat service as its credentialsFile (EnvironmentFile):
+      # CREDS_KEY, CREDS_IV, JWT_SECRET, JWT_REFRESH_SECRET, LITELLM_API_KEY.
+      librechat-env = {
+        file = ../../secrets/librechat-env.age;
+        owner = "librechat";
         mode = "0400";
       };
     })

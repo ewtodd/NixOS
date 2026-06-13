@@ -13,8 +13,14 @@ let
     else
       pkgs.llama-cpp.override { vulkanSupport = true; };
 
-  # RADV ICD for the Vulkan backend (present via graphics.amd.enable).
-  radvIcd = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
+  # Mesa Vulkan ICD for the vulkan backend, matched to the host's GPU: Intel
+  # ANV on the iGPU laptops, RADV on the AMD boxes (the default). Both files
+  # ship in mesa under /run/opengl-driver via hardware.graphics.
+  vulkanIcd =
+    if config.systemOptions.graphics.intel.enable then
+      "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
+    else
+      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
 
   useCustomCache = cfg.cacheDir != null;
   cacheDir = if useCustomCache then cfg.cacheDir else "/var/cache/llama-swap";
@@ -44,8 +50,10 @@ in
     services.llama-swap = {
       enable = true;
       port = 8080;
-      listenAddress = "0.0.0.0"; # LAN-bound so the LiteLLM proxy on mu can reach it
-      openFirewall = true; # opens 8080 (inner host; no public port-forward on the router)
+      # Localhost-only by default (local nvim FIM); lanExpose hosts (son-of-anton)
+      # bind 0.0.0.0 and open 8080 so the LiteLLM proxy on mu can reach them.
+      listenAddress = if cfg.lanExpose then "0.0.0.0" else "127.0.0.1";
+      openFirewall = cfg.lanExpose;
       # Large-ctx warmups (shader compile + empty run) can exceed the 120s
       # default, and llama-swap kills the server mid-load when they do.
       settings.healthCheckTimeout = 600;
@@ -70,7 +78,7 @@ in
       environment = lib.mkMerge [
         { LLAMA_CACHE = cacheDir; }
         (lib.mkIf (cfg.backend == "vulkan") {
-          VK_ICD_FILENAMES = radvIcd;
+          VK_ICD_FILENAMES = vulkanIcd;
           # The unit has no writable HOME, so Mesa disables its shader cache and
           # RADV recompiles every pipeline on each model load.
           MESA_SHADER_CACHE_DIR = "${cacheDir}/mesa-shader-cache";

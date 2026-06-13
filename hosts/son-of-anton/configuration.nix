@@ -21,10 +21,15 @@ in
       backend = "framework";
     };
     services.ssh.enable = true;
+    services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
+    services.litellmProxy.enable = true;
+    services.searxng.enable = true;
+    services.librechat.enable = true;
     services.llamaSwap = {
       enable = true;
+      lanExpose = true; # bind 0.0.0.0 so the co-located LiteLLM proxy reaches it at 127.0.0.1:8080
       backend = "vulkan";
       cacheDir = "/scratch/llama-cache";
       models = {
