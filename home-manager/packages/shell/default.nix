@@ -103,6 +103,36 @@ in
         User = "son-of-anton";
         ProxyJump = "bastion";
       };
+
+      # Colmena deploy targets: same inner hosts as the *-admin shells, but as
+      # the key-only `deploy` user. `colmenaDeployments.*.targetHost` in
+      # flake.nix points at these aliases, so closures push through the bastion
+      # and work on- or off-LAN (split-horizon DNS resolves the bastion to its
+      # LAN address at home).
+      "mu-deploy" = {
+        Hostname = "10.0.0.2";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
+      "nu-deploy" = {
+        Hostname = "10.0.0.7";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
+      "anton-deploy" = {
+        Hostname = "10.0.0.3";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
+      "son-of-anton-deploy" = {
+        Hostname = "10.0.0.5";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
     };
   };
 

@@ -8,6 +8,21 @@
 
   systemOptions = {
     graphics.intel.enable = true;
+    services.llamaSwap = {
+      enable = true;
+      backend = "vulkan"; # Intel iGPU via ANV
+      models."qwen-fim" = {
+        hf = "ggml-org/Qwen2.5-Coder-1.5B-Q8_0-GGUF";
+        ctxSize = 32768;
+        ttl = 300;
+        extraFlags = [
+          "-ub 1024"
+          "-b 1024"
+          "-dt 0.1"
+          "--cache-reuse 256"
+        ];
+      };
+    };
     hardware.xbox.enable = true;
     hardware.chromebook-audio.enable = true;
     deviceType.laptop.enable = true;

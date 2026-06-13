@@ -22,6 +22,14 @@
           pkgs,
           ...
         }:
+        let
+          # Python interpreter for the bundled SearXNG MCP server (a stdio child
+          # of the proxy). `mcp` = the MCP SDK (FastMCP), `httpx` = HTTP client.
+          searxngMcpPython = pkgs.python3.withPackages (ps: [
+            ps.mcp
+            ps.httpx
+          ]);
+        in
         {
           services.litellm = {
             enable = true;
@@ -34,61 +42,49 @@
 
               litellm_settings.callbacks = [ "classifier.router" ];
 
+              mcp_servers = {
+                fetch = {
+                  transport = "stdio";
+                  command = lib.getExe pkgs.mcp-server-fetch;
+                  args = [ ];
+                };
+                searxng = {
+                  transport = "stdio";
+                  command = "${searxngMcpPython}/bin/python";
+                  args = [ "/etc/litellm/searxng_mcp.py" ];
+                  env.SEARXNG_URL = "http://127.0.0.1:8888";
+                };
+                nixos = {
+                  transport = "stdio";
+                  command = lib.getExe pkgs.mcp-nixos;
+                  args = [ ];
+                };
+              };
+
               router_settings.fallbacks = [
                 {
-                  fast-coder = [
-                    "smart-coder"
-                    "big-moe"
-                  ];
+                  smart-coder = [ "big-moe" ];
                 }
                 {
-                  smart-coder = [
-                    "big-moe"
-                    "fast-coder"
-                  ];
+                  ultra-fast = [ "smart-coder" ];
                 }
                 {
-                  ultra-fast = [
-                    "fast-coder"
-                    "big-moe"
-                  ];
+                  big-moe = [ "gpt-oss-120b" ];
                 }
                 {
-                  big-moe = [
-                    "gpt-oss-120b"
-                    "fast-coder"
-                  ];
+                  gpt-oss-120b = [ "big-moe" ];
                 }
                 {
-                  gpt-oss-120b = [
-                    "big-moe"
-                    "fast-coder"
-                  ];
-                }
-                # auto is rewritten to a tier by the pre-call hook; this only
-                # matters if the hook is ever bypassed.
-                {
-                  auto = [
-                    "big-moe"
-                    "fast-coder"
-                  ];
+                  auto = [ "big-moe" ];
                 }
               ];
 
               model_list = [
                 {
-                  model_name = "fast-coder"; # coding + simple
-                  litellm_params = {
-                    model = "openai/qwen-coder"; # llama-swap id on e-desktop
-                    api_base = "http://10.0.0.4:8080/v1"; # llama-swap (CUDA), e-desktop
-                    api_key = "none";
-                  };
-                }
-                {
-                  model_name = "smart-coder"; # coding + complex
+                  model_name = "smart-coder"; # coding (any complexity)
                   litellm_params = {
                     model = "openai/qwen3-coder-next";
-                    api_base = "http://10.0.0.5:8080/v1";
+                    api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
                 }
@@ -96,7 +92,7 @@
                   model_name = "ultra-fast"; # general + simple
                   litellm_params = {
                     model = "openai/qwen3-30b-a3b";
-                    api_base = "http://10.0.0.5:8080/v1";
+                    api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
                 }
@@ -104,7 +100,7 @@
                   model_name = "big-moe"; # general + complex / orchestrator default
                   litellm_params = {
                     model = "openai/qwen3.5-122b";
-                    api_base = "http://10.0.0.5:8080/v1";
+                    api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
                 }
@@ -112,18 +108,18 @@
                   model_name = "gpt-oss-120b";
                   litellm_params = {
                     model = "openai/gpt-oss-120b";
-                    api_base = "http://10.0.0.5:8080/v1";
+                    api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
                 }
                 {
                   # Routed entry point. The async_pre_call_hook rewrites this to one
-                  # of the four tiers before dispatch; the big-moe mapping here is
+                  # of the three tiers before dispatch; the big-moe mapping here is
                   # only a safe default if the hook is ever bypassed.
                   model_name = "auto";
                   litellm_params = {
                     model = "openai/qwen3.5-122b";
-                    api_base = "http://10.0.0.5:8080/v1";
+                    api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
                 }
@@ -138,6 +134,14 @@
             (pkgs.formats.yaml { }).generate "litellm-config.yaml"
               config.services.litellm.settings;
           environment.etc."litellm/classifier.py".source = ./classifier.py;
+          environment.etc."litellm/searxng_mcp.py".source = ./searxng_mcp.py;
+
+          # LiteLLM allowlists stdio MCP commands by basename (default:
+          # python/node/npx/uvx/...). fetch and nixos use their own binaries, so
+          # whitelist those basenames (comma-separated). searxng runs as
+          # `python` and is already allowed.
+          systemd.services.litellm.environment.LITELLM_MCP_STDIO_EXTRA_COMMANDS =
+            "mcp-server-fetch,mcp-nixos";
 
           systemd.services.litellm.serviceConfig.ExecStart = lib.mkForce (
             lib.concatStringsSep " " [

@@ -28,6 +28,10 @@ in
   ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
-  # mu runs the LiteLLM proxy; personal so e-devices can read it for opencode.
-  "litellm-master-key.age".publicKeys = personal ++ [ server-mu ];
+  # son-of-anton runs the LiteLLM proxy; personal so e-devices can read it for opencode.
+  "litellm-master-key.age".publicKeys = personal ++ [ server-son-of-anton ];
+  # son-of-anton: SearXNG secret_key (read by the searx service as $SEARX_SECRET_KEY).
+  "searxng-secret-key.age".publicKeys = personal ++ [ server-son-of-anton ];
+  # son-of-anton: LibreChat env (CREDS_KEY/IV, JWT secrets, LITELLM_API_KEY).
+  "librechat-env.age".publicKeys = personal ++ [ server-son-of-anton ];
 }

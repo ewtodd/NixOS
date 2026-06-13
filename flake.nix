@@ -55,6 +55,10 @@
       url = "github:ewtodd/banshee-ucm-conf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    colmena = {
+      url = "github:zhaofengli/colmena";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -84,9 +88,43 @@
         }
       ];
 
-      mkNixSystem =
+      # Shared per-host module list, consumed by both nixosConfigurations and
+      # the colmena hive so the two can never drift. `headless` selects the
+      # slimmer home-manager module set used by the DE-less server hosts.
+      mkSystemModules =
         {
           hostname,
+          headless,
+        }:
+        [
+          ./modules
+          inputs.home-manager.nixosModules.home-manager
+          inputs.dank-material-shell.nixosModules.greeter
+          inputs.banshee-ucm-conf.nixosModules.default
+          {
+            nixpkgs = {
+              config.allowUnfree = true;
+            };
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              sharedModules =
+                if headless then mkHeadlessHomeManagerModules inputs else mkHomeManagerModules inputs;
+              extraSpecialArgs = {
+                inherit inputs;
+                system = "x86_64-linux";
+              };
+              users = import ./hosts/${hostname}/home.nix;
+            };
+          }
+          ./hosts/${hostname}/configuration.nix
+        ];
+
+      mkSystem =
+        {
+          hostname,
+          headless ? false,
         }:
         nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -94,65 +132,81 @@
             inherit inputs;
             system = "x86_64-linux";
           };
-          modules = [
-            ./modules
-            inputs.home-manager.nixosModules.home-manager
-            inputs.dank-material-shell.nixosModules.greeter
-            inputs.banshee-ucm-conf.nixosModules.default
-            {
-              nixpkgs = {
-                config.allowUnfree = true;
-              };
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = mkHomeManagerModules inputs;
-                extraSpecialArgs = {
-                  inherit inputs;
-                  system = "x86_64-linux";
-                };
-                users = import ./hosts/${hostname}/home.nix;
-              };
-            }
-            ./hosts/${hostname}/configuration.nix
-          ];
+          modules = mkSystemModules { inherit hostname headless; };
         };
 
-      mkHeadlessSystem =
-        {
-          hostname,
-        }:
-        nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
-            system = "x86_64-linux";
-          };
-          modules = [
-            ./modules
-            inputs.home-manager.nixosModules.home-manager
-            inputs.dank-material-shell.nixosModules.greeter
-            inputs.banshee-ucm-conf.nixosModules.default
-            {
-              nixpkgs = {
-                config.allowUnfree = true;
-              };
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                sharedModules = mkHeadlessHomeManagerModules inputs;
-                extraSpecialArgs = {
-                  inherit inputs;
-                  system = "x86_64-linux";
-                };
-                users = import ./hosts/${hostname}/home.nix;
-              };
-            }
-            ./hosts/${hostname}/configuration.nix
+      # Every host, and whether it's a headless (server) build.
+      hosts = {
+        v-desktop = {
+          headless = false;
+        };
+        v-laptop = {
+          headless = false;
+        };
+        e-desktop = {
+          headless = false;
+        };
+        e-laptop = {
+          headless = false;
+        };
+        server-nu = {
+          headless = true;
+        };
+        server-mu = {
+          headless = true;
+        };
+        anton = {
+          headless = true;
+        };
+        son-of-anton = {
+          headless = true;
+        };
+      };
+
+      # Colmena-managed subset (v-devices are intentionally excluded for now).
+      # Workstations deploy locally; the headless servers are pushed from the
+      # build host (e-desktop) over SSH as the `deploy` user. The targetHost
+      # values are `*-deploy` ssh aliases (defined in the e-owner ssh config)
+      # that jump through the bastion, so deploys work on- and off-LAN.
+      colmenaDeployments = {
+        e-desktop = {
+          allowLocalDeployment = true;
+          targetHost = null;
+          tags = [ "workstation" ];
+        };
+        e-laptop = {
+          allowLocalDeployment = true;
+          targetHost = null;
+          tags = [ "workstation" ];
+        };
+        server-nu = {
+          targetHost = "nu-deploy";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [ "server" ];
+        };
+        server-mu = {
+          targetHost = "mu-deploy";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [
+            "server"
+            "bastion"
           ];
         };
+        anton = {
+          targetHost = "anton-deploy";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [ "server" ];
+        };
+        son-of-anton = {
+          targetHost = "son-of-anton-deploy";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [ "server" ];
+        };
+      };
 
       mkNeovim = inputs.nixvim.legacyPackages.x86_64-linux.makeNixvimWithModule {
         pkgs = import nixpkgs {
@@ -183,15 +237,40 @@
         neovim = mkNeovim;
       };
 
-      nixosConfigurations = {
-        v-desktop = mkNixSystem { hostname = "v-desktop"; };
-        v-laptop = mkNixSystem { hostname = "v-laptop"; };
-        e-desktop = mkNixSystem { hostname = "e-desktop"; };
-        e-laptop = mkNixSystem { hostname = "e-laptop"; };
-        server-nu = mkHeadlessSystem { hostname = "server-nu"; };
-        server-mu = mkHeadlessSystem { hostname = "server-mu"; };
-        anton = mkHeadlessSystem { hostname = "anton"; };
-        son-of-anton = mkHeadlessSystem { hostname = "son-of-anton"; };
-      };
+      nixosConfigurations = builtins.mapAttrs (
+        hostname: h:
+        mkSystem {
+          inherit hostname;
+          inherit (h) headless;
+        }
+      ) hosts;
+
+      # Raw colmena hive. Each node reuses the exact same modules as its
+      # nixosConfiguration plus a `deployment` block. meta.nixpkgs supplies
+      # allowUnfree as a low-priority default; colmena evaluates nodes through
+      # nixos/lib/eval-config.nix, so per-host nixpkgs.config (e.g. rocmTargets
+      # on son-of-anton) still merges normally.
+      colmena = {
+        meta = {
+          nixpkgs = import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          specialArgs = {
+            inherit inputs;
+            system = "x86_64-linux";
+          };
+        };
+      }
+      // builtins.mapAttrs (hostname: deployment: {
+        imports = mkSystemModules {
+          inherit hostname;
+          inherit (hosts.${hostname}) headless;
+        };
+        inherit deployment;
+      }) colmenaDeployments;
+
+      # New-evaluator entrypoint the colmena CLI prefers.
+      colmenaHive = inputs.colmena.lib.makeHive self.outputs.colmena;
     };
 }

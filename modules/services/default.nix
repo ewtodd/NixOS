@@ -13,8 +13,10 @@ in
   imports = [
     ./adguard
     ./bastion
+    ./deploy
     ./dyndns
     ./grafana
+    ./librechat
     ./litellm-proxy
     ./llama-swap
     ./minecraft
@@ -26,6 +28,7 @@ in
     ./rgb-load
     ./router
     ./scheduled-reboot
+    ./searxng
     ./wakeable
   ];
 
