@@ -32,10 +32,13 @@ from collections import OrderedDict
 
 from litellm.integrations.custom_logger import CustomLogger
 
-SMART_CODER = "smart-coder"
-ULTRA_FAST = "ultra-fast"
-BIG_MOE = "big-moe"
+SMART_CODER = "Qwen3-Coder-Next (smart-coder)"
+ULTRA_FAST = "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)"
+BIG_MOE = "Qwen3.5-122B-A10B (big-moe)"
 ROUTED_NAME = "auto"
+# LibreChat's title-generation alias: same 122b server, thinking forced off so
+# titles return in ~1s instead of timing out after 20s+ of reasoning.
+TITLE_MODEL = "Qwen3.5-122B-A10B (titles)"
 
 # Complexity signals -> the "complex" half of the general pair.
 COMPLEX_KEYWORDS = (
@@ -44,7 +47,7 @@ COMPLEX_KEYWORDS = (
     "step by step", "multi-step", "across the codebase", "whole repo",
     "entire codebase", "trade-off", "tradeoff", "high-level plan",
 )
-# Coding signals -> smart-coder. opencode's system prompt is code-centric,
+# Coding signals -> smart-coder. qwen-code's system prompt is code-centric,
 # so its requests land here; a general chat client falls to the general tiers.
 CODING_KEYWORDS = (
     "code", "coding", "function", "class ", "method", "compile", "bug",
@@ -99,6 +102,13 @@ class _Router(CustomLogger):
         return verdict
 
     async def async_pre_call_hook(self, user_api_key_dict, cache, data, call_type):
+        if data.get("model") == TITLE_MODEL:
+            kwargs = data.get("chat_template_kwargs")
+            if not isinstance(kwargs, dict):
+                kwargs = {}
+            kwargs["enable_thinking"] = False
+            data["chat_template_kwargs"] = kwargs
+            return data
         if data.get("model") != ROUTED_NAME:
             return data
         messages = data.get("messages") or []

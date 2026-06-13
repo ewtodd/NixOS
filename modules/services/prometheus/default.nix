@@ -48,6 +48,26 @@
             }
           ];
         }
+        {
+          # fail2ban ban counts (SSH brute-force) from the bastion.
+          job_name = "fail2ban";
+          static_configs = [
+            {
+              targets = [ "10.0.0.2:9191" ];
+              labels.instance = "mu";
+            }
+          ];
+        }
+        {
+          # endlessh-go SSH tarpit: trapped-bot count + wasted-time seconds.
+          job_name = "endlessh";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:2112" ];
+              labels.instance = "nu";
+            }
+          ];
+        }
       ];
     };
   };

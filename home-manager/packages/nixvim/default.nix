@@ -44,7 +44,7 @@ in
         endpoint_fim = "http://127.0.0.1:8080/upstream/qwen-fim/infill",
         -- 1 = stats in the statusline instead of inline next to the ghost text
         show_info = 1,
-        -- Instruction mode is unused (opencode + son-of-anton cover that on
+        -- Instruction mode is unused (qwen-code + son-of-anton cover that on
         -- e-devices; the v-fleet uses Claude). Park its keymaps on dead <Plug>
         -- names so it stops hijacking normal-mode <Tab>/<Esc>, and leave
         -- endpoint_inst unset.

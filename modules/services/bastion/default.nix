@@ -91,6 +91,14 @@ in
       };
     };
 
+    # Export fail2ban ban counts to Prometheus (scraped by nu over the LAN; mu is
+    # behind NAT with only :2222 forwarded, so :9191 is LAN-only regardless).
+    services.prometheus.exporters.fail2ban = {
+      enable = true;
+      listenAddress = "0.0.0.0";
+      openFirewall = true;
+    };
+
     environment.systemPackages = [
       pkgs.wakeonlan
       wakeAndRelay

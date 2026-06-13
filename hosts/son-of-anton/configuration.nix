@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -27,6 +27,7 @@ in
     services.litellmProxy.enable = true;
     services.searxng.enable = true;
     services.librechat.enable = true;
+    services.ragApi.enable = true;
     services.llamaSwap = {
       enable = true;
       lanExpose = true; # bind 0.0.0.0 so the co-located LiteLLM proxy reaches it at 127.0.0.1:8080
@@ -45,9 +46,37 @@ in
           hf = "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_M";
           ctxSize = 65536;
         };
+        "qwen3.6-35b-a3b" = {
+          hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q5_K_M";
+          ctxSize = 131072;
+          extraFlags = [
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+          ];
+        };
         "qwen3.5-122b" = {
           hf = "unsloth/Qwen3.5-122B-A10B-GGUF:Q4_K_M";
           ctxSize = 131072;
+          # Vision: Qwen3.5 is a VL model; llama.cpp has the QWEN3VL projector,
+          # but -hf doesn't auto-pull unsloth's mmproj, so fetch it explicitly.
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-aRr3G9QdQ3zkodmJ9YnEtJIjfXArM4Ge2PiX+frm5yU=";
+          };
+        };
+        # Embedding model backing LibreChat's RAG file search (via LiteLLM).
+        # bge-m3 is a non-causal encoder: CLS pooling, and batch == ctx so a
+        # full chunk embeds in one pass. The module's matrix lets it stay
+        # resident alongside whichever chat model is loaded.
+        "bge-m3" = {
+          hf = "gpustack/bge-m3-GGUF:Q8_0";
+          ctxSize = 8192;
+          embedding = true;
+          extraFlags = [
+            "--pooling cls"
+            "-b 8192"
+            "-ub 8192"
+          ];
         };
       };
     };
