@@ -24,13 +24,6 @@
           ];
         };
         filtering.filtering_enabled = true;
-        user_rules = [
-          "||reddit.com^"
-          "||redd.it^"
-          "||redditstatic.com^"
-          "||redditmedia.com^"
-          "||redditinc.com^"
-        ];
       };
     };
   };

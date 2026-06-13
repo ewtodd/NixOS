@@ -108,10 +108,30 @@ with lib;
                 default = 32768;
                 description = "Context size (--ctx-size), sized for agentic/MCP use.";
               };
+              embedding = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Serve this as an embedding model: llama-server is launched with
+                  `--embeddings` (and no `--jinja`/`-fa on`, which are chat-only and
+                  unsupported for non-causal encoder models). Pair with a pooling
+                  flag in `extraFlags` (e.g. `--pooling cls` for BGE) and size the
+                  batch to the context so a full chunk embeds in one pass.
+                '';
+              };
               ttl = mkOption {
                 type = types.nullOr types.ints.positive;
                 default = null;
                 description = "Idle seconds before llama-swap unloads the model (frees VRAM). Null = keep loaded.";
+              };
+              mmproj = mkOption {
+                type = types.nullOr types.path;
+                default = null;
+                description = ''
+                  Path to a multimodal projector (mmproj) GGUF to enable vision
+                  via `--mmproj`. For vision-language models whose projector
+                  isn't auto-pulled by `-hf` (e.g. Qwen3-VL). Chat models only.
+                '';
               };
               extraFlags = mkOption {
                 type = types.listOf types.str;
@@ -124,7 +144,8 @@ with lib;
       };
       services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + content-based classifier router + MCP gateway (containerized, son-of-anton)";
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
-      services.librechat.enable = mkEnableOption "LibreChat chat UI + local MongoDB (ai.ethanwtodd.com, served via nu)";
+      services.librechat.enable = mkEnableOption "LibreChat chat UI + local MongoDB (ai.ethanwtodd.com, served via nu); pulls in Meilisearch for message search";
+      services.ragApi.enable = mkEnableOption "RAG API + pgvector (LibreChat file search), as podman containers embedding via LiteLLM/bge-m3";
       services.deploy.enable = mkEnableOption ''
         colmena deploy target: a key-only `deploy` user with scoped NOPASSWD sudo
         (just the activation commands) and nix trusted-user, so the build host

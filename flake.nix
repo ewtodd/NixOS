@@ -2,7 +2,7 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -73,7 +73,7 @@
         inputs.base16.homeManagerModule
         inputs.dank-material-shell.homeModules.dank-material-shell
         inputs.danksearch.homeModules.dsearch
-        inputs.dms-plugin-registry.modules.default
+        inputs.dms-plugin-registry.homeModules.default
         inputs.niri-nix.homeModules.default
         {
           programs.nixvim.nixpkgs.useGlobalPackages = true;
@@ -163,11 +163,6 @@
         };
       };
 
-      # Colmena-managed subset (v-devices are intentionally excluded for now).
-      # Workstations deploy locally; the headless servers are pushed from the
-      # build host (e-desktop) over SSH as the `deploy` user. The targetHost
-      # values are `*-deploy` ssh aliases (defined in the e-owner ssh config)
-      # that jump through the bastion, so deploys work on- and off-LAN.
       colmenaDeployments = {
         e-desktop = {
           allowLocalDeployment = true;
@@ -180,13 +175,13 @@
           tags = [ "workstation" ];
         };
         server-nu = {
-          targetHost = "nu-deploy";
+          targetHost = "deploy-nu";
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [ "server" ];
         };
         server-mu = {
-          targetHost = "mu-deploy";
+          targetHost = "deploy-mu";
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [
@@ -195,13 +190,13 @@
           ];
         };
         anton = {
-          targetHost = "anton-deploy";
+          targetHost = "deploy-anton";
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [ "server" ];
         };
         son-of-anton = {
-          targetHost = "son-of-anton-deploy";
+          targetHost = "deploy-son-of-anton";
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [ "server" ];
@@ -245,11 +240,6 @@
         }
       ) hosts;
 
-      # Raw colmena hive. Each node reuses the exact same modules as its
-      # nixosConfiguration plus a `deployment` block. meta.nixpkgs supplies
-      # allowUnfree as a low-priority default; colmena evaluates nodes through
-      # nixos/lib/eval-config.nix, so per-host nixpkgs.config (e.g. rocmTargets
-      # on son-of-anton) still merges normally.
       colmena = {
         meta = {
           nixpkgs = import nixpkgs {
@@ -270,7 +260,6 @@
         inherit deployment;
       }) colmenaDeployments;
 
-      # New-evaluator entrypoint the colmena CLI prefers.
       colmenaHive = inputs.colmena.lib.makeHive self.outputs.colmena;
     };
 }

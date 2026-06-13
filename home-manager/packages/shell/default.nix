@@ -67,37 +67,31 @@ in
         ControlPersist = "10m";
       };
 
-      # The workstation behind the bastion. ProxyCommand runs the wake script
-      # on mu first, so `ssh e-desktop` from anywhere transparently boots /
-      # unlocks the box if it's cold.
       "e-desktop" = {
         Hostname = "10.0.0.4";
         User = config.home.username;
         ProxyCommand = "ssh bastion wake-and-relay-e-desktop";
       };
 
-      # Admin shells on the infra hosts. No wake dance — these stay up.
-      # Port 2222 is the inner sshd port (matches services.ssh.enable config);
-      # without this, ProxyJump's %p defaults to 22 and the tunnel goes nowhere.
-      "mu-admin" = {
+      "mu" = {
         Hostname = "10.0.0.2";
         Port = 2222;
         User = "mu";
         ProxyJump = "bastion";
       };
-      "nu-admin" = {
+      "nu" = {
         Hostname = "10.0.0.7";
         Port = 2222;
         User = "nu";
         ProxyJump = "bastion";
       };
-      "anton-admin" = {
+      "anton" = {
         Hostname = "10.0.0.3";
         Port = 2222;
         User = "anton";
         ProxyJump = "bastion";
       };
-      "son-of-anton-admin" = {
+      "son-of-anton" = {
         Hostname = "10.0.0.5";
         Port = 2222;
         User = "son-of-anton";
@@ -109,25 +103,25 @@ in
       # flake.nix points at these aliases, so closures push through the bastion
       # and work on- or off-LAN (split-horizon DNS resolves the bastion to its
       # LAN address at home).
-      "mu-deploy" = {
+      "deploy-mu" = {
         Hostname = "10.0.0.2";
         Port = 2222;
         User = "deploy";
         ProxyJump = "bastion";
       };
-      "nu-deploy" = {
+      "deploy-nu" = {
         Hostname = "10.0.0.7";
         Port = 2222;
         User = "deploy";
         ProxyJump = "bastion";
       };
-      "anton-deploy" = {
+      "deploy-anton" = {
         Hostname = "10.0.0.3";
         Port = 2222;
         User = "deploy";
         ProxyJump = "bastion";
       };
-      "son-of-anton-deploy" = {
+      "deploy-son-of-anton" = {
         Hostname = "10.0.0.5";
         Port = 2222;
         User = "deploy";
