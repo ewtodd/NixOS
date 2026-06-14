@@ -63,10 +63,17 @@
               fetch = false;
             };
             titleConvo = true;
-            # Generate titles with the thinking-disabled 122b alias (same loaded
-            # server, no swap) so titling doesn't spend 20s+ reasoning and time
-            # out. See the classifier hook + the LiteLLM model entry.
-            titleModel = "Qwen3.5-122B-A10B (titles)";
+            # Title with the small, always-resident 30B Instruct model rather
+            # than pulling the 70GB big-moe for a trivial task: it's a
+            # non-thinking model (no 20s+ reasoning to disable) and, being
+            # "small" in the llama-swap matrix, can stay co-resident alongside
+            # whatever coder/chat model a session is using — no swap, no eviction.
+            #
+            # A dedicated "(titles)" alias (same 30B server as "(ultra-fast)")
+            # is used so titling stays OUT of the LiteLLM fallback chains: a
+            # failed title request must not cascade into loading a big model
+            # and tripping LibreChat's title timeout.
+            titleModel = "Qwen3-30B-A3B-Instruct-2507 (titles)";
           }
         ];
 
