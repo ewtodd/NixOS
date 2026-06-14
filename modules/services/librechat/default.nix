@@ -53,10 +53,9 @@
             modelDisplayLabel = "son of anton";
             models = {
               default = [
-                "auto"
+                "Qwen3.6-35B-A3B (default)"
                 "Qwen3-Coder-Next (smart-coder)"
                 "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)"
-                "Qwen3.6-35B-A3B (experiment)"
                 "Qwen3.5-122B-A10B (big-moe)"
                 "gpt-oss-120b"
               ];

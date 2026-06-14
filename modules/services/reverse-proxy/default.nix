@@ -11,7 +11,6 @@ let
   anubisAi = "127.0.0.1:9001";
   anubisStatus = "127.0.0.1:9002";
   anubisLlm = "127.0.0.1:9003";
-  anubisSearch = "127.0.0.1:9004";
 in
 {
   config = lib.mkIf config.systemOptions.services.reverseProxy.enable {
@@ -49,13 +48,6 @@ in
         }
       '';
 
-      # search goes through Anubis (same as other browser-facing sites).
-      virtualHosts."search.ethanwtodd.com".extraConfig = ''
-        reverse_proxy http://${anubisSearch} {
-          header_up X-Real-IP {remote_host}
-        }
-      '';
-
       # llm is mostly an API (qwen-code hits /v1 + /mcp with a Bearer key and
       # cannot solve a JS challenge), so route those paths straight to LiteLLM
       # and send only the browser UI through Anubis -- walling/tarpitting the UI
@@ -84,11 +76,6 @@ in
       llm.settings = {
         TARGET = "http://10.0.0.5:4000";
         BIND = anubisLlm;
-        BIND_NETWORK = "tcp";
-      };
-      search.settings = {
-        TARGET = "http://10.0.0.5:8888";
-        BIND = anubisSearch;
         BIND_NETWORK = "tcp";
       };
     };

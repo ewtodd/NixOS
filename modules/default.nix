@@ -165,7 +165,7 @@ with lib;
           }
         );
       };
-      services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + content-based classifier router + MCP gateway (containerized, son-of-anton)";
+      services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + MCP gateway (containerized, son-of-anton)";
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
       services.librechat.enable = mkEnableOption "LibreChat chat UI + local MongoDB (ai.ethanwtodd.com, served via nu); pulls in Meilisearch for message search";
       services.ragApi.enable = mkEnableOption "RAG API + pgvector (LibreChat file search), as podman containers embedding via LiteLLM/bge-m3";

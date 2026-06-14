@@ -6,10 +6,10 @@
 }:
 {
   config = lib.mkIf config.systemOptions.services.searxng.enable {
-    # SearXNG metasearch, bound 0.0.0.0:8888 on the LAN for two consumers:
-    # (1) the LiteLLM container on the same host, hits 127.0.0.1:8888 directly;
-    # (2) public traffic via Caddy → Anubis (PoW wall) → 10.0.0.5:8888,
-    #     terminated at search.ethanwtodd.com.
+    # SearXNG metasearch, bound 127.0.0.1:8888 (loopback only -- NOT public).
+    # Its sole consumer is the LiteLLM container on the same host, which shares
+    # the host network namespace and hits 127.0.0.1:8888 directly for the
+    # web_search MCP tool. No Caddy/Anubis route fronts it.
     services.searx = {
       enable = true;
       package = pkgs.searxng;
@@ -19,9 +19,9 @@
       settings = {
         server = {
           port = 8888;
-          bind_address = "0.0.0.0";
+          bind_address = "127.0.0.1";
           secret_key = "$SEARX_SECRET_KEY";
-          base_url = "https://search.ethanwtodd.com/";
+          base_url = "http://127.0.0.1:8888/";
         };
         # The MCP server queries the JSON API (?format=json); it is disabled by
         # default and must be enabled explicitly.
