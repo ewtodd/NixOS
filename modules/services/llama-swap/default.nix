@@ -44,6 +44,14 @@ let
           ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]
+      # Halve KV memory (q8_0 K and V); needs flash attention, on for chat.
+      # (We leave --parallel at llama.cpp's auto, which gives a unified KV cache
+      # serving several concurrent sessions at the FULL ctxSize each, for the
+      # same KV memory as one session — so no slot flag is needed here.)
+      ++ lib.optionals m.kvQuant [
+        "--cache-type-k q8_0"
+        "--cache-type-v q8_0"
+      ]
       # Vision projector (Qwen3-VL etc.): -hf doesn't auto-pull it for every
       # repo, so we point at an explicitly-fetched mmproj GGUF when set.
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
@@ -51,26 +59,61 @@ let
       ++ [ "--host 0.0.0.0 --port \${PORT}" ]
     );
 
-  # llama-swap's `matrix` solver lets models run concurrently. We only need it
-  # when there's an embedding model: a RAG query embeds (bge-m3) and then the
-  # chat model generates, and we must not evict the (huge, slow-to-load) chat
-  # model to load the tiny embedder, or vice-versa. The generated set allows any
-  # single chat model to coexist with the embedding model(s); subset semantics
-  # keep "chat alone" and "embed alone" valid, and two chat models still never
-  # co-run. Without an embedding model the matrix is omitted (plain swap).
+  # llama-swap's `matrix` solver decides which models may be resident together.
+  # Its DSL: `&` = co-run, `|` = mutually exclusive alternatives, `()` groups,
+  # and subset semantics — any subset of a declared set is also valid, and only
+  # the requested models are actually started (nothing is preloaded).
+  #
+  # We classify chat models as "big" (≥~100B-class; two won't fit in unified RAM
+  # together) or "small" (all fit together), and always keep the embedding
+  # model(s) resident (a RAG query embeds via bge-m3, then a chat model
+  # generates — neither should evict the other). The policy, encoded so that
+  # every *maximal* valid set fits in memory by construction:
+  #   * at most ONE big, optionally paired with at most ONE small   → lane A
+  #   * OR any number of smalls together                            → lane B
+  #   * AND the embedding model(s), always
+  # This permits big+small and small+small (the real two-session cases) while
+  # forbidding big+big and big+two-smalls (the combinations that OOM). With no
+  # embedding model and ≤1 chat model the matrix is omitted (plain hot-swap).
   modelList = lib.imap0 (i: name: {
     inherit name;
     var = "m${toString i}";
   }) (lib.attrNames cfg.models);
   isEmbed = name: cfg.models.${name}.embedding;
-  chatVars = map (e: e.var) (lib.filter (e: !isEmbed e.name) modelList);
+  isBig = name: cfg.models.${name}.big;
+  bigVars = map (e: e.var) (lib.filter (e: !isEmbed e.name && isBig e.name) modelList);
+  smallVars = map (e: e.var) (lib.filter (e: !isEmbed e.name && !isBig e.name) modelList);
   embedVars = map (e: e.var) (lib.filter (e: isEmbed e.name) modelList);
+  chatVars = bigVars ++ smallVars;
   matrixVars = lib.listToAttrs (map (e: lib.nameValuePair e.var e.name) modelList);
+
+  bigExpr = lib.optionalString (bigVars != [ ]) "(${lib.concatStringsSep " | " bigVars})";
+  smallOr = lib.optionalString (smallVars != [ ]) "(${lib.concatStringsSep " | " smallVars})";
+  smallAnd = lib.optionalString (smallVars != [ ]) "(${lib.concatStringsSep " & " smallVars})";
+  # lane A: one big (+ optionally one small); lane B: all smalls co-resident.
+  laneA =
+    if bigVars != [ ] && smallVars != [ ] then
+      "${bigExpr} & ${smallOr}"
+    else if bigVars != [ ] then
+      bigExpr
+    else
+      "";
+  laneB = smallAnd;
+  chatExpr =
+    if laneA != "" && laneB != "" then
+      "(${laneA}) | ${laneB}"
+    else if laneA != "" then
+      laneA
+    else
+      laneB; # may be "" when there are no chat models at all
+  embedAnd = lib.concatStringsSep " & " embedVars;
   matrixSet =
-    let
-      embedExpr = lib.concatStringsSep " & " embedVars;
-    in
-    if chatVars == [ ] then embedExpr else "(${lib.concatStringsSep " | " chatVars}) & ${embedExpr}";
+    if chatExpr == "" then
+      embedAnd
+    else if embedVars == [ ] then
+      chatExpr
+    else
+      "(${chatExpr}) & ${embedAnd}";
 in
 {
   config = lib.mkIf cfg.enable {
@@ -92,7 +135,7 @@ in
       settings.models = lib.mapAttrs (
         _name: m: { cmd = mkCmd m; } // lib.optionalAttrs (m.ttl != null) { inherit (m) ttl; }
       ) cfg.models;
-      settings.matrix = lib.mkIf (embedVars != [ ]) {
+      settings.matrix = lib.mkIf (embedVars != [ ] || lib.length chatVars > 1) {
         vars = matrixVars;
         sets.default = matrixSet;
       };

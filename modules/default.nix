@@ -133,6 +133,29 @@ with lib;
                   isn't auto-pulled by `-hf` (e.g. Qwen3-VL). Chat models only.
                 '';
               };
+              big = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Mark a chat model as "big" (too large to co-reside with
+                  another big model on this host). The llama-swap matrix makes
+                  big models mutually exclusive: at most one big is resident at a
+                  time, and it may pair with at most one small model. Small
+                  models (big = false) may all co-reside. Set on the ~100B-class
+                  models so the solver never tries to keep two of them loaded.
+                '';
+              };
+              kvQuant = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Quantize the KV cache to q8_0 (`--cache-type-k/-v q8_0`),
+                  roughly halving KV memory for a negligible quality hit. Buys
+                  headroom for higher `--ctx-size`, more `--parallel` slots, or
+                  co-resident models. Requires flash attention (on for chat
+                  models); not applied to embedding models.
+                '';
+              };
               extraFlags = mkOption {
                 type = types.listOf types.str;
                 default = [ ];

@@ -165,14 +165,17 @@
                   };
                 }
                 {
-                  # Title-generation alias for LibreChat: same loaded 122b server
-                  # (no model swap), but the classifier hook forces
-                  # enable_thinking=false on this model name so titles return in
-                  # ~1s instead of the model spending 20s+ reasoning and tripping
-                  # LibreChat's title timeout. See services.librechat titleModel.
-                  model_name = "Qwen3.5-122B-A10B (titles)";
+                  # Title-generation alias for LibreChat. Points at the same
+                  # small, non-thinking 30B Instruct server as "(ultra-fast)"
+                  # (co-resident, no swap; Instruct-2507 can't reason, so titles
+                  # return in ~1s with no thinking to disable). It's a *separate*
+                  # model_name purely so titling stays OUT of the fallback chains
+                  # above — a failed title request must not cascade into loading
+                  # a big model and tripping LibreChat's title timeout.
+                  # See services.librechat titleModel.
+                  model_name = "Qwen3-30B-A3B-Instruct-2507 (titles)";
                   litellm_params = {
-                    model = "openai/qwen3.5-122b";
+                    model = "openai/qwen3-30b-a3b";
                     api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };

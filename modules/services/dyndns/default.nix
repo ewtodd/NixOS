@@ -14,6 +14,7 @@ let
     "mc"
     "ntfy"
     "office"
+    "search"
     "ssh"
     "status"
   ];

@@ -34,29 +34,42 @@ in
       backend = "vulkan";
       cacheDir = "/scratch/llama-cache";
       models = {
+        # ~60GB weights — a "big" model: never co-resident with another big.
         "gpt-oss-120b" = {
           path = "/scratch/llama.cpp/models--ggml-org--gpt-oss-120b-GGUF/snapshots/d932fcea62f83e088d8f076a2cd2d7eb02dfa682/gpt-oss-120b-mxfp4-00001-of-00003.gguf";
           ctxSize = 131072;
+          big = true;
+          kvQuant = true;
         };
+        # ~48.5GB weights — also "big". The shared coding model: llama.cpp's
+        # auto --parallel already serves both qwen-code sessions concurrently
+        # from one unified KV cache, each at the full ctxSize, so no extra flags.
         "qwen3-coder-next" = {
           hf = "unsloth/Qwen3-Coder-Next-GGUF:Q4_K_M";
           ctxSize = 131072;
+          big = true;
+          kvQuant = true;
         };
         "qwen3-30b-a3b" = {
           hf = "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_M";
           ctxSize = 65536;
+          kvQuant = true;
         };
         "qwen3.6-35b-a3b" = {
           hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q5_K_M";
           ctxSize = 131072;
+          kvQuant = true;
           extraFlags = [
             "--spec-type draft-mtp"
             "--spec-draft-n-max 2"
           ];
         };
+        # ~70GB weights — a "big" model.
         "qwen3.5-122b" = {
           hf = "unsloth/Qwen3.5-122B-A10B-GGUF:Q4_K_M";
           ctxSize = 131072;
+          big = true;
+          kvQuant = true;
           # Vision: Qwen3.5 is a VL model; llama.cpp has the QWEN3VL projector,
           # but -hf doesn't auto-pull unsloth's mmproj, so fetch it explicitly.
           mmproj = pkgs.fetchurl {
@@ -107,4 +120,6 @@ in
   time.timeZone = "America/Chicago";
   networking.hostName = "son-of-anton";
   system.stateVersion = "25.11";
+
+  networking.firewall.allowedTCPPorts = [ 8888 ];
 }
