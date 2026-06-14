@@ -17,7 +17,8 @@
 
   boot.kernelParams = [
     "amd_pstate=active"
-    "amdgpu.gttsize=122880"
-    "ttm.pages_limit=31457280"
+    "amd_iommu=off"
+    "ttm.pages_limit=32128000"
+    "ttm.page_pool_size=32128000"
   ];
 }

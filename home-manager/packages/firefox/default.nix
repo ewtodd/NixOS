@@ -57,20 +57,12 @@ in
         GenerativeAI.Enabled = false;
         OfferToSaveLogins = false;
         SearchEngines = {
-          Default = "SearXNG";
+          Default = "DuckDuckGo";
           Remove = [
             "Google"
             "Bing"
             "Perplexity"
             "Amazon.com"
-          ];
-          Add = [
-            {
-              Name = "SearXNG";
-              Description = "SearXNG metasearch (search.ethanwtodd.com)";
-              Type = "application/opensearchdescription+xml";
-              URLTemplate = "https://search.ethanwtodd.com/?q={searchTerms}";
-            }
           ];
         };
 

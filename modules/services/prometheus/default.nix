@@ -68,6 +68,17 @@
             }
           ];
         }
+        {
+          # LiteLLM metrics exporter (son-of-anton): token counts, request
+          # counts, active sessions. Feeds the Fleet health dashboard's LLM row.
+          job_name = "litellm";
+          static_configs = [
+            {
+              targets = [ "10.0.0.5:9192" ];
+              labels.instance = "son-of-anton";
+            }
+          ];
+        }
       ];
     };
   };

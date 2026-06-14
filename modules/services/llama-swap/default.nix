@@ -30,7 +30,12 @@ let
     lib.concatStringsSep " " (
       [ "${llamaCpp}/bin/llama-server" ]
       ++ (if m.path != null then [ "-m ${m.path}" ] else [ "-hf ${m.hf}" ])
-      ++ [ "-ngl 999" ]
+      ++ [
+        "--n-gpu-layers 999"
+        "--prio 1"
+        "--no-mmap"
+        "--mlock"
+      ]
       # --jinja (chat template) and -fa (flash attention) are generative-only and
       # break non-causal encoder embedding models; --embeddings turns on the
       # /v1/embeddings endpoint instead.
@@ -40,7 +45,10 @@ let
         else
           [
             "--jinja"
-            "-fa on"
+            "--flash-attn auto"
+            "--batch-size 2048"
+            "--ubatch-size 2048"
+            "--cache-reuse 256"
           ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]

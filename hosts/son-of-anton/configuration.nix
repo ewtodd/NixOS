@@ -93,8 +93,6 @@ in
         };
       };
     };
-    services.scheduledReboot.enable = true;
-    services.scheduledReboot.calendar = "*-*-* 04:45:00";
     security.harden.enable = true;
   };
 
@@ -120,6 +118,4 @@ in
   time.timeZone = "America/Chicago";
   networking.hostName = "son-of-anton";
   system.stateVersion = "25.11";
-
-  networking.firewall.allowedTCPPorts = [ 8888 ];
 }

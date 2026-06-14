@@ -29,14 +29,13 @@ let
 
   settings = {
     modelProviders.openai = [
-      (mkModel "auto" 131072)
+      (mkModel "Qwen3.6-35B-A3B (default)" 131072)
       (mkModel "Qwen3-Coder-Next (smart-coder)" 131072)
       (mkModel "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" 65536)
-      (mkModel "Qwen3.6-35B-A3B (experiment)" 131072)
       (mkModel "Qwen3.5-122B-A10B (big-moe)" 131072)
       (mkModel "gpt-oss-120b" 131072)
     ];
-    model.name = "auto";
+    model.name = "Qwen3.6-35B-A3B (default)";
     security.auth.selectedType = "openai";
 
     # Same MCP gateway opencode used: fetch + SearXNG web_search + nixos/arxiv/
@@ -46,6 +45,7 @@ let
     mcpServers.litellm = {
       httpUrl = "https://llm.ethanwtodd.com/mcp/";
       headers.Authorization = "Bearer ${keyPlaceholder}";
+      trust = true;
     };
   };
 
@@ -78,7 +78,7 @@ let
         > "$HOME/.qwen/settings.json" )
     export OPENAI_API_KEY="$LITELLM_MASTER_KEY"
     export OPENAI_BASE_URL="${baseUrl}"
-    export OPENAI_MODEL="''${OPENAI_MODEL:-auto}"
+    export OPENAI_MODEL="''${OPENAI_MODEL:-Qwen3.6-35B-A3B (default)}"
     exec ${lib.getExe pkgs.qwen-code} "$@"
   '';
 in

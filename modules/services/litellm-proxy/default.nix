@@ -5,7 +5,12 @@
 }:
 {
   config = lib.mkIf config.systemOptions.services.litellmProxy.enable {
-    networking.firewall.allowedTCPPorts = [ 4000 ]; # nu's Caddy + LAN reach the proxy
+    # 4000: nu's Caddy + LAN reach the proxy. 9192: the in-process metrics
+    # exporter (litellm_metrics.py callback), scraped by nu's Prometheus.
+    networking.firewall.allowedTCPPorts = [
+      4000
+      9192
+    ];
 
     # The container bind-mounts the master-key secret by path, so editing
     # litellm-master-key.age alone leaves container@litellm.service unchanged and
@@ -52,7 +57,10 @@
             settings = {
               general_settings.master_key = "os.environ/LITELLM_MASTER_KEY";
 
-              litellm_settings.callbacks = [ "classifier.router" ];
+              # In-process Prometheus exporter (see litellm_metrics.py). Runs a
+              # /metrics HTTP server on :9192 inside this proxy process and feeds
+              # it from the success/failure callbacks.
+              litellm_settings.callbacks = [ "litellm_metrics.metrics" ];
 
               mcp_servers = {
                 fetch = {
@@ -90,24 +98,12 @@
                 };
               };
 
-              # No cycles: each chain terminates at gpt-oss-120b. (Previously
-              # big-moe <-> gpt-oss-120b pointed at each other, so a persistent
-              # upstream 400 -- e.g. LibreChat sending an unsupported content
-              # part -- bounced between them forever, reloading each giant model
-              # on every hop via the llama-swap matrix.)
               router_settings.fallbacks = [
-                {
-                  "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" = [ "Qwen3-Coder-Next (smart-coder)" ];
-                }
-                {
-                  "Qwen3-Coder-Next (smart-coder)" = [ "Qwen3.5-122B-A10B (big-moe)" ];
-                }
-                {
-                  "Qwen3.5-122B-A10B (big-moe)" = [ "gpt-oss-120b" ];
-                }
-                {
-                  auto = [ "Qwen3.5-122B-A10B (big-moe)" ];
-                }
+                { "Qwen3-Coder-Next (smart-coder)" = [ "Qwen3-Coder-Next (smart-coder)" ]; }
+                { "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" = [ "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" ]; }
+                { "Qwen3.6-35B-A3B (default)" = [ "Qwen3.6-35B-A3B (default)" ]; }
+                { "Qwen3.5-122B-A10B (big-moe)" = [ "Qwen3.5-122B-A10B (big-moe)" ]; }
+                { "gpt-oss-120b" = [ "gpt-oss-120b" ]; }
               ];
 
               model_list = [
@@ -128,7 +124,7 @@
                   };
                 }
                 {
-                  model_name = "Qwen3.5-122B-A10B (big-moe)"; # general + complex / orchestrator default
+                  model_name = "Qwen3.5-122B-A10B (big-moe)"; # general + complex
                   litellm_params = {
                     model = "openai/qwen3.5-122b";
                     api_base = "http://127.0.0.1:8080/v1";
@@ -136,9 +132,8 @@
                   };
                 }
                 {
-                  # Name-selectable only; intentionally absent from the `auto`
-                  # classifier and the fallback chains (like gpt-oss-120b).
-                  model_name = "Qwen3.6-35B-A3B (experiment)";
+                  # Default model (LibreChat + qwen-code select this first).
+                  model_name = "Qwen3.6-35B-A3B (default)";
                   litellm_params = {
                     model = "openai/qwen3.6-35b-a3b";
                     api_base = "http://127.0.0.1:8080/v1";
@@ -149,17 +144,6 @@
                   model_name = "gpt-oss-120b";
                   litellm_params = {
                     model = "openai/gpt-oss-120b";
-                    api_base = "http://127.0.0.1:8080/v1";
-                    api_key = "none";
-                  };
-                }
-                {
-                  # Routed entry point. The async_pre_call_hook rewrites this to one
-                  # of the three tiers before dispatch; the big-moe mapping here is
-                  # only a safe default if the hook is ever bypassed.
-                  model_name = "auto";
-                  litellm_params = {
-                    model = "openai/qwen3.5-122b";
                     api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
@@ -202,8 +186,8 @@
           environment.etc."litellm/config.yaml".source =
             (pkgs.formats.yaml { }).generate "litellm-config.yaml"
               config.services.litellm.settings;
-          environment.etc."litellm/classifier.py".source = ./classifier.py;
           environment.etc."litellm/searxng_mcp.py".source = ./searxng_mcp.py;
+          environment.etc."litellm/litellm_metrics.py".source = ./litellm_metrics.py;
 
           # LiteLLM allowlists stdio MCP commands by basename (default:
           # python/node/npx/uvx/...). fetch and nixos use their own binaries, so
