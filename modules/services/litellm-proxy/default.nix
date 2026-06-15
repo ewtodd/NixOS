@@ -57,10 +57,16 @@
             settings = {
               general_settings.master_key = "os.environ/LITELLM_MASTER_KEY";
 
-              # In-process Prometheus exporter (see litellm_metrics.py). Runs a
-              # /metrics HTTP server on :9192 inside this proxy process and feeds
-              # it from the success/failure callbacks.
-              litellm_settings.callbacks = [ "litellm_metrics.metrics" ];
+              # Callbacks (module.attr, importable from /etc/litellm):
+              #  - litellm_metrics.metrics: in-process Prometheus exporter (runs a
+              #    /metrics server on :9192, fed from success/failure callbacks).
+              #  - auto_router.auto_router: pre-call hook that rewrites model
+              #    "auto" to a concrete model via the resident Qwen3-0.6B
+              #    classifier (see auto_router.py).
+              litellm_settings.callbacks = [
+                "litellm_metrics.metrics"
+                "auto_router.auto_router"
+              ];
 
               mcp_servers = {
                 fetch = {
@@ -98,15 +104,26 @@
                 };
               };
 
-              router_settings.fallbacks = [
-                { "Qwen3-Coder-Next (smart-coder)" = [ "Qwen3-Coder-Next (smart-coder)" ]; }
-                { "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" = [ "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" ]; }
-                { "Qwen3.6-35B-A3B (default)" = [ "Qwen3.6-35B-A3B (default)" ]; }
-                { "Qwen3.5-122B-A10B (big-moe)" = [ "Qwen3.5-122B-A10B (big-moe)" ]; }
-                { "gpt-oss-120b" = [ "gpt-oss-120b" ]; }
-              ];
+              # No fallbacks: cross-model fallback caused model-swap loops, and
+              # self-fallback only masked the upstream llama.cpp error behind
+              # LiteLLM's generic post-retry one. Let calls error so the real
+              # failure is visible.
 
               model_list = [
+                {
+                  # Classifier-routed alias. The auto_router pre-call hook
+                  # rewrites "auto" to a concrete model (code/reasoning/simple/
+                  # general via the Qwen3-0.6B classifier, or a vision model when
+                  # an image is attached) before routing. This litellm_params
+                  # target is just a placeholder to pass model validation — the
+                  # hook overrides it on every request.
+                  model_name = "auto";
+                  litellm_params = {
+                    model = "openai/qwen3.6-35b-a3b";
+                    api_base = "http://127.0.0.1:8080/v1";
+                    api_key = "none";
+                  };
+                }
                 {
                   model_name = "Qwen3-Coder-Next (smart-coder)"; # coding (any complexity)
                   litellm_params = {
@@ -149,17 +166,56 @@
                   };
                 }
                 {
-                  # Title-generation alias for LibreChat. Points at the same
-                  # small, non-thinking 30B Instruct server as "(ultra-fast)"
-                  # (co-resident, no swap; Instruct-2507 can't reason, so titles
-                  # return in ~1s with no thinking to disable). It's a *separate*
-                  # model_name purely so titling stays OUT of the fallback chains
-                  # above — a failed title request must not cascade into loading
-                  # a big model and tripping LibreChat's title timeout.
-                  # See services.librechat titleModel.
-                  model_name = "Qwen3-30B-A3B-Instruct-2507 (titles)";
+                  model_name = "NVIDIA-Nemotron-3-Super-120B-A12B"; # general + complex
                   litellm_params = {
-                    model = "openai/qwen3-30b-a3b";
+                    model = "openai/nemotron-3-super-120b";
+                    api_base = "http://127.0.0.1:8080/v1";
+                    api_key = "none";
+                  };
+                }
+                {
+                  model_name = "Mistral-Small-4-119B (vision)"; # multimodal
+                  litellm_params = {
+                    model = "openai/mistral-small-4-119b";
+                    api_base = "http://127.0.0.1:8080/v1";
+                    api_key = "none";
+                  };
+                }
+                {
+                  model_name = "Mistral-Medium-3.5-128B (vision)"; # multimodal
+                  litellm_params = {
+                    model = "openai/mistral-medium-3.5-128b";
+                    api_base = "http://127.0.0.1:8080/v1";
+                    api_key = "none";
+                  };
+                }
+                {
+                  model_name = "Step-3.7-Flash (vision)"; # multimodal
+                  litellm_params = {
+                    model = "openai/step-3.7-flash";
+                    api_base = "http://127.0.0.1:8080/v1";
+                    api_key = "none";
+                  };
+                }
+                {
+                  model_name = "MiniMax-M2.7 (uncensored)"; # experimental, very large
+                  litellm_params = {
+                    model = "openai/minimax-m2.7";
+                    api_base = "http://127.0.0.1:8080/v1";
+                    api_key = "none";
+                  };
+                }
+                {
+                  # Title-generation alias for LibreChat. Points at the tiny,
+                  # alwaysResident Qwen3-0.6B title server — ~0.6GB, ANDed into
+                  # every llama-swap matrix set so it rides alongside whatever
+                  # chat/coder model is loaded (including the solo ones) without
+                  # ever evicting it. Reasoning is forced off server-side (titles
+                  # return in ~1s). A *separate* model_name keeps titling out of
+                  # any routing/fallback logic. See services.librechat titleModel.
+                  model_name = "Qwen3-0.6B (titles)";
+                  litellm_params = {
+                    model = "openai/qwen3-0.6b";
                     api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };
@@ -188,6 +244,7 @@
               config.services.litellm.settings;
           environment.etc."litellm/searxng_mcp.py".source = ./searxng_mcp.py;
           environment.etc."litellm/litellm_metrics.py".source = ./litellm_metrics.py;
+          environment.etc."litellm/auto_router.py".source = ./auto_router.py;
 
           # LiteLLM allowlists stdio MCP commands by basename (default:
           # python/node/npx/uvx/...). fetch and nixos use their own binaries, so
