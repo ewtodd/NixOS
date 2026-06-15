@@ -49,6 +49,20 @@ let
             "--batch-size 2048"
             "--ubatch-size 2048"
             "--cache-reuse 256"
+            # Anti-loop. The degenerate failure mode (LangGraph "recursion limit
+            # 50" in LibreChat, qwen-code stalling) is the model re-emitting the
+            # SAME tool call every round. Each prior identical call sits in the
+            # re-sent context, so DRY -- which penalizes regenerating sequences
+            # already seen -- breaks the loop. Critically, DRY is NOT an OpenAI
+            # parameter, so clients can't override/unset it (unlike temp/top_p/
+            # penalties they send). allowed-length 8 + the default sequence
+            # breakers keep legit repetition safe -- the loop failure mode
+            # re-emits a whole tool call (dozens of tokens), so a higher floor
+            # still catches it while sparing legit code repeats and correct
+            # prose regenerated on a retry (e.g. commit messages).
+            "--dry-multiplier 0.8"
+            "--dry-base 1.75"
+            "--dry-allowed-length 8"
           ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]
@@ -88,11 +102,22 @@ let
     var = "m${toString i}";
   }) (lib.attrNames cfg.models);
   isEmbed = name: cfg.models.${name}.embedding;
-  isBig = name: cfg.models.${name}.big;
-  bigVars = map (e: e.var) (lib.filter (e: !isEmbed e.name && isBig e.name) modelList);
-  smallVars = map (e: e.var) (lib.filter (e: !isEmbed e.name && !isBig e.name) modelList);
-  embedVars = map (e: e.var) (lib.filter (e: isEmbed e.name) modelList);
-  chatVars = bigVars ++ smallVars;
+  # "Resident" = always-loaded free riders: embedding models AND alwaysResident
+  # chat models (e.g. the tiny title model). They're ANDed into every set and
+  # ride alongside whatever chat model is loaded — including `solo` ones — so
+  # they never participate in the chat lanes below.
+  isResident = name: isEmbed name || cfg.models.${name}.alwaysResident;
+  isSolo = name: cfg.models.${name}.solo;
+  # `solo` wins over `big`: a solo model is exclusive against every other chat
+  # model, so it must not also appear in the big/small lanes.
+  isBig = name: cfg.models.${name}.big && !isSolo name;
+  soloVars = map (e: e.var) (lib.filter (e: !isResident e.name && isSolo e.name) modelList);
+  bigVars = map (e: e.var) (lib.filter (e: !isResident e.name && isBig e.name) modelList);
+  smallVars = map (e: e.var) (
+    lib.filter (e: !isResident e.name && !isSolo e.name && !cfg.models.${e.name}.big) modelList
+  );
+  residentVars = map (e: e.var) (lib.filter (e: isResident e.name) modelList);
+  chatVars = soloVars ++ bigVars ++ smallVars;
   matrixVars = lib.listToAttrs (map (e: lib.nameValuePair e.var e.name) modelList);
 
   bigExpr = lib.optionalString (bigVars != [ ]) "(${lib.concatStringsSep " | " bigVars})";
@@ -107,21 +132,32 @@ let
     else
       "";
   laneB = smallAnd;
-  chatExpr =
+  # The big/small lanes (everything that isn't solo). Solo models are added as
+  # their own top-level `|` alternatives below, so they're never co-resident with
+  # any other chat model (subset semantics keep each solo valid on its own).
+  nonSoloExpr =
     if laneA != "" && laneB != "" then
       "(${laneA}) | ${laneB}"
     else if laneA != "" then
       laneA
     else
-      laneB; # may be "" when there are no chat models at all
-  embedAnd = lib.concatStringsSep " & " embedVars;
+      laneB; # may be "" when there are no non-solo chat models
+  soloExpr = lib.concatStringsSep " | " soloVars;
+  chatExpr =
+    if soloExpr != "" && nonSoloExpr != "" then
+      "${soloExpr} | ${nonSoloExpr}"
+    else if soloExpr != "" then
+      soloExpr
+    else
+      nonSoloExpr; # may be "" when there are no chat models at all
+  residentAnd = lib.concatStringsSep " & " residentVars;
   matrixSet =
     if chatExpr == "" then
-      embedAnd
-    else if embedVars == [ ] then
+      residentAnd
+    else if residentVars == [ ] then
       chatExpr
     else
-      "(${chatExpr}) & ${embedAnd}";
+      "(${chatExpr}) & ${residentAnd}";
 in
 {
   config = lib.mkIf cfg.enable {
@@ -143,7 +179,7 @@ in
       settings.models = lib.mapAttrs (
         _name: m: { cmd = mkCmd m; } // lib.optionalAttrs (m.ttl != null) { inherit (m) ttl; }
       ) cfg.models;
-      settings.matrix = lib.mkIf (embedVars != [ ] || lib.length chatVars > 1) {
+      settings.matrix = lib.mkIf (residentVars != [ ] || lib.length chatVars > 1) {
         vars = matrixVars;
         sets.default = matrixSet;
       };

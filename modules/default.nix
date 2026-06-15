@@ -145,6 +145,33 @@ with lib;
                   models so the solver never tries to keep two of them loaded.
                 '';
               };
+              solo = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Mark a chat model as "solo": exclusive against *every* other
+                  chat model — never co-resident with a big OR a small (only the
+                  always-on embedding model rides alongside it). Use for models
+                  so large they can't even pair with a small (e.g. a Q8 ~85GB+
+                  big), where the ordinary `big` lane's "big + one small" would
+                  OOM. Implies the model occupies the host alone; takes
+                  precedence over `big`.
+                '';
+              };
+              alwaysResident = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Keep this chat model loaded at all times, co-resident with
+                  whatever else is running — including `solo` models (which
+                  otherwise admit only the embedding model alongside them). It's
+                  ANDed into every matrix set, exactly like an embedding model,
+                  and never participates in the big/small/solo lanes. Use for a
+                  tiny utility model that must never be evicted — e.g. a dedicated
+                  title/summary model, so LibreChat titling doesn't unload the
+                  main chat model. Keep it small: it occupies RAM permanently.
+                '';
+              };
               kvQuant = mkOption {
                 type = types.bool;
                 default = false;
