@@ -37,7 +37,13 @@ in
     }
 
     (lib.mkIf hasDesktop {
-      programs.steam.enable = true;
+      programs.steam = {
+        enable = true;
+        extraCompatPackages = with pkgs; [
+          proton-ge-bin
+          dwproton-bin
+        ];
+      };
       programs.obs-studio.enable = true;
 
       boot.extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];

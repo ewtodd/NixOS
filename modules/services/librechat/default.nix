@@ -45,6 +45,11 @@
           "localhost:4000"
         ];
 
+        endpoints.agents = {
+          recursionLimit = 40;
+          maxRecursionLimit = 50;
+        };
+
         endpoints.custom = [
           {
             name = "LiteLLM";
@@ -53,11 +58,15 @@
             modelDisplayLabel = "son of anton";
             models = {
               default = [
-                "auto" # classifier-routed (see litellm-proxy auto_router.py)
-                "Qwen3.6-35B-A3B (default)"
+                "auto"
+                "Qwen3.6-35B-A3B (UD-Q8 general)"
+                "Qwen3.6-35B-A3B (UD-Q8 coding)"
+                "Qwen3.6-27B (dense-reasoner)"
                 "Qwen3-Coder-Next (smart-coder)"
                 "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)"
                 "Qwen3.5-122B-A10B (big-moe)"
+                "Gemma-4-31B (dense)"
+                "Gemma-4-26B-A4B (fast-moe)"
                 "gpt-oss-120b"
                 "NVIDIA-Nemotron-3-Super-120B-A12B"
                 "Mistral-Small-4-119B (vision)"
@@ -68,17 +77,18 @@
               fetch = false;
             };
             titleConvo = true;
-            # Title with the tiny (~0.6GB) Qwen3-0.6B model, which is
+            # Title with the small (~2.9GB) Qwen3-4B-Instruct-2507 model, which is
             # `alwaysResident` in the llama-swap matrix: it's ANDed into every
             # set, so it co-resides alongside whatever chat/coder model a session
             # uses — including the `solo` ~85GB+ models — and is never evicted.
-            # That fixes the eviction the old 30B title model caused once the
-            # main coder went `solo` (the 30B was too big to ride along). Its
-            # reasoning is forced off server-side so titles return in ~1s.
+            # That fixes the eviction the old 30B title model caused once the main
+            # coder went `solo` (the 30B was too big to ride along). It's a
+            # non-thinking Instruct model, so titles are fast and well-formed
+            # (the 0.6B we tried first was too weak and just parroted the chat).
             #
             # A dedicated "(titles)" alias keeps titling OUT of any routing logic
             # so a failed title request can't cascade into loading a big model.
-            titleModel = "Qwen3-0.6B (titles)";
+            titleModel = "Qwen3-4B-Instruct (titles)";
           }
         ];
 

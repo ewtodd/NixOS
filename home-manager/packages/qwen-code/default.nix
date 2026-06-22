@@ -1,90 +1,129 @@
 {
   lib,
   pkgs,
+  inputs,
   osConfig ? null,
   ...
 }:
 let
   isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable else false;
 
+  qwenPkg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.qwen-code;
+
   baseUrl = "https://llm.ethanwtodd.com/v1";
 
-  # One OpenAI-compatible provider entry per LiteLLM model_name. `id`/`name` are
-  # the model id sent upstream (must match LiteLLM's model_list); `envKey` names
-  # the env var holding the key. ctx mirrors the corresponding llama-swap
-  # --ctx-size so qwen's context bookkeeping agrees with the server. These drive
-  # the /model picker; the OPENAI_* env vars in the wrapper select the default
-  # and satisfy auth. Keep in sync with the litellm-proxy model_list + the
-  # LibreChat picker.
-  mkModel = id: ctx: {
-    inherit id;
-    name = id;
-    envKey = "OPENAI_API_KEY";
-    inherit baseUrl;
-    generationConfig.contextWindowSize = ctx;
-  };
+  requestTimeoutMs = 1800000;
 
-  # Substituted with the real master key when the wrapper renders settings.json.
+  # Auto-compaction in this qwen-code build has no configurable trigger %; the
+  # old chatCompression.contextPercentageThreshold setting was removed. The
+  # trigger is computed purely from the declared contextWindowSize as
+  #   auto = max(0.70*window, window - compactReserve)
+  # where compactReserve = SUMMARY_RESERVE(20000) + AUTOCOMPACT_BUFFER(13000).
+  compactReserve = 33000;
+  # Target: fire compaction at compactPercent of the model's REAL context. Since
+  # qwen-code always subtracts compactReserve, we declare
+  #   window = compactPercent*ctx + compactReserve
+  # so the binding `window - compactReserve` branch lands at compactPercent*ctx.
+  # This sits slightly ABOVE real ctx, which is safe: compaction fires well
+  # before the real limit and the summarizer's input still fits — only the
+  # in-flight response is squeezed. Trade-off at 90%: a reasoning model keeps
+  # just ~10% of ctx (~13k tokens at 128k) for answer+thinking before truncation.
+  compactPercent = 90;
+  # qwen-code defaults to temperature=0 which overrides the proxy; use explicit
+  # samplingParams (snake_case) instead. Unsloth-recommended for Qwen3.6 thinkers.
+  sampling = {
+    general = {
+      temperature = 1.0;
+      top_p = 0.95;
+      top_k = 20;
+      min_p = 0;
+      presence_penalty = 1.5;
+    };
+    coding = {
+      temperature = 0.6;
+      top_p = 0.95;
+      top_k = 20;
+      min_p = 0;
+      presence_penalty = 0;
+    };
+  };
+  # samplingParams is null for models that should keep qwen-code's own defaults.
+  mkModel =
+    id: serverCtx: samplingParams:
+    let
+      # See compactPercent above: window chosen so `window - compactReserve`
+      # lands the trigger at compactPercent of real ctx. Valid while serverCtx is
+      # large enough that this beats the 0.70*window branch (serverCtx >~86k);
+      # all chat models here are >=128k.
+      ctxWindow = (serverCtx * compactPercent) / 100 + compactReserve;
+    in
+    {
+      inherit id;
+      name = id;
+      envKey = "OPENAI_API_KEY";
+      inherit baseUrl;
+      generationConfig = {
+        contextWindowSize = ctxWindow;
+        timeout = requestTimeoutMs;
+      }
+      // lib.optionalAttrs (samplingParams != null) { inherit samplingParams; };
+    };
+
   keyPlaceholder = "__LITELLM_MASTER_KEY__";
 
   settings = {
     modelProviders.openai = [
-      (mkModel "Qwen3-Coder-Next (smart-coder)" 131072)
-      (mkModel "Qwen3.6-35B-A3B (default)" 131072)
-      (mkModel "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)" 65536)
-      (mkModel "Qwen3.5-122B-A10B (big-moe)" 131072)
-      (mkModel "gpt-oss-120b" 131072)
-      (mkModel "NVIDIA-Nemotron-3-Super-120B-A12B" 131072)
-      (mkModel "Mistral-Small-4-119B (vision)" 65536)
-      (mkModel "Mistral-Medium-3.5-128B (vision)" 65536)
-      (mkModel "Step-3.7-Flash (vision)" 65536)
-      (mkModel "MiniMax-M2.7 (uncensored)" 131072)
+      (mkModel "Qwen3-Coder-Next (smart-coder)" 262144 null)
+      (mkModel "Qwen3.6-35B-A3B (UD-Q8 coding)" 262144 sampling.coding)
+      (mkModel "Qwen3.6-35B-A3B (UD-Q8 general)" 262144 sampling.general)
+      # Dense reasoner on the R9700 eGPU; 128k server ctx (vs 262k for the MoEs).
+      # serverCtx MUST match this model's llama-swap ctxSize, since the
+      # compaction trigger is derived from it (see compactPercent above).
+      (mkModel "Qwen3.6-27B (dense-reasoner)" 131072 sampling.general)
+      (mkModel "Qwen3.5-122B-A10B (big-moe)" 262144 null)
     ];
-    # Coding orchestrator default: the model actually trained for the agentic
-    # tool-call loop (qwen-code is a gemini-cli fork that lives or dies on it).
-    model.name = "Qwen3-Coder-Next (smart-coder)";
+    model.name = "Qwen3.6-27B (dense-reasoner)";
     security.auth.selectedType = "openai";
 
-    # One entry per LiteLLM MCP server (fetch + SearXNG web_search + nixos/arxiv/
-    # context7) rather than a single aggregated gateway, so the agent isn't handed
-    # every tool at once (fewer tools = fewer tool-call loops). All hit the same
-    # endpoint on son-of-anton; the `x-mcp-servers` header scopes each connection
-    # to one server. httpUrl = streamable-HTTP; trailing slash avoids the /mcp ->
-    # /mcp/ redirect; Bearer auth is what LiteLLM's MCP endpoint requires.
-    mcpServers =
-      lib.genAttrs
-        [
-          "fetch"
-          "searxng"
-          "nixos"
-          "arxiv"
-          "context7"
-        ]
-        (server: {
-          httpUrl = "https://llm.ethanwtodd.com/mcp/";
-          headers = {
-            Authorization = "Bearer ${keyPlaceholder}";
-            "x-mcp-servers" = server;
-          };
-          trust = true;
-        });
+    mcpServers = lib.genAttrs [ "fetch" "searxng" "nixos" "arxiv" "context7" ] (server: {
+      httpUrl = "https://llm.ethanwtodd.com/mcp/";
+      headers = {
+        Authorization = "Bearer ${keyPlaceholder}";
+        "x-mcp-servers" = server;
+      };
+      trust = true;
+    });
+
+    mcp.allowed = [
+      "fetch"
+      "searxng"
+      "nixos"
+      "arxiv"
+      "context7"
+    ];
+    mcp.excluded = [
+      "fetch"
+      "searxng"
+      "nixos"
+      "arxiv"
+    ];
+
+    # Over waypipe, WAYLAND_DISPLAY is set, so qwen-code's headless-SSH guard
+    # treats this as a local graphical session and spawns `systemd-inhibit` to
+    # block sleep while streaming/running tools. That triggers a polkit auth
+    # prompt that flashes up and steals keyboard focus mid-activity (you can't
+    # type or Shift-Tab). We don't need sleep inhibition here, so turn it off.
+    general.preventSystemSleep = false;
+
+    telemetry.enabled = false;
+    model.generationConfig.timeout = requestTimeoutMs;
+    ui.customWittyPhrases = [ "Let son-of-anton cook..." ];
+    ui.autoModeAcknowledged = true;
   };
 
   settingsTemplate = (pkgs.formats.json { }).generate "qwen-settings.json" settings;
-
-  # agenix-decrypted env file (LITELLM_MASTER_KEY=...), declared under the same
-  # owner.e.enable guard as this module, so it's defined wherever the wrapper is
-  # installed. Reference the option's path rather than hardcoding /run/agenix.
   secretPath = osConfig.age.secrets.litellm-master-key.path;
 
-  # qwen-code 0.16.0 ignores the settings.json modelProviders/auth path and
-  # drops to its onboarding "connect a provider" picker. The OPENAI_* env vars
-  # are the mechanism it reliably honors -- set them and it auto-selects the
-  # openai auth type and skips onboarding. We wrap `qwen` so those vars are
-  # scoped to qwen alone (no redirecting other OpenAI SDK/tooling in the shell),
-  # and so the wrapper is fully self-contained: it sources the key, renders
-  # ~/.qwen/settings.json with the MCP Bearer token baked in (kept at mode 600,
-  # out of the world-readable store), then execs the real qwen.
   qwen = pkgs.writeShellScriptBin "qwen" ''
     if [ -r ${secretPath} ]; then
       set -a; . ${secretPath}; set +a
@@ -99,40 +138,54 @@ let
         > "$HOME/.qwen/settings.json" )
     export OPENAI_API_KEY="$LITELLM_MASTER_KEY"
     export OPENAI_BASE_URL="${baseUrl}"
-    export OPENAI_MODEL="''${OPENAI_MODEL:-Qwen3-Coder-Next (smart-coder)}"
-    exec ${lib.getExe pkgs.qwen-code} "$@"
+    export OPENAI_MODEL="''${OPENAI_MODEL:-Qwen3.6-27B (dense-reasoner)}"
+    exec ${qwenPkg}/bin/qwen "$@"
   '';
 in
 {
-  # Only the wrapper goes on PATH (it calls the real qwen-code by store path);
-  # adding both would collide on bin/qwen.
   home.packages = lib.mkIf isEOwner [ qwen ];
 
-  # Global context/rules (qwen-code's default context file is QWEN.md). Ported
-  # verbatim from the old opencode `context`.
   home.file.".qwen/QWEN.md" = lib.mkIf isEOwner {
     text = ''
       # Mandatory Rules
 
+      ## In all languages
+      - Prefer slightly verbose, self-explanatory code over terse code that needs
+        comments to be understood.
+      - Keep comments to only what explains something non-obvious.
+      - Never embed a literal `\n` inside a string or print argument. A line break
+        is always its own explicit statement. In C++/ROOT, use
+        `std::cout << ... << std::endl;`. In Python, split output into separate
+        `print()` calls, and use a bare `print()` for a blank line rather than
+        appending `\n`.
+
+      ## Nix
+      - Always use flakes and flake-based commands (`nix run`, `nix shell`, etc.).
+        Never use the old `nix-shell` approach.
+      - If you are confused, stop and ask for help. This is especially critical in
+        Nix.
+      - Follow the existing style of the surrounding modules.
+
       ## C++ / ROOT
-      - In C++ that uses ROOT, use ROOT data types, and pick the *correct* one for
-      the actual need rather than defaulting blindly: `Int_t` for ordinary ints,
-      `Long64_t` for entry counts / large or 64-bit values, `Double_t` for
-      floating point, `TString` for string convenience, and so on. Match the
-      width and signedness the code actually requires.
-      - In C++ generally, do not use modern C++ features: no `auto`, no smart
-      pointers, no range-based (`for (x : c)`) iteration. Use explicit types and
-      classic indexed/iterator loops.
+      - Use ROOT data types, and pick the *correct* one for the actual need rather
+        than defaulting blindly: `Int_t` for ordinary ints, `Long64_t` for entry
+        counts and large/64-bit values, `Double_t` for floating point, `TString`
+        for string convenience, and so on. Match the width and signedness the code
+        actually requires.
+      - Do not use modern C++ features: no `auto`, no smart pointers, no
+        range-based (`for (x : c)`) iteration. Use explicit types and classic
+        indexed/iterator loops.
+      - In performance-critical code, always gate logging behind a compile- or
+        run-time toggle so it can be disabled. The `std::endl` flush is therefore
+        never a concern on hot paths.
 
       ## Python
-      - In Python that uses ROOT, never use matplotlib for plotting.
-      Either look at nearby files for examples of how to properly plot,
-      or ask the user what they prefer.
+      - In Python that uses ROOT, never use matplotlib. Look at nearby files for the
+        established plotting approach, or ask which is preferred.
 
       ## Explanations
-      - For non-trivial changes to the codebase, give thorough explanations of
-      what changed and why. Do not over-summarize or truncate reasoning for
-      these (trivial edits can still be terse).
+      - For non-trivial changes, explain thoroughly what changed and why. Do not
+      over-summarize or truncate the reasoning. Trivial edits can stay terse. 
     '';
   };
 }

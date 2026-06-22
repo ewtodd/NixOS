@@ -16,6 +16,7 @@ in
     ./deploy
     ./dyndns
     ./grafana
+    ./hermes
     ./librechat
     ./litellm-proxy
     ./llama-swap

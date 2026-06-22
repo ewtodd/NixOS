@@ -177,7 +177,7 @@ The fleet includes dedicated AI servers running llama-swap and LiteLLM:
 <!---->
 - **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend
   - `gpt-oss-120b` - name-selectable only, not routed via `auto` (131072 context)
-  - `qwen3-coder-next` - Qwen3-Coder-Next-80B-A3B smart-coder (131072 context)
+  - `qwen3-coder-next` - Qwen3-Coder-Next-80B-A3B smart-coder (262144 context)
   - `qwen3-30b-a3b` - ultra-fast general tier ~100 t/s (65536 context)
   - `qwen3.5-122b` - big-moe / orchestrator Qwen3.5-122B-A10B (131072 context)
 <!---->
@@ -189,12 +189,18 @@ The fleet includes dedicated AI servers running llama-swap and LiteLLM:
     - Routes `auto` to smart-coder (coding), ultra-fast (general+simple), or big-moe (general+complex)
     - Fallbacks between the local models cover load failures
     - Single entry point: `https://llm.ethanwtodd.com/v1`
-  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both opencode and LibreChat.
+  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both qwen-code and LibreChat.
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP.
   - **LibreChat** chat UI at `https://ai.ethanwtodd.com` (local MongoDB), wired to the LiteLLM models + MCP gateway.
 <!---->
-The `opencode` CLI tool is pre-configured to use this infrastructure via the LiteLLM endpoint.
-<!---->
+### Coding agent
+
+ - **qwen-code** (e-workstations via `home-manager/packages/qwen-code`) — coding
+    CLI/TUI pointed at the LiteLLM endpoint, default model **Qwen3-Coder-Next**.
+    MCP servers run as local stdio extensions (`fetch`, `searxng`, `nixos`,
+    `arxiv`, `context7`). The wrapper sources `LITELLM_MASTER_KEY` from the
+    agenix secret at launch. Approval mode is switchable via Shift+Tab in the
+    interactive CLI (`plan`, `default`, `auto-edit`, `auto`, `yolo`).
 ## Deployment (Colmena)
 <!---->
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).

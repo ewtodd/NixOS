@@ -4,8 +4,8 @@ When a request targets the model name "auto", rewrite it to a concrete model:
 
   * if the request carries an image attachment -> a vision model, decided
     deterministically (the text-only classifier can't see images);
-  * otherwise -> ask the always-resident Qwen3-0.6B to label the request and
-    map that label to a model.
+  * otherwise -> ask the always-resident Qwen3-4B-Instruct title model to label
+    the request and map that label to a model.
 
 Registered via litellm_settings.callbacks (see the litellm-proxy module). The
 classifier call is made straight to the local llama-swap backend rather than
@@ -24,13 +24,13 @@ from litellm.integrations.custom_logger import CustomLogger
 AUTO_MODEL = "auto"
 
 # Classifier backend: hit llama-swap directly (NOT the proxy) to avoid recursing
-# through "auto". qwen3-0.6b is alwaysResident with reasoning forced off
-# server-side, so this is a cheap, always-warm call.
+# through "auto". qwen3-4b-titles is alwaysResident (non-thinking Instruct), so
+# this is a cheap, always-warm call.
 CLASSIFIER_API_BASE = "http://127.0.0.1:8080/v1"
-CLASSIFIER_MODEL = "openai/qwen3-0.6b"
+CLASSIFIER_MODEL = "openai/qwen3-4b-titles"
 
 # Targets must match LiteLLM model_list `model_name`s exactly.
-DEFAULT_MODEL = "Qwen3.6-35B-A3B (default)"
+DEFAULT_MODEL = "Qwen3.6-35B-A3B (UD-Q8 general)"
 VISION_MODEL = "Mistral-Small-4-119B (vision)"
 LABEL_TO_MODEL = {
     "code": "Qwen3-Coder-Next (smart-coder)",

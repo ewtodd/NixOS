@@ -2,7 +2,7 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,6 +58,26 @@
     colmena = {
       url = "github:zhaofengli/colmena";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    llama-cpp = {
+      url = "github:ggml-org/llama.cpp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    arxiv-mcp-server-src = {
+      url = "github:blazickjp/arxiv-mcp-server";
+      flake = false;
+    };
+    split-nvim-src = {
+      url = "github:wurli/split.nvim";
+      flake = false;
     };
   };
 
@@ -214,7 +234,7 @@
             ./home-manager/packages/nixvim/keymaps.nix
             ./home-manager/packages/nixvim/plugins.nix
             ./home-manager/packages/nixvim/performance.nix
-            ./home-manager/packages/nixvim/split.nix
+            (import ./home-manager/packages/nixvim/split.nix inputs)
           ];
           colorschemes.kanagawa = {
             enable = true;

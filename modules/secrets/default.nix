@@ -116,9 +116,6 @@
       };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
-      # e-devices: read by the qwen-code wrapper, which sources it and exports
-      # OPENAI_API_KEY (+ bakes the Bearer token into qwen's MCP config). Group
-      # `users` so e-work and e-play both read it.
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;
         owner = "e-work";

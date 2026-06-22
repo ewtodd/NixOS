@@ -9,9 +9,6 @@ with lib;
   imports = [
     ./desktopEnvironment
     ./hardware
-    ##### REMOVE WHEN nixpkgs PR #479283 LANDS #####
-    ./hardware/ipu7
-    ##### END REMOVE #####
     ./packages
     ./secrets
     ./security
@@ -59,6 +56,29 @@ with lib;
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
       services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
+
+      services.hermes.enable = mkEnableOption "Hermes Agent orchestrator brain (son-of-anton): always-on gateway + web dashboard";
+      services.hermes.brainModel = mkOption {
+        type = types.str;
+        default = "gemma-4-e4b-q6";
+        description = "llama-swap model name used as the always-on orchestrator brain.";
+      };
+      services.hermes.delegationModel = mkOption {
+        type = types.str;
+        default = "qwen3.6-35b-a3b-udq8";
+        description = "llama-swap model the brain delegates heavy work to via delegate_task.";
+      };
+      services.hermes.endpoint = mkOption {
+        type = types.str;
+        default = "http://127.0.0.1:8080/v1";
+        description = "OpenAI-compatible endpoint serving the brain + delegation models (llama-swap).";
+      };
+      services.hermes.dashboardHost = mkOption {
+        type = types.str;
+        default = "127.0.0.1";
+        description = "Bind address for the Hermes web dashboard (localhost-only; it stores keys).";
+      };
+
       services.llamaSwap.lanExpose = mkEnableOption ''
         expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
         default) binds 127.0.0.1 only — correct for hosts where the sole consumer
@@ -71,6 +91,16 @@ with lib;
         ];
         default = "vulkan";
         description = "llama.cpp GPU backend: Vulkan (AMD RADV or Intel ANV) or CUDA (NVIDIA).";
+      };
+      services.llamaSwap.egpu.enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          A second AMD GPU is present alongside the primary APU. When true, each
+          model is pinned to a specific Vulkan device (per-model `gpu` option)
+          so llama.cpp doesn't split layers across both GPUs. The matrix solver
+          treats the eGPU as an independent VRAM pool. Vulkan backend only.
+        '';
       };
       services.llamaSwap.cacheDir = mkOption {
         type = types.nullOr types.str;
@@ -133,6 +163,13 @@ with lib;
                   isn't auto-pulled by `-hf` (e.g. Qwen3-VL). Chat models only.
                 '';
               };
+              mlock = mkOption {
+                type = types.bool;
+                default = true;
+                description = ''
+                  Whether to include --mlock flag in llama-server command. Including breaks gemma models.
+                '';
+              };
               big = mkOption {
                 type = types.bool;
                 default = false;
@@ -170,6 +207,23 @@ with lib;
                   tiny utility model that must never be evicted — e.g. a dedicated
                   title/summary model, so LibreChat titling doesn't unload the
                   main chat model. Keep it small: it occupies RAM permanently.
+                '';
+              };
+              gpu = mkOption {
+                type = types.enum [
+                  "apu"
+                  "egpu"
+                ];
+                default = "apu";
+                description = ''
+                  Which GPU to pin this model to when `egpu.enable` is set: "apu"
+                  = the large unified-memory APU (Vulkan1), "egpu" = the discrete
+                  R9700 (Vulkan0, 32 GB GDDR6). Put dense models on the eGPU (high
+                  GDDR6 bandwidth, fit in 32 GB) and big MoE models on the APU. The
+                  matrix treats egpu models as a separate pool: mutually exclusive
+                  among themselves, but free to co-reside with any apu model.
+                  `big`/`solo` are ignored for egpu models (the egpu pool has its
+                  own exclusivity). No effect when `egpu.enable` is false.
                 '';
               };
               kvQuant = mkOption {
@@ -290,7 +344,14 @@ with lib;
         vim = "nvim";
         ":q" = "exit";
         nrs = "nh os switch /etc/nixos";
-        fix-nixos-git = "sudo chown -R root:nixconfig /etc/nixos && sudo chmod -R 2775 /etc/nixos && git config --global --add safe.directory /etc/nixos && git -C /etc/nixos config core.fileMode false";
+        nrb = "nh os boot /etc/nixos";
+
+        # Own the tree as the invoking user (not root) so editors that restore
+        # file mode after writing -- e.g. qwen-code's chmod-after-write -- don't
+        # hit EPERM: chmod() is owner-only, and group-write (2775) lets the
+        # nixconfig group edit *contents* but never chmod. $(id -un) keeps this
+        # fleet-safe (each host's human owner fixes to themselves).
+        fix-nixos-git = "sudo chown -R $(id -un):nixconfig /etc/nixos && sudo chmod -R 2775 /etc/nixos && git config --global --add safe.directory /etc/nixos && git -C /etc/nixos config core.fileMode false";
       };
 
       services.interception-tools = {
