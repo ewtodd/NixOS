@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   pkgs,
   ...
 }:
@@ -9,9 +10,9 @@ let
 
   llamaCpp =
     if cfg.backend == "cuda" then
-      pkgs.llama-cpp.override { cudaSupport = true; }
+      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.cuda
     else
-      pkgs.llama-cpp.override { vulkanSupport = true; };
+      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.vulkan;
 
   # Mesa Vulkan ICD for the vulkan backend, matched to the host's GPU: Intel
   # ANV on the iGPU laptops, RADV on the AMD boxes (the default). Both files
@@ -25,6 +26,13 @@ let
   useCustomCache = cfg.cacheDir != null;
   cacheDir = if useCustomCache then cfg.cacheDir else "/var/cache/llama-swap";
 
+  # Dual-GPU host: pin each model to one Vulkan device so llama.cpp doesn't
+  # split layers across both GPUs (APU models -> Vulkan1, eGPU -> Vulkan0).
+  # Device order is PCI-bus-order deterministic under RADV; stable on this
+  # headless server with scheduled reboots and a permanently attached eGPU.
+  egpuPinning = cfg.backend == "vulkan" && cfg.egpu.enable;
+  vkDevice = gpu: if gpu == "egpu" then "Vulkan0" else "Vulkan1";
+
   mkCmd =
     m:
     lib.concatStringsSep " " (
@@ -34,8 +42,10 @@ let
         "--n-gpu-layers 999"
         "--prio 1"
         "--no-mmap"
-        "--mlock"
       ]
+      # Pin to one Vulkan device so llama.cpp doesn't split across both GPUs.
+      ++ lib.optional egpuPinning "--device ${vkDevice m.gpu}"
+      ++ lib.optionals m.mlock [ "--mlock" ]
       # --jinja (chat template) and -fa (flash attention) are generative-only and
       # break non-causal encoder embedding models; --embeddings turns on the
       # /v1/embeddings endpoint instead.
@@ -49,20 +59,15 @@ let
             "--batch-size 2048"
             "--ubatch-size 2048"
             "--cache-reuse 256"
-            # Anti-loop. The degenerate failure mode (LangGraph "recursion limit
-            # 50" in LibreChat, qwen-code stalling) is the model re-emitting the
-            # SAME tool call every round. Each prior identical call sits in the
-            # re-sent context, so DRY -- which penalizes regenerating sequences
-            # already seen -- breaks the loop. Critically, DRY is NOT an OpenAI
-            # parameter, so clients can't override/unset it (unlike temp/top_p/
-            # penalties they send). allowed-length 8 + the default sequence
-            # breakers keep legit repetition safe -- the loop failure mode
-            # re-emits a whole tool call (dozens of tokens), so a higher floor
-            # still catches it while sparing legit code repeats and correct
-            # prose regenerated on a retry (e.g. commit messages).
-            "--dry-multiplier 0.8"
-            "--dry-base 1.75"
-            "--dry-allowed-length 8"
+            # NOTE: no DRY/repetition sampler here on purpose. A context-wide
+            # repetition penalty can't distinguish a stuck tool-loop from a
+            # legitimate retry of the same command — both are the same token
+            # sequence — so it forced models to corrupt commands (typos) just to
+            # re-run them. Loop protection belongs at the harness layer (a hard
+            # step cap like LibreChat's recursionLimit / qwen-code's max turns),
+            # which aborts a runaway without mangling individual tool calls. Per-
+            # model presence-penalty (set on the thinking models per their cards)
+            # still handles ordinary prose repetition.
           ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]
@@ -86,17 +91,22 @@ let
   # and subset semantics — any subset of a declared set is also valid, and only
   # the requested models are actually started (nothing is preloaded).
   #
-  # We classify chat models as "big" (≥~100B-class; two won't fit in unified RAM
-  # together) or "small" (all fit together), and always keep the embedding
-  # model(s) resident (a RAG query embeds via bge-m3, then a chat model
-  # generates — neither should evict the other). The policy, encoded so that
-  # every *maximal* valid set fits in memory by construction:
+  # APU chat models are classified "big" (≥~100B-class; two won't fit in the
+  # APU's unified RAM together) or "small" (all fit together), and embedding
+  # model(s) are always resident (a RAG query embeds via bge-m3, then a chat
+  # model generates — neither should evict the other). The APU policy, encoded
+  # so every *maximal* valid set fits in memory by construction:
   #   * at most ONE big, optionally paired with at most ONE small   → lane A
   #   * OR any number of smalls together                            → lane B
   #   * AND the embedding model(s), always
   # This permits big+small and small+small (the real two-session cases) while
-  # forbidding big+big and big+two-smalls (the combinations that OOM). With no
-  # embedding model and ≤1 chat model the matrix is omitted (plain hot-swap).
+  # forbidding big+big and big+two-smalls (the combinations that OOM).
+  #
+  # The eGPU (R9700, 32 GB) is a SEPARATE memory pool. Models tagged gpu="egpu"
+  # form their own lane: mutually exclusive among themselves (one dense ~30B
+  # fills the card), but ANDed alongside the APU lanes so an eGPU model may
+  # co-reside with any APU model. With no embedding model and ≤1 chat model
+  # total the matrix is omitted (plain hot-swap).
   modelList = lib.imap0 (i: name: {
     inherit name;
     var = "m${toString i}";
@@ -107,17 +117,24 @@ let
   # ride alongside whatever chat model is loaded — including `solo` ones — so
   # they never participate in the chat lanes below.
   isResident = name: isEmbed name || cfg.models.${name}.alwaysResident;
+  # eGPU-pinned chat models live in their own 32 GB pool, never in the APU
+  # big/small/solo lanes (`big`/`solo` are ignored for them); they get their own
+  # mutually-exclusive lane below.
+  isEgpu = name: cfg.models.${name}.gpu == "egpu";
   isSolo = name: cfg.models.${name}.solo;
   # `solo` wins over `big`: a solo model is exclusive against every other chat
   # model, so it must not also appear in the big/small lanes.
   isBig = name: cfg.models.${name}.big && !isSolo name;
-  soloVars = map (e: e.var) (lib.filter (e: !isResident e.name && isSolo e.name) modelList);
-  bigVars = map (e: e.var) (lib.filter (e: !isResident e.name && isBig e.name) modelList);
+  # APU chat lanes exclude residents (always-on) and egpu models (separate pool).
+  isApuChat = name: !isResident name && !isEgpu name;
+  soloVars = map (e: e.var) (lib.filter (e: isApuChat e.name && isSolo e.name) modelList);
+  bigVars = map (e: e.var) (lib.filter (e: isApuChat e.name && isBig e.name) modelList);
   smallVars = map (e: e.var) (
-    lib.filter (e: !isResident e.name && !isSolo e.name && !cfg.models.${e.name}.big) modelList
+    lib.filter (e: isApuChat e.name && !isSolo e.name && !cfg.models.${e.name}.big) modelList
   );
+  egpuVars = map (e: e.var) (lib.filter (e: !isResident e.name && isEgpu e.name) modelList);
   residentVars = map (e: e.var) (lib.filter (e: isResident e.name) modelList);
-  chatVars = soloVars ++ bigVars ++ smallVars;
+  chatVars = soloVars ++ bigVars ++ smallVars ++ egpuVars;
   matrixVars = lib.listToAttrs (map (e: lib.nameValuePair e.var e.name) modelList);
 
   bigExpr = lib.optionalString (bigVars != [ ]) "(${lib.concatStringsSep " | " bigVars})";
@@ -143,13 +160,29 @@ let
     else
       laneB; # may be "" when there are no non-solo chat models
   soloExpr = lib.concatStringsSep " | " soloVars;
-  chatExpr =
+  apuChatExpr =
     if soloExpr != "" && nonSoloExpr != "" then
       "${soloExpr} | ${nonSoloExpr}"
     else if soloExpr != "" then
       soloExpr
     else
-      nonSoloExpr; # may be "" when there are no chat models at all
+      nonSoloExpr; # may be "" when there are no APU chat models
+  # The eGPU pool: at most one egpu model resident at a time (32 GB fits ~one
+  # dense ~30B). Subset semantics keep each valid alone, or none loaded.
+  egpuExpr = lib.optionalString (egpuVars != [ ]) "(${lib.concatStringsSep " | " egpuVars})";
+  # Independent memory pools are ANDed: any valid APU set may co-reside with any
+  # eGPU choice. A single pool is left unwrapped (preserves single-GPU output).
+  chatPools = lib.filter (e: e != "") [
+    apuChatExpr
+    egpuExpr
+  ];
+  chatExpr =
+    if chatPools == [ ] then
+      ""
+    else if lib.length chatPools == 1 then
+      lib.head chatPools
+    else
+      lib.concatMapStringsSep " & " (e: "(${e})") chatPools;
   residentAnd = lib.concatStringsSep " & " residentVars;
   matrixSet =
     if chatExpr == "" then

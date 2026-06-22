@@ -1,18 +1,15 @@
 {
   lib,
   python3Packages,
-  fetchPypi,
+  # Sourced from flake input (not PyPI) to fix PDF truncation in 0.5.0.
+  src,
 }:
-python3Packages.buildPythonApplication rec {
+python3Packages.buildPythonApplication {
   pname = "arxiv-mcp-server";
-  version = "0.5.0";
+  version = "0.5.0-unstable-${builtins.substring 0 8 (src.lastModifiedDate or "00000000")}";
   pyproject = true;
 
-  src = fetchPypi {
-    pname = "arxiv_mcp_server";
-    inherit version;
-    hash = "sha256-vxrKyq+uOgVYtWrvikcIidLra6n0GFlFvfKztrc7GH8=";
-  };
+  inherit src;
 
   build-system = [ python3Packages.hatchling ];
 

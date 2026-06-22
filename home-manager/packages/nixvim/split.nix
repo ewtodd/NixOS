@@ -1,15 +1,13 @@
+inputs:
 { pkgs, ... }:
 {
   extraPlugins = [
     (pkgs.vimUtils.buildVimPlugin {
       pname = "split.nvim";
-      version = "0-unstable-main";
-      src = pkgs.fetchFromGitHub {
-        owner = "wurli";
-        repo = "split.nvim";
-        rev = "main";
-        sha256 = "sha256-nN2hV95KCiauvDgnWtHVbvpHz2oVyCRvwWt+e02EhUA=";
-      };
+      version = "0-unstable-${
+        builtins.substring 0 8 (inputs.split-nvim-src.lastModifiedDate or "00000000")
+      }";
+      src = inputs.split-nvim-src;
     })
   ];
   extraConfigLua = ''

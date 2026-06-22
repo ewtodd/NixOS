@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   osConfig ? null,
   ...
 }:
@@ -28,7 +29,7 @@ in
       ./keymaps.nix
       ./plugins.nix
       ./performance.nix
-      ./split.nix
+      (import ./split.nix inputs)
     ];
     enable = true;
 
