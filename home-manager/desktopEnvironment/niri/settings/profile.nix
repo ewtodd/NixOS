@@ -58,6 +58,14 @@ let
           proportion = 1.0;
         };
       }
+      {
+        match._props = {
+          app-id = "spotify";
+        };
+        default-column-width = {
+          proportion = 1.0;
+        };
+      }
     ];
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.thunderbird}/bin/thunderbird && niri msg action move-column-left" ]
@@ -89,6 +97,12 @@ let
       {
         match._props = {
           app-id = "Spotify";
+        };
+        open-on-workspace = "b-aux";
+      }
+      {
+        match._props = {
+          app-id = "spotify";
         };
         open-on-workspace = "b-aux";
       }
