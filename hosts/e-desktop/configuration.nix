@@ -17,7 +17,6 @@ in
 
   systemOptions = {
     graphics.nvidia.enable = true;
-
     hardware.openRGB.enable = true;
     services.rgbLoad = {
       enable = true;
@@ -31,29 +30,20 @@ in
     services.binaryCache.serve = true;
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
-    services.llamaSwap = {
-      enable = true;
-      backend = "cuda"; # RTX 5080 (SM120)
-      models."qwen-fim" = {
-        hf = "ggml-org/Qwen2.5-Coder-7B-Q8_0-GGUF";
-        ctxSize = 32768;
-        ttl = 300;
-        extraFlags = [
-          "-ub 1024"
-          "-b 1024"
-          "-dt 0.1"
-          "--cache-reuse 256"
-        ];
-      };
-    };
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
   };
 
   nix.settings = {
-    substituters = [ "https://cache.nixos-cuda.org" ];
-    trusted-public-keys = [ "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=" ];
+    substituters = [
+      "https://cache.nixos-cuda.org"
+      "https://cache.numtide.com"
+    ];
+    trusted-public-keys = [
+      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+    ];
   };
 
   users.users.e-play = {

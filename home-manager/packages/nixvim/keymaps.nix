@@ -353,20 +353,26 @@
       mode = "n";
     }
     {
-      action.__raw = "function() require('orgmode').action('agenda.prompt') end";
+      action.__raw = "function() require('opencode').ask('@this: ') end";
       key = "<leader>oa";
-      mode = "n";
+      mode = [
+        "n"
+        "v"
+      ];
       options = {
-        desc = "Org agenda";
+        desc = "Ask OpenCode...";
         silent = true;
       };
     }
     {
-      action.__raw = "function() require('orgmode').action('capture.prompt') end";
+      action.__raw = "function() require('opencode').select() end";
       key = "<leader>oc";
-      mode = "n";
+      mode = [
+        "n"
+        "v"
+      ];
       options = {
-        desc = "Org capture";
+        desc = "Select OpenCode...";
         silent = true;
       };
     }

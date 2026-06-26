@@ -8,7 +8,6 @@ let
   # proof-of-work challenge that costs scrapers/credential bots CPU before they
   # ever reach the app. TCP loopback binds avoid unix-socket permission juggling
   # with Caddy. METRICS_BIND is left at its per-instance unix-socket default.
-  anubisAi = "127.0.0.1:9001";
   anubisStatus = "127.0.0.1:9002";
   anubisLlm = "127.0.0.1:9003";
 in
@@ -42,11 +41,6 @@ in
           header_up X-Real-IP {remote_host}
         }
       '';
-      virtualHosts."ai.ethanwtodd.com".extraConfig = ''
-        reverse_proxy http://${anubisAi} {
-          header_up X-Real-IP {remote_host}
-        }
-      '';
 
       # llm is mostly an API (qwen-code hits /v1 + /mcp with a Bearer key and
       # cannot solve a JS challenge), so route those paths straight to LiteLLM
@@ -63,11 +57,6 @@ in
 
     # ---- Anubis proof-of-work instances ----
     services.anubis.instances = {
-      ai.settings = {
-        TARGET = "http://10.0.0.5:3080";
-        BIND = anubisAi;
-        BIND_NETWORK = "tcp";
-      };
       status.settings = {
         TARGET = "http://127.0.0.1:3001";
         BIND = anubisStatus;

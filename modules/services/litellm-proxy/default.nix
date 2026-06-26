@@ -74,20 +74,24 @@
             allowed_openai_params = nativeOpenaiParams;
             timeout = 1800;
           };
-          # unsloth's recommended sampling for the Qwen3.6 thinking models,
+          # unsloth's recommended sampling for the Qwen3.6 *thinking* models,
           # exposed as distinct model_names so either profile is selectable from
           # a client dropdown (LibreChat's addParams is endpoint-wide, not
           # per-model, so per-profile entries are the only way to choose). Baked
           # into litellm_params as request defaults; top_k/min_p ride through via
-          # allowed_openai_params. The real levers are temperature and
-          # presence_penalty — the other keys are identical across both profiles.
+          # allowed_openai_params. Per unsloth, BOTH thinking profiles use
+          # presence_penalty=0.0 — the 1.5 value is for *instruct/non-thinking*
+          # mode only (it fights the repetition loops that plague non-thinking
+          # mode; in a thinking/agent loop it instead destabilizes tool-call
+          # formatting). So temperature (1.0 general / 0.6 coding) is the only
+          # lever between these two profiles; every other key is identical.
           sampling = {
             general = {
               temperature = 1.0;
               top_p = 0.95;
               top_k = 20;
               min_p = 0;
-              presence_penalty = 1.5;
+              presence_penalty = 0;
             };
             coding = {
               temperature = 0.6;
@@ -159,28 +163,31 @@
                   litellm_params = mkLocal "openai/qwen3.6-35b-a3b-udq8";
                 }
                 {
-                  model_name = "Qwen3-Coder-Next (smart-coder)";
-                  litellm_params = mkLocal "openai/qwen3-coder-next";
-                }
-                {
                   model_name = "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)";
                   litellm_params = mkLocal "openai/qwen3-30b-a3b";
                 }
                 {
-                  model_name = "Qwen3.5-122B-A10B (big-moe)";
+                  model_name = "Qwen3.5-122B-A10B (large moe)";
                   litellm_params = mkLocal "openai/qwen3.5-122b";
                 }
                 {
-                  model_name = "Qwen3.6-35B-A3B (UD-Q8 general)";
+                  model_name = "Qwen3.6-35B-A3B (moe general)";
                   litellm_params = mkLocalSampled "openai/qwen3.6-35b-a3b-udq8" sampling.general;
                 }
                 {
-                  model_name = "Qwen3.6-35B-A3B (UD-Q8 coding)";
+                  model_name = "Qwen3.6-35B-A3B (moe coding)";
                   litellm_params = mkLocalSampled "openai/qwen3.6-35b-a3b-udq8" sampling.coding;
                 }
                 {
-                  model_name = "Qwen3.6-27B (dense-reasoner)";
-                  litellm_params = mkLocal "openai/qwen3.6-27b";
+                  # pi's agentic coding default — it must emit well-formed tool
+                  # calls turn after turn. Bare mkLocal would inherit this model's
+                  # hot llama-server defaults (thinking-general temp 1.0); give it
+                  # unsloth's thinking-*coding* profile (temp 0.6) so the tool-call
+                  # scaffold is sampled near-greedily and stops leaking as
+                  # half-formed <tool_call> text. (presence_penalty is 0 in both
+                  # thinking profiles; see the sampling note above.)
+                  model_name = "Qwen3.6-27B (dense coding)";
+                  litellm_params = mkLocalSampled "openai/qwen3.6-27b" sampling.coding;
                 }
                 {
                   model_name = "Gemma-4-31B (dense)";

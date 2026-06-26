@@ -28,9 +28,6 @@ in
     services.scheduledReboot.calendar = "*-*-* 05:00:00";
     services.litellmProxy.enable = true;
     services.searxng.enable = true;
-    services.librechat.enable = true;
-    services.ragApi.enable = true;
-    services.hermes.enable = true;
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
@@ -75,9 +72,6 @@ in
         "qwen3.6-35b-a3b-udq8" = {
           hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q8_K_XL";
           ctxSize = 262144;
-          # Light enough at UD-Q8_K_XL to co-reside with the fast 30B (the auto
-          # router's simple/general split) rather than evict it: `big` pairs one
-          # big + one small. Smaller than gpt-oss, which already rides with 30B.
           big = true;
           kvQuant = true;
           extraFlags = [
@@ -87,15 +81,11 @@ in
             "--top-p 0.95"
             "--top-k 20"
             "--min-p 0"
-            "--presence-penalty 1.5"
           ];
         };
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 131072;
-          # Dense -> eGPU (Vulkan0, ~6x APU bandwidth). UD-Q5_K_XL + mmproj +
-          # draft head leaves ~4 GB headroom at 128k ctx with q8_0 KV.
-          # Keep serverCtx in sync with qwen-code mkModel; eGPU is its own pool.
+          ctxSize = 196608;
           gpu = "egpu";
           mlock = false; # weights live in VRAM; don't pin a host-RAM copy too
           kvQuant = true;
@@ -106,12 +96,7 @@ in
             "--top-p 0.95"
             "--top-k 20"
             "--min-p 0"
-            "--presence-penalty 1.5"
           ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-6s9hDR7kvV7QGXoHd92PT8647vonAJBnx9SWy2j73kU=";
-          };
         };
         "qwen3.5-122b" = {
           hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
@@ -163,9 +148,9 @@ in
             "--top-p 0.95"
           ];
         };
-        # The always-on Hermes orchestrator brain (son-of-anton). alwaysResident
+        # orchestrator brain (son-of-anton). alwaysResident
         # so it rides alongside whatever big delegation model is loaded. Gemma 4
-        # thinks by default -- keep it (routing quality depends on it).
+        # thinks by default.
         "gemma-4-e4b-q6" = {
           hf = "unsloth/gemma-4-E4B-it-GGUF:Q6_K";
           ctxSize = 32768;
@@ -292,7 +277,6 @@ in
       "wheel"
       "video"
       "render"
-      "hermes"
     ];
     openssh.authorizedKeys.keys = personalKeys;
   };

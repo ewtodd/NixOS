@@ -16,8 +16,6 @@ in
     ./deploy
     ./dyndns
     ./grafana
-    ./hermes
-    ./librechat
     ./litellm-proxy
     ./llama-swap
     ./minecraft
@@ -25,7 +23,6 @@ in
     ./node-exporter
     ./ntfy
     ./prometheus
-    ./rag-api
     ./reverse-proxy
     ./rgb-load
     ./router

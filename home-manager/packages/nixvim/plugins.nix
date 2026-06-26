@@ -8,6 +8,7 @@
   extraConfigLua = ''
     vim.o.splitbelow = false
     vim.o.splitright = false
+    vim.o.autoread = true
   '';
 
   extraPlugins = [ pkgs.vimPlugins.plenary-nvim ];
@@ -20,24 +21,9 @@
     lualine = {
       enable = true;
     };
-
     telescope = {
       enable = true;
       extensions.file-browser.enable = true;
-    };
-
-    oil = {
-      enable = true;
-      settings = {
-        win_options = {
-          signcolumn = "yes:2";
-        };
-        skip_confirm_for_simple_edits = false;
-      };
-    };
-
-    oil-git-status = {
-      enable = true;
     };
 
     tiny-inline-diagnostic = {
@@ -124,27 +110,6 @@
       };
     };
 
-    orgmode = {
-      enable = true;
-      settings = {
-        win_split_mode = "tabnew";
-        org_agenda_files = "~/org/**/*";
-        org_default_notes_file = "~/org/refile.org";
-        org_capture_templates = {
-          t = {
-            description = "Todo";
-            template = "* TODO %?\n  DEADLINE: %^t";
-            target = "~/org/refile.org";
-          };
-          n = {
-            description = "Note";
-            template = "* %?\n  %U";
-            target = "~/org/refile.org";
-          };
-        };
-      };
-    };
-
     treesitter = {
       enable = true;
       nixvimInjections = true;
@@ -161,6 +126,8 @@
         bibtex
         cmake
         json
+        typescript
+        tsx
         lua
         toml
         markdown
@@ -201,6 +168,15 @@
         texlab.enable = true;
         cmake.enable = true;
         jsonls.enable = true;
+        ts_ls = {
+          enable = true;
+          settings = {
+            preferences = {
+              includeCompletionsForModuleExports = true;
+              includeCompletionsWithSnippetText = true;
+            };
+          };
+        };
       };
     };
 
@@ -220,10 +196,17 @@
           c = [ "clang_format" ];
           cpp = [ "clang_format" ];
           toml = [ "taplo" ];
+          typescript = [ "biome" ];
+          typescriptreact = [ "biome" ];
+          javascript = [ "biome" ];
+          javascriptreact = [ "biome" ];
         };
         formatters = {
           clang_format = {
             prepend_args = [ "--style={BasedOnStyle: LLVM, BreakStringLiterals: false}" ];
+          };
+          biome = {
+            command = "${pkgs.biome}/bin/biome";
           };
         };
       };
@@ -237,84 +220,126 @@
       enable = true;
     };
 
-    cmp = {
+    friendly-snippets = {
       enable = true;
-      settings = {
-        performance = {
-          debounce = 60;
-          fetchingTimeout = 200;
-          maxViewEntries = 30;
-        };
-        formatting = {
-          fields = [
-            "kind"
-            "abbr"
-            "menu"
-          ];
-        };
-        sources = [
-          { name = "nvim_lsp"; }
-          {
-            name = "buffer";
-            option.get_bufnrs.__raw = "vim.api.nvim_list_bufs";
-            keywordLength = 3;
-          }
-          {
-            name = "path";
-            keywordLength = 3;
-          }
-          {
-            name = "luasnip";
-            keywordLength = 3;
-          }
-        ];
-        snippet = {
-          expand = "luasnip";
-        };
-        mapping = {
-          "<Tab>" = ''
-            cmp.mapping(function(fallback)
-              local luasnip = require("luasnip")
-              if cmp.visible() then
-                cmp.select_next_item()
-              elseif luasnip.expand_or_locally_jumpable() then
-                luasnip.expand_or_jump()
-              else
-                fallback()
-              end
-            end, {'i', 's'})
-          '';
-
-          "<S-Tab>" = ''
-            cmp.mapping(function(fallback)
-              local luasnip = require("luasnip")
-              if cmp.visible() then
-                cmp.select_prev_item()
-              elseif luasnip.jumpable(-1) then
-                luasnip.jump(-1)
-              else
-                fallback()
-              end
-            end, {'i', 's'})
-          '';
-
-          "<A-j>" = "cmp.mapping.select_next_item()";
-          "<A-k>" = "cmp.mapping.select_prev_item()";
-          "<A-e>" = "cmp.mapping.abort()";
-          "<A-b>" = "cmp.mapping.scroll_docs(-4)";
-          "<A-f>" = "cmp.mapping.scroll_docs(4)";
-          "<CR>" = "cmp.mapping.confirm({ select = true })";
-          "<A-CR>" = "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
-        };
-      };
     };
 
-    cmp-nvim-lsp.enable = true;
-    cmp-buffer.enable = true;
-    cmp_luasnip.enable = true;
-    cmp-cmdline.enable = true;
-    indent-blankline = {
+    blink-cmp = {
       enable = true;
+      setupLspCapabilities = true;
+      settings = {
+        keymap = {
+          preset = "default";
+          "<Tab>" = [
+            "select_next"
+            "snippet_forward"
+            "fallback"
+          ];
+          "<S-Tab>" = [
+            "select_prev"
+            "snippet_backward"
+            "fallback"
+          ];
+          "<CR>" = [
+            "accept"
+            "fallback"
+          ];
+        };
+
+        sources = {
+          default = [
+            "lsp"
+            "path"
+            "snippets"
+            "buffer"
+          ];
+
+          per_filetype = {
+            tex = [
+              "snippets"
+              "path"
+              "lsp"
+              "buffer"
+            ];
+
+            plaintex = [
+              "snippets"
+              "path"
+              "lsp"
+              "buffer"
+            ];
+          };
+
+          providers = {
+            snippets = {
+              score_offset = 10;
+            };
+            buffer = {
+              score_offset = -7;
+            };
+          };
+        };
+
+        snippets = {
+          expand.__raw = ''
+            function(snippet)
+              require("luasnip").lsp_expand(snippet)
+            end
+          '';
+
+          active.__raw = ''
+            function(filter)
+              local luasnip = require("luasnip")
+
+              if filter and filter.direction then
+                return luasnip.jumpable(filter.direction)
+              end
+
+              return luasnip.in_snippet()
+            end
+          '';
+
+          jump.__raw = ''
+            function(direction)
+              require("luasnip").jump(direction)
+            end
+          '';
+        };
+        completion = {
+          list = {
+            max_items = 30;
+            selection = {
+              preselect = true;
+              auto_insert = false;
+            };
+          };
+          documentation = {
+            auto_show = true;
+            auto_show_delay_ms = 300;
+          };
+
+          accept = {
+            auto_brackets = {
+              enabled = true;
+              semantic_token_resolution = {
+                enabled = false;
+              };
+            };
+          };
+          menu = {
+            auto_show = true;
+            max_height = 10;
+          };
+
+          ghost_text = {
+            enabled = false;
+          };
+        };
+
+        signature = {
+          enabled = true;
+        };
+      };
     };
 
     snacks = {

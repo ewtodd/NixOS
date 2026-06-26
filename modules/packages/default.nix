@@ -16,7 +16,6 @@ in
     {
       environment.systemPackages = with pkgs; [
         agenix
-        claude-code
         git
         gh
         nh
