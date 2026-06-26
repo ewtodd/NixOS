@@ -57,28 +57,6 @@ with lib;
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
       services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
 
-      services.hermes.enable = mkEnableOption "Hermes Agent orchestrator brain (son-of-anton): always-on gateway + web dashboard";
-      services.hermes.brainModel = mkOption {
-        type = types.str;
-        default = "gemma-4-e4b-q6";
-        description = "llama-swap model name used as the always-on orchestrator brain.";
-      };
-      services.hermes.delegationModel = mkOption {
-        type = types.str;
-        default = "qwen3.6-35b-a3b-udq8";
-        description = "llama-swap model the brain delegates heavy work to via delegate_task.";
-      };
-      services.hermes.endpoint = mkOption {
-        type = types.str;
-        default = "http://127.0.0.1:8080/v1";
-        description = "OpenAI-compatible endpoint serving the brain + delegation models (llama-swap).";
-      };
-      services.hermes.dashboardHost = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "Bind address for the Hermes web dashboard (localhost-only; it stores keys).";
-      };
-
       services.llamaSwap.lanExpose = mkEnableOption ''
         expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
         default) binds 127.0.0.1 only — correct for hosts where the sole consumer
@@ -248,8 +226,7 @@ with lib;
       };
       services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + MCP gateway (containerized, son-of-anton)";
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
-      services.librechat.enable = mkEnableOption "LibreChat chat UI + local MongoDB (ai.ethanwtodd.com, served via nu); pulls in Meilisearch for message search";
-      services.ragApi.enable = mkEnableOption "RAG API + pgvector (LibreChat file search), as podman containers embedding via LiteLLM/bge-m3";
+
       services.deploy.enable = mkEnableOption ''
         colmena deploy target: a key-only `deploy` user with scoped NOPASSWD sudo
         (just the activation commands) and nix trusted-user, so the build host

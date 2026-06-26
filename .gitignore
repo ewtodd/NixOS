@@ -8,3 +8,5 @@ result-*
 
 # Ignore automatically generated direnv output
 .direnv
+# Added by code-review-graph
+.code-review-graph/

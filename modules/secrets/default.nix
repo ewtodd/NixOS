@@ -86,35 +86,6 @@
         mode = "0400";
       };
     })
-    (lib.mkIf config.systemOptions.services.librechat.enable {
-      # Read by the librechat service as its credentialsFile (EnvironmentFile):
-      # CREDS_KEY, CREDS_IV, JWT_SECRET, JWT_REFRESH_SECRET, LITELLM_API_KEY.
-      librechat-env = {
-        file = ../../secrets/librechat-env.age;
-        owner = "librechat";
-        mode = "0400";
-      };
-      # Meilisearch master key, shared by both the meilisearch daemon and
-      # LibreChat (the librechat module wires it into MEILI_MASTER_KEY). Both
-      # read it via systemd LoadCredential as root, and meilisearch runs under
-      # DynamicUser, so it must stay owned by root (a `meilisearch` owner would
-      # not exist at agenix-decrypt time). Content is the raw key, no KEY= prefix.
-      meilisearch-api-key = {
-        file = ../../secrets/meilisearch-api-key.age;
-        mode = "0400";
-      };
-    })
-    (lib.mkIf config.systemOptions.services.ragApi.enable {
-      # Env file shared by the rag-api and pgvector containers, read by root as
-      # the podman units' EnvironmentFile. KEY=value lines: POSTGRES_PASSWORD,
-      # RAG_OPENAI_API_KEY (a valid LiteLLM key; must be named exactly
-      # RAG_OPENAI_API_KEY), and JWT_SECRET (must equal LibreChat's JWT_SECRET so
-      # rag_api can verify forwarded user tokens).
-      rag-api-env = {
-        file = ../../secrets/rag-api-env.age;
-        mode = "0400";
-      };
-    })
     (lib.mkIf config.systemOptions.owner.e.enable {
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;

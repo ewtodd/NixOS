@@ -45,7 +45,7 @@ Hosts:
 - **server-nu** - Router, AdGuard, reverse proxy, dynamic DNS
 - **server-mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - ZFS storage server
-- **son-of-anton** - AI stack (128GB AMD Strix Halo): llama-swap models, LiteLLM proxy + MCP gateway, SearXNG, LibreChat
+- **son-of-anton** - AI stack (128GB AMD Strix Halo): llama-swap models, LiteLLM proxy + MCP gateway, SearXNG
 ```
 <!---->
 ## Important Notes
@@ -157,50 +157,29 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`
 <!---->
-### Setup
-<!---->
-The signing keypair lives at `/etc/nix/cache-priv-key.pem` (server) and `/etc/nix/cache-pub-key.pem` (public key baked into client config).
-To regenerate:
-```bash
-sudo nix-store --generate-binary-cache-key e-desktop /etc/nix/cache-priv-key.pem /etc/nix/cache-pub-key.pem
-```
-If regenerated, update the public key in `modules/services/default.nix` and rebuild all clients.
-<!---->
-Tailscale Funnel must be enabled in the e-tailnet ACL (`nodeAttrs` with `funnel` attr) and started once on e-desktop:
-```bash
-sudo tailscale funnel --bg 5000
-```
-<!---->
 ## AI/LLM Infrastructure
 <!---->
 The fleet includes dedicated AI servers running llama-swap and LiteLLM:
 <!---->
-- **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend
-  - `gpt-oss-120b` - name-selectable only, not routed via `auto` (131072 context)
-  - `qwen3-coder-next` - Qwen3-Coder-Next-80B-A3B smart-coder (262144 context)
-  - `qwen3-30b-a3b` - ultra-fast general tier ~100 t/s (65536 context)
-  - `qwen3.5-122b` - big-moe / orchestrator Qwen3.5-122B-A10B (131072 context)
+- **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend; primarily used for large MoE models
+- **son-of-son-of-anton, or antonino** (AMD R9700 32GB as eGPU on son-of-anton): Also connected to llama-swap server; used for dense models + to improve concurrency
 <!---->
-- **e-desktop** (RTX 5080 16GB): FIM completion server via CUDA backend, not part of the LiteLLM fleet
-  - `qwen-fim` - Qwen2.5-Coder-7B base Q8_0 (32768 context, ttl=300s), serves `/infill` for llama.vim ghost text in nvim
 <!---->
 - **son-of-anton** also hosts the rest of the AI stack (consolidated — every hop is localhost):
   - **LiteLLM proxy** with content-based classifier routing
     - Routes `auto` to smart-coder (coding), ultra-fast (general+simple), or big-moe (general+complex)
     - Fallbacks between the local models cover load failures
     - Single entry point: `https://llm.ethanwtodd.com/v1`
-  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both qwen-code and LibreChat.
+  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both qwen-code.
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP.
-  - **LibreChat** chat UI at `https://ai.ethanwtodd.com` (local MongoDB), wired to the LiteLLM models + MCP gateway.
 <!---->
 ### Coding agent
-
- - **qwen-code** (e-workstations via `home-manager/packages/qwen-code`) — coding
-    CLI/TUI pointed at the LiteLLM endpoint, default model **Qwen3-Coder-Next**.
+<!---->
+ - **opencode** (e-workstations via `home-manager/packages/opencode`) — coding
+    CLI/TUI pointed at the LiteLLM endpoint, default model **Qwen3.6-27b**.
     MCP servers run as local stdio extensions (`fetch`, `searxng`, `nixos`,
     `arxiv`, `context7`). The wrapper sources `LITELLM_MASTER_KEY` from the
-    agenix secret at launch. Approval mode is switchable via Shift+Tab in the
-    interactive CLI (`plan`, `default`, `auto-edit`, `auto`, `yolo`).
+    agenix secret at launch..
 ## Deployment (Colmena)
 <!---->
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
@@ -215,7 +194,8 @@ colmena apply-local          # rebuild the local workstation (e-desktop / e-lapt
 colmena apply --on anton     # a single node
 ```
 <!---->
-- **Scope:** the 6 e-owner nodes (v-devices excluded). The headless servers are
+- **Scope:** the 6 e-owner nodes (v-devices excluded).
+The headless servers are
   pushed over SSH; the two workstations deploy locally (`apply-local`, which
   also sidesteps e-laptop's dynamic IP).
 - **Auth:** a key-only `deploy` user (`systemOptions.services.deploy.enable`)

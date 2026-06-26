@@ -28,16 +28,6 @@ in
   ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
-  # son-of-anton runs the LiteLLM proxy; personal so e-devices can read it for opencode.
   "litellm-master-key.age".publicKeys = personal ++ [ server-son-of-anton ];
-  # son-of-anton: SearXNG secret_key (read by the searx service as $SEARX_SECRET_KEY).
   "searxng-secret-key.age".publicKeys = personal ++ [ server-son-of-anton ];
-  # son-of-anton: LibreChat env (CREDS_KEY/IV, JWT secrets, LITELLM_API_KEY).
-  "librechat-env.age".publicKeys = personal ++ [ server-son-of-anton ];
-  # son-of-anton: Meilisearch master key (message search). Raw key, no KEY= prefix.
-  "meilisearch-api-key.age".publicKeys = personal ++ [ server-son-of-anton ];
-  # son-of-anton: RAG API env (file search). Shared by the rag-api + pgvector
-  # containers; KEY=value lines: POSTGRES_PASSWORD, RAG_OPENAI_API_KEY (a LiteLLM
-  # key), JWT_SECRET (must match LibreChat's JWT_SECRET).
-  "rag-api-env.age".publicKeys = personal ++ [ server-son-of-anton ];
 }

@@ -63,10 +63,6 @@
       url = "github:ggml-org/llama.cpp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hermes-agent = {
-      url = "github:NousResearch/hermes-agent";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -108,9 +104,6 @@
         }
       ];
 
-      # Shared per-host module list, consumed by both nixosConfigurations and
-      # the colmena hive so the two can never drift. `headless` selects the
-      # slimmer home-manager module set used by the DE-less server hosts.
       mkSystemModules =
         {
           hostname,
@@ -155,7 +148,6 @@
           modules = mkSystemModules { inherit hostname headless; };
         };
 
-      # Every host, and whether it's a headless (server) build.
       hosts = {
         v-desktop = {
           headless = false;

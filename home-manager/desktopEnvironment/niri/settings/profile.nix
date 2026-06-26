@@ -168,6 +168,16 @@ let
       }
       {
         match._props = {
+          app-id = "spotify";
+        };
+        open-on-workspace = "a-media";
+        default-column-width = {
+          proportion = alt-proportion;
+        };
+      }
+
+      {
+        match._props = {
           app-id = "btopkitty";
         };
         open-on-workspace = "b-aux";
