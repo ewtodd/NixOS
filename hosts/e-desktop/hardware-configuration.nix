@@ -35,14 +35,14 @@
       disable_clocks_cleanup = false;
     };
     apply_settings_timer = 5;
-    gpus."10DE:2C02-19DA:1762-0000:01:00.0" = {
+    gpus."10DE:2684-1458:40BF-0000:01:00.0" = {
       fan_control_enabled = false;
-      power_cap = 330.0;
+      power_cap = 430.0;
       gpu_clock_offsets = {
-        "0" = 175;
+        "0" = 130;
       };
       mem_clock_offsets = {
-        "0" = 4000;
+        "0" = 3250;
       };
     };
   };
