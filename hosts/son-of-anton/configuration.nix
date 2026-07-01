@@ -77,7 +77,7 @@ in
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 196608;
           gpu = "egpu";
-          mlock = false; # weights live in VRAM; don't pin a host-RAM copy too
+          mlock = false;
           kvQuant = true;
           extraFlags = [
             "--spec-type draft-mtp"
@@ -110,9 +110,9 @@ in
 
         "gemma-4-31b" = {
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
-          ctxSize = 65536;
+          ctxSize = 262144;
           gpu = "egpu";
-          mlock = false; # mlock breaks gemma loads regardless
+          mlock = false;
           kvQuant = true;
           extraFlags = [
             "--temp 1.0"
@@ -127,7 +127,7 @@ in
 
         "gemma-4-26b-a4b" = {
           hf = "unsloth/gemma-4-26B-A4B-it-GGUF:Q8_0";
-          ctxSize = 131072;
+          ctxSize = 262144;
           big = true;
           mlock = false;
           kvQuant = true;
@@ -140,7 +140,7 @@ in
 
         "gemma-4-e4b-q6" = {
           hf = "unsloth/gemma-4-E4B-it-GGUF:Q6_K";
-          ctxSize = 32768;
+          ctxSize = 131072;
           mlock = false;
           kvQuant = true;
           alwaysResident = true;
