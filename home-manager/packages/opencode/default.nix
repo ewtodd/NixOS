@@ -1,12 +1,10 @@
 {
   lib,
-  osConfig ? null,
   inputs,
   pkgs,
   ...
 }:
 let
-  isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable else false;
   opencodeUnwrapped = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
     if [ -r /run/agenix/litellm-master-key ]; then
@@ -19,7 +17,7 @@ let
   '';
 in
 {
-  programs.opencode = lib.mkIf isEOwner {
+  programs.opencode = {
     enable = true;
     package = opencodeWrapped;
     tui.theme = "system";

@@ -59,28 +59,13 @@ let
             "--batch-size 2048"
             "--ubatch-size 2048"
             "--cache-reuse 256"
-            # NOTE: no DRY/repetition sampler here on purpose. A context-wide
-            # repetition penalty can't distinguish a stuck tool-loop from a
-            # legitimate retry of the same command — both are the same token
-            # sequence — so it forced models to corrupt commands (typos) just to
-            # re-run them. Loop protection belongs at the harness layer (a hard
-            # step cap like LibreChat's recursionLimit / qwen-code's max turns),
-            # which aborts a runaway without mangling individual tool calls. Per-
-            # model presence-penalty (set on the thinking models per their cards)
-            # still handles ordinary prose repetition.
           ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]
-      # Halve KV memory (q8_0 K and V); needs flash attention, on for chat.
-      # (We leave --parallel at llama.cpp's auto, which gives a unified KV cache
-      # serving several concurrent sessions at the FULL ctxSize each, for the
-      # same KV memory as one session — so no slot flag is needed here.)
       ++ lib.optionals m.kvQuant [
         "--cache-type-k q8_0"
         "--cache-type-v q8_0"
       ]
-      # Vision projector (Qwen3-VL etc.): -hf doesn't auto-pull it for every
-      # repo, so we point at an explicitly-fetched mmproj GGUF when set.
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
       ++ m.extraFlags
       ++ [ "--host 0.0.0.0 --port \${PORT}" ]
