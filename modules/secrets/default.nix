@@ -86,6 +86,22 @@
         mode = "0400";
       };
     })
+    (lib.mkIf config.systemOptions.services.librechat.enable {
+      librechat-env = {
+        file = ../../secrets/librechat-env.age;
+        owner = "librechat";
+        mode = "0400";
+      };
+      # Meilisearch master key, shared by both the meilisearch daemon and
+      # LibreChat (the librechat module wires it into MEILI_MASTER_KEY). Both
+      # read it via systemd LoadCredential as root, and meilisearch runs under
+      # DynamicUser, so it must stay owned by root (a `meilisearch` owner would
+      # not exist at agenix-decrypt time). Content is the raw key, no KEY= prefix.
+      meilisearch-api-key = {
+        file = ../../secrets/meilisearch-api-key.age;
+        mode = "0400";
+      };
+    })
     (lib.mkIf config.systemOptions.owner.e.enable {
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;

@@ -30,4 +30,6 @@ in
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
   "litellm-master-key.age".publicKeys = personal ++ [ server-son-of-anton ];
   "searxng-secret-key.age".publicKeys = personal ++ [ server-son-of-anton ];
+  "librechat-env.age".publicKeys = personal ++ [ server-son-of-anton ];
+  "meilisearch-api-key.age".publicKeys = personal ++ [ server-son-of-anton ];
 }

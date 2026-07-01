@@ -55,6 +55,8 @@ with lib;
       services.nodeExporter.enable = mkEnableOption "Prometheus node_exporter (system metrics on :9100)";
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
+
+      services.librechat.enable = mkEnableOption "LibreChat chat UI + local MongoDB (ai.ethanwtodd.com, served via nu); pulls in Meilisearch for message search";
       services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
 
       services.llamaSwap.lanExpose = mkEnableOption ''
