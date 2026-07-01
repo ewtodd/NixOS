@@ -163,10 +163,6 @@
                   litellm_params = mkLocal "openai/qwen3.6-35b-a3b-udq8";
                 }
                 {
-                  model_name = "Qwen3-30B-A3B-Instruct-2507 (ultra-fast)";
-                  litellm_params = mkLocal "openai/qwen3-30b-a3b";
-                }
-                {
                   model_name = "Qwen3.5-122B-A10B (large moe)";
                   litellm_params = mkLocal "openai/qwen3.5-122b";
                 }
@@ -179,31 +175,28 @@
                   litellm_params = mkLocalSampled "openai/qwen3.6-35b-a3b-udq8" sampling.coding;
                 }
                 {
-                  # pi's agentic coding default — it must emit well-formed tool
-                  # calls turn after turn. Bare mkLocal would inherit this model's
-                  # hot llama-server defaults (thinking-general temp 1.0); give it
-                  # unsloth's thinking-*coding* profile (temp 0.6) so the tool-call
-                  # scaffold is sampled near-greedily and stops leaking as
-                  # half-formed <tool_call> text. (presence_penalty is 0 in both
-                  # thinking profiles; see the sampling note above.)
                   model_name = "Qwen3.6-27B (dense coding)";
                   litellm_params = mkLocalSampled "openai/qwen3.6-27b" sampling.coding;
                 }
                 {
-                  model_name = "Gemma-4-31B (dense)";
+                  model_name = "Qwen3.6-27B (dense general)";
+                  litellm_params = mkLocalSampled "openai/qwen3.6-27b" sampling.general;
+                }
+                {
+                  model_name = "Gemma-4-31B (dense general)";
                   litellm_params = mkLocal "openai/gemma-4-31b";
                 }
                 {
-                  model_name = "Gemma-4-26B-A4B (fast-moe)";
+                  model_name = "Gemma-4-26B-A4B (moe general)";
                   litellm_params = mkLocal "openai/gemma-4-26b-a4b";
+                }
+                {
+                  model_name = "Gemma-4-E4B (fast)";
+                  litellm_params = mkLocal "openai/gemma-4-e4b-q6";
                 }
                 {
                   model_name = "gpt-oss-120b";
                   litellm_params = mkLocal "openai/gpt-oss-120b";
-                }
-                {
-                  model_name = "NVIDIA-Nemotron-3-Super-120B-A12B";
-                  litellm_params = mkLocal "openai/nemotron-3-super-120b";
                 }
                 {
                   model_name = "Mistral-Small-4-119B (vision)";

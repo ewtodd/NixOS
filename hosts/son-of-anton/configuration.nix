@@ -27,6 +27,7 @@ in
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 05:00:00";
     services.litellmProxy.enable = true;
+    services.librechat.enable = true;
     services.searxng.enable = true;
     services.llamaSwap = {
       enable = true;
@@ -56,17 +57,6 @@ in
             "--temp 1.0"
             "--top-p 0.95"
             "--top-k 40"
-          ];
-        };
-        "qwen3-30b-a3b" = {
-          hf = "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q5_K_M";
-          ctxSize = 65536;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 0.7"
-            "--top-p 0.8"
-            "--top-k 20"
-            "--min-p 0"
           ];
         };
         "qwen3.6-35b-a3b-udq8" = {
@@ -121,8 +111,6 @@ in
         "gemma-4-31b" = {
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
           ctxSize = 65536;
-          # Dense -> eGPU (Vulkan0). UD-Q5_K_XL + vision projector fills most
-          # of the 32 GB card at 64k ctx; drop ctxSize if vision goes tight.
           gpu = "egpu";
           mlock = false; # mlock breaks gemma loads regardless
           kvQuant = true;
@@ -136,6 +124,7 @@ in
             hash = "sha256-btzKIoITwo01Z6NdIvhJ7qUtg2CHUJOFGVmt9dLycOs=";
           };
         };
+
         "gemma-4-26b-a4b" = {
           hf = "unsloth/gemma-4-26B-A4B-it-GGUF:Q8_0";
           ctxSize = 131072;
@@ -148,9 +137,7 @@ in
             "--top-p 0.95"
           ];
         };
-        # orchestrator brain (son-of-anton). alwaysResident
-        # so it rides alongside whatever big delegation model is loaded. Gemma 4
-        # thinks by default.
+
         "gemma-4-e4b-q6" = {
           hf = "unsloth/gemma-4-E4B-it-GGUF:Q6_K";
           ctxSize = 32768;
@@ -164,16 +151,6 @@ in
           ];
         };
 
-        "nemotron-3-super-120b" = {
-          hf = "unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF:UD-Q4_K_XL";
-          ctxSize = 262144;
-          solo = true;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-          ];
-        };
         "mistral-small-4-119b" = {
           hf = "unsloth/Mistral-Small-4-119B-2603-GGUF:UD-Q6_K";
           ctxSize = 65536;
@@ -188,6 +165,7 @@ in
             hash = "sha256-ivtTCWU3Zk4kigtKkkDCVne7D4qMtaWq080dYId2pOc=";
           };
         };
+
         "mistral-medium-3.5-128b" = {
           hf = "unsloth/Mistral-Medium-3.5-128B-GGUF:Q5_K_M";
           ctxSize = 65536;
@@ -202,6 +180,7 @@ in
             hash = "sha256-SU6ZP4AzDxcMpt1Dbbeo9ky8Vhf8zPPn0SVkZnEUsnI=";
           };
         };
+
         "step-3.7-flash" = {
           hf = "stepfun-ai/Step-3.7-Flash-GGUF:Q3_K_M";
           ctxSize = 65536;
@@ -225,6 +204,7 @@ in
             hash = "sha256-XyXRH5IjXGloLKggr19MsSWuEULIwzwBjQs8kACi7Bw=";
           };
         };
+
         "minimax-m2.7" = {
           hf = "llmfan46/MiniMax-M2.7-ultra-uncensored-heretic-GGUF:Q3_K_S";
           ctxSize = 131072;
@@ -236,6 +216,7 @@ in
             "--top-k 40"
           ];
         };
+
         "qwen3-4b-titles" = {
           hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M";
           ctxSize = 8192;
@@ -248,6 +229,7 @@ in
             "--min-p 0"
           ];
         };
+
         "bge-m3" = {
           hf = "gpustack/bge-m3-GGUF:Q8_0";
           ctxSize = 8192;

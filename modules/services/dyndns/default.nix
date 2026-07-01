@@ -7,6 +7,7 @@
 let
   domain = "ethanwtodd.com";
   subdomains = [
+    "ai"
     "cache"
     "cloud"
     "llm"
