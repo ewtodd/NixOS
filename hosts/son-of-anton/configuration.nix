@@ -135,6 +135,8 @@ in
             "--temp 1.0"
             "--top-k 64"
             "--top-p 0.95"
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
           ];
         };
 
@@ -166,43 +168,22 @@ in
           };
         };
 
-        "mistral-medium-3.5-128b" = {
-          hf = "unsloth/Mistral-Medium-3.5-128B-GGUF:Q5_K_M";
-          ctxSize = 65536;
-          solo = true;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 0.7"
-            "--top-p 1.0"
-          ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Mistral-Medium-3.5-128B-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-SU6ZP4AzDxcMpt1Dbbeo9ky8Vhf8zPPn0SVkZnEUsnI=";
-          };
-        };
-
         "step-3.7-flash" = {
-          hf = "stepfun-ai/Step-3.7-Flash-GGUF:Q3_K_M";
-          ctxSize = 65536;
+          hf = "unsloth/Step-3.7-Flash-GGUF:UD-IQ4_XS";
+          ctxSize = 262144;
           solo = true;
-          mlock = false;
+          mlock = true;
           kvQuant = true;
           extraFlags = [
-            "--model-draft ${
-              pkgs.fetchurl {
-                url = "https://huggingface.co/stepfun-ai/Step-3.7-Flash-GGUF/resolve/main/Step3.7-flash-mtp-Q8_0.gguf";
-                hash = "sha256-RpqBZnps1th6hdUB1XFV/ZDO5a9wEP0onFFpiBdj/Vc=";
-              }
-            }"
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
-            "--temp 1.0"
+            "--temp 0.9"
             "--top-p 0.95"
+            "--flash-attn on"
           ];
           mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/stepfun-ai/Step-3.7-Flash-GGUF/resolve/main/mmproj-step3.7-flash-f16.gguf";
-            hash = "sha256-XyXRH5IjXGloLKggr19MsSWuEULIwzwBjQs8kACi7Bw=";
+            url = "https://huggingface.co/unsloth/Step-3.7-Flash-GGUF/blob/main/mmproj-BF16.gguf";
+            hash = "sha256-FCVAaWLI2J6wnK+RFqhvoC+mcQqKtSnYUpdrtbMSAlA=";
           };
+
         };
 
         "minimax-m2.7" = {

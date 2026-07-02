@@ -46,18 +46,22 @@
             models = {
               default = [
                 "auto"
-                "Gemma-4-31B (dense general)"
-                "Gemma-4-26B-A4B (moe general)"
-                "Gemma-4-E4B (fast)"
+                "Step-3.7-Flash (low)"
+                "Step-3.7-Flash (medium)"
+                "Step-3.7-Flash (high)"
                 "Qwen3.5-122B-A10B (large moe)"
                 "Qwen3.6-35B-A3B (moe general)"
                 "Qwen3.6-35B-A3B (moe coding)"
                 "Qwen3.6-27B (dense general)"
                 "Qwen3.6-27B (dense coding)"
-                "gpt-oss-120b"
+                "GPT-OSS (low)"
+                "GPT-OSS (medium)"
+                "GPT-OSS (high)"
+                "Gemma-4-31B (dense general)"
+                "Gemma-4-26B-A4B (moe general)"
+                "Gemma-4-E4B (fast)"
                 "Mistral-Small-4-119B (vision)"
                 "Mistral-Medium-3.5-128B (vision)"
-                "Step-3.7-Flash (vision)"
                 "MiniMax-M2.7 (uncensored)"
               ];
               fetch = false;

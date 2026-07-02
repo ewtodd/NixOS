@@ -45,7 +45,7 @@ Hosts:
 - **server-nu** - Router, AdGuard, reverse proxy, dynamic DNS
 - **server-mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - ZFS storage server
-- **son-of-anton** - AI stack (128GB AMD Strix Halo): llama-swap models, LiteLLM proxy + MCP gateway, SearXNG
+- **son-of-anton** - AI stack (128GB AMD Strix Halo, 32GB R9700 eGPU): llama-swap models, LiteLLM proxy + MCP gateway, librechat, SearXNG
 ```
 <!---->
 ## Important Notes
@@ -103,16 +103,6 @@ Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 <!---->
 Configuration in `home-manager/packages/shell/`.
 <!---->
-## AI Assistant
-<!---->
-`opencode` CLI is configured for e-owner devices with:
-<!---->
-- LiteLLM provider pointing to `https://llm.ethanwtodd.com/v1`
-- All 5 models accessible (`auto` routing + explicit selection)
-- MCP tools from the LiteLLM gateway (`https://llm.ethanwtodd.com/mcp`): URL `fetch`, SearXNG `web_search`, and Nix/NixOS package/option lookups (`mcp-nixos`)
-- Pre-loaded house rules for ROOT/C++ development (explicit types, no modern C++ in ROOT code)
-- Bash activation loads `LITELLM_MASTER_KEY` from agenix secret
-<!---->
 ## Theming
 <!---->
 Colors managed via **base16.nix** with schemes from `pkgs.base16-schemes` on a per-profile basis.
@@ -157,19 +147,16 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`
 <!---->
-## AI/LLM Infrastructure
+## AI Infrastructure
 <!---->
-The fleet includes dedicated AI servers running llama-swap and LiteLLM:
+The fleet includes a dedicated AI server running llama-swap and LiteLLM:
 <!---->
 - **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend; primarily used for large MoE models
 - **son-of-son-of-anton, or antonino** (AMD R9700 32GB as eGPU on son-of-anton): Also connected to llama-swap server; used for dense models + to improve concurrency
 <!---->
 <!---->
-- **son-of-anton** also hosts the rest of the AI stack (consolidated — every hop is localhost):
-  - **LiteLLM proxy** with content-based classifier routing
-    - Routes `auto` to smart-coder (coding), ultra-fast (general+simple), or big-moe (general+complex)
-    - Fallbacks between the local models cover load failures
-    - Single entry point: `https://llm.ethanwtodd.com/v1`
+- **son-of-anton/antonino** also hosts the rest of the AI stack (consolidated — every hop is localhost):
+  - **LiteLLM proxy**, single entry point: `https://llm.ethanwtodd.com/v1`
   - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both qwen-code.
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP.
 <!---->
@@ -194,7 +181,7 @@ colmena apply-local          # rebuild the local workstation (e-desktop / e-lapt
 colmena apply --on anton     # a single node
 ```
 <!---->
-- **Scope:** the 6 e-owner nodes (v-devices excluded).
+- **Scope:** the 6 e-owner nodes (v-devices excluded for now).
 The headless servers are
   pushed over SSH; the two workstations deploy locally (`apply-local`, which
   also sidesteps e-laptop's dynamic IP).

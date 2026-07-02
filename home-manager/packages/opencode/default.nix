@@ -71,6 +71,7 @@ in
           baseURL = "https://llm.ethanwtodd.com/v1";
           apiKey = "{env:LITELLM_MASTER_KEY}";
         };
+
         models = {
           "Qwen3.6-35B-A3B (moe coding)" = {
             name = "moe coder (son-of-anton)";
@@ -103,11 +104,61 @@ in
               repetitionPenalty = 1.0;
             };
           };
-          "gpt-oss-120b" = {
-            name = "gpt-oss-120b (son-of-anton)";
+
+          "GPT-OSS (low)" = {
+            name = "gpt-oss low (son-of-anton)";
             options = {
-              temperature = 0.6;
+              temperature = 0.7;
               topP = 1.0;
+            };
+          };
+
+          "GPT-OSS (medium)" = {
+            name = "gpt-oss medium (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 1.0;
+            };
+          };
+
+          "GPT-OSS (high)" = {
+            name = "gpt-oss high (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 1.0;
+            };
+          };
+
+          "Step-3.7-Flash (low)" = {
+            name = "step flash low (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "Step-3.7-Flash (medium)" = {
+            name = "step flash medium (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "Step-3.7-Flash (high)" = {
+            name = "step flash high (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
             };
           };
         };

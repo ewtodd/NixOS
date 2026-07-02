@@ -6,17 +6,11 @@
 }:
 {
   config = lib.mkIf config.systemOptions.services.litellmProxy.enable {
-    # 4000: nu's Caddy + LAN reach the proxy. 9192: the in-process metrics
-    # exporter (litellm_metrics.py callback), scraped by nu's Prometheus.
     networking.firewall.allowedTCPPorts = [
       4000
       9192
     ];
 
-    # The container bind-mounts the master-key secret by path, so editing
-    # litellm-master-key.age alone leaves container@litellm.service unchanged and
-    # activation won't restart it (stale key inside). Trigger on the encrypted
-    # file's store path (hash tracks contents) so a deploy recreates it.
     systemd.services."container@litellm".restartTriggers = [
       config.age.secrets.litellm-master-key.file
     ];
@@ -29,12 +23,6 @@
         isReadOnly = true;
       };
 
-      # The container shares the host net namespace (no privateNetwork) but has
-      # its own /etc/resolv.conf, which the container's resolvconf emits with NO
-      # nameserver lines (it has no DHCP/static source of its own). That kills
-      # DNS for every name-based MCP server (arxiv, fetch, context7, nixos);
-      # searxng only survives because it dials the literal 127.0.0.1:8888.
-      # Bind-mount the host's working resolver in so names resolve.
       bindMounts."/etc/resolv.conf" = {
         hostPath = "/etc/resolv.conf";
         isReadOnly = true;
@@ -74,17 +62,6 @@
             allowed_openai_params = nativeOpenaiParams;
             timeout = 1800;
           };
-          # unsloth's recommended sampling for the Qwen3.6 *thinking* models,
-          # exposed as distinct model_names so either profile is selectable from
-          # a client dropdown (LibreChat's addParams is endpoint-wide, not
-          # per-model, so per-profile entries are the only way to choose). Baked
-          # into litellm_params as request defaults; top_k/min_p ride through via
-          # allowed_openai_params. Per unsloth, BOTH thinking profiles use
-          # presence_penalty=0.0 — the 1.5 value is for *instruct/non-thinking*
-          # mode only (it fights the repetition loops that plague non-thinking
-          # mode; in a thinking/agent loop it instead destabilizes tool-call
-          # formatting). So temperature (1.0 general / 0.6 coding) is the only
-          # lever between these two profiles; every other key is identical.
           sampling = {
             general = {
               temperature = 1.0;
@@ -101,6 +78,22 @@
               presence_penalty = 0;
             };
           };
+          mkStep =
+            effort:
+            (mkLocal "openai/step-3.7-flash")
+            // {
+              chat_template_kwargs = {
+                reasoning_effort = effort;
+              };
+            };
+          mkGPT =
+            effort:
+            (mkLocal "openai/gpt-oss-120b")
+            // {
+              chat_template_kwargs = {
+                reasoning_effort = effort;
+              };
+            };
           mkLocalSampled = model: profile: (mkLocal model) // profile;
         in
         {
@@ -112,7 +105,7 @@
 
             settings = {
               general_settings.master_key = "os.environ/LITELLM_MASTER_KEY";
-
+              set_verbose = true;
               litellm_settings.callbacks = [
                 "litellm_metrics.metrics"
                 "auto_router.auto_router"
@@ -146,10 +139,6 @@
                     "/var/lib/litellm/arxiv-papers"
                   ];
                 };
-                # Up-to-date, version-specific library docs (incl. CERN ROOT,
-                # which Context7 indexes as /root-project/root with ~63k
-                # snippets). Anonymous/rate-limited; set CONTEXT7_API_KEY (free)
-                # here if limits become a problem.
                 context7 = {
                   transport = "stdio";
                   command = lib.getExe pkgs.context7-mcp;
@@ -195,20 +184,32 @@
                   litellm_params = mkLocal "openai/gemma-4-e4b-q6";
                 }
                 {
-                  model_name = "gpt-oss-120b";
-                  litellm_params = mkLocal "openai/gpt-oss-120b";
+                  model_name = "GPT-OSS (low)";
+                  litellm_params = mkGPT "low";
+                }
+                {
+                  model_name = "GPT-OSS (medium)";
+                  litellm_params = mkGPT "medium";
+                }
+                {
+                  model_name = "GPT-OSS (high)";
+                  litellm_params = mkGPT "high";
                 }
                 {
                   model_name = "Mistral-Small-4-119B (vision)";
                   litellm_params = mkLocal "openai/mistral-small-4-119b";
                 }
                 {
-                  model_name = "Mistral-Medium-3.5-128B (vision)";
-                  litellm_params = mkLocal "openai/mistral-medium-3.5-128b";
+                  model_name = "Step-3.7-Flash (low)";
+                  litellm_params = mkStep "low";
                 }
                 {
-                  model_name = "Step-3.7-Flash (vision)";
-                  litellm_params = mkLocal "openai/step-3.7-flash";
+                  model_name = "Step-3.7-Flash (medium)";
+                  litellm_params = mkStep "medium";
+                }
+                {
+                  model_name = "Step-3.7-Flash (high)";
+                  litellm_params = mkStep "high";
                 }
                 {
                   model_name = "MiniMax-M2.7 (uncensored)";
@@ -245,7 +246,7 @@
           environment.etc."litellm/auto_router.py".source = ./auto_router.py;
           systemd.services.litellm.environment.LITELLM_MCP_STDIO_EXTRA_COMMANDS =
             "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp";
-
+          systemd.services.litellm.environment.LITELLM_LOG = "DEBUG";
           systemd.services.litellm.serviceConfig.ExecStart = lib.mkForce (
             lib.concatStringsSep " " [
               (lib.getExe config.services.litellm.package)
