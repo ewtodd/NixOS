@@ -75,7 +75,7 @@ in
         };
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 196608;
+          ctxSize = 131072;
           gpu = "egpu";
           mlock = false;
           kvQuant = true;
