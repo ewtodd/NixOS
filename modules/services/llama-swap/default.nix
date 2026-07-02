@@ -14,9 +14,6 @@ let
     else
       inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.vulkan;
 
-  # Mesa Vulkan ICD for the vulkan backend, matched to the host's GPU: Intel
-  # ANV on the iGPU laptops, RADV on the AMD boxes (the default). Both files
-  # ship in mesa under /run/opengl-driver via hardware.graphics.
   vulkanIcd =
     if config.systemOptions.graphics.intel.enable then
       "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
@@ -46,9 +43,6 @@ let
       # Pin to one Vulkan device so llama.cpp doesn't split across both GPUs.
       ++ lib.optional egpuPinning "--device ${vkDevice m.gpu}"
       ++ lib.optionals m.mlock [ "--mlock" ]
-      # --jinja (chat template) and -fa (flash attention) are generative-only and
-      # break non-causal encoder embedding models; --embeddings turns on the
-      # /v1/embeddings endpoint instead.
       ++ (
         if m.embedding then
           [ "--embeddings" ]
@@ -71,27 +65,6 @@ let
       ++ [ "--host 0.0.0.0 --port \${PORT}" ]
     );
 
-  # llama-swap's `matrix` solver decides which models may be resident together.
-  # Its DSL: `&` = co-run, `|` = mutually exclusive alternatives, `()` groups,
-  # and subset semantics — any subset of a declared set is also valid, and only
-  # the requested models are actually started (nothing is preloaded).
-  #
-  # APU chat models are classified "big" (≥~100B-class; two won't fit in the
-  # APU's unified RAM together) or "small" (all fit together), and embedding
-  # model(s) are always resident (a RAG query embeds via bge-m3, then a chat
-  # model generates — neither should evict the other). The APU policy, encoded
-  # so every *maximal* valid set fits in memory by construction:
-  #   * at most ONE big, optionally paired with at most ONE small   → lane A
-  #   * OR any number of smalls together                            → lane B
-  #   * AND the embedding model(s), always
-  # This permits big+small and small+small (the real two-session cases) while
-  # forbidding big+big and big+two-smalls (the combinations that OOM).
-  #
-  # The eGPU (R9700, 32 GB) is a SEPARATE memory pool. Models tagged gpu="egpu"
-  # form their own lane: mutually exclusive among themselves (one dense ~30B
-  # fills the card), but ANDed alongside the APU lanes so an eGPU model may
-  # co-reside with any APU model. With no embedding model and ≤1 chat model
-  # total the matrix is omitted (plain hot-swap).
   modelList = lib.imap0 (i: name: {
     inherit name;
     var = "m${toString i}";
@@ -187,13 +160,9 @@ in
     services.llama-swap = {
       enable = true;
       port = 8080;
-      # Localhost-only by default (local nvim FIM); lanExpose hosts (son-of-anton)
-      # bind 0.0.0.0 and open 8080 so the LiteLLM proxy on mu can reach them.
       listenAddress = if cfg.lanExpose then "0.0.0.0" else "127.0.0.1";
       openFirewall = cfg.lanExpose;
-      # Large-ctx warmups (shader compile + empty run) can exceed the 120s
-      # default, and llama-swap kills the server mid-load when they do.
-      settings.healthCheckTimeout = 600;
+      settings.healthCheckTimeout = 1200;
       settings.models = lib.mapAttrs (
         _name: m: { cmd = mkCmd m; } // lib.optionalAttrs (m.ttl != null) { inherit (m) ttl; }
       ) cfg.models;
@@ -203,25 +172,16 @@ in
       };
     };
 
-    # Custom cache dir: a shared group lets the unit's transient DynamicUser
-    # write across restarts; setgid + UMask 0002 keep new files group-writable.
     users.groups = lib.mkIf useCustomCache { llama-cache = { }; };
     systemd.tmpfiles.rules = lib.mkIf useCustomCache [
       "d ${cfg.cacheDir} 2770 root llama-cache - -"
     ];
 
-    # The native unit is heavily sandboxed and grants neither GPU access nor a
-    # writable cache. We add: GPU device groups; a persistent -hf download cache
-    # (PrivateTmp would otherwise re-download every restart); the RADV ICD for
-    # Vulkan; and, for CUDA, we drop MemoryDenyWriteExecute because the NVIDIA
-    # driver JITs kernels into writable+executable memory and fails under it.
     systemd.services.llama-swap = {
       environment = lib.mkMerge [
         { LLAMA_CACHE = cacheDir; }
         (lib.mkIf (cfg.backend == "vulkan") {
           VK_ICD_FILENAMES = vulkanIcd;
-          # The unit has no writable HOME, so Mesa disables its shader cache and
-          # RADV recompiles every pipeline on each model load.
           MESA_SHADER_CACHE_DIR = "${cacheDir}/mesa-shader-cache";
         })
       ];
@@ -232,6 +192,7 @@ in
             "render"
           ]
           ++ lib.optional useCustomCache "llama-cache";
+          LimitMEMLOCK = "infinity";
         }
         (
           if useCustomCache then
