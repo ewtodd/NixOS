@@ -165,15 +165,21 @@
                 }
                 {
                   model_name = "Qwen3.6-27B (dense coding)";
-                  litellm_params = mkLocalSampled "openai/qwen3.6-27b" sampling.coding;
+                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.coding) // {
+                    api_base = "http://10.0.0.3:8080/v1";
+                  };
                 }
                 {
                   model_name = "Qwen3.6-27B (dense general)";
-                  litellm_params = mkLocalSampled "openai/qwen3.6-27b" sampling.general;
+                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.general) // {
+                    api_base = "http://10.0.0.3:8080/v1";
+                  };
                 }
                 {
                   model_name = "Gemma-4-31B (dense general)";
-                  litellm_params = mkLocal "openai/gemma-4-31b";
+                  litellm_params = (mkLocal "openai/gemma-4-31b") // {
+                    api_base = "http://10.0.0.3:8080/v1";
+                  };
                 }
                 {
                   model_name = "Gemma-4-26B-A4B (moe general)";
