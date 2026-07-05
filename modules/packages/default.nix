@@ -30,6 +30,7 @@ in
         unzip
         zip
         kitty.terminfo
+        jq
       ];
 
       virtualisation.docker.enable = lib.mkIf (config.systemOptions.apps.docker.enable) true;

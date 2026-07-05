@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -14,6 +14,7 @@ in
   ];
 
   systemOptions = {
+    graphics.amd.enable = true;
     deviceType.server.enable = true;
     services.ssh.enable = true;
     services.deploy.enable = true;
@@ -22,8 +23,49 @@ in
     services.scheduledReboot.enable = true;
     # reboot monthly (1st of the month at 04:15)
     services.scheduledReboot.calendar = "*-*-01 04:15:00";
+    services.llamaSwap = {
+      enable = true;
+      lanExpose = true;
+      backend = "vulkan";
+      cacheDir = "/var/cache/llama-cache";
+      models = {
+        "qwen3.6-27b" = {
+          hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
+          ctxSize = 131072;
+          mlock = false;
+          kvQuant = true;
+          extraFlags = [
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+          ];
+        };
+        "gemma-4-31b" = {
+          hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
+          ctxSize = 262144;
+          mlock = false;
+          kvQuant = true;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-k 64"
+            "--top-p 0.95"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/gemma-4-31B-it-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-btzKIoITwo01Z6NdIvhJ7qUtg2CHUJOFGVmt9dLycOs=";
+          };
+        };
+      };
+    };
     security.harden.enable = true;
   };
+
+  nixpkgs.config.rocmTargets = [
+    "gfx1201"
+  ];
 
   users.users.anton = {
     isNormalUser = true;

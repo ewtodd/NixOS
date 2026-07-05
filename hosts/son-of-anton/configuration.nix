@@ -33,21 +33,8 @@ in
       enable = true;
       lanExpose = true;
       backend = "vulkan";
-      egpu.enable = true;
       cacheDir = "/scratch/llama-cache";
       models = {
-        "gpt-oss-120b" = {
-          hf = "unsloth/gpt-oss-120b-GGUF:F16";
-          ctxSize = 131072;
-          big = true;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 1.0"
-            "--top-k 0"
-            "--min-p 0"
-          ];
-        };
         "qwen3-coder-next" = {
           hf = "unsloth/Qwen3-Coder-Next-GGUF:Q8_0";
           ctxSize = 262144;
@@ -63,21 +50,6 @@ in
           hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q8_K_XL";
           ctxSize = 262144;
           big = true;
-          kvQuant = true;
-          extraFlags = [
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-          ];
-        };
-        "qwen3.6-27b" = {
-          hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 131072;
-          gpu = "egpu";
-          mlock = false;
           kvQuant = true;
           extraFlags = [
             "--spec-type draft-mtp"
@@ -105,23 +77,6 @@ in
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
             hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
-          };
-        };
-
-        "gemma-4-31b" = {
-          hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
-          ctxSize = 262144;
-          gpu = "egpu";
-          mlock = false;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-k 64"
-            "--top-p 0.95"
-          ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/gemma-4-31B-it-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-btzKIoITwo01Z6NdIvhJ7qUtg2CHUJOFGVmt9dLycOs=";
           };
         };
 
@@ -228,7 +183,6 @@ in
 
   nixpkgs.config.rocmTargets = [
     "gfx1151"
-    "gfx1201"
   ];
 
   users.users.son-of-anton = {
