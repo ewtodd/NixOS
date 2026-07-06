@@ -46,28 +46,28 @@
             models = {
               default = [
                 "auto"
-                "Step-3.7-Flash (low)"
-                "Step-3.7-Flash (medium)"
-                "Step-3.7-Flash (high)"
-                "Qwen3.5-122B-A10B (large moe)"
-                "Qwen3.6-35B-A3B (moe general)"
-                "Qwen3.6-35B-A3B (moe coding)"
-                "Qwen3.6-27B (dense general)"
-                "Qwen3.6-27B (dense coding)"
-                "GPT-OSS (low)"
-                "GPT-OSS (medium)"
-                "GPT-OSS (high)"
-                "Gemma-4-31B (dense general)"
-                "Gemma-4-26B-A4B (moe general)"
-                "Gemma-4-E4B (fast)"
-                "Mistral-Small-4-119B (vision)"
-                "Mistral-Medium-3.5-128B (vision)"
-                "MiniMax-M2.7 (uncensored)"
+                "step-3.7-flash-low"
+                "step-3.7-flash-medium"
+                "step-3.7-flash-high"
+                "qwen3.5-122b-a10b"
+                "qwen3.6-35b-a3b-general"
+                "qwen3.6-35b-a3b-coding"
+                "qwen3.6-27b-general"
+                "qwen3.6-27b-coding"
+                "gpt-oss-low"
+                "gpt-oss-medium"
+                "gpt-oss-high"
+                "gemma-4-31b"
+                "gemma-4-26b-a4b"
+                "gemma-4-e4b"
+                "mistral-small-4-119b"
+                "minimax-m2.7"
+                "qwen3-coder-next"
               ];
               fetch = false;
             };
             titleConvo = true;
-            titleModel = "Qwen3-4B-Instruct (titles)";
+            titleModel = "qwen3-4b-instruct";
           }
         ];
         mcpServers =

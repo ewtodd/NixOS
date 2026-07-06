@@ -73,7 +73,7 @@ in
         };
 
         models = {
-          "Qwen3.6-35B-A3B (moe coding)" = {
+          "qwen3.6-35b-a3b-coding" = {
             name = "moe coder (son-of-anton)";
             options = {
               temperature = 0.6;
@@ -84,7 +84,7 @@ in
             };
           };
 
-          "Qwen3.6-27B (dense coding)" = {
+          "qwen3.6-27b-coding" = {
             name = "dense coder (antonino)";
             options = {
               temperature = 0.6;
@@ -95,7 +95,7 @@ in
             };
           };
 
-          "Qwen3.5-122B-A10B (large moe)" = {
+          "qwen3.5-122b-a10b" = {
             name = "large moe (son-of-anton)";
             options = {
               temperature = 0.6;
@@ -107,7 +107,7 @@ in
             };
           };
 
-          "GPT-OSS (low)" = {
+          "gpt-oss-low" = {
             name = "gpt-oss low (son-of-anton)";
             options = {
               temperature = 0.7;
@@ -115,7 +115,7 @@ in
             };
           };
 
-          "GPT-OSS (medium)" = {
+          "gpt-oss-medium" = {
             name = "gpt-oss medium (son-of-anton)";
             options = {
               temperature = 0.7;
@@ -123,7 +123,7 @@ in
             };
           };
 
-          "GPT-OSS (high)" = {
+          "gpt-oss-high" = {
             name = "gpt-oss high (son-of-anton)";
             options = {
               temperature = 0.7;
@@ -131,7 +131,7 @@ in
             };
           };
 
-          "Step-3.7-Flash (low)" = {
+          "step-3.7-flash-low" = {
             name = "step flash low (son-of-anton)";
             options = {
               temperature = 0.7;
@@ -142,7 +142,7 @@ in
             };
           };
 
-          "Step-3.7-Flash (medium)" = {
+          "step-3.7-flash-medium" = {
             name = "step flash medium (son-of-anton)";
             options = {
               temperature = 0.7;
@@ -153,12 +153,23 @@ in
             };
           };
 
-          "Step-3.7-Flash (high)" = {
+          "step-3.7-flash-high" = {
             name = "step flash high (son-of-anton)";
             options = {
               temperature = 0.7;
               topP = 0.95;
               topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "qwen3-coder-next" = {
+            name = "qwen3 coder next (son-of-anton)";
+            options = {
+              temperature = 0.6;
+              topP = 0.95;
+              topK = 40;
               minP = 0;
               presencePenalty = 0;
             };
@@ -179,7 +190,7 @@ in
         };
       };
       server.port = 4096;
-      model = "litellm/Qwen3.6-27B (dense coding)";
+      model = "litellm/qwen3.6-27b-coding";
 
       # fetch + SearXNG web_search + nixos lookups, served by the LiteLLM MCP
       # gateway on son-of-anton (the same tools LibreChat gets) — nixos used to
