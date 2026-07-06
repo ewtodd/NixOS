@@ -179,35 +179,35 @@
                   litellm_params = mkLocal "openai/qwen3.6-35b-a3b-udq8";
                 }
                 {
-                  model_name = "Qwen3.5-122B-A10B (large moe)";
+                  model_name = "qwen3.5-122b-a10b";
                   litellm_params = mkLocal "openai/qwen3.5-122b";
                 }
                 {
-                  model_name = "Qwen3.6-35B-A3B (moe general)";
+                  model_name = "qwen3.6-35b-a3b-general";
                   litellm_params = mkLocalSampled "openai/qwen3.6-35b-a3b-udq8" sampling.general;
                 }
                 {
-                  model_name = "Qwen3.6-35B-A3B (moe coding)";
+                  model_name = "qwen3.6-35b-a3b-coding";
                   litellm_params = mkLocalSampled "openai/qwen3.6-35b-a3b-udq8" sampling.coding;
                 }
                 {
-                  model_name = "Qwen3.6-27B (dense coding)";
+                  model_name = "qwen3.6-27b-coding";
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.coding) // {
                     api_base = "http://10.0.0.3:8080/v1";
                   };
                 }
                 {
-                  model_name = "Qwen3.6-27B (dense general)";
+                  model_name = "qwen3.6-27b-general";
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.general) // {
                     api_base = "http://10.0.0.3:8080/v1";
                   };
                 }
                 {
-                  model_name = "Gemma-4-E4B tool";
+                  model_name = "gemma-4-e4b-tool";
                   litellm_params = mkLocalSampled "openai/gemma-4-e4b-q6" sampling.gemmaTool;
                 }
                 {
-                  model_name = "GPT-OSS tool";
+                  model_name = "gpt-oss-tool";
                   litellm_params = (mkLocalSampled "openai/gpt-oss-120b" sampling.gptOssTool) // {
                     chat_template_kwargs = {
                       reasoning_effort = "low";
@@ -215,57 +215,67 @@
                   };
                 }
                 {
-                  model_name = "Qwen3.5-122B-A10B tool";
+                  model_name = "qwen3.5-122b-a10b-tool";
                   litellm_params = mkLocalSampled "openai/qwen3.5-122b" sampling.qwenLargeMoeTool;
                 }
                 {
-                  model_name = "Gemma-4-31B (dense general)";
+                  model_name = "gemma-4-31b";
                   litellm_params = (mkLocal "openai/gemma-4-31b") // {
                     api_base = "http://10.0.0.3:8080/v1";
                   };
                 }
                 {
-                  model_name = "Gemma-4-26B-A4B (moe general)";
+                  model_name = "gemma-4-26b-a4b";
                   litellm_params = mkLocal "openai/gemma-4-26b-a4b";
                 }
                 {
-                  model_name = "Gemma-4-E4B (fast)";
+                  model_name = "gemma-4-e4b";
                   litellm_params = mkLocal "openai/gemma-4-e4b-q6";
                 }
                 {
-                  model_name = "GPT-OSS (low)";
+                  model_name = "gpt-oss-low";
                   litellm_params = mkGPT "low";
                 }
                 {
-                  model_name = "GPT-OSS (medium)";
+                  model_name = "gpt-oss-medium";
                   litellm_params = mkGPT "medium";
                 }
                 {
-                  model_name = "GPT-OSS (high)";
+                  model_name = "gpt-oss-high";
                   litellm_params = mkGPT "high";
                 }
                 {
-                  model_name = "Mistral-Small-4-119B (vision)";
+                  model_name = "mistral-small-4-119b";
                   litellm_params = mkLocal "openai/mistral-small-4-119b";
                 }
                 {
-                  model_name = "Step-3.7-Flash (low)";
+                  model_name = "step-3.7-flash-low";
                   litellm_params = mkStep "low";
                 }
                 {
-                  model_name = "Step-3.7-Flash (medium)";
+                  model_name = "step-3.7-flash-medium";
                   litellm_params = mkStep "medium";
                 }
                 {
-                  model_name = "Step-3.7-Flash (high)";
+                  model_name = "step-3.7-flash-high";
                   litellm_params = mkStep "high";
                 }
                 {
-                  model_name = "MiniMax-M2.7 (uncensored)";
+                  model_name = "minimax-m2.7";
                   litellm_params = mkLocal "openai/minimax-m2.7";
                 }
                 {
-                  model_name = "Qwen3-4B-Instruct (titles)";
+                  model_name = "qwen3-coder-next";
+                  litellm_params = mkLocalSampled "openai/qwen3-coder-next" {
+                    temperature = 0.6;
+                    top_p = 0.95;
+                    top_k = 40;
+                    min_p = 0;
+                    presence_penalty = 0;
+                  };
+                }
+                {
+                  model_name = "qwen3-4b-instruct";
                   litellm_params = {
                     model = "openai/qwen3-4b-titles";
                     api_base = "http://127.0.0.1:8080/v1";
