@@ -174,6 +174,28 @@ in
               presencePenalty = 0;
             };
           };
+
+          "mistral-small-4-119b" = {
+            name = "mistral small (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "minimax-m2.7" = {
+            name = "minimax m2.7 (son-of-anton)";
+            options = {
+              temperature = 0.7;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
         };
       };
       permission = {
