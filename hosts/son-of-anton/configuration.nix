@@ -110,22 +110,6 @@ in
           ];
         };
 
-        "mistral-small-4-119b" = {
-          hf = "unsloth/Mistral-Small-4-119B-2603-GGUF:UD-Q5_K_S";
-          ctxSize = 262144;
-          solo = true;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 0.7"
-            "--top-p 1.0"
-            "--flash-attn on"
-          ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Mistral-Small-4-119B-2603-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-ivtTCWU3Zk4kigtKkkDCVne7D4qMtaWq080dYId2pOc=";
-          };
-        };
-
         "step-3.7-flash" = {
           hf = "unsloth/Step-3.7-Flash-GGUF:UD-IQ4_XS";
           ctxSize = 262144;
@@ -142,18 +126,6 @@ in
             hash = "sha256-FCVAaWLI2J6wnK+RFqhvoC+mcQqKtSnYUpdrtbMSAlA=";
           };
 
-        };
-
-        "minimax-m2.7" = {
-          hf = "unsloth/MiniMax-M2.7-GGUF:UD-Q3_K_S";
-          ctxSize = 196608;
-          solo = true;
-          kvQuant = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 40"
-          ];
         };
 
         "qwen3-4b-titles" = {

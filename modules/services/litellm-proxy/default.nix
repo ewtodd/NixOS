@@ -245,10 +245,6 @@
                   litellm_params = mkGPT "high";
                 }
                 {
-                  model_name = "mistral-small-4-119b";
-                  litellm_params = mkLocal "openai/mistral-small-4-119b";
-                }
-                {
                   model_name = "step-3.7-flash-low";
                   litellm_params = mkStep "low";
                 }
@@ -259,10 +255,6 @@
                 {
                   model_name = "step-3.7-flash-high";
                   litellm_params = mkStep "high";
-                }
-                {
-                  model_name = "minimax-m2.7";
-                  litellm_params = mkLocal "openai/minimax-m2.7";
                 }
                 {
                   model_name = "qwen3-coder-next";
