@@ -122,7 +122,7 @@ in
             "--flash-attn on"
           ];
           mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Step-3.7-Flash-GGUF/blob/main/mmproj-BF16.gguf";
+            url = "https://huggingface.co/unsloth/Step-3.7-Flash-GGUF/resolve/main/mmproj-BF16.gguf";
             hash = "sha256-FCVAaWLI2J6wnK+RFqhvoC+mcQqKtSnYUpdrtbMSAlA=";
           };
 
