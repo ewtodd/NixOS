@@ -60,8 +60,6 @@
                 "gemma-4-31b"
                 "gemma-4-26b-a4b"
                 "gemma-4-e4b"
-                "mistral-small-4-119b"
-                "minimax-m2.7"
                 "qwen3-coder-next"
               ];
               fetch = false;
