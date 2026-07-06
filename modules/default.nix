@@ -72,16 +72,6 @@ with lib;
         default = "vulkan";
         description = "llama.cpp GPU backend: Vulkan (AMD RADV or Intel ANV) or CUDA (NVIDIA).";
       };
-      services.llamaSwap.egpu.enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          A second AMD GPU is present alongside the primary APU. When true, each
-          model is pinned to a specific Vulkan device (per-model `gpu` option)
-          so llama.cpp doesn't split layers across both GPUs. The matrix solver
-          treats the eGPU as an independent VRAM pool. Vulkan backend only.
-        '';
-      };
       services.llamaSwap.cacheDir = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -189,21 +179,97 @@ with lib;
                   main chat model. Keep it small: it occupies RAM permanently.
                 '';
               };
-              gpu = mkOption {
-                type = types.enum [
-                  "apu"
-                  "egpu"
-                ];
-                default = "apu";
+              gpuLayers = mkOption {
+                type = types.str;
+                default = "999";
+                example = "\"auto\"";
                 description = ''
-                  Which GPU to pin this model to when `egpu.enable` is set: "apu"
-                  = the large unified-memory APU (Vulkan1), "egpu" = the discrete
-                  R9700 (Vulkan0, 32 GB GDDR6). Put dense models on the eGPU (high
-                  GDDR6 bandwidth, fit in 32 GB) and big MoE models on the APU. The
-                  matrix treats egpu models as a separate pool: mutually exclusive
-                  among themselves, but free to co-reside with any apu model.
-                  `big`/`solo` are ignored for egpu models (the egpu pool has its
-                  own exclusivity). No effect when `egpu.enable` is false.
+                  Value for --n-gpu-layers. Use "999" to offload all layers (the
+                  default), or "auto" to let llama.cpp decide (useful for large MoE
+                  models like DeepSeek V4 Flash that may not offload cleanly).
+                '';
+              };
+              mmap = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Whether to enable memory mapping (--mmap). When false, --no-mmap
+                  is emitted. Enable for models that fail to load without mmap
+                  (e.g. DeepSeek V4 Flash with mixed quantization).
+                '';
+              };
+              flashAttn = mkOption {
+                type = types.str;
+                default = "auto";
+                example = "\"on\"";
+                description = "Value for --flash-attn (auto, on, off).";
+              };
+              batchSize = mkOption {
+                type = types.ints.positive;
+                default = 2048;
+                description = "Value for --batch-size.";
+              };
+              ubatchSize = mkOption {
+                type = types.ints.positive;
+                default = 2048;
+                description = "Value for --ubatch-size.";
+              };
+              cacheReuse = mkOption {
+                type = types.nullOr types.ints.positive;
+                default = 256;
+                description = ''
+                  Value for --cache-reuse (KV cache tokens to reuse between
+                  requests). Set to null to omit the flag entirely.
+                '';
+              };
+              parallel = mkOption {
+                type = types.nullOr types.ints.positive;
+                default = null;
+                description = ''
+                  Value for --parallel (number of parallel request slots).
+                  Set to null to omit the flag (llama-swap manages concurrency).
+                  Use 1 for models that fail under concurrent requests.
+                '';
+              };
+              nCpuMoe = mkOption {
+                type = types.nullOr types.ints.positive;
+                default = null;
+                description = ''
+                  Value for --n-cpu-moe (number of MoE experts to run on CPU).
+                  Set to null to omit the flag.
+                '';
+              };
+              chatTemplateFile = mkOption {
+                type = types.nullOr types.path;
+                default = null;
+                description = ''
+                  Path to a Jinja chat template file, emitted as
+                  --chat-template-file PATH. Set to null to omit.
+                '';
+              };
+              noWarmup = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Whether to emit --no-warmup (skip KV cache warmup on model load).
+                  Useful for very large models where warmup is slow or fails.
+                '';
+              };
+              noRepack = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Whether to emit --no-repack (disable KV cache repacking).
+                  Some models produce garbled output with repacking enabled.
+                '';
+              };
+              hfFile = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  Specific filename within a Hugging Face repo, emitted as
+                  --hf-file FILE after -hf. Used when the default auto-pick is
+                  wrong. Ignored if `path` is set instead of `hf`.
                 '';
               };
               kvQuant = mkOption {

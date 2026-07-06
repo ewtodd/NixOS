@@ -21,8 +21,8 @@ in
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
-    # reboot monthly (1st of the month at 04:15)
-    services.scheduledReboot.calendar = "*-*-01 04:15:00";
+    # reboot daily, for as long as it is not ZFS
+    services.scheduledReboot.calendar = "*-*-* 05:15:00";
     services.llamaSwap = {
       enable = true;
       lanExpose = true;

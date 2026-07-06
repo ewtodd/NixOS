@@ -77,6 +77,33 @@
               min_p = 0;
               presence_penalty = 0;
             };
+            gemmaTool = {
+              temperature = 0.7;
+              top_p = 0.95;
+              top_k = 20;
+              min_p = 0;
+              repeat_penalty = 1.08;
+              frequency_penalty = 0.1;
+              presence_penalty = 0;
+            };
+            gptOssTool = {
+              temperature = 0.7;
+              top_p = 0.95;
+              top_k = 20;
+              min_p = 0;
+              repeat_penalty = 1.12;
+              frequency_penalty = 0.1;
+              presence_penalty = 0;
+            };
+            qwenLargeMoeTool = {
+              temperature = 0.5;
+              top_p = 0.95;
+              top_k = 20;
+              min_p = 0;
+              repeat_penalty = 1.08;
+              frequency_penalty = 0.15;
+              presence_penalty = 0;
+            };
           };
           mkStep =
             effort:
@@ -174,6 +201,22 @@
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.general) // {
                     api_base = "http://10.0.0.3:8080/v1";
                   };
+                }
+                {
+                  model_name = "Gemma-4-E4B tool";
+                  litellm_params = mkLocalSampled "openai/gemma-4-e4b-q6" sampling.gemmaTool;
+                }
+                {
+                  model_name = "GPT-OSS tool";
+                  litellm_params = (mkLocalSampled "openai/gpt-oss-120b" sampling.gptOssTool) // {
+                    chat_template_kwargs = {
+                      reasoning_effort = "low";
+                    };
+                  };
+                }
+                {
+                  model_name = "Qwen3.5-122B-A10B tool";
+                  litellm_params = mkLocalSampled "openai/qwen3.5-122b" sampling.qwenLargeMoeTool;
                 }
                 {
                   model_name = "Gemma-4-31B (dense general)";

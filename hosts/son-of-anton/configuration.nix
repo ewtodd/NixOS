@@ -46,6 +46,7 @@ in
             "--top-k 40"
           ];
         };
+
         "qwen3.6-35b-a3b-udq8" = {
           hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q8_K_XL";
           ctxSize = 262144;
@@ -60,6 +61,7 @@ in
             "--min-p 0"
           ];
         };
+
         "qwen3.5-122b" = {
           hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 262144;
@@ -109,13 +111,14 @@ in
         };
 
         "mistral-small-4-119b" = {
-          hf = "unsloth/Mistral-Small-4-119B-2603-GGUF:UD-Q6_K";
-          ctxSize = 65536;
+          hf = "unsloth/Mistral-Small-4-119B-2603-GGUF:UD-Q5_K_S";
+          ctxSize = 262144;
           solo = true;
           kvQuant = true;
           extraFlags = [
             "--temp 0.7"
             "--top-p 1.0"
+            "--flash-attn on"
           ];
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Mistral-Small-4-119B-2603-GGUF/resolve/main/mmproj-F16.gguf";
@@ -142,8 +145,8 @@ in
         };
 
         "minimax-m2.7" = {
-          hf = "llmfan46/MiniMax-M2.7-ultra-uncensored-heretic-GGUF:Q3_K_S";
-          ctxSize = 131072;
+          hf = "unsloth/MiniMax-M2.7-GGUF:UD-Q3_K_S";
+          ctxSize = 196608;
           solo = true;
           kvQuant = true;
           extraFlags = [
