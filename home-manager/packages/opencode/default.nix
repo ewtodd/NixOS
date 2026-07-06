@@ -83,6 +83,7 @@ in
               presencePenalty = 0;
             };
           };
+
           "Qwen3.6-27B (dense coding)" = {
             name = "dense coder (antonino)";
             options = {
@@ -93,6 +94,7 @@ in
               presencePenalty = 0;
             };
           };
+
           "Qwen3.5-122B-A10B (large moe)" = {
             name = "large moe (son-of-anton)";
             options = {
