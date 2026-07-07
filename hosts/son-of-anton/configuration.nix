@@ -60,6 +60,10 @@ in
             "--top-k 20"
             "--min-p 0"
           ];
+          chatTemplateFile = pkgs.fetchurl {
+            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
+            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
+          };
         };
 
         "qwen3.5-122b" = {
@@ -79,6 +83,10 @@ in
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
             hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
+          };
+          chatTemplateFile = pkgs.fetchurl {
+            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
+            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
           };
         };
 
@@ -126,6 +134,17 @@ in
             hash = "sha256-FCVAaWLI2J6wnK+RFqhvoC+mcQqKtSnYUpdrtbMSAlA=";
           };
 
+        };
+
+        "nemotron-3-super-120b" = {
+          hf = "unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF:UD-Q5_K_S";
+          ctxSize = 1000000;
+          solo = true;
+          kvQuant = true;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+          ];
         };
 
         "qwen3-4b-titles" = {

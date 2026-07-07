@@ -225,6 +225,24 @@
                   };
                 }
                 {
+                  model_name = "qwen3.6-27b-heretic-coding";
+                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b-heretic" sampling.coding) // {
+                    api_base = "http://10.0.0.3:8080/v1";
+                  };
+                }
+                {
+                  model_name = "qwen3.6-27b-heretic-general";
+                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b-heretic" sampling.general) // {
+                    api_base = "http://10.0.0.3:8080/v1";
+                  };
+                }
+                {
+                  model_name = "gemma-4-31b-heretic";
+                  litellm_params = (mkLocal "openai/gemma-4-31b-heretic") // {
+                    api_base = "http://10.0.0.3:8080/v1";
+                  };
+                }
+                {
                   model_name = "gemma-4-26b-a4b";
                   litellm_params = mkLocal "openai/gemma-4-26b-a4b";
                 }
@@ -265,6 +283,70 @@
                     min_p = 0;
                     presence_penalty = 0;
                   };
+                }
+                {
+                  model_name = "nemotron-3-super-120b-a12b-no-thinking-general";
+                  litellm_params =
+                    (mkLocalSampled "openai/nemotron-3-super-120b" {
+                      temperature = 1.0;
+                      top_p = 1.0;
+                      top_k = 20;
+                      min_p = 0;
+                      presence_penalty = 0;
+                    })
+                    // {
+                      chat_template_kwargs = {
+                        enable_thinking = false;
+                      };
+                    };
+                }
+                {
+                  model_name = "nemotron-3-super-120b-a12b-thinking-general";
+                  litellm_params =
+                    (mkLocalSampled "openai/nemotron-3-super-120b" {
+                      temperature = 1.0;
+                      top_p = 1.0;
+                      top_k = 20;
+                      min_p = 0;
+                      presence_penalty = 0;
+                    })
+                    // {
+                      chat_template_kwargs = {
+                        enable_thinking = true;
+                      };
+                    };
+                }
+                {
+                  model_name = "nemotron-3-super-120b-a12b-no-thinking-coding";
+                  litellm_params =
+                    (mkLocalSampled "openai/nemotron-3-super-120b" {
+                      temperature = 0.6;
+                      top_p = 0.95;
+                      top_k = 20;
+                      min_p = 0;
+                      presence_penalty = 0;
+                    })
+                    // {
+                      chat_template_kwargs = {
+                        enable_thinking = false;
+                      };
+                    };
+                }
+                {
+                  model_name = "nemotron-3-super-120b-a12b-thinking-coding";
+                  litellm_params =
+                    (mkLocalSampled "openai/nemotron-3-super-120b" {
+                      temperature = 0.6;
+                      top_p = 0.95;
+                      top_k = 20;
+                      min_p = 0;
+                      presence_penalty = 0;
+                    })
+                    // {
+                      chat_template_kwargs = {
+                        enable_thinking = true;
+                      };
+                    };
                 }
                 {
                   model_name = "qwen3-4b-instruct";
