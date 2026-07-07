@@ -93,6 +93,34 @@ in
             };
           };
 
+          "qwen3.6-27b-heretic-coding" = {
+            options = {
+              temperature = 0.6;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "qwen3.6-27b-heretic-general" = {
+            options = {
+              temperature = 1.0;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "gemma-4-31b-heretic" = {
+            options = {
+              temperature = 1.0;
+              topP = 0.95;
+              topK = 64;
+            };
+          };
+
           "qwen3.5-122b-a10b" = {
             options = {
               temperature = 0.6;
@@ -160,6 +188,26 @@ in
               temperature = 0.6;
               topP = 0.95;
               topK = 40;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "nemotron-3-super-120b-a12b-no-thinking-coding" = {
+            options = {
+              temperature = 0.6;
+              topP = 0.95;
+              topK = 20;
+              minP = 0;
+              presencePenalty = 0;
+            };
+          };
+
+          "nemotron-3-super-120b-a12b-thinking-coding" = {
+            options = {
+              temperature = 0.6;
+              topP = 0.95;
+              topK = 20;
               minP = 0;
               presencePenalty = 0;
             };

@@ -42,6 +42,10 @@ in
             "--top-k 20"
             "--min-p 0"
           ];
+          chatTemplateFile = pkgs.fetchurl {
+            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
+            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
+          };
         };
         "gemma-4-31b" = {
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
@@ -58,6 +62,44 @@ in
             hash = "sha256-btzKIoITwo01Z6NdIvhJ7qUtg2CHUJOFGVmt9dLycOs=";
           };
         };
+        "qwen3.6-27b-heretic" = {
+          hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
+          ctxSize = 131072;
+          mlock = false;
+          kvQuant = true;
+          extraFlags = [
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF/resolve/main/Qwen3.6-27B-mmproj-BF16.gguf";
+            hash = "sha256-xcjEHabRVaYe3SG346pQtu938SLVAtNq/kpNXD5JTU8=";
+          };
+          chatTemplateFile = pkgs.fetchurl {
+            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
+            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
+          };
+        };
+        "gemma-4-31b-heretic" = {
+          hf = "llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF:Q5_K_M";
+          ctxSize = 262144;
+          mlock = false;
+          kvQuant = true;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-k 64"
+            "--top-p 0.95"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF/resolve/main/gemma-4-31B-it-mmproj-BF16.gguf";
+            hash = "sha256-IUh/8m0I993R1lTTu/wa4QIKqzEZ9b9lR0LORpdzLk4=";
+          };
+        };
+
       };
     };
     security.harden.enable = true;

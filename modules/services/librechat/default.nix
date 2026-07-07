@@ -58,9 +58,16 @@
                 "gpt-oss-medium"
                 "gpt-oss-high"
                 "gemma-4-31b"
+                "qwen3.6-27b-heretic-general"
+                "qwen3.6-27b-heretic-coding"
+                "gemma-4-31b-heretic"
                 "gemma-4-26b-a4b"
                 "gemma-4-e4b"
                 "qwen3-coder-next"
+                "nemotron-3-super-120b-a12b-no-thinking-general"
+                "nemotron-3-super-120b-a12b-thinking-general"
+                "nemotron-3-super-120b-a12b-no-thinking-coding"
+                "nemotron-3-super-120b-a12b-thinking-coding"
               ];
               fetch = false;
             };
