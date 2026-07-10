@@ -33,8 +33,8 @@
         ];
 
         endpoints.agents = {
-          recursionLimit = 40;
-          maxRecursionLimit = 50;
+          recursionLimit = 75;
+          maxRecursionLimit = 100;
         };
 
         endpoints.custom = [
@@ -54,9 +54,6 @@
                 "qwen3.6-35b-a3b-coding"
                 "qwen3.6-27b-general"
                 "qwen3.6-27b-coding"
-                "gpt-oss-low"
-                "gpt-oss-medium"
-                "gpt-oss-high"
                 "gemma-4-31b"
                 "qwen3.6-27b-heretic-general"
                 "qwen3.6-27b-heretic-coding"
@@ -68,6 +65,10 @@
                 "nemotron-3-super-120b-a12b-thinking-general"
                 "nemotron-3-super-120b-a12b-no-thinking-coding"
                 "nemotron-3-super-120b-a12b-thinking-coding"
+                "deepseek-v4-flash-max"
+                "deepseek-v4-flash-high"
+                "deepseek-v4-flash-no-thinking"
+                "minimax-m2.7"
               ];
               fetch = false;
             };

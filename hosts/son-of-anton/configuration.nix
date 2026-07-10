@@ -41,7 +41,7 @@ in
           solo = true;
           kvQuant = true;
           extraFlags = [
-            "--temp 1.0"
+            "--temp 0.6"
             "--top-p 0.95"
             "--top-k 40"
           ];
@@ -60,10 +60,7 @@ in
             "--top-k 20"
             "--min-p 0"
           ];
-          chatTemplateFile = pkgs.fetchurl {
-            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
-            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
-          };
+
         };
 
         "qwen3.5-122b" = {
@@ -84,10 +81,6 @@ in
             url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
             hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
           };
-          chatTemplateFile = pkgs.fetchurl {
-            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
-            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
-          };
         };
 
         "gemma-4-26b-a4b" = {
@@ -105,40 +98,63 @@ in
           ];
         };
 
-        "gemma-4-e4b-q6" = {
-          hf = "unsloth/gemma-4-E4B-it-GGUF:Q6_K";
-          ctxSize = 131072;
-          mlock = false;
-          kvQuant = true;
-          alwaysResident = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-k 64"
-            "--top-p 0.95"
-          ];
-        };
-
         "step-3.7-flash" = {
           hf = "unsloth/Step-3.7-Flash-GGUF:UD-IQ4_XS";
           ctxSize = 262144;
           solo = true;
           mlock = true;
           kvQuant = true;
+          flashAttn = "on";
           extraFlags = [
             "--temp 0.9"
             "--top-p 0.95"
-            "--flash-attn on"
           ];
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Step-3.7-Flash-GGUF/resolve/main/mmproj-BF16.gguf";
             hash = "sha256-FCVAaWLI2J6wnK+RFqhvoC+mcQqKtSnYUpdrtbMSAlA=";
           };
+        };
 
+        "minimax-m2.7" = {
+          hf = "unsloth/MiniMax-M2.7-GGUF:UD-IQ4_XS";
+          ctxSize = 131072;
+          solo = true;
+          mlock = false;
+          mmap = true;
+          kvQuant = true;
+          parallel = 1;
+          batchSize = 1024;
+          ubatchSize = 512;
+          flashAttn = "on";
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 40"
+          ];
+        };
+
+        "deepseek-v4-flash" = {
+          hf = "unsloth/DeepSeek-V4-Flash-GGUF";
+          ctxSize = 999936;
+          solo = true;
+          mlock = false;
+          mmap = true;
+          kvQuant = true;
+          parallel = 1;
+          batchSize = 1024;
+          ubatchSize = 512;
+          flashAttn = "on";
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 1.0"
+            "--min-p 0.0"
+            "--no-warmup"
+          ];
         };
 
         "nemotron-3-super-120b" = {
           hf = "unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF:UD-Q5_K_S";
-          ctxSize = 1000000;
+          ctxSize = 999936;
           solo = true;
           kvQuant = true;
           extraFlags = [
@@ -148,10 +164,12 @@ in
         };
 
         "qwen3-4b-titles" = {
-          hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:Q5_K_M";
-          ctxSize = 8192;
+          hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-IQ3_XXS";
+          ctxSize = 2048;
           alwaysResident = true;
           kvQuant = true;
+          batchSize = 2048;
+          ubatchSize = 2048;
           extraFlags = [
             "--temp 0.7"
             "--top-p 0.8"
@@ -162,12 +180,12 @@ in
 
         "bge-m3" = {
           hf = "gpustack/bge-m3-GGUF:Q8_0";
-          ctxSize = 8192;
+          ctxSize = 2048;
           embedding = true;
+          batchSize = 2048;
+          ubatchSize = 2048;
           extraFlags = [
             "--pooling cls"
-            "-b 8192"
-            "-ub 8192"
           ];
         };
       };

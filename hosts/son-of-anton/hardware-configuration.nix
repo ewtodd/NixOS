@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }:
@@ -45,6 +44,11 @@
   fileSystems."/scratch" = {
     device = "/dev/disk/by-uuid/cbbb4df8-e208-46ee-a6e4-4f9e631e4b3e";
     fsType = "btrfs";
+  };
+
+  systemd.settings.Manager = {
+    RuntimeWatchdogSec = "30s";
+    RebootWatchdogSec = "10min";
   };
 
   swapDevices = [ ];

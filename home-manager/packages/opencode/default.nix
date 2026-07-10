@@ -76,10 +76,6 @@ in
           "qwen3.6-35b-a3b-coding" = {
             options = {
               temperature = 0.6;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
             };
           };
 
@@ -132,85 +128,48 @@ in
             };
           };
 
-          "gpt-oss-low" = {
-            options = {
-              temperature = 0.7;
-              topP = 1.0;
-            };
-          };
-
-          "gpt-oss-medium" = {
-            options = {
-              temperature = 0.7;
-              topP = 1.0;
-            };
-          };
-
-          "gpt-oss-high" = {
-            options = {
-              temperature = 0.7;
-              topP = 1.0;
-            };
-          };
-
           "step-3.7-flash-low" = {
             options = {
               temperature = 0.7;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
             };
           };
 
           "step-3.7-flash-medium" = {
             options = {
               temperature = 0.7;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
             };
           };
 
           "step-3.7-flash-high" = {
             options = {
               temperature = 0.7;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
             };
           };
 
-          "qwen3-coder-next" = {
-            options = {
-              temperature = 0.6;
-              topP = 0.95;
-              topK = 40;
-              minP = 0;
-              presencePenalty = 0;
-            };
-          };
+          "qwen3-coder-next" = { };
 
           "nemotron-3-super-120b-a12b-no-thinking-coding" = {
             options = {
               temperature = 0.6;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
             };
           };
 
           "nemotron-3-super-120b-a12b-thinking-coding" = {
             options = {
               temperature = 0.6;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
             };
+          };
+
+          "deepseek-v4-flash-max" = {
+          };
+
+          "deepseek-v4-flash-high" = {
+          };
+
+          "deepseek-v4-flash-no-thinking" = {
+          };
+
+          "minimax-m2.7" = {
           };
         };
       };
@@ -218,9 +177,9 @@ in
         edit = "ask";
         bash = {
           "*" = "ask";
-          "git status*" = "allow";
-          "git diff*" = "allow";
-          "git log*" = "allow";
+          "git status *" = "allow";
+          "git diff *" = "allow";
+          "git log *" = "allow";
           "grep *" = "allow";
           "rg *" = "allow";
           "ls *" = "allow";

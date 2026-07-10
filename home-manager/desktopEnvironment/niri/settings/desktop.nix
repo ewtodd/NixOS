@@ -28,6 +28,30 @@ let
       };
     }
     {
+      _args = [ "DP-3" ];
+      transform = "normal";
+      position._props = {
+        x = 0;
+        y = 0;
+      };
+      mode = "3440x1440@180.000000";
+      variable-refresh-rate._props = {
+        on-demand = true;
+      };
+      focus-at-startup = [ ];
+      layout = {
+        default-column-width = {
+          proportion = 0.33333;
+        };
+        preset-column-widths._children = [
+          { proportion = 0.66667; }
+          { proportion = 0.5; }
+          { proportion = 0.33333; }
+        ];
+      };
+    }
+
+    {
       _args = [ "HDMI-A-1" ];
       transform = "270";
       position._props = {

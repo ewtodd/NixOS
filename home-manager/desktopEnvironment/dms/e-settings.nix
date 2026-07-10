@@ -398,6 +398,10 @@ in
             name = "DP-5";
             model = "Sceptre O34";
           }
+          {
+            name = "DP-3";
+            model = "Sceptre O34";
+          }
         ]
         ++ lib.optionals (deviceType == "laptop") [
           "all"
