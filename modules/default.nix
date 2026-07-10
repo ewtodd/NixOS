@@ -318,7 +318,8 @@ with lib;
       };
 
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
-      owner.e.enable = mkEnableOption "Whether this is an e-device. If it isn't then it must be a v-device!";
+      owner.e.enable = mkEnableOption "Whether this is an e-device";
+      owner.v.enable = mkEnableOption "Whether this is a v-device";
     };
   };
 
