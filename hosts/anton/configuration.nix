@@ -26,12 +26,12 @@ in
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
-      backend = "vulkan";
+      backend = "rocm";
       cacheDir = "/var/cache/llama-cache";
       models = {
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 131072;
+          ctxSize = 179200;
           mlock = false;
           kvQuant = true;
           extraFlags = [
@@ -42,10 +42,6 @@ in
             "--top-k 20"
             "--min-p 0"
           ];
-          chatTemplateFile = pkgs.fetchurl {
-            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
-            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
-          };
         };
         "gemma-4-31b" = {
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
@@ -64,7 +60,7 @@ in
         };
         "qwen3.6-27b-heretic" = {
           hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
-          ctxSize = 131072;
+          ctxSize = 179200;
           mlock = false;
           kvQuant = true;
           extraFlags = [
@@ -78,10 +74,6 @@ in
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF/resolve/main/Qwen3.6-27B-mmproj-BF16.gguf";
             hash = "sha256-xcjEHabRVaYe3SG346pQtu938SLVAtNq/kpNXD5JTU8=";
-          };
-          chatTemplateFile = pkgs.fetchurl {
-            url = "https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates/resolve/main/chat_template.jinja";
-            hash = "sha256-0gPzNC2Kf4R03VVWPuzjom5xshxvZnyduck7dis7+Zc=";
           };
         };
         "gemma-4-31b-heretic" = {

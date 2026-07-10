@@ -11,8 +11,24 @@ let
   llamaCpp =
     if cfg.backend == "cuda" then
       inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.cuda
+    else if cfg.backend == "vulkan" then
+      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.vulkan
     else
-      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.vulkan;
+      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.rocm.overrideAttrs (
+        finalAttrs: oldAttrs: {
+          cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
+            (pkgs.lib.cmakeFeature "CMAKE_HIP_FLAGS" "-funsafe-math-optimizations")
+          ];
+          postConfigure = (oldAttrs.postConfigure or "") + ''
+            grep -q -- '-funsafe-math-optimizations' CMakeCache.txt
+          '';
+
+          postInstall = (oldAttrs.postInstall or "") + ''
+            mkdir -p $out/nix-support
+            echo "CMAKE_HIP_FLAGS=-funsafe-math-optimizations" > $out/nix-support/hip-flags
+          '';
+        }
+      );
 
   vulkanIcd =
     if config.systemOptions.graphics.intel.enable then
@@ -79,67 +95,19 @@ let
 
   isSolo = name: cfg.models.${name}.solo;
 
-  isBig = name: cfg.models.${name}.big && !isSolo name;
-
   isChat = name: !isResident name;
 
-  soloVars = map (e: e.var) (lib.filter (e: isChat e.name && isSolo e.name) modelList);
+  soloNames = map (e: e.name) (lib.filter (e: isChat e.name && isSolo e.name) modelList);
 
-  bigVars = map (e: e.var) (lib.filter (e: isChat e.name && isBig e.name) modelList);
+  bigNames = map (e: e.name) (lib.filter (e: isChat e.name && cfg.models.${e.name}.big) modelList);
 
-  smallVars = map (e: e.var) (
+  smallNames = map (e: e.name) (
     lib.filter (e: isChat e.name && !isSolo e.name && !cfg.models.${e.name}.big) modelList
   );
 
-  residentVars = map (e: e.var) (lib.filter (e: isResident e.name) modelList);
+  chatNames = soloNames ++ bigNames ++ smallNames;
 
-  chatVars = soloVars ++ bigVars ++ smallVars;
-
-  matrixVars = lib.listToAttrs (map (e: lib.nameValuePair e.var e.name) modelList);
-
-  bigExpr = lib.optionalString (bigVars != [ ]) "(${lib.concatStringsSep " | " bigVars})";
-
-  smallOr = lib.optionalString (smallVars != [ ]) "(${lib.concatStringsSep " | " smallVars})";
-
-  smallAnd = lib.optionalString (smallVars != [ ]) "(${lib.concatStringsSep " & " smallVars})";
-
-  laneA =
-    if bigVars != [ ] && smallVars != [ ] then
-      "${bigExpr} & ${smallOr}"
-    else if bigVars != [ ] then
-      bigExpr
-    else
-      "";
-
-  laneB = smallAnd;
-
-  nonSoloExpr =
-    if laneA != "" && laneB != "" then
-      "(${laneA}) | ${laneB}"
-    else if laneA != "" then
-      laneA
-    else
-      laneB;
-
-  soloExpr = lib.concatStringsSep " | " soloVars;
-
-  chatExpr =
-    if soloExpr != "" && nonSoloExpr != "" then
-      "${soloExpr} | ${nonSoloExpr}"
-    else if soloExpr != "" then
-      soloExpr
-    else
-      nonSoloExpr;
-
-  residentAnd = lib.concatStringsSep " & " residentVars;
-
-  matrixSet =
-    if chatExpr == "" then
-      residentAnd
-    else if residentVars == [ ] then
-      chatExpr
-    else
-      "(${chatExpr}) & ${residentAnd}";
+  residentNames = map (e: e.name) (lib.filter (e: isResident e.name) modelList);
 in
 {
   config = lib.mkIf cfg.enable {
@@ -165,9 +133,40 @@ in
         }
       ) cfg.models;
 
-      settings.matrix = lib.mkIf (residentVars != [ ] || lib.length chatVars > 1) {
-        vars = matrixVars;
-        sets.default = matrixSet;
+      settings.groups = lib.mkIf (residentNames != [ ] || chatNames != [ ]) (
+        lib.optionalAttrs (residentNames != [ ]) {
+          resident = {
+            persistent = true;
+            exclusive = false;
+            swap = false;
+            members = residentNames;
+          };
+        }
+        // lib.optionalAttrs (soloNames != [ ]) {
+          solo = {
+            exclusive = true;
+            swap = true;
+            members = soloNames;
+          };
+        }
+        // lib.optionalAttrs (bigNames != [ ]) {
+          big = {
+            exclusive = false;
+            swap = true;
+            members = bigNames;
+          };
+        }
+        // lib.optionalAttrs (smallNames != [ ]) {
+          small = {
+            exclusive = false;
+            swap = true;
+            members = smallNames;
+          };
+        }
+      );
+
+      settings.hooks = lib.mkIf (residentNames != [ ]) {
+        on_startup.preload = residentNames;
       };
     };
 

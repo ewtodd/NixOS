@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }:
@@ -36,6 +35,11 @@
       "fmask=0022"
       "dmask=0022"
     ];
+  };
+
+  systemd.settings.Manager = {
+    RuntimeWatchdogSec = "30s";
+    RebootWatchdogSec = "10min";
   };
 
   swapDevices = [ ];

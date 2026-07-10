@@ -68,6 +68,7 @@ with lib;
         type = types.enum [
           "vulkan"
           "cuda"
+          "rocm"
         ];
         default = "vulkan";
         description = "llama.cpp GPU backend: Vulkan (AMD RADV or Intel ANV) or CUDA (NVIDIA).";

@@ -22,8 +22,6 @@ let
       -new-tab -url https://nix-community.github.io/nixvim &
   '';
   phone-home = pkgs.writeShellScriptBin "phone-home" ''
-    # The bastion (mu) connection is the slow part (TLS + WAN); multiplex it
-    # via ControlMaster so subsequent inner sessions reuse the warm pipe.
     SOCKET="${config.home.homeDirectory}/.ssh/sockets/mu@ssh.ethanwtodd.com-2222"
 
     if [ ! -S "$SOCKET" ]; then
@@ -77,14 +75,6 @@ in
           max-scroll-amount = "15%";
         };
         disable-power-key-handling = [ ];
-      }
-      // lib.optionalAttrs (osConfig.systemOptions.hardware.twoinone.enable) {
-        touch = {
-          map-to-output = "eDP-1";
-        };
-        tablet = {
-          map-to-output = "eDP-1";
-        };
       };
 
       screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
