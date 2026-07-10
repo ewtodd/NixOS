@@ -110,5 +110,14 @@
         mode = "0440";
       };
     })
+    (lib.mkIf (!config.systemOptions.owner.e.enable) {
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        owner = "v-work";
+        group = "users";
+        mode = "0440";
+      };
+    })
+
   ];
 }
