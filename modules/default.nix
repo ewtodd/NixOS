@@ -109,17 +109,6 @@ with lib;
                 default = 32768;
                 description = "Context size (--ctx-size), sized for agentic/MCP use.";
               };
-              embedding = mkOption {
-                type = types.bool;
-                default = false;
-                description = ''
-                  Serve this as an embedding model: llama-server is launched with
-                  `--embeddings` (and no `--jinja`/`-fa on`, which are chat-only and
-                  unsupported for non-causal encoder models). Pair with a pooling
-                  flag in `extraFlags` (e.g. `--pooling cls` for BGE) and size the
-                  batch to the context so a full chunk embeds in one pass.
-                '';
-              };
               ttl = mkOption {
                 type = types.nullOr types.ints.positive;
                 default = null;

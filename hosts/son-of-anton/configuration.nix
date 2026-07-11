@@ -27,7 +27,7 @@ in
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 05:00:00";
     services.litellmProxy.enable = true;
-    services.librechat.enable = true;
+    # services.librechat.enable = true;
     services.searxng.enable = true;
     services.llamaSwap = {
       enable = true;
@@ -120,7 +120,6 @@ in
           ctxSize = 131072;
           solo = true;
           mlock = false;
-          mmap = true;
           kvQuant = true;
           parallel = 1;
           batchSize = 1024;
@@ -137,9 +136,8 @@ in
           hf = "unsloth/DeepSeek-V4-Flash-GGUF";
           ctxSize = 999936;
           solo = true;
-          mlock = false;
-          mmap = true;
           kvQuant = true;
+          mlock = false;
           parallel = 1;
           batchSize = 1024;
           ubatchSize = 512;
@@ -175,17 +173,6 @@ in
             "--top-p 0.8"
             "--top-k 20"
             "--min-p 0"
-          ];
-        };
-
-        "bge-m3" = {
-          hf = "gpustack/bge-m3-GGUF:Q8_0";
-          ctxSize = 2048;
-          embedding = true;
-          batchSize = 2048;
-          ubatchSize = 2048;
-          extraFlags = [
-            "--pooling cls"
           ];
         };
       };

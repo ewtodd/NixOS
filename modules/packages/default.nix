@@ -61,7 +61,6 @@ in
           mpv
           wineWow64Packages.stable
           winetricks
-          gearlever
           imagemagick
           ghostscript
           pavucontrol

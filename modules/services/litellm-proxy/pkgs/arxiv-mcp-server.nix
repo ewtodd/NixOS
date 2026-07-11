@@ -4,6 +4,13 @@
   # Sourced from flake input (not PyPI) to fix PDF truncation in 0.5.0.
   src,
 }:
+let
+  arxivRelaxed = python3Packages.arxiv.overridePythonAttrs (old: {
+    pythonRelaxDeps = (old.pythonRelaxDeps or [ ]) ++ [
+      "requests"
+    ];
+  });
+in
 python3Packages.buildPythonApplication {
   pname = "arxiv-mcp-server";
   version = "0.5.0-unstable-${builtins.substring 0 8 (src.lastModifiedDate or "00000000")}";
@@ -16,14 +23,18 @@ python3Packages.buildPythonApplication {
   # nixpkgs ships mcp 1.26.0; upstream pins >=1.27.0 (compatible, relax it).
   # `black` is declared as a runtime dependency upstream (a packaging slip) --
   # it's a formatter, not imported at runtime, so drop it.
-  pythonRelaxDeps = [ "mcp" ];
+  pythonRelaxDeps = [
+    "mcp"
+    "arxiv"
+    "anyio"
+  ];
   pythonRemoveDeps = [ "black" ];
 
   dependencies = with python3Packages; [
     aiofiles
     aiohttp
     anyio
-    arxiv
+    arxivRelaxed
     httpx
     mcp
     pydantic-settings

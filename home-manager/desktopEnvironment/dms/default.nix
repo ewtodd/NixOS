@@ -26,6 +26,9 @@ in
     package = pkgs.dms-shell;
     dgop.package = pkgs.dgop;
     quickshell.package = pkgs.quickshell;
+    enableDynamicTheming = false;
+    enableAudioWavelength = false;
+    enableCalendarEvents = false;
     systemd = {
       enable = true;
       restartIfChanged = true;
