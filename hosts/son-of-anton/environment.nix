@@ -17,8 +17,8 @@
 
   boot.kernelParams = [
     "amd_pstate=active"
-    "amd_iommu=off"
-    "ttm.pages_limit=32128000"
-    "ttm.page_pool_size=32128000"
+    "iommu=pt"
+    "ttm.pages_limit=32505856"
+    "ttm.page_pool_size=32505856"
   ];
 }

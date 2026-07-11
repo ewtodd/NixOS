@@ -21,7 +21,7 @@
       inputs.xwayland-satellite-unstable.follows = "";
     };
     dank-material-shell = {
-      url = "github:AvengeMedia/DankMaterialShell";
+      url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dms-plugin-registry = {
@@ -38,7 +38,6 @@
     };
     lisepp = {
       url = "github:ewtodd/LISEplusplus-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     remarkable = {
       url = "github:ewtodd/reMarkable-nix";

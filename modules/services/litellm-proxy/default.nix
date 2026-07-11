@@ -340,15 +340,6 @@
                     api_key = "none";
                   };
                 }
-                {
-                  model_name = "bge-m3";
-                  litellm_params = {
-                    model = "openai/bge-m3";
-                    api_base = "http://127.0.0.1:8080/v1";
-                    api_key = "none";
-                  };
-                  model_info.mode = "embedding";
-                }
               ];
 
               # TODO(multi-user tier): add general_settings.database_url + virtual keys.

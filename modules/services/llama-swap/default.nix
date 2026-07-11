@@ -7,29 +7,57 @@
 }:
 let
   cfg = config.systemOptions.services.llamaSwap;
+  system = pkgs.stdenv.hostPlatform.system;
+  llamaPkgs = inputs.llama-cpp.packages.${system};
 
+  llamaCppVersion =
+    let
+      src = inputs.llama-cpp;
+      date = src.lastModifiedDate or "unknown-date";
+      rev = src.shortRev or (if src ? rev then builtins.substring 0 12 src.rev else "dirty");
+    in
+    "${date}-${rev}";
+
+  versionedLlama =
+    pkg:
+    pkg.override {
+      llamaVersion = llamaCppVersion;
+    };
+
+  stampedLlama =
+    pkg:
+    (versionedLlama pkg).overrideAttrs (
+      finalAttrs: oldAttrs: {
+        postInstall = (oldAttrs.postInstall or "") + ''
+          mkdir -p $out/nix-support
+          echo "${llamaCppVersion}" > $out/nix-support/llama-cpp-version
+        '';
+      }
+    );
+
+  rocmWithUnsafeMath = (stampedLlama llamaPkgs.rocm).overrideAttrs (
+    finalAttrs: oldAttrs: {
+      cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
+        (pkgs.lib.cmakeFeature "CMAKE_HIP_FLAGS" "-funsafe-math-optimizations")
+      ];
+
+      postConfigure = (oldAttrs.postConfigure or "") + ''
+        grep -q -- '-funsafe-math-optimizations' CMakeCache.txt
+      '';
+
+      postInstall = (oldAttrs.postInstall or "") + ''
+        mkdir -p $out/nix-support
+        echo "CMAKE_HIP_FLAGS=-funsafe-math-optimizations" > $out/nix-support/hip-flags
+      '';
+    }
+  );
   llamaCpp =
     if cfg.backend == "cuda" then
-      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.cuda
+      stampedLlama llamaPkgs.cuda
     else if cfg.backend == "vulkan" then
-      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.vulkan
+      stampedLlama llamaPkgs.vulkan
     else
-      inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.rocm.overrideAttrs (
-        finalAttrs: oldAttrs: {
-          cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
-            (pkgs.lib.cmakeFeature "CMAKE_HIP_FLAGS" "-funsafe-math-optimizations")
-          ];
-          postConfigure = (oldAttrs.postConfigure or "") + ''
-            grep -q -- '-funsafe-math-optimizations' CMakeCache.txt
-          '';
-
-          postInstall = (oldAttrs.postInstall or "") + ''
-            mkdir -p $out/nix-support
-            echo "CMAKE_HIP_FLAGS=-funsafe-math-optimizations" > $out/nix-support/hip-flags
-          '';
-        }
-      );
-
+      rocmWithUnsafeMath;
   vulkanIcd =
     if config.systemOptions.graphics.intel.enable then
       "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
@@ -56,18 +84,15 @@ let
       ++ [ (if m.mmap then "--mmap" else "--no-mmap") ]
       ++ lib.optionals m.mlock [ "--mlock" ]
       ++ (
-        if m.embedding then
-          [ "--embeddings" ]
-        else
-          [
-            "--jinja"
-            "--flash-attn ${m.flashAttn}"
-            "--batch-size ${toString m.batchSize}"
-            "--ubatch-size ${toString m.ubatchSize}"
-          ]
-          ++ lib.optionals (m.cacheReuse != null) [
-            "--cache-reuse ${toString m.cacheReuse}"
-          ]
+        [
+          "--jinja"
+          "--flash-attn ${m.flashAttn}"
+          "--batch-size ${toString m.batchSize}"
+          "--ubatch-size ${toString m.ubatchSize}"
+        ]
+        ++ lib.optionals (m.cacheReuse != null) [
+          "--cache-reuse ${toString m.cacheReuse}"
+        ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]
       ++ lib.optionals (m.parallel != null) [ "--parallel ${toString m.parallel}" ]
@@ -89,9 +114,7 @@ let
     var = "m${toString i}";
   }) (lib.attrNames cfg.models);
 
-  isEmbed = name: cfg.models.${name}.embedding;
-
-  isResident = name: isEmbed name || cfg.models.${name}.alwaysResident;
+  isResident = name: cfg.models.${name}.alwaysResident;
 
   isSolo = name: cfg.models.${name}.solo;
 

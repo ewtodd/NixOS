@@ -1,9 +1,44 @@
 { pkgs, ... }:
 {
   imports = [
-    ../default.nix
+    ../packages/fastfetch
+    ../packages/nixvim
   ];
 
-  Profile = "root";
   scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
+
+  home.packages = with pkgs; [
+    htop
+    tmux
+    ripgrep
+    fd
+  ];
+
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+    initExtra = ''
+      fastfetch
+    '';
+  };
+
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  programs.btop = {
+    enable = true;
+    settings = {
+      color_theme = "TTY";
+      vim_keys = true;
+      proc_tree = true;
+      proc_per_core = false;
+      proc_mem_bytes = false;
+      show_swap = false;
+      io_mode = true;
+      update_ms = 1000;
+      base_10_sizes = true;
+    };
+  };
 }
