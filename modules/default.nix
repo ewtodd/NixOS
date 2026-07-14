@@ -191,7 +191,7 @@ with lib;
               flashAttn = mkOption {
                 type = types.str;
                 default = "auto";
-                example = "\"on\"";
+                example = "on";
                 description = "Value for --flash-attn (auto, on, off).";
               };
               batchSize = mkOption {
@@ -262,17 +262,38 @@ with lib;
                   wrong. Ignored if `path` is set instead of `hf`.
                 '';
               };
-              kvQuant = mkOption {
-                type = types.bool;
-                default = false;
-                description = ''
-                  Quantize the KV cache to q8_0 (`--cache-type-k/-v q8_0`),
-                  roughly halving KV memory for a negligible quality hit. Buys
-                  headroom for higher `--ctx-size`, more `--parallel` slots, or
-                  co-resident models. Requires flash attention (on for chat
-                  models); not applied to embedding models.
-                '';
+              # separate options to allow for assymmetric quant
+              kQuant = mkOption {
+                type = types.enum [
+                  "f32"
+                  "f16"
+                  "bf16"
+                  "q8_0"
+                  "q4_0"
+                  "q4_1"
+                  "iq4_nl"
+                  "q5_0"
+                  "q5_1"
+                ];
+                default = "q8_0";
+                description = "i.e. --cache-type-k q8_0";
               };
+              vQuant = mkOption {
+                type = types.enum [
+                  "f32"
+                  "f16"
+                  "bf16"
+                  "q8_0"
+                  "q4_0"
+                  "q4_1"
+                  "iq4_nl"
+                  "q5_0"
+                  "q5_1"
+                ];
+                default = "q8_0";
+                description = "i.e. --cache-type-v q8_0";
+              };
+
               extraFlags = mkOption {
                 type = types.listOf types.str;
                 default = [ ];
