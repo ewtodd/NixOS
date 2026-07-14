@@ -28,7 +28,7 @@
   services.hardware.bolt.enable = true;
 
   services.lact.settings = {
-    version = 5;
+    version = 6;
     daemon = {
       log_level = "info";
       admin_group = "wheel";

@@ -27,7 +27,7 @@ in
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 05:00:00";
     services.litellmProxy.enable = true;
-    # services.librechat.enable = true;
+    services.librechat.enable = true;
     services.searxng.enable = true;
     services.llamaSwap = {
       enable = true;
@@ -39,7 +39,6 @@ in
           hf = "unsloth/Qwen3-Coder-Next-GGUF:Q8_0";
           ctxSize = 262144;
           solo = true;
-          kvQuant = true;
           extraFlags = [
             "--temp 0.6"
             "--top-p 0.95"
@@ -51,7 +50,6 @@ in
           hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q8_K_XL";
           ctxSize = 262144;
           big = true;
-          kvQuant = true;
           extraFlags = [
             "--spec-type draft-mtp"
             "--spec-draft-n-max 2"
@@ -67,7 +65,6 @@ in
           hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 262144;
           solo = true;
-          kvQuant = true;
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
@@ -88,7 +85,6 @@ in
           ctxSize = 262144;
           big = true;
           mlock = false;
-          kvQuant = true;
           extraFlags = [
             "--temp 1.0"
             "--top-k 64"
@@ -103,15 +99,14 @@ in
           ctxSize = 262144;
           solo = true;
           mlock = true;
-          kvQuant = true;
           flashAttn = "on";
           extraFlags = [
             "--temp 0.9"
             "--top-p 0.95"
           ];
           mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Step-3.7-Flash-GGUF/resolve/main/mmproj-BF16.gguf";
-            hash = "sha256-FCVAaWLI2J6wnK+RFqhvoC+mcQqKtSnYUpdrtbMSAlA=";
+            url = "https://huggingface.co/unsloth/Step-3.7-Flash-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-Ysb1vkic3LyuwXlV4DvbScKY7/M6rKENyx2yjTt/U90=";
           };
         };
 
@@ -119,11 +114,11 @@ in
           hf = "unsloth/MiniMax-M2.7-GGUF:UD-IQ4_XS";
           ctxSize = 131072;
           solo = true;
-          mlock = false;
-          kvQuant = true;
+          mlock = true;
+          vQuant = "q5_1";
           parallel = 1;
-          batchSize = 1024;
-          ubatchSize = 512;
+          batchSize = 2048;
+          ubatchSize = 1024;
           flashAttn = "on";
           extraFlags = [
             "--temp 1.0"
@@ -134,27 +129,26 @@ in
 
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-GGUF";
-          ctxSize = 999936;
+          ctxSize = 524888;
           solo = true;
-          kvQuant = true;
-          mlock = false;
+          kQuant = "q8_0";
+          vQuant = "q5_0";
+          mlock = true;
           parallel = 1;
-          batchSize = 1024;
-          ubatchSize = 512;
+          batchSize = 2048;
+          ubatchSize = 1024;
           flashAttn = "on";
           extraFlags = [
             "--temp 1.0"
             "--top-p 1.0"
             "--min-p 0.0"
-            "--no-warmup"
           ];
         };
 
         "nemotron-3-super-120b" = {
           hf = "unsloth/NVIDIA-Nemotron-3-Super-120B-A12B-GGUF:UD-Q5_K_S";
-          ctxSize = 999936;
+          ctxSize = 524288;
           solo = true;
-          kvQuant = true;
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
@@ -165,7 +159,6 @@ in
           hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-IQ3_XXS";
           ctxSize = 2048;
           alwaysResident = true;
-          kvQuant = true;
           batchSize = 2048;
           ubatchSize = 2048;
           extraFlags = [

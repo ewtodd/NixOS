@@ -193,12 +193,12 @@ in
       # gateway on son-of-anton (the same tools LibreChat gets) — nixos used to
       # be a local `nix run` here but is now centralized on the gateway. Auth
       # via the master key.
-      #    mcp.litellm = {
-      #      type = "remote";
-      #      url = "https://llm.ethanwtodd.com/mcp/";
-      #      headers.Authorization = "Bearer {env:LITELLM_MASTER_KEY}";
-      #      enabled = true;
-      #    };
+      mcp.litellm = {
+        type = "remote";
+        url = "https://llm.ethanwtodd.com/mcp/";
+        headers.Authorization = "Bearer {env:LITELLM_MASTER_KEY}";
+        enabled = true;
+      };
     };
   };
 }

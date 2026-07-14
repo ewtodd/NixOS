@@ -26,14 +26,13 @@ in
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
-      backend = "rocm";
+      backend = "vulkan";
       cacheDir = "/var/cache/llama-cache";
       models = {
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 179200;
           mlock = false;
-          kvQuant = true;
           extraFlags = [
             "--spec-type draft-mtp"
             "--spec-draft-n-max 2"
@@ -47,7 +46,6 @@ in
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
           ctxSize = 262144;
           mlock = false;
-          kvQuant = true;
           extraFlags = [
             "--temp 1.0"
             "--top-k 64"
@@ -62,7 +60,6 @@ in
           hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
           ctxSize = 179200;
           mlock = false;
-          kvQuant = true;
           extraFlags = [
             "--spec-type draft-mtp"
             "--spec-draft-n-max 2"
@@ -80,7 +77,6 @@ in
           hf = "llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF:Q5_K_M";
           ctxSize = 262144;
           mlock = false;
-          kvQuant = true;
           extraFlags = [
             "--temp 1.0"
             "--top-k 64"

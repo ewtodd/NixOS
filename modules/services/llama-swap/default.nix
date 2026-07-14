@@ -100,13 +100,16 @@ let
       ++ lib.optionals (m.chatTemplateFile != null) [ "--chat-template-file ${m.chatTemplateFile}" ]
       ++ lib.optionals m.noWarmup [ "--no-warmup" ]
       ++ lib.optionals m.noRepack [ "--no-repack" ]
-      ++ lib.optionals m.kvQuant [
-        "--cache-type-k q8_0"
-        "--cache-type-v q8_0"
+      ++ [
+        "--cache-type-k ${m.kQuant}"
+        "--cache-type-v ${m.vQuant}"
       ]
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
       ++ m.extraFlags
-      ++ [ "--host 0.0.0.0 --port \${PORT}" ]
+      ++ [
+        "--host 0.0.0.0 --port \${PORT}"
+        "--no-webui"
+      ]
     );
 
   modelList = lib.imap0 (i: name: {
