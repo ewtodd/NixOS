@@ -153,16 +153,5 @@
         config.strategies = { };
       };
     })
-    (lib.mkIf (config.systemOptions.hardware.twoinone.enable) {
-      hardware.sensor.iio.enable = true;
-      services.iio-niri = {
-        enable = true;
-        extraArgs = [
-          "--monitor"
-          "eDP-1"
-        ];
-      };
-      environment.systemPackages = with pkgs; [ xournalpp ];
-    })
   ];
 }

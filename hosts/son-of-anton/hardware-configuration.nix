@@ -13,6 +13,12 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  powerManagement = {
+    enable = true;
+    powertop.enable = false;
+    cpuFreqGovernor = lib.mkForce "performance";
+  };
+
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"
