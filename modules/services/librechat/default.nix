@@ -46,29 +46,18 @@
             models = {
               default = [
                 "auto"
-                "step-3.7-flash-low"
-                "step-3.7-flash-medium"
-                "step-3.7-flash-high"
                 "qwen3.5-122b-a10b"
                 "qwen3.6-35b-a3b-general"
-                "qwen3.6-35b-a3b-coding"
                 "qwen3.6-27b-general"
-                "qwen3.6-27b-coding"
                 "gemma-4-31b"
                 "qwen3.6-27b-heretic-general"
-                "qwen3.6-27b-heretic-coding"
                 "gemma-4-31b-heretic"
                 "gemma-4-26b-a4b"
-                "gemma-4-e4b"
-                "qwen3-coder-next"
-                "nemotron-3-super-120b-a12b-no-thinking-general"
-                "nemotron-3-super-120b-a12b-thinking-general"
-                "nemotron-3-super-120b-a12b-no-thinking-coding"
-                "nemotron-3-super-120b-a12b-thinking-coding"
                 "deepseek-v4-flash-max"
                 "deepseek-v4-flash-high"
                 "deepseek-v4-flash-no-thinking"
-                "minimax-m2.7"
+                "fast-gemma-4-12b-it"
+                "fast-qwen3.6-27b"
               ];
               fetch = false;
             };

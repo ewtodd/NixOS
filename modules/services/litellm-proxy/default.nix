@@ -77,6 +77,13 @@
               min_p = 0;
               presence_penalty = 0;
             };
+            deterministic = {
+              temperature = 0.0;
+              top_p = 0.95;
+              top_k = 20;
+              min_p = 0;
+              presence_penalty = 0;
+            };
             gemmaTool = {
               temperature = 0.7;
               top_p = 0.95;
@@ -96,22 +103,12 @@
               presence_penalty = 0;
             };
           };
-          mkStep =
-            effort:
-            (mkLocal "openai/step-3.7-flash")
-            // {
-              chat_template_kwargs = {
-                reasoning_effort = effort;
-                preserve_thinking = "true";
-              };
-            };
           mkDeepseek =
             effort:
             (mkLocal "openai/deepseek-v4-flash")
             // {
               chat_template_kwargs = {
                 reasoning_effort = effort;
-                preserve_thinking = "true";
               };
             };
           mkLocalSampled = model: profile: (mkLocal model) // profile;
@@ -173,7 +170,7 @@
                 }
                 {
                   model_name = "qwen3.5-122b-a10b";
-                  litellm_params = mkLocal "openai/qwen3.5-122b";
+                  litellm_params = (mkLocalSampled "openai/qwen3.5-122b" sampling.qwenLargeMoeTool);
                 }
                 {
                   model_name = "qwen3.6-35b-a3b-general";
@@ -189,37 +186,25 @@
                   model_name = "qwen3.6-27b-coding";
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.coding) // {
                     api_base = "http://10.0.0.3:8080/v1";
-                    chat_template_kwargs = {
-                      preserve_thinking = "true";
-                    };
                   };
                 }
+                {
+                  model_name = "fast-gemma-4-12b-it";
+                  litellm_params = (mkLocalSampled "openai/fast-gemma-4-12b-it" sampling.deterministic) // {
+                    api_base = "http://10.0.0.4:8080/v1";
+                  };
+                }
+                {
+                  model_name = "fast-qwen3.6-27b";
+                  litellm_params = (mkLocalSampled "openai/fast-qwen3.6-27b" sampling.coding) // {
+                    api_base = "http://10.0.0.4:8080/v1";
+                  };
+                }
+
                 {
                   model_name = "qwen3.6-27b-general";
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.general) // {
                     api_base = "http://10.0.0.3:8080/v1";
-                    chat_template_kwargs = {
-                      preserve_thinking = "true";
-                    };
-                  };
-                }
-                {
-                  model_name = "gemma-4-e4b-tool";
-                  litellm_params = (mkLocal "openai/gemma-4-e4b-q6") // {
-                    temperature = 0.7;
-                    top_k = 20;
-                    min_p = 0;
-                    repeat_penalty = 1.08;
-                    frequency_penalty = 0.1;
-                  };
-                }
-                {
-                  model_name = "qwen3.5-122b-a10b-tool";
-                  litellm_params = (mkLocal "openai/qwen3.5-122b") // {
-                    temperature = 0.5;
-                    repeat_penalty = 1.08;
-                    frequency_penalty = 0.15;
-                    presence_penalty = 0;
                   };
                 }
                 {
@@ -232,18 +217,12 @@
                   model_name = "qwen3.6-27b-heretic-coding";
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b-heretic" sampling.coding) // {
                     api_base = "http://10.0.0.3:8080/v1";
-                    chat_template_kwargs = {
-                      preserve_thinking = "true";
-                    };
                   };
                 }
                 {
                   model_name = "qwen3.6-27b-heretic-general";
                   litellm_params = (mkLocalSampled "openai/qwen3.6-27b-heretic" sampling.general) // {
                     api_base = "http://10.0.0.3:8080/v1";
-                    chat_template_kwargs = {
-                      preserve_thinking = "true";
-                    };
                   };
                 }
                 {
@@ -255,62 +234,6 @@
                 {
                   model_name = "gemma-4-26b-a4b";
                   litellm_params = mkLocal "openai/gemma-4-26b-a4b";
-                }
-                {
-                  model_name = "gemma-4-e4b";
-                  litellm_params = mkLocal "openai/gemma-4-e4b-q6";
-                }
-                {
-                  model_name = "step-3.7-flash-low";
-                  litellm_params = mkStep "low";
-                }
-                {
-                  model_name = "step-3.7-flash-medium";
-                  litellm_params = mkStep "medium";
-                }
-                {
-                  model_name = "step-3.7-flash-high";
-                  litellm_params = mkStep "high";
-                }
-                {
-                  model_name = "qwen3-coder-next";
-                  litellm_params = mkLocal "openai/qwen3-coder-next";
-                }
-                {
-                  model_name = "nemotron-3-super-120b-a12b-no-thinking-general";
-                  litellm_params = (mkLocal "openai/nemotron-3-super-120b") // {
-                    top_p = 1.0;
-                    chat_template_kwargs = {
-                      enable_thinking = false;
-                    };
-                  };
-                }
-                {
-                  model_name = "nemotron-3-super-120b-a12b-thinking-general";
-                  litellm_params = (mkLocal "openai/nemotron-3-super-120b") // {
-                    top_p = 1.0;
-                    chat_template_kwargs = {
-                      enable_thinking = true;
-                    };
-                  };
-                }
-                {
-                  model_name = "nemotron-3-super-120b-a12b-no-thinking-coding";
-                  litellm_params = (mkLocal "openai/nemotron-3-super-120b") // {
-                    temperature = 0.6;
-                    chat_template_kwargs = {
-                      enable_thinking = false;
-                    };
-                  };
-                }
-                {
-                  model_name = "nemotron-3-super-120b-a12b-thinking-coding";
-                  litellm_params = (mkLocal "openai/nemotron-3-super-120b") // {
-                    temperature = 0.6;
-                    chat_template_kwargs = {
-                      enable_thinking = true;
-                    };
-                  };
                 }
                 {
                   model_name = "deepseek-v4-flash-max";
@@ -327,10 +250,6 @@
                       enable_thinking = false;
                     };
                   };
-                }
-                {
-                  model_name = "minimax-m2.7";
-                  litellm_params = mkLocal "openai/minimax-m2.7";
                 }
                 {
                   model_name = "qwen3-4b-instruct";
