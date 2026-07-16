@@ -71,108 +71,19 @@ in
           baseURL = "https://llm.ethanwtodd.com/v1";
           apiKey = "{env:LITELLM_MASTER_KEY}";
         };
-
         models = {
-          "qwen3.6-35b-a3b-coding" = {
-            options = {
-              temperature = 0.6;
-            };
-          };
-
-          "qwen3.6-27b-coding" = {
-            options = {
-              temperature = 0.6;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
-            };
-          };
-
-          "qwen3.6-27b-heretic-coding" = {
-            options = {
-              temperature = 0.6;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
-            };
-          };
-
-          "qwen3.6-27b-heretic-general" = {
-            options = {
-              temperature = 1.0;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
-            };
-          };
-
-          "gemma-4-31b-heretic" = {
-            options = {
-              temperature = 1.0;
-              topP = 0.95;
-              topK = 64;
-            };
-          };
-
-          "qwen3.5-122b-a10b" = {
-            options = {
-              temperature = 0.6;
-              topP = 0.95;
-              topK = 20;
-              minP = 0;
-              presencePenalty = 0;
-              repetitionPenalty = 1.0;
-            };
-          };
-
-          "step-3.7-flash-low" = {
-            options = {
-              temperature = 0.7;
-            };
-          };
-
-          "step-3.7-flash-medium" = {
-            options = {
-              temperature = 0.7;
-            };
-          };
-
-          "step-3.7-flash-high" = {
-            options = {
-              temperature = 0.7;
-            };
-          };
-
-          "qwen3-coder-next" = { };
-
-          "nemotron-3-super-120b-a12b-no-thinking-coding" = {
-            options = {
-              temperature = 0.6;
-            };
-          };
-
-          "nemotron-3-super-120b-a12b-thinking-coding" = {
-            options = {
-              temperature = 0.6;
-            };
-          };
-
-          "deepseek-v4-flash-max" = {
-          };
-
-          "deepseek-v4-flash-high" = {
-          };
-
-          "deepseek-v4-flash-no-thinking" = {
-          };
-
-          "minimax-m2.7" = {
-          };
+          "qwen3.6-35b-a3b-coding" = { };
+          "qwen3.6-27b-coding" = { };
+          "qwen3.6-27b-heretic-coding" = { };
+          "qwen3.5-122b-a10b" = { };
+          "deepseek-v4-flash-max" = { };
+          "deepseek-v4-flash-high" = { };
+          "deepseek-v4-flash-no-thinking" = { };
+          "fast-gemma-4-12b-it" = { };
+          "fast-qwen3.6-27b" = { };
         };
       };
+
       permission = {
         edit = "ask";
         bash = {
@@ -188,6 +99,16 @@ in
       };
       server.port = 4096;
       model = "litellm/qwen3.6-27b-coding";
+
+      agent = {
+        explore = {
+          mode = "subagent";
+          model = "litellm/fast-gemma-4-12b-it";
+        };
+        compaction = {
+          model = "litellm/fast-gemma-4-12b-it";
+        };
+      };
 
       # fetch + SearXNG web_search + nixos lookups, served by the LiteLLM MCP
       # gateway on son-of-anton (the same tools LibreChat gets) — nixos used to

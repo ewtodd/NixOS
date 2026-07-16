@@ -33,6 +33,36 @@ in
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
+    services.llamaSwap = {
+      enable = true;
+      lanExpose = true;
+      backend = "cuda";
+      cacheDir = "/var/cache/llama-cache";
+      models = {
+        "fast-gemma-4-12b-it" = {
+          hf = "unsloth/gemma-4-12b-it-GGUF:UD-Q8_K_XL";
+          ctxSize = 131072;
+          mlock = false;
+          extraFlags = [
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+          ];
+        };
+        "fast-qwen3.6-27b" = {
+          hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q4_K_XL";
+          ctxSize = 65536;
+          mlock = false;
+          extraFlags = [
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+          ];
+        };
+      };
+    };
   };
 
   nix.settings = {
