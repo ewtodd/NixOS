@@ -26,7 +26,7 @@ in
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
-      backend = "vulkan";
+      backend = "rocm";
       cacheDir = "/var/cache/llama-cache";
       models = {
         "qwen3.6-27b" = {

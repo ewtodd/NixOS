@@ -32,7 +32,7 @@ in
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
-      backend = "vulkan";
+      backend = "rocm";
       cacheDir = "/scratch/llama-cache";
       models = {
         "qwen3.6-35b-a3b-udq8" = {
@@ -84,10 +84,12 @@ in
         };
 
         "deepseek-v4-flash" = {
-          hf = "unsloth/DeepSeek-V4-Flash-GGUF";
-          ctxSize = 524288;
+          hf = "unsloth/DeepSeek-V4-Flash-GGUF:UD-IQ3_XXS";
+          ctxSize = 1048576;
           solo = true;
           mlock = true;
+          batchSize = 4096;
+          ubatchSize = 4096;
           parallel = 1;
           flashAttn = "on";
           extraFlags = [

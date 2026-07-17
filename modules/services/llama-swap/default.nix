@@ -35,9 +35,11 @@ let
       }
     );
 
-  rocmWithUnsafeMath = (stampedLlama llamaPkgs.rocm).overrideAttrs (
+  rocm = (stampedLlama llamaPkgs.rocm).overrideAttrs (
     finalAttrs: oldAttrs: {
       cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
+        (pkgs.lib.cmakeFeature "CMAKE_HIP_ARCHITECTURES" "gfx1151;gfx1201")
+        "-DGPU_TARGETS=gfx1151;gfx1201"
         (pkgs.lib.cmakeFeature "CMAKE_HIP_FLAGS" "-funsafe-math-optimizations")
       ];
 
@@ -47,17 +49,32 @@ let
 
       postInstall = (oldAttrs.postInstall or "") + ''
         mkdir -p $out/nix-support
+        echo "-DGPU_TARGETS=gfx1151,gfx1201" > $out/nix-support/supported-hardware 
         echo "CMAKE_HIP_FLAGS=-funsafe-math-optimizations" > $out/nix-support/hip-flags
       '';
     }
   );
+
+  cuda = (stampedLlama llamaPkgs.cuda).overrideAttrs (
+    finalAttrs: oldAttrs: {
+      cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
+        "-DCMAKE_CUDA_ARCHITECTURES=89"
+      ];
+
+      postInstall = (oldAttrs.postInstall or "") + ''
+        mkdir -p $out/nix-support
+        echo "CMAKE_CUDA_FLAGS=-DCMAKE_CUDA_ARCHITECTURES=89" > $out/nix-support/supported-hardware
+      '';
+    }
+  );
+
   llamaCpp =
     if cfg.backend == "cuda" then
-      stampedLlama llamaPkgs.cuda
+      cuda
     else if cfg.backend == "vulkan" then
       stampedLlama llamaPkgs.vulkan
     else
-      rocmWithUnsafeMath;
+      rocm;
   vulkanIcd =
     if config.systemOptions.graphics.intel.enable then
       "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
