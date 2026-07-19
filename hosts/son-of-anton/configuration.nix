@@ -24,8 +24,8 @@ in
     services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
-    services.scheduledReboot.enable = true;
-    services.scheduledReboot.calendar = "*-*-* 05:00:00";
+    #    services.scheduledReboot.enable = true;
+    #    services.scheduledReboot.calendar = "*-*-* 05:00:00";
     services.litellmProxy.enable = true;
     services.librechat.enable = true;
     services.searxng.enable = true;
@@ -89,7 +89,7 @@ in
           solo = true;
           mlock = true;
           batchSize = 4096;
-          ubatchSize = 4096;
+          ubatchSize = 2048;
           parallel = 1;
           flashAttn = "on";
           extraFlags = [
