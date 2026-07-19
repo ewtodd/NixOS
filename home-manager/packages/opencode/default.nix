@@ -22,6 +22,25 @@ in
     package = opencodeWrapped;
     tui.theme = "system";
     context = ''
+      # Available Subagents
+
+      You have access to specialized agents via the Task tool. Delegate to them
+      when the task matches their expertise:
+
+      - **code-reviewer** — Reviews code for bugs, security, performance, and
+        maintainability. Read-only; use before committing or after a large change.
+      - **security-auditor** — Deep security audit. Use when handling auth, crypto,
+        secrets, or user input. Read-only.
+      - **debugger** — Systematic root-cause analysis. Use when something is broken
+        and the fix is not immediately obvious.
+      - **architect** — High-level design decisions, module boundaries, API contracts.
+        Read-only; use before starting a large feature.
+      - **test-writer** — Generates comprehensive tests. Use after implementing a
+        feature or bug fix.
+      - **refactorer** — Improves code structure without changing behavior. Use when
+        code is working but needs cleanup.
+      - **docs-writer** — Writes documentation, docstrings, and READMEs.
+
       # Mandatory Rules
 
       ## In all languages
@@ -49,7 +68,7 @@ in
         actually requires.
       - Do not use modern C++ features: no `auto`, no smart pointers, no
         range-based (`for (x : c)`) iteration. Use explicit types and classic
-        indexed/iterator loops.
+        indexed/iterator loops. No lambdas!
       - In performance-critical code, always gate logging behind a compile- or
         run-time toggle so it can be disabled. The `std::endl` flush is therefore
         never a concern on hot paths.
@@ -107,6 +126,93 @@ in
         };
         compaction = {
           model = "litellm/fast-gemma-4-12b-it";
+        };
+
+        code-reviewer = {
+          mode = "subagent";
+          model = "litellm/qwen3.6-35b-a3b-coding";
+          prompt = ''
+            You are a code reviewer. Focus on security, performance, correctness, and maintainability.
+            Point out bugs, edge cases, race conditions, and anti-patterns.
+            Suggest concrete improvements with code examples.
+            Do not modify files; only read and report.
+          '';
+          tools = {
+            write = false;
+            edit = false;
+          };
+        };
+
+        security-auditor = {
+          mode = "subagent";
+          model = "litellm/qwen3.5-122b-a10b";
+          prompt = ''
+            You are a security auditor. Thoroughly analyze code for vulnerabilities:
+            injection, XSS, CSRF, auth bypass, insecure defaults, hardcoded secrets,
+            privilege escalation, and supply-chain risks.
+            Rate findings by severity. Do not modify files.
+          '';
+          tools = {
+            write = false;
+            edit = false;
+          };
+        };
+
+        debugger = {
+          mode = "subagent";
+          model = "litellm/deepseek-v4-flash-high";
+          prompt = ''
+            You are a debugger. Given a bug report, error trace, or misbehaving code,
+            systematically trace the root cause. Read relevant files, reason about
+            control flow and state, and propose a minimal fix.
+            Explain your reasoning step by step before suggesting changes.
+          '';
+        };
+
+        architect = {
+          mode = "subagent";
+          model = "litellm/qwen3.5-122b-a10b";
+          prompt = ''
+            You are a software architect. Help with high-level design decisions,
+            module boundaries, data flow, and API contracts.
+            Focus on maintainability, extensibility, and clear separation of concerns.
+            Use diagrams (ASCII/mermaid) when helpful. Do not modify files.
+          '';
+          tools = {
+            write = false;
+            edit = false;
+          };
+        };
+
+        test-writer = {
+          mode = "subagent";
+          model = "litellm/fast-qwen3.6-27b";
+          prompt = ''
+            You are a test writer. Generate comprehensive tests for the given code:
+            unit tests, edge cases, boundary conditions, and error paths.
+            Match the existing test framework and style in the codebase.
+          '';
+        };
+
+        refactorer = {
+          mode = "subagent";
+          model = "litellm/deepseek-v4-flash-max";
+          prompt = ''
+            You are a refactoring specialist. Improve code structure without changing
+            external behavior. Reduce duplication, simplify control flow, extract
+            functions, and improve naming. Preserve existing tests and interfaces.
+            Explain each refactoring step and its rationale.
+          '';
+        };
+
+        docs-writer = {
+          mode = "subagent";
+          model = "litellm/fast-qwen3.6-27b";
+          prompt = ''
+            You are a technical writer. Create clear, accurate documentation:
+            README files, docstrings, API references, and usage examples.
+            Match the tone and structure of existing docs in the project.
+          '';
         };
       };
 

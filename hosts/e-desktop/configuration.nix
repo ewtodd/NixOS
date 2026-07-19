@@ -48,6 +48,15 @@ in
             "--spec-draft-n-max 2"
           ];
         };
+        "fast-gemma-4-31b-it-qat" = {
+          hf = "unsloth/gemma-4-31B-it-qat-GGUF:UD-Q4_K_XL";
+          ctxSize = 131072;
+          mlock = false;
+          extraFlags = [
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+          ];
+        };
         "fast-qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q4_K_XL";
           ctxSize = 65536;
