@@ -20,6 +20,7 @@ with lib;
       graphics.amd.enable = mkEnableOption "AMD graphics";
       graphics.intel.enable = mkEnableOption "Intel graphics";
       graphics.nvidia.enable = mkEnableOption "NVIDIA proprietary graphics (latest driver)";
+      graphics.asahi.enable = mkEnableOption "Asahi graphics (Apple Silicon GPU via Mesa)";
 
       hardware.chromebook-audio.enable = mkEnableOption "Chromebook audio fixes";
       hardware.suzyqable.enable = mkEnableOption "Suzyqable chromebook debugging support";

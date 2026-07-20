@@ -22,9 +22,7 @@ let
   templeWrapped = pkgs.writeShellScriptBin "temple" ''
     for f in /run/agenix/temple-token-ethan /run/agenix/temple-token-val; do
       if [ -r "$f" ]; then
-        set -a
-        . "$f"
-        set +a
+        export TEMPLE_TOKEN="$(grep -oP 'TEMPLE_TOKEN=\K.*' "$f" || sed -n 's/^TEMPLE_TOKEN=//p' "$f")"
         break
       fi
     done

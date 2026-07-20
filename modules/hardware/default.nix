@@ -92,6 +92,18 @@
         lm_sensors
       ];
     })
+    (lib.mkIf (config.systemOptions.graphics.asahi.enable) {
+      hardware.graphics = {
+        enable = true;
+        package = pkgs.mesa;
+        extraPackages = with pkgs; [
+          vulkan-tools
+        ];
+      };
+      environment.systemPackages = with pkgs; [
+        lm_sensors
+      ];
+    })
     (lib.mkIf (config.systemOptions.hardware.chromebook-audio.enable) {
       hardware.banshee-audio.enable = true;
     })
