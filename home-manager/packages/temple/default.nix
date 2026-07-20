@@ -29,7 +29,7 @@ let
       fi
     done
     exec ${templePkg}/bin/temple \
-      --server temple.ethanwtodd.com \
+      --server https://temple.ethanwtodd.com \
       "$@"
   '';
 in
