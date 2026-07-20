@@ -43,4 +43,7 @@ in
     server-son-of-anton
     server-oracle
   ];
+  "signal-env.age".publicKeys = personal ++ [ server-oracle ];
+  # signal-cli-env: contains SIGNAL_PHONE (the bot's registered number)
+  "signal-cli-env.age".publicKeys = personal ++ [ server-mu ];
 }

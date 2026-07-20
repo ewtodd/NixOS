@@ -109,6 +109,24 @@
         group = lib.mkForce "temple";
         mode = lib.mkForce "0440";
       };
+      # Signal bot secrets: SIGNAL_RECIPIENT (your phone number).
+      # Read by temple-server (as user `temple`).
+      signal-env = {
+        file = ../../secrets/signal-env.age;
+        owner = "temple";
+        group = "temple";
+        mode = "0440";
+      };
+    })
+    (lib.mkIf config.systemOptions.services.signal-cli.enable {
+      # signal-cli reads SIGNAL_PHONE (the bot's number) from this file.
+      # Runs as user `signal-cli`.
+      signal-cli-env = {
+        file = ../../secrets/signal-cli-env.age;
+        owner = "signal-cli";
+        group = "signal-cli";
+        mode = "0440";
+      };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
       litellm-master-key = {

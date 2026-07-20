@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -24,6 +24,15 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 04:30:00";
+    # Signal bot backend for temple (runs on x86_64 — signal-cli's native
+    # lib doesn't support aarch64 where temple-server lives).
+    # Temple on oracle connects to this daemon over the LAN.
+    services.signal-cli = {
+      enable = true;
+      environmentFile = config.age.secrets.signal-cli-env.path;
+      socketAddr = "0.0.0.0:7583";
+      openFirewall = true;
+    };
     security.harden.enable = true;
   };
 
