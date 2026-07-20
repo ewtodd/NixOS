@@ -87,6 +87,7 @@ in
           "30:56:0f:4b:ac:de,desktop,10.0.0.4"
           "d8:bb:c1:d8:7d:49,anton,10.0.0.3"
           "9c:bf:0d:01:ec:71,son-of-anton,10.0.0.5"
+          "5c:1b:f4:e0:a8:b9,oracle,10.0.0.6"
         ];
       };
     };

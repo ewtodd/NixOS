@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -70,9 +70,34 @@ in
             "--min-p 0"
           ];
         };
+        # Heavy reasoning model: 122B MoE with partial CPU offload.
+        # e-desktop is a workstation (CUDA/ML workloads take priority),
+        # so this is manual-fallback only — temple's router never auto-routes here.
+        "qwen3.5-122b" = {
+          hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
+          ctxSize = 262144;
+          solo = true;
+          mlock = false;
+          nCpuMoe = 4;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+            "--presence-penalty 1.5"
+            "--spec-type draft-mtp"
+            "--spec-draft-n-max 2"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
+          };
+        };
       };
     };
   };
+
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   nix.settings = {
     substituters = [

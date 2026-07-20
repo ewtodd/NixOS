@@ -8,10 +8,7 @@
   scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
 
   home.packages = with pkgs; [
-    htop
-    tmux
     ripgrep
-    fd
   ];
 
   programs.bash = {

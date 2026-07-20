@@ -52,13 +52,6 @@
         mode = "0400";
       };
     })
-    (lib.mkIf config.systemOptions.security.harden.enable {
-      # Read by the cve-scan service (runs as root) to publish reports to ntfy.
-      ntfy-publish-token = {
-        file = ../../secrets/ntfy-publish-token.age;
-        mode = "0400";
-      };
-    })
     (lib.mkIf config.systemOptions.services.grafana.enable {
       # Read at startup by the grafana service (runs as the grafana user).
       grafana-admin-password = {
@@ -74,11 +67,14 @@
     })
     # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
     (lib.mkIf config.systemOptions.services.litellmProxy.enable {
-      # son-of-anton: read by the proxy as a systemd EnvironmentFile (as root,
-      # then bind-mounted into the litellm container). Root-only.
+      # Read by the litellm container (bind-mounted as root) and possibly by
+      # temple-server (as user `temple`). Use 0440 with group access so both
+      # can read it; on litellm-only hosts the group doesn't matter (root reads
+      # everything). On oracle where temple also runs, temple is in the group.
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;
-        mode = "0400";
+        group = lib.mkDefault "root";
+        mode = lib.mkDefault "0440";
       };
     })
     (lib.mkIf config.systemOptions.services.searxng.enable {
@@ -96,14 +92,17 @@
         owner = "librechat";
         mode = "0400";
       };
-      # Meilisearch master key, shared by both the meilisearch daemon and
-      # LibreChat (the librechat module wires it into MEILI_MASTER_KEY). Both
-      # read it via systemd LoadCredential as root, and meilisearch runs under
-      # DynamicUser, so it must stay owned by root (a `meilisearch` owner would
-      # not exist at agenix-decrypt time). Content is the raw key, no KEY= prefix.
       meilisearch-api-key = {
         file = ../../secrets/meilisearch-api-key.age;
         mode = "0400";
+      };
+    })
+    (lib.mkIf config.systemOptions.services.templeServer.enable {
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        owner = lib.mkForce "temple";
+        group = lib.mkForce "temple";
+        mode = lib.mkForce "0440";
       };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {

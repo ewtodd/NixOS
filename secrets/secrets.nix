@@ -9,6 +9,7 @@ let
   server-mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@server-mu";
   server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
   server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICY75cWf+2GLiTlKSouy2l5bkeSm7t2PM3f+rSYqCXrl root@son-of-anton";
+  server-oracle = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzfIzVGX+XNGWRrLfL78OeYqt8MB5Xii9EwimFAL0WZ root@oracle";
   personal = [
     ethan-desktop-ework
     ethan-desktop-eplay
@@ -26,16 +27,20 @@ in
   "e-desktop-luks-passphrase.age".publicKeys = personal ++ [ server-mu ];
   "bastion-initrd-unlock-key.age".publicKeys = personal ++ [ server-mu ];
   "nextcloud-admin-password.age".publicKeys = personal ++ [ server-mu ];
-  "ntfy-publish-token.age".publicKeys = personal ++ [
-    server-mu
-    server-nu
-    server-anton
-    server-son-of-anton
-  ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
-  "litellm-master-key.age".publicKeys = personal ++ [ server-son-of-anton ] ++ val;
-  "searxng-secret-key.age".publicKeys = personal ++ [ server-son-of-anton ];
-  "librechat-env.age".publicKeys = personal ++ [ server-son-of-anton ];
-  "meilisearch-api-key.age".publicKeys = personal ++ [ server-son-of-anton ];
+  "litellm-master-key.age".publicKeys =
+    personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
+  "searxng-secret-key.age".publicKeys = personal ++ [
+    server-son-of-anton
+    server-oracle
+  ];
+  "librechat-env.age".publicKeys = personal ++ [
+    server-son-of-anton
+    server-oracle
+  ];
+  "meilisearch-api-key.age".publicKeys = personal ++ [
+    server-son-of-anton
+    server-oracle
+  ];
 }

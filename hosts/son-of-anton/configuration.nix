@@ -24,65 +24,18 @@ in
     services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
-    #    services.scheduledReboot.enable = true;
-    #    services.scheduledReboot.calendar = "*-*-* 05:00:00";
-    services.litellmProxy.enable = true;
-    services.librechat.enable = true;
-    services.searxng.enable = true;
+    services.scheduledReboot.enable = true;
+    services.scheduledReboot.calendar = "*-*-* 05:00:00";
+    # litellm/librechat/searxng moved to oracle. This host is pure inference.
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
       models = {
-        "qwen3.6-35b-a3b-udq8" = {
-          hf = "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q8_K_XL";
-          ctxSize = 262144;
-          big = true;
-          extraFlags = [
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-          ];
-
-        };
-
-        "qwen3.5-122b" = {
-          hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 262144;
-          solo = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-            "--presence-penalty 1.5"
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
-          ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
-          };
-        };
-
-        "gemma-4-26b-a4b" = {
-          hf = "unsloth/gemma-4-26B-A4B-it-GGUF:Q8_0";
-          ctxSize = 262144;
-          big = true;
-          mlock = false;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-k 64"
-            "--top-p 0.95"
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
-          ];
-        };
-
+        # son-of-anton is the deepseek host. deepseek runs solo (1M ctx, mlock)
+        # and no other models are loaded here — this is the planner/reviewer
+        # brain. Swapping is expensive on 128GB unified memory.
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-GGUF:UD-IQ3_XXS";
           ctxSize = 1048576;
@@ -96,20 +49,6 @@ in
             "--temp 1.0"
             "--top-p 1.0"
             "--min-p 0.0"
-          ];
-        };
-
-        "qwen3-4b-titles" = {
-          hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-IQ3_XXS";
-          ctxSize = 2048;
-          alwaysResident = true;
-          batchSize = 2048;
-          ubatchSize = 2048;
-          extraFlags = [
-            "--temp 0.7"
-            "--top-p 0.8"
-            "--top-k 20"
-            "--min-p 0"
           ];
         };
       };

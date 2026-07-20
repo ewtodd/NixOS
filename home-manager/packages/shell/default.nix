@@ -97,6 +97,12 @@ in
         User = "son-of-anton";
         ProxyJump = "bastion";
       };
+      "oracle" = {
+        Hostname = "10.0.0.6";
+        Port = 2222;
+        User = "oracle";
+        ProxyJump = "bastion";
+      };
 
       # Colmena deploy targets: same inner hosts as the *-admin shells, but as
       # the key-only `deploy` user. `colmenaDeployments.*.targetHost` in
@@ -123,6 +129,12 @@ in
       };
       "deploy-son-of-anton" = {
         Hostname = "10.0.0.5";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
+      "deploy-oracle" = {
+        Hostname = "10.0.0.6";
         Port = 2222;
         User = "deploy";
         ProxyJump = "bastion";
