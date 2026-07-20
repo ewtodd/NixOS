@@ -77,9 +77,13 @@ let
       rocm;
   vulkanIcd =
     if config.systemOptions.graphics.intel.enable then
-      "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json"
+      "/run/opengl-driver/share/vulkan/icd.d/intel_icd.${system}.json"
+    else if config.systemOptions.graphics.amd.enable then
+      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${system}.json"
+    else if config.systemOptions.graphics.asahi.enable then
+      "/run/opengl-driver/share/vulkan/icd.d/asahi_icd.aarch64.json"
     else
-      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
+      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${system}.json";
 
   useCustomCache = cfg.cacheDir != null;
   cacheDir = if useCustomCache then cfg.cacheDir else "/var/cache/llama-swap";

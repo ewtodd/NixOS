@@ -14,6 +14,7 @@ in
   ];
 
   systemOptions = {
+    graphics.asahi.enable = true;
     deviceType.server.enable = true;
     services.ssh.enable = true;
     services.deploy.enable = true;
