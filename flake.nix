@@ -238,7 +238,7 @@
         oracle = {
           targetHost = "deploy-oracle";
           targetUser = "deploy";
-          buildOnTarget = false;
+          buildOnTarget = true;
           tags = [ "server" ];
         };
       };

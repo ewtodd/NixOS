@@ -28,6 +28,7 @@ in
     ./router
     ./scheduled-reboot
     ./searxng
+    ./signal-cli
     ./temple-server
     ./wakeable
   ];

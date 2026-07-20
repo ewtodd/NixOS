@@ -307,6 +307,32 @@ with lib;
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
       services.templeServer.enable = mkEnableOption "temple renco agent server";
 
+      services.signal-cli.enable = mkEnableOption "signal-cli JSON-RPC daemon (Signal bot backend for temple)";
+      services.signal-cli.environmentFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        example = "/run/agenix/signal-cli-env";
+        description = ''
+          EnvironmentFile containing SIGNAL_PHONE=+15551234567 (the bot's
+          registered number, E.164 with + prefix).
+        '';
+      };
+      services.signal-cli.socketAddr = mkOption {
+        type = types.str;
+        default = "127.0.0.1:7583";
+        description = "TCP socket address for the JSON-RPC daemon.";
+      };
+      services.signal-cli.dataDir = mkOption {
+        type = types.path;
+        default = "/var/lib/signal-cli";
+        description = "State directory: keys, registration data.";
+      };
+      services.signal-cli.openFirewall = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Open the JSON-RPC socket port in the firewall (needed if temple-server is on a different host).";
+      };
+
       services.deploy.enable = mkEnableOption ''
         colmena deploy target: a key-only `deploy` user with scoped NOPASSWD sudo
         (just the activation commands) and nix trusted-user, so the build host

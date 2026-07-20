@@ -15,12 +15,13 @@ in
       enable = true;
       litellmUrl = "https://llm.ethanwtodd.com";
       openFirewall = true;
-      # Reuse the litellm-master-key agenix secret: its content
-      # (LITELLM_MASTER_KEY=sk-...) is accepted by temple-server as a
-      # fallback for LITELLM_API_KEY. The secrets module provisions this
-      # path with owner=temple, group=temple, mode=0440 so the systemd
-      # service (running as the `temple` user) can read it.
-      environmentFile = config.age.secrets.litellm-master-key.path;
+      # litellm-master-key contains LITELLM_MASTER_KEY=sk-...
+      # signal-env contains SIGNAL_RECIPIENT=+1...
+      # Both are provisioned by the secrets module with appropriate ownership.
+      environmentFile = [
+        config.age.secrets.litellm-master-key.path
+        config.age.secrets.signal-env.path
+      ];
 
       # Router model mapping (fleet layout):
       #   oracle (local)       → simple queries (qwen3-4b-instruct, resident)
@@ -32,6 +33,12 @@ in
       executorModel = "qwen3.6-27b-coding";
       reviewerModel = "deepseek-v4-flash-high";
       criticalModel = "deepseek-v4-flash-high";
+
+      # Signal bot: two-way notifications + free-form inbound commands.
+      # signal-cli daemon runs on server-mu (x86_64 bastion) — oracle is
+      # aarch64 where signal-cli's native lib doesn't work.
+      signal.enable = true;
+      signal.socketAddr = "10.0.0.2:7583";
     };
   };
 }
