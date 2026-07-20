@@ -51,4 +51,5 @@ in
   # `temple-server --generate-token USERNAME PHONE` on oracle).
   "temple-token-ethan.age".publicKeys = personal;
   "temple-token-val.age".publicKeys = val;
+  "openrouter-api-key.age".publicKeys = personal;
 }
