@@ -15,6 +15,7 @@ let
     "office"
     "ssh"
     "status"
+    "temple"
   ];
 in
 {
