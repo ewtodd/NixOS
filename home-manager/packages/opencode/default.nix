@@ -91,7 +91,6 @@ in
           apiKey = "{env:LITELLM_MASTER_KEY}";
         };
         models = {
-          "qwen3.6-35b-a3b-coding" = { };
           "qwen3.6-27b-coding" = { };
           "qwen3.6-27b-heretic-coding" = { };
           "qwen3.5-122b-a10b" = { };
@@ -129,7 +128,7 @@ in
 
         code-reviewer = {
           mode = "subagent";
-          model = "litellm/qwen3.6-35b-a3b-coding";
+          model = "litellm/qwen3.6-27b-coding";
           prompt = ''
             You are a code reviewer. Focus on security, performance, correctness, and maintainability.
             Point out bugs, edge cases, race conditions, and anti-patterns.

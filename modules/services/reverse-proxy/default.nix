@@ -37,7 +37,7 @@ in
 
       virtualHosts."llm.ethanwtodd.com".extraConfig = ''
         @api path /v1* /mcp*
-        reverse_proxy @api http://10.0.0.5:4000
+        reverse_proxy @api http://10.0.0.6:4000
         reverse_proxy http://${anubisLlm} {
           header_up X-Real-IP {remote_host}
         }
@@ -56,7 +56,7 @@ in
         BIND_NETWORK = "tcp";
       };
       llm.settings = {
-        TARGET = "http://10.0.0.5:4000";
+        TARGET = "http://10.0.0.6:4000";
         BIND = anubisLlm;
         BIND_NETWORK = "tcp";
       };

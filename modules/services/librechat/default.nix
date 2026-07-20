@@ -39,17 +39,14 @@ let
         name = "LiteLLM";
         baseURL = "http://host.docker.internal:4000/v1";
         apiKey = "\${LITELLM_API_KEY}";
-        modelDisplayLabel = "son of anton";
+        modelDisplayLabel = "renco fleet";
         models = {
           default = [
-            "auto"
             "qwen3.5-122b-a10b"
-            "qwen3.6-35b-a3b-general"
             "qwen3.6-27b-general"
             "gemma-4-31b"
             "qwen3.6-27b-heretic-general"
             "gemma-4-31b-heretic"
-            "gemma-4-26b-a4b"
             "deepseek-v4-flash-max"
             "deepseek-v4-flash-high"
             "deepseek-v4-flash-no-thinking"
