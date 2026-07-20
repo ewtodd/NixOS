@@ -37,6 +37,7 @@ in
     ./opencode
     ./shell
     ./syncthing
+    ./temple
     ./zathura
   ];
 
