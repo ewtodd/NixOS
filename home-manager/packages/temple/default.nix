@@ -10,28 +10,24 @@
 {
   pkgs,
   lib,
-  config,
   inputs,
   ...
 }:
 let
   templePkg = inputs.temple.packages.${pkgs.stdenv.hostPlatform.system}.temple;
 
-  # Map owner → token secret name + default server
-  tokenSecret =
-    if config.Owner == "e" then
-      config.age.secrets.temple-token-ethan.path
-    else if config.Owner == "v" then
-      config.age.secrets.temple-token-val.path
-    else
-      null;
-
+  # The token secret is readable by group `users` (mode 0440), so both
+  # e-work and e-play (or v-work and v-play) can read the same file.
+  # Try ethan's token first, then val's — whichever exists.
   templeWrapped = pkgs.writeShellScriptBin "temple" ''
-    if [ -r "${tokenSecret}" ]; then
-      set -a
-      . "${tokenSecret}"
-      set +a
-    fi
+    for f in /run/agenix/temple-token-ethan /run/agenix/temple-token-val; do
+      if [ -r "$f" ]; then
+        set -a
+        . "$f"
+        set +a
+        break
+      fi
+    done
     exec ${templePkg}/bin/temple \
       --server temple.ethanwtodd.com \
       "$@"
