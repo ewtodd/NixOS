@@ -12,7 +12,6 @@ let
     "cloud"
     "llm"
     "mc"
-    "ntfy"
     "office"
     "ssh"
     "status"

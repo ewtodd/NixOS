@@ -74,6 +74,14 @@
       url = "github:wurli/split.nvim";
       flake = false;
     };
+    nixos-apple-silicon = {
+      url = "github:tpwrules/nixos-apple-silicon";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    temple = {
+      url = "github:ewtodd/temple";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -107,6 +115,7 @@
         {
           hostname,
           headless,
+          system ? "x86_64-linux",
         }:
         [
           ./modules
@@ -125,26 +134,36 @@
                 if headless then mkHeadlessHomeManagerModules inputs else mkHomeManagerModules inputs;
               extraSpecialArgs = {
                 inherit inputs;
-                system = "x86_64-linux";
+                system = system;
               };
               users = import ./hosts/${hostname}/home.nix;
             };
+            # Make the per-host system string available to all NixOS modules
+            # as `system` (overrides any meta.specialArgs from colmena so each
+            # node gets its own arch, not the build host's).
+            _module.args.system = system;
           }
           ./hosts/${hostname}/configuration.nix
-        ];
+        ]
+        ++ nixpkgs.lib.optional (
+          hostname == "oracle"
+        ) inputs.nixos-apple-silicon.nixosModules.apple-silicon-support;
 
       mkSystem =
         {
           hostname,
           headless ? false,
+          system ? "x86_64-linux",
         }:
         nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+          system = system;
           specialArgs = {
             inherit inputs;
-            system = "x86_64-linux";
+            system = system;
           };
-          modules = mkSystemModules { inherit hostname headless; };
+          modules = mkSystemModules {
+            inherit hostname headless system;
+          };
         };
 
       hosts = {
@@ -171,6 +190,10 @@
         };
         son-of-anton = {
           headless = true;
+        };
+        oracle = {
+          headless = true;
+          system = "aarch64-linux";
         };
       };
 
@@ -212,6 +235,12 @@
           buildOnTarget = false;
           tags = [ "server" ];
         };
+        oracle = {
+          targetHost = "deploy-oracle";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [ "server" ];
+        };
       };
 
       mkNeovim = inputs.nixvim.legacyPackages.x86_64-linux.makeNixvimWithModule {
@@ -248,6 +277,7 @@
         mkSystem {
           inherit hostname;
           inherit (h) headless;
+          system = h.system or "x86_64-linux";
         }
       ) hosts;
 
@@ -257,9 +287,14 @@
             system = "x86_64-linux";
             config.allowUnfree = true;
           };
+          nodeNixpkgs = {
+            oracle = import nixpkgs {
+              system = "aarch64-linux";
+              config.allowUnfree = true;
+            };
+          };
           specialArgs = {
             inherit inputs;
-            system = "x86_64-linux";
           };
         };
       }
@@ -267,6 +302,7 @@
         imports = mkSystemModules {
           inherit hostname;
           inherit (hosts.${hostname}) headless;
+          system = hosts.${hostname}.system or "x86_64-linux";
         };
         inherit deployment;
       }) colmenaDeployments;

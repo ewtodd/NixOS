@@ -19,9 +19,6 @@ in
       virtualHosts."cloud.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.2:80
       '';
-      virtualHosts."ntfy.ethanwtodd.com".extraConfig = ''
-        reverse_proxy http://127.0.0.1:2586
-      '';
       virtualHosts."office.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.2:9980
       '';

@@ -162,7 +162,7 @@
           installRustc = false;
         };
         nixd.enable = true;
-        pylsp.enable = true;
+        basedpyright.enable = true;
         yamlls.enable = true;
         bashls.enable = true;
         texlab.enable = true;

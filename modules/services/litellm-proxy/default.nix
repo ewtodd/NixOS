@@ -55,9 +55,13 @@
             "frequency_penalty"
             "response_format"
           ];
-          mkLocal = model: {
-            inherit model;
-            api_base = "http://127.0.0.1:8080/v1";
+          # Inference hosts on the LAN:
+          sonOfAnton = "http://10.0.0.5:8080/v1"; # Strix Halo 128GB — deepseek only
+          anton = "http://10.0.0.3:8080/v1"; # R9700 32GB — qwen + gemma
+          eDesktop = "http://10.0.0.4:8080/v1"; # RTX 4090 — fast models (workstation)
+
+          mkLocal = api_base: model: {
+            inherit model api_base;
             api_key = "none";
             allowed_openai_params = nativeOpenaiParams;
             timeout = 1800;
@@ -105,13 +109,15 @@
           };
           mkDeepseek =
             effort:
-            (mkLocal "openai/deepseek-v4-flash")
+            (mkLocal sonOfAnton "openai/deepseek-v4-flash")
             // {
               chat_template_kwargs = {
                 reasoning_effort = effort;
               };
             };
-          mkLocalSampled = model: profile: (mkLocal model) // profile;
+          mkLocalSampled =
+            api_base: model: profile:
+            (mkLocal api_base model) // profile;
         in
         {
           services.litellm = {
@@ -165,75 +171,44 @@
 
               model_list = [
                 {
-                  model_name = "auto";
-                  litellm_params = mkLocal "openai/qwen3.6-35b-a3b-udq8";
-                }
-                {
                   model_name = "qwen3.5-122b-a10b";
-                  litellm_params = (mkLocalSampled "openai/qwen3.5-122b" sampling.qwenLargeMoeTool);
+                  litellm_params = mkLocalSampled anton "openai/qwen3.5-122b" sampling.qwenLargeMoeTool;
                 }
                 {
-                  model_name = "qwen3.6-35b-a3b-general";
-                  litellm_params = mkLocal "openai/qwen3.6-35b-a3b-udq8";
-                }
-                {
-                  model_name = "qwen3.6-35b-a3b-coding";
-                  litellm_params = (mkLocal "openai/qwen3.6-35b-a3b-udq8") // {
-                    temperature = 0.6;
-                  };
+                  model_name = "qwen3.5-122b-a10b-fallback";
+                  litellm_params = mkLocalSampled eDesktop "openai/qwen3.5-122b" sampling.qwenLargeMoeTool;
                 }
                 {
                   model_name = "qwen3.6-27b-coding";
-                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.coding) // {
-                    api_base = "http://10.0.0.3:8080/v1";
-                  };
+                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b" sampling.coding;
                 }
                 {
                   model_name = "fast-gemma-4-12b-it";
-                  litellm_params = (mkLocalSampled "openai/fast-gemma-4-12b-it" sampling.deterministic) // {
-                    api_base = "http://10.0.0.4:8080/v1";
-                  };
+                  litellm_params = mkLocalSampled eDesktop "openai/fast-gemma-4-12b-it" sampling.deterministic;
                 }
                 {
                   model_name = "fast-qwen3.6-27b";
-                  litellm_params = (mkLocalSampled "openai/fast-qwen3.6-27b" sampling.coding) // {
-                    api_base = "http://10.0.0.4:8080/v1";
-                  };
+                  litellm_params = mkLocalSampled eDesktop "openai/fast-qwen3.6-27b" sampling.coding;
                 }
-
                 {
                   model_name = "qwen3.6-27b-general";
-                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b" sampling.general) // {
-                    api_base = "http://10.0.0.3:8080/v1";
-                  };
+                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b" sampling.general;
                 }
                 {
                   model_name = "gemma-4-31b";
-                  litellm_params = (mkLocal "openai/gemma-4-31b") // {
-                    api_base = "http://10.0.0.3:8080/v1";
-                  };
+                  litellm_params = mkLocal anton "openai/gemma-4-31b";
                 }
                 {
                   model_name = "qwen3.6-27b-heretic-coding";
-                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b-heretic" sampling.coding) // {
-                    api_base = "http://10.0.0.3:8080/v1";
-                  };
+                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b-heretic" sampling.coding;
                 }
                 {
                   model_name = "qwen3.6-27b-heretic-general";
-                  litellm_params = (mkLocalSampled "openai/qwen3.6-27b-heretic" sampling.general) // {
-                    api_base = "http://10.0.0.3:8080/v1";
-                  };
+                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b-heretic" sampling.general;
                 }
                 {
                   model_name = "gemma-4-31b-heretic";
-                  litellm_params = (mkLocal "openai/gemma-4-31b-heretic") // {
-                    api_base = "http://10.0.0.3:8080/v1";
-                  };
-                }
-                {
-                  model_name = "gemma-4-26b-a4b";
-                  litellm_params = mkLocal "openai/gemma-4-26b-a4b";
+                  litellm_params = mkLocal anton "openai/gemma-4-31b-heretic";
                 }
                 {
                   model_name = "deepseek-v4-flash-max";
@@ -245,7 +220,7 @@
                 }
                 {
                   model_name = "deepseek-v4-flash-no-thinking";
-                  litellm_params = (mkLocal "openai/deepseek-v4-flash") // {
+                  litellm_params = (mkLocal sonOfAnton "openai/deepseek-v4-flash") // {
                     chat_template_kwargs = {
                       enable_thinking = false;
                     };
@@ -254,7 +229,7 @@
                 {
                   model_name = "qwen3-4b-instruct";
                   litellm_params = {
-                    model = "openai/qwen3-4b-titles";
+                    model = "openai/qwen3-4b-instruct";
                     api_base = "http://127.0.0.1:8080/v1";
                     api_key = "none";
                   };

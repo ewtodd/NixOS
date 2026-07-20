@@ -305,6 +305,7 @@ with lib;
       };
       services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + MCP gateway (containerized, son-of-anton)";
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
+      services.templeServer.enable = mkEnableOption "temple renco agent server";
 
       services.deploy.enable = mkEnableOption ''
         colmena deploy target: a key-only `deploy` user with scoped NOPASSWD sudo

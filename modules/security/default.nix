@@ -5,8 +5,6 @@
 }:
 with lib;
 {
-  imports = [ ./cve-scan ];
-
   config = mkIf (config.systemOptions.security.harden.enable) {
     security = {
       sudo.enable = mkForce false;

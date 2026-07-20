@@ -102,7 +102,6 @@ in
           "fast-qwen3.6-27b" = { };
         };
       };
-
       permission = {
         edit = "ask";
         bash = {

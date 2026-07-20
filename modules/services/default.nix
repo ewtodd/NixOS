@@ -22,13 +22,13 @@ in
     ./minecraft
     ./nextcloud
     ./node-exporter
-    ./ntfy
     ./prometheus
     ./reverse-proxy
     ./rgb-load
     ./router
     ./scheduled-reboot
     ./searxng
+    ./temple-server
     ./wakeable
   ];
 
@@ -54,6 +54,7 @@ in
             "mu"
             "anton"
             "son-of-anton"
+            "oracle"
           ];
         };
       };
