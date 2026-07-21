@@ -22,6 +22,7 @@ in
       # Router model mapping (fleet layout):
       #   oracle (local)       → simple queries (qwen3-4b-instruct, resident)
       #   son-of-anton         → planner + reviewer + critical (deepseek, solo)
+      #                         + router classifier (gemma-4-e4b, alwaysResident)
       #   anton                → executor (qwen3.6-27b-coding) + researcher (gemma-4-31b)
       defaultModel = "qwen3.6-27b-coding";
       simpleModel = "gemma-4-31b";
@@ -30,6 +31,7 @@ in
       reviewerModel = "deepseek-v4-flash-high";
       criticalModel = "deepseek-v4-flash-high";
       researcherModel = "gemma-4-31b";
+      routerModel = "gemma-4-e4b-router";
 
       # Signal bot: two-way notifications + free-form inbound commands.
       signal.enable = true;

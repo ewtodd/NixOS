@@ -227,12 +227,8 @@
                   };
                 }
                 {
-                  model_name = "qwen3-4b-instruct";
-                  litellm_params = {
-                    model = "openai/qwen3-4b-instruct";
-                    api_base = "http://127.0.0.1:8080/v1";
-                    api_key = "none";
-                  };
+                  model_name = "gemma-4-e4b-router";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-e4b-router" sampling.gemmaTool;
                 }
               ];
 
