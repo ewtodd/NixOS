@@ -33,9 +33,9 @@ in
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 179200;
           mlock = false;
+          specType = "draft-mtp";
+          specDraftNMax = 2;
           extraFlags = [
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
             "--temp 1.0"
             "--top-p 0.95"
             "--top-k 20"
@@ -60,9 +60,9 @@ in
           hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
           ctxSize = 179200;
           mlock = false;
+          specType = "draft-mtp";
+          specDraftNMax = 2;
           extraFlags = [
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
             "--temp 1.0"
             "--top-p 0.95"
             "--top-k 20"
@@ -95,14 +95,14 @@ in
           solo = true;
           mlock = false;
           nCpuMoe = 4;
+          specType = "draft-mtp";
+          specDraftNMax = 2;
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
             "--top-k 20"
             "--min-p 0"
             "--presence-penalty 1.5"
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
           ];
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";

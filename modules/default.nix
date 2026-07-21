@@ -293,7 +293,25 @@ with lib;
                 default = "q8_0";
                 description = "i.e. --cache-type-v q8_0";
               };
-
+              specType = mkOption {
+                type = types.enum [
+                  "none"
+                  "draft-simple"
+                  "draft-eagle3"
+                  "draft-dflash"
+                  "draft-mtp"
+                  "ngram-cache"
+                  "ngram-simple"
+                  "ngram-map-k"
+                  "ngram-map-k4v"
+                  "ngram-mod"
+                ];
+                default = "ngram-mod";
+              };
+              specDraftNMax = mkOption {
+                type = types.ints.positive;
+                default = 3;
+              };
               extraFlags = mkOption {
                 type = types.listOf types.str;
                 default = [ ];

@@ -126,6 +126,8 @@ let
         "--cache-type-v ${m.vQuant}"
       ]
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
+      ++ lib.optional (m.specType != "none") "--spec-type ${m.specType}"
+      ++ lib.optional (m.specType != "none") "--spec-draft-n-max ${toString m.specDraftNMax}"
       ++ m.extraFlags
       ++ [
         "--host 0.0.0.0 --port \${PORT}"
