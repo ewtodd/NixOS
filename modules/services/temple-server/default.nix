@@ -39,7 +39,7 @@ in
       # SSH tool execution: temple-server on oracle SSHes through bastion
       # (server-mu) to reach workstations on the LAN.
       sshBastion = "deploy@10.0.0.2:2222";
-      sshKeyPath = config.age.secrets.temple-ssh-key.path;
+      sshKeyPath = "/var/lib/temple/ssh_key";
 
       sshTargets = [
         {
