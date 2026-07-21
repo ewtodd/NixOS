@@ -75,15 +75,20 @@ let
       stampedLlama llamaPkgs.vulkan
     else
       rocm;
+  # Mesa names ICD files by arch only (radeon_icd.x86_64.json), NOT by
+  # system triple (radeon_icd.x86_64-linux.json) — a wrong path here makes
+  # the Vulkan loader ignore VK_ICD_FILENAMES and enumerate every ICD on
+  # the machine (iGPU, llvmpipe), so llama.cpp can bind the wrong device.
+  arch = pkgs.stdenv.hostPlatform.parsed.cpu.name;
   vulkanIcd =
     if config.systemOptions.graphics.intel.enable then
-      "/run/opengl-driver/share/vulkan/icd.d/intel_icd.${system}.json"
+      "/run/opengl-driver/share/vulkan/icd.d/intel_icd.${arch}.json"
     else if config.systemOptions.graphics.amd.enable then
-      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${system}.json"
+      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${arch}.json"
     else if config.systemOptions.graphics.asahi.enable then
-      "/run/opengl-driver/share/vulkan/icd.d/asahi_icd.aarch64.json"
+      "/run/opengl-driver/share/vulkan/icd.d/asahi_icd.${arch}.json"
     else
-      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${system}.json";
+      "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${arch}.json";
 
   useCustomCache = cfg.cacheDir != null;
   cacheDir = if useCustomCache then cfg.cacheDir else "/var/cache/llama-swap";
@@ -126,7 +131,7 @@ let
         "--cache-type-v ${m.vQuant}"
       ]
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
-      ++ lib.optional (m.specType != "none") "--spec-type ${m.specType}"
+      ++ lib.optional (m.specType != "none") "--spec-type ${m.specType} --spec-draft-ngl all"
       ++ lib.optional (m.specType != "none") "--spec-draft-n-max ${toString m.specDraftNMax}"
       ++ m.extraFlags
       ++ [
