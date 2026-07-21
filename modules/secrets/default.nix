@@ -117,6 +117,12 @@
         group = "users";
         mode = "0440";
       };
+      openrouter-api-key = {
+        file = ../../secrets/openrouter-api-key.age;
+        owner = "e-work";
+        group = "users";
+        mode = "0440";
+      };
     })
     (lib.mkIf config.systemOptions.owner.v.enable {
       litellm-master-key = {
@@ -127,6 +133,12 @@
       };
       temple-token-val = {
         file = ../../secrets/temple-token-val.age;
+        owner = "v-work";
+        group = "users";
+        mode = "0440";
+      };
+      openrouter-api-key = {
+        file = ../../secrets/openrouter-api-key.age;
         owner = "v-work";
         group = "users";
         mode = "0440";
