@@ -12,13 +12,7 @@ let
       . /run/agenix/litellm-master-key
       set +a
     fi
-    if [ -r /run/agenix/openrouter-api-key ]; then
-      set -a
-      . /run/agenix/openrouter-api-key
-      set +a
-    fi
-
-    exec ${lib.getExe opencodeUnwrapped} "$@"
+        exec ${lib.getExe opencodeUnwrapped} "$@"
   '';
 in
 {
@@ -104,14 +98,6 @@ in
           "deepseek-v4-flash-no-thinking" = { };
           "fast-gemma-4-12b-it" = { };
           "fast-qwen3.6-27b" = { };
-        };
-      };
-      provider.openrouter = {
-        npm = "@ai-sdk/openai-compatible";
-        name = "OpenRouter";
-        options = {
-          baseURL = "https://openrouter.ai/api/v1";
-          apiKey = "{env:OPENROUTER_API_KEY}";
         };
       };
       permission = {
