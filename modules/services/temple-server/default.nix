@@ -17,7 +17,6 @@ in
       openFirewall = true;
       environmentFile = [
         config.age.secrets.litellm-master-key.path
-        config.age.secrets.signal-env.path
       ];
 
       # Router model mapping (fleet layout):

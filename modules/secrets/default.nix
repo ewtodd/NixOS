@@ -93,12 +93,6 @@
         group = lib.mkForce "temple";
         mode = lib.mkForce "0440";
       };
-      signal-env = {
-        file = ../../secrets/signal-env.age;
-        owner = "temple";
-        group = "temple";
-        mode = "0440";
-      };
     })
     (lib.mkIf config.systemOptions.services.signal-cli.enable {
       # signal-cli reads SIGNAL_PHONE (the bot's number) from this file.
