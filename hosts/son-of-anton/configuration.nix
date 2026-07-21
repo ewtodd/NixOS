@@ -26,7 +26,6 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 05:00:00";
-    # litellm/librechat/searxng moved to oracle. This host is pure inference.
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
@@ -42,7 +41,7 @@ in
           solo = true;
           mlock = true;
           batchSize = 4096;
-          ubatchSize = 2048;
+          ubatchSize = 4096;
           parallel = 1;
           flashAttn = "on";
           extraFlags = [
