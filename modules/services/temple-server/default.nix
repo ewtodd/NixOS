@@ -28,7 +28,7 @@ in
       #   son-of-anton         → planner + reviewer + critical (deepseek, solo)
       #   anton                → executor (qwen3.6-27b-coding)
       defaultModel = "deepseek-v4-flash-high";
-      simpleModel = "qwen3-4b-instruct";
+      simpleModel = "qwen3.6-27b-general";
       plannerModel = "deepseek-v4-flash-high";
       executorModel = "qwen3.6-27b-coding";
       reviewerModel = "deepseek-v4-flash-high";
