@@ -57,7 +57,6 @@ with lib;
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
 
-      services.librechat.enable = mkEnableOption "LibreChat chat UI (ai.ethanwtodd.com) as OCI containers on oracle; pulls in Meilisearch (native) for message search";
       services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
 
       services.llamaSwap.lanExpose = mkEnableOption ''

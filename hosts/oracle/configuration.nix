@@ -22,14 +22,13 @@ in
     services.templeServer.enable = true;
     services.litellmProxy.enable = true;
     services.searxng.enable = true;
-    services.librechat.enable = true;
     services.llamaSwap = {
       enable = true;
       backend = "vulkan";
       models = {
         "qwen3-4b-instruct" = {
           hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-IQ3_XXS";
-          ctxSize = 2048;
+          ctxSize = 8128;
           alwaysResident = true;
           batchSize = 2048;
           ubatchSize = 2048;

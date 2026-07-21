@@ -86,22 +86,6 @@
         mode = "0400";
       };
     })
-    (lib.mkIf config.systemOptions.services.librechat.enable {
-      # Read by the `librechat-env-assembly` oneshot (runs as root), which
-      # concatenates it with MEILI_MASTER_KEY into /run/librechat-combined-env
-      # for the docker-librechat container's EnvironmentFile. The old
-      # `owner = "librechat"` was for the nixpkgs `services.librechat` module
-      # that created a `librechat` system user — that module is no longer
-      # used (librechat runs as an OCI container now), so default owner=root.
-      librechat-env = {
-        file = ../../secrets/librechat-env.age;
-        mode = "0400";
-      };
-      meilisearch-api-key = {
-        file = ../../secrets/meilisearch-api-key.age;
-        mode = "0400";
-      };
-    })
     (lib.mkIf config.systemOptions.services.templeServer.enable {
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;

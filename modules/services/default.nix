@@ -16,7 +16,6 @@ in
     ./deploy
     ./dyndns
     ./grafana
-    ./librechat
     ./litellm-proxy
     ./llama-swap
     ./minecraft
