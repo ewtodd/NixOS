@@ -93,10 +93,14 @@
         group = lib.mkForce "temple";
         mode = lib.mkForce "0440";
       };
-      # Signal bot secrets: SIGNAL_RECIPIENT (your phone number).
-      # Read by temple-server (as user `temple`).
       signal-env = {
         file = ../../secrets/signal-env.age;
+        owner = "temple";
+        group = "temple";
+        mode = "0440";
+      };
+      temple-ssh-key = {
+        file = ../../secrets/temple-ssh-key.age;
         owner = "temple";
         group = "temple";
         mode = "0440";
