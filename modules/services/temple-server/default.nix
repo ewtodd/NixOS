@@ -23,7 +23,7 @@ in
       #   oracle (local)       → simple queries (qwen3-4b-instruct, resident)
       #   son-of-anton         → planner + reviewer + critical (deepseek, solo)
       #   anton                → executor (qwen3.6-27b-coding) + researcher (gemma-4-31b)
-      defaultModel = "deepseek-v4-flash-high";
+      defaultModel = "qwen3.6-27b-coding";
       simpleModel = "gemma-4-31b";
       plannerModel = "deepseek-v4-flash-high";
       executorModel = "qwen3.6-27b-coding";
