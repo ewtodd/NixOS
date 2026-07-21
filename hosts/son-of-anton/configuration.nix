@@ -32,9 +32,6 @@ in
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
       models = {
-        # son-of-anton is the deepseek host. deepseek runs solo (1M ctx, mlock)
-        # and no other models are loaded here — this is the planner/reviewer
-        # brain. Swapping is expensive on 128GB unified memory.
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-GGUF:UD-IQ3_XXS";
           ctxSize = 1048576;
@@ -49,6 +46,14 @@ in
             "--top-p 1.0"
             "--min-p 0.0"
           ];
+        };
+        "gemma-4-e4b-router" = {
+          hf = "unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL";
+          ctxSize = 16384;
+          alwaysResident = true;
+          mlock = true;
+          parallel = 1;
+          flashAttn = "on";
         };
       };
     };
