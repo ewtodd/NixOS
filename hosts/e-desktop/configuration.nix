@@ -123,7 +123,10 @@ in
       "docker"
       "i2c"
     ];
-    openssh.authorizedKeys.keys = personalKeys;
+    openssh.authorizedKeys.keys = personalKeys ++ [
+      # Temple server on oracle — remote tool execution via bastion
+      ''from="10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
+    ];
   };
 
   users.users.e-work = {
@@ -139,7 +142,10 @@ in
       "docker"
       "i2c"
     ];
-    openssh.authorizedKeys.keys = personalKeys;
+    openssh.authorizedKeys.keys = personalKeys ++ [
+      # Temple server on oracle — remote tool execution via bastion
+      ''from="10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
+    ];
   };
 
   systemOptions.services.wakeable = {

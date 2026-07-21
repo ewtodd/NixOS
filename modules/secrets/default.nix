@@ -99,12 +99,6 @@
         group = "temple";
         mode = "0440";
       };
-      temple-ssh-key = {
-        file = ../../secrets/temple-ssh-key.age;
-        owner = "temple";
-        group = "temple";
-        mode = "0440";
-      };
     })
     (lib.mkIf config.systemOptions.services.signal-cli.enable {
       # signal-cli reads SIGNAL_PHONE (the bot's number) from this file.
