@@ -124,7 +124,10 @@ in
       "i2c"
     ];
     openssh.authorizedKeys.keys = personalKeys ++ [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle"
+      # Temple server on oracle — remote tool execution. Connections arrive
+      # via the bastion's wake-and-relay (source = 10.0.0.2) or directly
+      # from oracle (10.0.0.6).
+      ''from="10.0.0.2,10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
     ];
   };
 
@@ -142,8 +145,7 @@ in
       "i2c"
     ];
     openssh.authorizedKeys.keys = personalKeys ++ [
-      # Temple server on oracle — remote tool execution via bastion
-      ''from="10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
+      ''from="10.0.0.2,10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
     ];
   };
 
