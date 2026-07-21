@@ -52,4 +52,5 @@ in
   "temple-token-ethan.age".publicKeys = personal;
   "temple-token-val.age".publicKeys = val;
   "openrouter-api-key.age".publicKeys = personal;
+  "temple-ssh-key.age".publicKeys = personal ++ [ server-oracle ];
 }
