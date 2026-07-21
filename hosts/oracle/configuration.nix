@@ -22,25 +22,6 @@ in
     services.templeServer.enable = true;
     services.litellmProxy.enable = true;
     services.searxng.enable = true;
-    services.llamaSwap = {
-      enable = true;
-      backend = "vulkan";
-      models = {
-        "qwen3-4b-instruct" = {
-          hf = "unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-IQ3_XXS";
-          ctxSize = 8128;
-          alwaysResident = true;
-          batchSize = 2048;
-          ubatchSize = 2048;
-          extraFlags = [
-            "--temp 0.7"
-            "--top-p 0.8"
-            "--top-k 20"
-            "--min-p 0"
-          ];
-        };
-      };
-    };
     security.harden.enable = true;
   };
 
