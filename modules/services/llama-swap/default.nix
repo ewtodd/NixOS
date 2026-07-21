@@ -219,10 +219,9 @@ in
         }
       );
 
-      # Preload hooks are fragile — the model server's HTTP endpoint may
-      # not be ready when the hook fires.  Persistent models are
-      # auto-discovered via health checks and registered in the proxy
-      # routing table once they pass.
+      settings.hooks = lib.mkIf (residentNames != [ ]) {
+        on_startup.preload = residentNames;
+      };
     };
 
     users.groups = lib.mkIf useCustomCache {
