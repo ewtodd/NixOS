@@ -44,7 +44,7 @@ in
         };
         "gemma-4-31b" = {
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
-          ctxSize = 262144;
+          ctxSize = 179200;
           mlock = false;
           extraFlags = [
             "--temp 1.0"
@@ -75,7 +75,7 @@ in
         };
         "gemma-4-31b-heretic" = {
           hf = "llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF:Q5_K_M";
-          ctxSize = 262144;
+          ctxSize = 179200;
           mlock = false;
           extraFlags = [
             "--temp 1.0"
