@@ -11,6 +11,8 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPvp7uwfajl11rFuFbS9TaWGVQ1de5vaaKATv7z76nsi ethan-laptop-ework"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzfIzVGX+XNGWRrLfL78OeYqt8MB5Xii9EwimFAL0WZ root@oracle"
+    # Temple server on oracle — for ProxyJump to workstations
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle"
   ];
 
   activationRules = [
