@@ -31,6 +31,24 @@ let
           command = "/nix/store/*/bin/nix-env";
           options = [ "NOPASSWD" ];
         }
+        # buildOnTarget hosts (oracle): colmena escalates the on-target
+        # build with sudo when the daemon considers deploy untrusted.
+        {
+          command = "/run/current-system/sw/bin/nix-store";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/nix/store/*/bin/nix-store";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/run/current-system/sw/bin/nix";
+          options = [ "NOPASSWD" ];
+        }
+        {
+          command = "/nix/store/*/bin/nix";
+          options = [ "NOPASSWD" ];
+        }
       ];
     }
   ];
