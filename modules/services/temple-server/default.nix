@@ -49,6 +49,8 @@ in
           port = 2222;
           owner = "ethan";
           allowedDirs = [ ];
+          # Wake-on-LAN relay on the bastion — wakes e-desktop if asleep
+          proxyCommand = "ssh -F /var/lib/temple/.ssh/config bastion wake-and-relay-e-desktop";
         }
         {
           name = "e-play@e-desktop";
@@ -57,6 +59,7 @@ in
           port = 2222;
           owner = "ethan";
           allowedDirs = [ ];
+          proxyCommand = "ssh -F /var/lib/temple/.ssh/config bastion wake-and-relay-e-desktop";
         }
       ];
     };
