@@ -54,6 +54,10 @@ in
           mlock = false;
           parallel = 1;
           flashAttn = "on";
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/gemma-4-E4B-it-qat-GGUF/resolve/main/mmproj-BF16.gguf";
+            hash = "sha256-fJuvon+C1ljtqAXB2C72K7A2jh/3X2T3feWK0xi+qvk=";
+          };
         };
       };
     };
