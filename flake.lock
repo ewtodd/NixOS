@@ -930,11 +930,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784679132,
-        "narHash": "sha256-Pek1vSjzsNsFIdLOfhBJdHQ81BfkTC6IDgQHoJS7XSA=",
+        "lastModified": 1784679972,
+        "narHash": "sha256-RlcenZz7psCB0AV/9BtL4CNCNOIZAPPDxsyeuCvUFx0=",
         "owner": "ewtodd",
         "repo": "temple",
-        "rev": "daa259633f8c8777767dd2a99df9eefb35381ef3",
+        "rev": "90b3707f30da8d0d573598ce60cd23473667ef67",
         "type": "github"
       },
       "original": {
