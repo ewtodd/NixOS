@@ -34,12 +34,12 @@ in
       models = {
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-GGUF:UD-IQ3_XXS";
-          ctxSize = 1048576;
-          solo = true;
+          ctxSize = 524288;
+          alwaysResident = true;
           mlock = true;
           batchSize = 4096;
           ubatchSize = 4096;
-          parallel = 1;
+          parallel = 2;
           flashAttn = "on";
           extraFlags = [
             "--temp 1.0"
@@ -51,7 +51,7 @@ in
           hf = "unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL";
           ctxSize = 16384;
           alwaysResident = true;
-          mlock = true;
+          mlock = false;
           parallel = 1;
           flashAttn = "on";
         };
