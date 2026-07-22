@@ -96,6 +96,9 @@
               repeat_penalty = 1.08;
               frequency_penalty = 0.1;
               presence_penalty = 0;
+              chat_template_kwargs = {
+                enable_thinking = false;
+              };
             };
             qwenLargeMoeTool = {
               temperature = 0.5;
