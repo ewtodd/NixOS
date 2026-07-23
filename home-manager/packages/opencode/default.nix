@@ -12,11 +12,6 @@ let
       . /run/agenix/litellm-master-key
       set +a
     fi
-    if [ -r /run/agenix/openrouter-api-key ]; then
-      set -a
-      . /run/agenix/openrouter-api-key
-      set +a
-    fi
 
     exec ${lib.getExe opencodeUnwrapped} "$@"
   '';
@@ -113,14 +108,6 @@ in
           "fast-qwen3.6-27b" = { };
         };
       };
-      provider.openrouter = {
-        npm = "@ai-sdk/openai-compatible";
-        name = "OpenRouter";
-        options = {
-          baseURL = "https://openrouter.ai/api/v1";
-          apiKey = "{env:OPENROUTER_API_KEY}";
-        };
-      };
       permission = {
         edit = "ask";
         bash = {
@@ -137,10 +124,10 @@ in
       agent = {
         explore = {
           mode = "subagent";
-          model = "litellm/fast-gemma-4-12b-it";
+          model = "litellm/qwen3.6-27b-coding";
         };
         compaction = {
-          model = "litellm/fast-gemma-4-12b-it";
+          model = "litellm/qwen3.6-27b-coding";
         };
 
         code-reviewer = {
