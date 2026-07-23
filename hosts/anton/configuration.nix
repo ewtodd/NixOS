@@ -87,28 +87,6 @@ in
             hash = "sha256-IUh/8m0I993R1lTTu/wa4QIKqzEZ9b9lR0LORpdzLk4=";
           };
         };
-        # Heavy reasoning model: 122B MoE with partial CPU offload
-        # to fit in 64GB system RAM alongside the R9700's 32GB VRAM.
-        "qwen3.5-122b" = {
-          hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 262144;
-          solo = true;
-          mlock = false;
-          nCpuMoe = 4;
-          specType = "draft-mtp";
-          specDraftNMax = 2;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-            "--presence-penalty 1.5"
-          ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
-          };
-        };
       };
     };
     security.harden.enable = true;
