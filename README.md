@@ -117,7 +117,7 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
-- **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-e4b-router
+- **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-12b-router
 - **anton** — AMD R9700 32GB ("antonino") — llama-swap with Vulkan backend; dense models (qwen3.6-27b, gemma-4-31b) and heretic variants
 - **oracle** (aarch64) hosts the gateway and tooling:
   - **LiteLLM proxy**, single entry point: `https://llm.ethanwtodd.com/v1`

@@ -6,6 +6,10 @@
 }:
 let
   opencodeUnwrapped = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode;
+  imageViewerPython = pkgs.python3.withPackages (ps: [
+    ps.mcp
+    ps.httpx
+  ]);
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
     if [ -r /run/agenix/litellm-master-key ]; then
       set -a
@@ -103,6 +107,7 @@ in
           "deepseek-v4-flash-max" = { };
           "deepseek-v4-flash-high" = { };
           "deepseek-v4-flash-no-thinking" = { };
+          "gemma-4-12b-router" = { };
         };
       };
       permission = {
@@ -223,6 +228,16 @@ in
         type = "remote";
         url = "https://llm.ethanwtodd.com/mcp/";
         headers.Authorization = "Bearer {env:LITELLM_MASTER_KEY}";
+        enabled = true;
+      };
+      # Local image viewer — reads files from your workstation and sends them to
+      # gemma-4-12b-router for analysis. LITELLM_MASTER_KEY inherited from wrapper.
+      mcp.image_viewer = {
+        type = "local";
+        command = [
+          "${imageViewerPython}/bin/python"
+          "${../../../modules/services/litellm-proxy/image_viewer_mcp.py}"
+        ];
         enabled = true;
       };
     };

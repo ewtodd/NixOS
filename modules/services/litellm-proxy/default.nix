@@ -168,6 +168,7 @@
                   command = lib.getExe pkgs.context7-mcp;
                   args = [ ];
                 };
+
               };
 
               model_list = [
@@ -212,8 +213,8 @@
                   };
                 }
                 {
-                  model_name = "gemma-4-e4b-router";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-e4b-router" sampling.gemmaTool;
+                  model_name = "gemma-4-12b-router";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-12b-router" sampling.gemmaTool;
                 }
               ];
             };
