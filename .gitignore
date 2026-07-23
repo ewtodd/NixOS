@@ -10,3 +10,6 @@ result-*
 .direnv
 # Added by code-review-graph
 .code-review-graph/
+
+# Security audit reports
+SECURITY_AUDIT_*.md

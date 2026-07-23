@@ -47,16 +47,18 @@ in
             "--min-p 0.0"
           ];
         };
-        "gemma-4-e4b-router" = {
-          hf = "unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL";
+        "gemma-4-12b-router" = {
+          hf = "unsloth/gemma-4-12B-it-qat-GGUF:UD-Q4_K_XL";
           ctxSize = 16384;
           alwaysResident = true;
-          mlock = false;
+          mlock = true;
           parallel = 1;
           flashAttn = "on";
+          specType = "draft-mtp";
+          specDraftNMax = 2;
           mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/gemma-4-E4B-it-qat-GGUF/resolve/main/mmproj-BF16.gguf";
-            hash = "sha256-fJuvon+C1ljtqAXB2C72K7A2jh/3X2T3feWK0xi+qvk=";
+            url = "https://huggingface.co/unsloth/gemma-4-12B-it-qat-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-7MTpMSjag2O32/IZPquYzxFCNT9SzqoMlcCHKZeqrdM=";
           };
         };
       };

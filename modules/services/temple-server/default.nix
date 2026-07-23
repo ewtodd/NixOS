@@ -31,7 +31,7 @@ in
       reviewerModel = "deepseek-v4-flash-high";
       criticalModel = "deepseek-v4-flash-high";
       researcherModel = "gemma-4-31b";
-      routerModel = "gemma-4-e4b-router";
+      routerModel = "gemma-4-12b-router";
 
       # Signal bot: two-way notifications + free-form inbound commands.
       signal.enable = true;
