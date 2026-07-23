@@ -38,15 +38,9 @@ in
       signal.socketAddr = "10.0.0.2:7583";
 
       # SSH tool execution: temple-server on oracle SSHes through bastion
-      # (server-mu) to reach workstations on the LAN. Full user@host:port
-      # spec — the module generates the `bastion` Host alias from it, and
-      # the proxyCommand targets below reference that alias.
-      sshBastion = "deploy@10.0.0.2:2222";
+      # (server-mu) to reach workstations on the LAN.
+      sshBastion = "bastion";
       sshKeyPath = "/var/lib/temple/ssh_key";
-
-      # The cron smart-flake-update runs `nix flake update --flake /etc/nixos`
-      # as the temple user — mark the repo safe for libgit2's ownership check.
-      gitSafeDirectories = [ "/etc/nixos" ];
 
       sshTargets = [
         {

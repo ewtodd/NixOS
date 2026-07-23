@@ -85,13 +85,6 @@ in
       ## Explanations
       - For non-trivial changes, explain thoroughly what changed and why. Do not
       over-summarize or truncate the reasoning. Trivial edits can stay terse. 
-
-      ## git
-      - Git conventions: renco-bot is the SOLE author of all commits in the temple repo — always commit there with:
-        git -c user.name=renco-bot -c user.email=307402699+renco-bot@users.noreply.github.com commit -m \"...\"
-        (no Co-authored-by trailer). Where his key exists (/var/lib/temple/renco_bot_github), also push with: 
-        git -c core.sshCommand=\"ssh -i /var/lib/temple/renco_bot_github -o IdentitiesOnly=yes\" push
-        Otherwise, just try to push normally. Only commit and push without being asked to in the temple repo.
     '';
 
     settings = {
