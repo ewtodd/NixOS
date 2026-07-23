@@ -39,8 +39,9 @@ Hosts:
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
 - **server-nu** - Router, AdGuard, reverse proxy, dynamic DNS
 - **server-mu** - SSH bastion, Nextcloud, Minecraft
-- **anton** - ZFS storage server
-- **son-of-anton** - AI stack (128GB AMD Strix Halo, 32GB R9700 eGPU): llama-swap models, LiteLLM proxy + MCP gateway, librechat, SearXNG
+- **anton** - llama-swap inference (Vulkan, R9700 "antonino"): dense models + heretic variants
+- **son-of-anton** - llama-swap inference (ROCm, Strix Halo 128GB): MoE models + always-on router
+- **oracle** - LiteLLM proxy + MCP gateway, SearXNG, temple-server (aarch64)
 ```
 ## Important Notes
 ### `systemOptions`
@@ -115,13 +116,14 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
-The fleet includes a dedicated AI server running llama-swap and LiteLLM:
-- **son-of-anton** (AMD Strix Halo 128GB): Multi-model llama-swap server with Vulkan backend; primarily used for large MoE models
-- **son-of-son-of-anton, or antonino** (AMD R9700 32GB as eGPU on son-of-anton): Also connected to llama-swap server; used for dense models + to improve concurrency
-- **son-of-anton/antonino** also hosts the rest of the AI stack (consolidated — every hop is localhost):
+The fleet distributes inference and gateway services across dedicated hosts:
+- **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-e4b-router
+- **anton** — AMD R9700 32GB ("antonino") — llama-swap with Vulkan backend; dense models (qwen3.6-27b, gemma-4-31b) and heretic variants
+- **oracle** (aarch64) hosts the gateway and tooling:
   - **LiteLLM proxy**, single entry point: `https://llm.ethanwtodd.com/v1`
-  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating three stdio servers run by the proxy: `fetch` (URL retrieval), `searxng` (`web_search` over the local SearXNG), and `nixos` (Nix/NixOS lookups via `mcp-nixos`). Consumed by both qwen-code.
-  - **SearXNG** metasearch, localhost-only, backing the searxng MCP.
+  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
+  - **SearXNG** metasearch, localhost-only, backing the searxng MCP
+  - **temple-server** (renco agent)
 ### Coding Agent
 
 **opencode** (e-workstations via `home-manager/packages/opencode`) — coding
@@ -137,13 +139,13 @@ Opencode dispatches to specialized subagents for specific tasks:
 
 | Agent | Model | Role |
 |---|---|---|
-| **code-reviewer** | `qwen3.6-35b-a3b-coding` | Reviews code for bugs, security, performance, and maintainability. Read-only. |
-| **security-auditor** | `qwen3.5-122b-a10b` | Deep security audit for auth, crypto, secrets, and user input. Read-only. |
+| **code-reviewer** | `qwen3.6-27b-coding` | Reviews code for bugs, security, performance, and maintainability. Read-only. |
+| **security-auditor** | `deepseek-v4-flash-max` | Deep security audit for auth, crypto, secrets, and user input. Read-only. |
 | **debugger** | `deepseek-v4-flash-high` | Systematic root-cause analysis for broken or unclear behavior. |
-| **architect** | `qwen3.5-122b-a10b` | High-level design decisions, module boundaries, and API contracts. Read-only. |
-| **test-writer** | `fast-qwen3.6-27b` | Generates comprehensive tests after feature or bug-fix implementation. |
+| **architect** | `deepseek-v4-flash-high` | High-level design decisions, module boundaries, and API contracts. Read-only. |
+| **test-writer** | `qwen3.6-27b-coding` | Generates comprehensive tests after feature or bug-fix implementation. |
 | **refactorer** | `deepseek-v4-flash-max` | Improves code structure without changing behavior. |
-| **docs-writer** | `fast-qwen3.6-27b` | Writes documentation, docstrings, and READMEs. |
+| **docs-writer** | `qwen3.6-27b-coding` | Writes documentation, docstrings, and READMEs. |
 
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).

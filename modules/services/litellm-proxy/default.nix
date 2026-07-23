@@ -133,7 +133,6 @@
               set_verbose = true;
               litellm_settings.callbacks = [
                 "litellm_metrics.metrics"
-                "auto_router.auto_router"
               ];
 
               litellm_settings.drop_params = false;
@@ -225,7 +224,6 @@
               config.services.litellm.settings;
           environment.etc."litellm/searxng_mcp.py".source = ./searxng_mcp.py;
           environment.etc."litellm/litellm_metrics.py".source = ./litellm_metrics.py;
-          environment.etc."litellm/auto_router.py".source = ./auto_router.py;
           systemd.services.litellm.environment.LITELLM_MCP_STDIO_EXTRA_COMMANDS =
             "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp";
           systemd.services.litellm.environment.LITELLM_LOG = "DEBUG";

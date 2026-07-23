@@ -217,10 +217,8 @@ in
       server.port = 4096;
       model = "litellm/qwen3.6-27b-coding";
 
-      # fetch + SearXNG web_search + nixos lookups, served by the LiteLLM MCP
-      # gateway on son-of-anton (the same tools LibreChat gets) — nixos used to
-      # be a local `nix run` here but is now centralized on the gateway. Auth
-      # via the master key.
+      # fetch + SearXNG web_search + nixos + arxiv + context7, served by the
+      # LiteLLM MCP gateway on oracle. Auth via the master key.
       mcp.litellm = {
         type = "remote";
         url = "https://llm.ethanwtodd.com/mcp/";

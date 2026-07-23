@@ -42,7 +42,7 @@ with lib;
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.tailscale.enable = mkEnableOption "Literally just tailscale...";
-      services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve + Tailscale Funnel";
+      services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve, exposed through Caddy on server-nu";
       services.binaryCache.consume = mkEnableOption "Use the e-desktop binary cache as a substituter";
       services.router.enable = mkEnableOption "Act as a NAT router (WAN DHCP, LAN static, dnsmasq DHCP+DNS)";
       services.adguard.enable = mkEnableOption "AdGuard Home DNS ad-blocker (sits behind dnsmasq)";
@@ -63,7 +63,7 @@ with lib;
         expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
         default) binds 127.0.0.1 only — correct for hosts where the sole consumer
         is local nvim FIM. Enable it on hosts another machine must reach (e.g.
-        son-of-anton, served to the LiteLLM proxy on mu)'';
+        son-of-anton, served to the LiteLLM proxy on oracle)'';
       services.llamaSwap.backend = mkOption {
         type = types.enum [
           "vulkan"
@@ -165,8 +165,7 @@ with lib;
                   ANDed into every matrix set, exactly like an embedding model,
                   and never participates in the big/small/solo lanes. Use for a
                   tiny utility model that must never be evicted — e.g. a dedicated
-                  title/summary model, so LibreChat titling doesn't unload the
-                  main chat model. Keep it small: it occupies RAM permanently.
+                  router model consumed by temple. Keep it small: it occupies RAM permanently.
                 '';
               };
               gpuLayers = mkOption {

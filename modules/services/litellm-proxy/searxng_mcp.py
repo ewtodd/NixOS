@@ -1,12 +1,12 @@
 """SearXNG web-search MCP server (stdio).
 
 Registered in the LiteLLM proxy via ``mcp_servers.searxng`` and spawned as a
-stdio subprocess of the proxy inside the litellm container on son-of-anton. The
+stdio subprocess of the proxy inside the litellm container on oracle. The
 container shares the host network namespace, so ``SEARXNG_URL`` reaches the
 host-local SearXNG instance (127.0.0.1:8888).
 
 Exposes a single ``web_search`` tool over SearXNG's JSON API. The aggregated
-gateway (LiteLLM ``/mcp``) presents it to both qwen-code and LibreChat alongside
+gateway (LiteLLM ``/mcp``) presents it to opencode alongside
 the ``fetch`` server, so the models gain internet search + URL fetch.
 
 Pure stdlib + httpx + the MCP SDK's FastMCP helper; no build-time network.
