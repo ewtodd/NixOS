@@ -15,6 +15,7 @@ in
   config = lib.mkMerge [
     {
       environment.systemPackages = with pkgs; [
+        ripgrep
         agenix
         git
         gh
