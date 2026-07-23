@@ -58,7 +58,6 @@
           # Inference hosts on the LAN:
           sonOfAnton = "http://10.0.0.5:8080/v1"; # Strix Halo 128GB — deepseek only
           anton = "http://10.0.0.3:8080/v1"; # R9700 32GB — qwen + gemma
-          eDesktop = "http://10.0.0.4:8080/v1"; # RTX 4090 — fast models (workstation)
 
           mkLocal = api_base: model: {
             inherit model api_base;
@@ -174,24 +173,8 @@
 
               model_list = [
                 {
-                  model_name = "qwen3.5-122b-a10b";
-                  litellm_params = mkLocalSampled anton "openai/qwen3.5-122b" sampling.qwenLargeMoeTool;
-                }
-                {
-                  model_name = "qwen3.5-122b-a10b-fallback";
-                  litellm_params = mkLocalSampled eDesktop "openai/qwen3.5-122b" sampling.qwenLargeMoeTool;
-                }
-                {
                   model_name = "qwen3.6-27b-coding";
                   litellm_params = mkLocalSampled anton "openai/qwen3.6-27b" sampling.coding;
-                }
-                {
-                  model_name = "fast-gemma-4-12b-it";
-                  litellm_params = mkLocalSampled eDesktop "openai/fast-gemma-4-12b-it" sampling.deterministic;
-                }
-                {
-                  model_name = "fast-qwen3.6-27b";
-                  litellm_params = mkLocalSampled eDesktop "openai/fast-qwen3.6-27b" sampling.coding;
                 }
                 {
                   model_name = "qwen3.6-27b-general";
@@ -234,8 +217,6 @@
                   litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-e4b-router" sampling.gemmaTool;
                 }
               ];
-
-              # TODO(multi-user tier): add general_settings.database_url + virtual keys.
             };
           };
 

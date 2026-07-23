@@ -100,12 +100,9 @@ in
         models = {
           "qwen3.6-27b-coding" = { };
           "qwen3.6-27b-heretic-coding" = { };
-          "qwen3.5-122b-a10b" = { };
           "deepseek-v4-flash-max" = { };
           "deepseek-v4-flash-high" = { };
           "deepseek-v4-flash-no-thinking" = { };
-          "fast-gemma-4-12b-it" = { };
-          "fast-qwen3.6-27b" = { };
         };
       };
       permission = {
@@ -147,7 +144,7 @@ in
 
         security-auditor = {
           mode = "subagent";
-          model = "litellm/qwen3.5-122b-a10b";
+          model = "litellm/deepseek-v4-flash-max";
           prompt = ''
             You are a security auditor. Thoroughly analyze code for vulnerabilities:
             injection, XSS, CSRF, auth bypass, insecure defaults, hardcoded secrets,
@@ -173,7 +170,7 @@ in
 
         architect = {
           mode = "subagent";
-          model = "litellm/qwen3.5-122b-a10b";
+          model = "litellm/deepseek-v4-flash-high";
           prompt = ''
             You are a software architect. Help with high-level design decisions,
             module boundaries, data flow, and API contracts.
@@ -188,7 +185,7 @@ in
 
         test-writer = {
           mode = "subagent";
-          model = "litellm/fast-qwen3.6-27b";
+          model = "litellm/qwen3.6-27b-coding";
           prompt = ''
             You are a test writer. Generate comprehensive tests for the given code:
             unit tests, edge cases, boundary conditions, and error paths.
@@ -209,7 +206,7 @@ in
 
         docs-writer = {
           mode = "subagent";
-          model = "litellm/fast-qwen3.6-27b";
+          model = "litellm/qwen3.6-27b-coding";
           prompt = ''
             You are a technical writer. Create clear, accurate documentation:
             README files, docstrings, API references, and usage examples.

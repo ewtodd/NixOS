@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -33,65 +33,6 @@ in
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
-    services.llamaSwap = {
-      enable = true;
-      lanExpose = true;
-      backend = "cuda";
-      cacheDir = "/var/cache/llama-cache";
-      models = {
-        "fast-gemma-4-12b-it" = {
-          hf = "unsloth/gemma-4-12b-it-GGUF:UD-Q8_K_XL";
-          ctxSize = 131072;
-          mlock = false;
-          specType = "draft-mtp";
-          specDraftNMax = 2;
-        };
-        "fast-gemma-4-31b-it-qat" = {
-          hf = "unsloth/gemma-4-31B-it-qat-GGUF:UD-Q4_K_XL";
-          ctxSize = 131072;
-          mlock = false;
-          specType = "draft-mtp";
-          specDraftNMax = 2;
-        };
-
-        "fast-qwen3.6-27b" = {
-          hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q4_K_XL";
-          ctxSize = 65536;
-          mlock = false;
-          specType = "draft-mtp";
-          specDraftNMax = 2;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-          ];
-        };
-        # Heavy reasoning model: 122B MoE with partial CPU offload.
-        # e-desktop is a workstation (CUDA/ML workloads take priority),
-        # so this is manual-fallback only — temple's router never auto-routes here.
-        "qwen3.5-122b" = {
-          hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 262144;
-          solo = true;
-          mlock = false;
-          nCpuMoe = 4;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-            "--presence-penalty 1.5"
-            "--spec-type draft-mtp"
-            "--spec-draft-n-max 2"
-          ];
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
-          };
-        };
-      };
-    };
   };
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
