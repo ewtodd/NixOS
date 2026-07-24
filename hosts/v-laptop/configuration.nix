@@ -18,6 +18,17 @@
     apps.zoom.enable = true;
     apps.remarkable.enable = true;
     apps.docker.enable = true;
+    services.temple-daemon = {
+      enable = true;
+      daemons = {
+        "v-play" = {
+          cwd = "/home/v-play";
+        };
+        "v-work" = {
+          cwd = "/home/v-work";
+        };
+      };
+    };
   };
 
   users.users.v-play = {

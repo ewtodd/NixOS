@@ -33,6 +33,17 @@ in
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
+    services.temple-daemon = {
+      enable = true;
+      daemons = {
+        "e-play" = {
+          cwd = "/home/e-play/Software";
+        };
+        "e-work" = {
+          cwd = "/home/e-work";
+        };
+      };
+    };
   };
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

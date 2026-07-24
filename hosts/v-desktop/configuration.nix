@@ -24,6 +24,17 @@
     apps.remarkable.enable = true;
     apps.quickemu.enable = true;
     apps.docker.enable = true;
+    services.temple-daemon = {
+      enable = true;
+      daemons = {
+        "v-play" = {
+          cwd = "/home/v-play";
+        };
+        "v-work" = {
+          cwd = "/home/v-work";
+        };
+      };
+    };
   };
 
   nixpkgs.config.rocmTargets = [ "gfx1201" ];

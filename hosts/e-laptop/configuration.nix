@@ -15,6 +15,17 @@
     services.binaryCache.consume = true;
     security.harden.enable = true;
     owner.e.enable = true;
+    services.temple-daemon = {
+      enable = true;
+      daemons = {
+        "e-play" = {
+          cwd = "/home/e-play/Software";
+        };
+        "e-work" = {
+          cwd = "/home/e-work";
+        };
+      };
+    };
   };
 
   users.users.e-play = {

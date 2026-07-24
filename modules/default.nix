@@ -323,6 +323,24 @@ with lib;
       services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + MCP gateway (containerized, son-of-anton)";
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
       services.templeServer.enable = mkEnableOption "temple renco agent server";
+      services.temple-daemon = {
+        enable = mkEnableOption "temple headless daemons — execute tool requests locally";
+        daemons = mkOption {
+          type = types.attrsOf (
+            types.submodule {
+              options = {
+                cwd = mkOption {
+                  type = types.str;
+                  example = "/home/e-play/Software";
+                  description = "Working directory for the daemon.";
+                };
+              };
+            }
+          );
+          default = { };
+          description = "Per-user daemon configurations, keyed by username.";
+        };
+      };
 
       services.signal-cli.enable = mkEnableOption "signal-cli JSON-RPC daemon (Signal bot backend for temple)";
       services.signal-cli.environmentFile = mkOption {
