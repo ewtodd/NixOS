@@ -1,38 +1,53 @@
-# Temple TUI client wrapper.
+# Temple TUI client and headless daemon.
 #
-# Wraps the `temple` binary with TEMPLE_TOKEN loaded from the user's agenix
-# secret so the client authenticates automatically. Also sets the default
-# server to the public temple.ethanwtodd.com endpoint.
+# Authentication uses the user's SSH public key (auto-discovered from
+# ~/.ssh/id_ed25519.pub). The server verifies it against authorized_keys.
 #
-# The token file contains: TEMPLE_TOKEN=<32-char-token>
-# Generated on oracle with:
-#   temple-server --generate-token USERNAME PHONE
+# Server: https://temple.ethanwtodd.com
 {
   pkgs,
   lib,
+  config,
   inputs,
   ...
 }:
 let
   templePkg = inputs.temple.packages.${pkgs.stdenv.hostPlatform.system}.temple;
 
-  # The token secret is readable by group `users` (mode 0440), so both
-  # e-work and e-play (or v-work and v-play) can read the same file.
-  # Try ethan's token first, then val's — whichever exists.
   templeWrapped = pkgs.writeShellScriptBin "temple" ''
-    for f in /run/agenix/temple-token-ethan /run/agenix/temple-token-val; do
-      if [ -r "$f" ]; then
-        export TEMPLE_TOKEN="$(grep -oP 'TEMPLE_TOKEN=\K.*' "$f" || sed -n 's/^TEMPLE_TOKEN=//p' "$f")"
-        break
-      fi
-    done
     exec ${templePkg}/bin/temple \
       --server https://temple.ethanwtodd.com \
       "$@"
   '';
+
+  daemonCwd =
+    if config.home.username == "e-play" then "/home/e-play/Software" else config.home.homeDirectory;
 in
 {
-  config = {
-    home.packages = [ templeWrapped ];
-  };
+  config = lib.mkMerge [
+    {
+      home.packages = [ templeWrapped ];
+    }
+    {
+      systemd.user.services.temple-daemon = {
+        Unit = {
+          Description = "temple headless client daemon — executes tool requests locally";
+          After = [ "network-online.target" ];
+          Wants = [ "network-online.target" ];
+        };
+        Service = {
+          Type = "simple";
+          ExecStart = "${templeWrapped}/bin/temple --daemon --cwd ${daemonCwd} --mode yolo --identity %h/.ssh/id_ed25519";
+          Restart = "always";
+          RestartSec = "10s";
+          Environment = "HOME=%h";
+          StandardOutput = "journal";
+          StandardError = "journal";
+        };
+        Install = {
+          WantedBy = [ "default.target" ];
+        };
+      };
+    }
+  ];
 }

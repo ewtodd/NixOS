@@ -44,6 +44,4 @@ in
     server-oracle
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ server-mu ];
-  "temple-token-ethan.age".publicKeys = personal;
-  "temple-token-val.age".publicKeys = val;
 }
