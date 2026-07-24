@@ -18,7 +18,10 @@ in
     services.temple-daemon = {
       enable = true;
       server = "https://temple.ethanwtodd.com";
-      daemons = cfg.daemons;
+      daemons = lib.mapAttrs (username: d: {
+        inherit (d) cwd;
+        user = username;
+      }) cfg.daemons;
     };
   };
 }
