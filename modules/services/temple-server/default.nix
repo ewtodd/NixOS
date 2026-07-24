@@ -27,12 +27,12 @@ in
       #     - qwen3.6-27b-coding (executor)
       #     - gemma-4-31b (simple queries + researcher)
       defaultModel = "qwen3.6-27b-coding";
-      simpleModel = "gemma-4-31b";
+      simpleModel = "gemma-4-12b-router";
       plannerModel = "deepseek-v4-flash-high";
       executorModel = "qwen3.6-27b-coding";
-      reviewerModel = "deepseek-v4-flash-high";
-      criticalModel = "deepseek-v4-flash-high";
-      researcherModel = "gemma-4-31b";
+      reviewerModel = "deepseek-v4-flash-max";
+      criticalModel = "deepseek-v4-flash-max";
+      researcherModel = "deepseek-v4-flash-high";
       routerModel = "gemma-4-12b-router";
 
       # Signal bot: two-way notifications + free-form inbound commands.

@@ -29,6 +29,7 @@ in
     ./searxng
     ./signal-cli
     ./temple-server
+    ./temple-daemon
     ./wakeable
   ];
 
