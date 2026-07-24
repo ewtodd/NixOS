@@ -33,6 +33,13 @@ in
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
+    services.temple-daemon = {
+      enable = true;
+      userDaemons = [
+        "e-play"
+        "e-work"
+      ];
+    };
   };
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
