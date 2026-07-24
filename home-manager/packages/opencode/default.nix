@@ -72,7 +72,14 @@ in
         actually requires.
       - Do not use modern C++ features: no `auto`, no smart pointers, no
         range-based (`for (x : c)`) iteration. Use explicit types and classic
-        indexed/iterator loops. No lambdas!
+        indexed/iterator loops. 
+      - Lambdas are permitted where they are short, local, and improve readability
+        over the alternatives: sort comparators defined next to the std::sort call,
+        thread workers whose explicit parameter lists would be longer and harder to
+        scan than an inline capture. A lambda that spans more than about 5 lines or
+        captures by reference outside an immediately obvious scope (e.g. stored in a
+        std::function returned from the function) should still be a named function.
+        When in doubt, write a named function.
       - In performance-critical code, always gate logging behind a compile- or
         run-time toggle so it can be disabled. The `std::endl` flush is therefore
         never a concern on hot paths.

@@ -20,10 +20,12 @@ in
       ];
 
       # Router model mapping (fleet layout):
-      #   oracle (local)       → simple queries (qwen3-4b-instruct, resident)
-      #   son-of-anton         → planner + reviewer + critical (deepseek, solo)
-      #                         + router classifier (gemma-4-e4b, alwaysResident)
-      #   anton                → executor (qwen3.6-27b-coding) + researcher (gemma-4-31b)
+      #   son-of-anton (ROCm, Strix Halo 128GB):
+      #     - deepseek-v4-flash (planner + reviewer + critical, always-resident)
+      #     - gemma-4-12b-router (router + title classifier, always-resident)
+      #   anton (Vulkan, R9700):
+      #     - qwen3.6-27b-coding (executor)
+      #     - gemma-4-31b (simple queries + researcher)
       defaultModel = "qwen3.6-27b-coding";
       simpleModel = "gemma-4-31b";
       plannerModel = "deepseek-v4-flash-high";
@@ -37,38 +39,20 @@ in
       signal.enable = true;
       signal.socketAddr = "10.0.0.2:7583";
 
-      # SSH tool execution: temple-server on oracle SSHes through bastion
-      # (server-mu) to reach workstations on the LAN. Full user@host:port
-      # spec — the module generates the `bastion` Host alias from it, and
-      # the proxyCommand targets below reference that alias.
-      sshBastion = "deploy@10.0.0.2:2222";
-      sshKeyPath = "/var/lib/temple/ssh_key";
-
       # The cron smart-flake-update runs `nix flake update --flake /etc/nixos`
       # as the temple user — mark the repo safe for libgit2's ownership check.
       gitSafeDirectories = [ "/etc/nixos" ];
 
-      sshTargets = [
-        {
-          name = "e-work@e-desktop";
-          account = "e-work";
-          host = "10.0.0.4";
-          port = 2222;
-          owner = "ethan";
-          allowedDirs = [ ];
-          # Wake-on-LAN relay on the bastion — wakes e-desktop if asleep
-          proxyCommand = "ssh -F /var/lib/temple/.ssh/config bastion wake-and-relay-e-desktop";
-        }
-        {
-          name = "e-play@e-desktop";
-          account = "e-play";
-          host = "10.0.0.4";
-          port = 2222;
-          owner = "ethan";
-          allowedDirs = [ ];
-          proxyCommand = "ssh -F /var/lib/temple/.ssh/config bastion wake-and-relay-e-desktop";
-        }
-      ];
+      # Daemon authentication: public keys for each user's client daemon.
+      # Reuses the same SSH keys already defined in secrets.nix.
+      # TUI clients auto-discover ~/.ssh/id_ed25519.pub and send it.
+      daemonAuthorizedKeys = {
+        ethan = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOF2AcBcmt8acbIs5DwedIDZ0C02uKkMti5HJ1Mul/DH"
+        ];
+        val = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMhKUIc/JCW80ZOcEnL4mTFx35bp/AyRYVtJXpdamnDB" ];
+      };
     };
   };
 }

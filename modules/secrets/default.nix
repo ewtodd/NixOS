@@ -111,22 +111,10 @@
         group = "users";
         mode = "0440";
       };
-      temple-token-ethan = {
-        file = ../../secrets/temple-token-ethan.age;
-        owner = "e-work";
-        group = "users";
-        mode = "0440";
-      };
     })
     (lib.mkIf config.systemOptions.owner.v.enable {
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;
-        owner = "v-work";
-        group = "users";
-        mode = "0440";
-      };
-      temple-token-val = {
-        file = ../../secrets/temple-token-val.age;
         owner = "v-work";
         group = "users";
         mode = "0440";
