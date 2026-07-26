@@ -2,7 +2,7 @@
 
 Spawns as a stdio subprocess and provides a ``view_image`` tool that accepts
 either a local file path or an HTTP/HTTPS URL, reads the image, and sends it
-to a vision-capable model (gemma-4-12b-router) via the LiteLLM API for
+to a vision-capable model (gemma-4-12b-it-qat) via the LiteLLM API for
 analysis.
 
 Default ``LITELLM_URL`` points to the public gateway; override to
@@ -19,9 +19,9 @@ import traceback
 import httpx
 from mcp.server.fastmcp import FastMCP
 
-LITELLM_URL = os.environ.get("LITELLM_URL", "https://llm.ethanwtodd.com/v1")
+LITELLM_URL = os.environ.get("LITELLM_URL", "https://litellm.ethanwtodd.com/v1")
 LITELLM_KEY = os.environ.get("LITELLM_MASTER_KEY", "")
-VISION_MODEL = os.environ.get("VISION_MODEL", "gemma-4-12b-router")
+VISION_MODEL = os.environ.get("VISION_MODEL", "gemma-4-12b-it-qat")
 
 mcp = FastMCP("image-viewer")
 
@@ -61,7 +61,7 @@ def _analyze(content_block: dict, prompt: str) -> str:
 
 @mcp.tool()
 def view_image(path: str, prompt: str = "Describe this image in detail.") -> str:
-    """Analyze an image via a vision-capable model (gemma-4-12b-router).
+    """Analyze an image via a vision-capable model (gemma-4-12b-it-qat).
 
     Accepts a local file path or an http/https URL. The image is read, base64-
     encoded, and sent to the vision model for analysis.
