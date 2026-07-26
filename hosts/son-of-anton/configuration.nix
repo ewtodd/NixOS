@@ -47,7 +47,7 @@ in
             "--min-p 0.0"
           ];
         };
-        "gemma-4-12b-router" = {
+        "gemma-4-12b-it-qat" = {
           hf = "unsloth/gemma-4-12B-it-qat-GGUF:UD-Q4_K_XL";
           ctxSize = 16384;
           alwaysResident = true;

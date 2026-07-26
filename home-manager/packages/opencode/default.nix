@@ -105,7 +105,7 @@ in
         npm = "@ai-sdk/openai-compatible";
         name = "LiteLLM";
         options = {
-          baseURL = "https://llm.ethanwtodd.com/v1";
+          baseURL = "https://litellm.ethanwtodd.com/v1";
           apiKey = "{env:LITELLM_MASTER_KEY}";
         };
         models = {
@@ -114,7 +114,7 @@ in
           "deepseek-v4-flash-max" = { };
           "deepseek-v4-flash-high" = { };
           "deepseek-v4-flash-no-thinking" = { };
-          "gemma-4-12b-router" = { };
+          "gemma-4-12b-it-qat" = { };
         };
       };
       permission = {
@@ -233,12 +233,12 @@ in
       # LiteLLM MCP gateway on oracle. Auth via the master key.
       mcp.litellm = {
         type = "remote";
-        url = "https://llm.ethanwtodd.com/mcp/";
+        url = "https://litellm.ethanwtodd.com/mcp/";
         headers.Authorization = "Bearer {env:LITELLM_MASTER_KEY}";
         enabled = true;
       };
       # Local image viewer — reads files from your workstation and sends them to
-      # gemma-4-12b-router for analysis. LITELLM_MASTER_KEY inherited from wrapper.
+      # gemma-4-12b-it-qat for analysis. LITELLM_MASTER_KEY inherited from wrapper.
       mcp.image_viewer = {
         type = "local";
         command = [

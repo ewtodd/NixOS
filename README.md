@@ -117,11 +117,11 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
-- **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-12b-router
+- **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-12b-it-qat
 - **anton** — AMD R9700 32GB ("antonino") — llama-swap with Vulkan backend; dense models (qwen3.6-27b, gemma-4-31b) and heretic variants
 - **oracle** (aarch64) hosts the gateway and tooling:
-  - **LiteLLM proxy**, single entry point: `https://llm.ethanwtodd.com/v1`
-  - **MCP gateway** at `https://llm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
+  - **LiteLLM proxy**, single entry point: `https://litellm.ethanwtodd.com/v1`
+  - **MCP gateway** at `https://litellm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP
   - **temple-server** (renco agent)
 ### Coding Agent
@@ -129,7 +129,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
 **opencode** (e-workstations via `home-manager/packages/opencode`) — coding
 CLI/TUI pointed at the LiteLLM endpoint, default model **Qwen3.6-27b**.
 MCP servers are served via the remote LiteLLM MCP gateway at
-`https://llm.ethanwtodd.com/mcp/`, aggregating `fetch`, `searxng`, `nixos`,
+`https://litellm.ethanwtodd.com/mcp/`, aggregating `fetch`, `searxng`, `nixos`,
 `arxiv`, and `context7`. The wrapper sources `LITELLM_MASTER_KEY` from the
 agenix secret at launch.
 

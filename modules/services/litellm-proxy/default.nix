@@ -109,14 +109,6 @@
               presence_penalty = 0;
             };
           };
-          mkDeepseek =
-            effort:
-            (mkLocal sonOfAnton "openai/deepseek-v4-flash")
-            // {
-              chat_template_kwargs = {
-                reasoning_effort = effort;
-              };
-            };
           mkLocalSampled =
             api_base: model: profile:
             (mkLocal api_base model) // profile;
@@ -196,25 +188,14 @@
                   model_name = "gemma-4-31b-heretic";
                   litellm_params = mkLocal anton "openai/gemma-4-31b-heretic";
                 }
+
                 {
-                  model_name = "deepseek-v4-flash-max";
-                  litellm_params = mkDeepseek "max";
+                  model_name = "deepseek-v4-flash";
+                  litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash";
                 }
                 {
-                  model_name = "deepseek-v4-flash-high";
-                  litellm_params = mkDeepseek "high";
-                }
-                {
-                  model_name = "deepseek-v4-flash-no-thinking";
-                  litellm_params = (mkLocal sonOfAnton "openai/deepseek-v4-flash") // {
-                    chat_template_kwargs = {
-                      enable_thinking = false;
-                    };
-                  };
-                }
-                {
-                  model_name = "gemma-4-12b-router";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-12b-router" sampling.gemmaTool;
+                  model_name = "gemma-4-12b-it-qat";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-12b-it-qat" sampling.gemmaTool;
                 }
               ];
             };

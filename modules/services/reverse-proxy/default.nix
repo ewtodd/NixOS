@@ -35,7 +35,7 @@ in
         }
       '';
 
-      virtualHosts."llm.ethanwtodd.com".extraConfig = ''
+      virtualHosts."litellm.ethanwtodd.com".extraConfig = ''
         @api path /v1* /mcp*
         reverse_proxy @api http://10.0.0.6:4000
         reverse_proxy http://${anubisLlm} {

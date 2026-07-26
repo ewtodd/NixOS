@@ -13,27 +13,20 @@ in
   config = lib.mkIf cfg.enable {
     services.temple-server = {
       enable = true;
-      litellmUrl = "https://llm.ethanwtodd.com";
+      litellmUrl = "http://127.0.0.1:4000";
       openFirewall = true;
       environmentFile = [
         config.age.secrets.litellm-master-key.path
       ];
 
-      # Router model mapping (fleet layout):
-      #   son-of-anton (ROCm, Strix Halo 128GB):
-      #     - deepseek-v4-flash (planner + reviewer + critical, always-resident)
-      #     - gemma-4-12b-router (router + title classifier, always-resident)
-      #   anton (Vulkan, R9700):
-      #     - qwen3.6-27b-coding (executor)
-      #     - gemma-4-31b (simple queries + researcher)
       defaultModel = "qwen3.6-27b-coding";
-      simpleModel = "gemma-4-12b-router";
-      plannerModel = "deepseek-v4-flash-high";
+      simpleModel = "gemma-4-12b-it-qat";
+      plannerModel = "deepseek-v4-flash";
       executorModel = "qwen3.6-27b-coding";
-      reviewerModel = "deepseek-v4-flash-max";
-      criticalModel = "deepseek-v4-flash-max";
-      researcherModel = "deepseek-v4-flash-high";
-      routerModel = "gemma-4-12b-router";
+      reviewerModel = "deepseek-v4-flash";
+      criticalModel = "deepseek-v4-flash";
+      researcherModel = "deepseek-v4-flash";
+      routerModel = "gemma-4-12b-it-qat";
 
       # Signal bot: two-way notifications + free-form inbound commands.
       signal.enable = true;
@@ -43,9 +36,6 @@ in
       # as the temple user — mark the repo safe for libgit2's ownership check.
       gitSafeDirectories = [ "/etc/nixos" ];
 
-      # Daemon authentication: public keys for each user's client daemon.
-      # Reuses the same SSH keys already defined in secrets.nix.
-      # TUI clients auto-discover ~/.ssh/id_ed25519.pub and send it.
       daemonAuthorizedKeys = {
         ethan = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G"
