@@ -59,7 +59,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     llama-cpp = {
-      url = "github:ggml-org/llama.cpp";
+      url = "github:ggml-org/llama.cpp/e8e6c7af2456fd50bb62f7a2bbd642e6fb14ae77";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     llm-agents = {
