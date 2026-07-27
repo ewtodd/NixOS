@@ -6,7 +6,6 @@
 let
   anubisAi = "127.0.0.1:9001";
   anubisStatus = "127.0.0.1:9002";
-  anubisLlm = "127.0.0.1:9003";
 in
 {
   config = lib.mkIf config.systemOptions.services.reverseProxy.enable {
@@ -35,14 +34,6 @@ in
         }
       '';
 
-      virtualHosts."litellm.ethanwtodd.com".extraConfig = ''
-        @api path /v1* /mcp*
-        reverse_proxy @api http://10.0.0.6:4000
-        reverse_proxy http://${anubisLlm} {
-          header_up X-Real-IP {remote_host}
-        }
-      '';
-
       virtualHosts."temple.ethanwtodd.com".extraConfig = ''
         handle /web* {
           reverse_proxy http://10.0.0.6:8080
@@ -60,11 +51,6 @@ in
       status.settings = {
         TARGET = "http://127.0.0.1:3001";
         BIND = anubisStatus;
-        BIND_NETWORK = "tcp";
-      };
-      llm.settings = {
-        TARGET = "http://10.0.0.6:4000";
-        BIND = anubisLlm;
         BIND_NETWORK = "tcp";
       };
     };
