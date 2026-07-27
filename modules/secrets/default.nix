@@ -65,18 +65,6 @@
         mode = "0400";
       };
     })
-    # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
-    (lib.mkIf config.systemOptions.services.litellmProxy.enable {
-      # Read by the litellm container (bind-mounted as root) and possibly by
-      # temple-server (as user `temple`). Use 0440 with group access so both
-      # can read it; on litellm-only hosts the group doesn't matter (root reads
-      # everything). On oracle where temple also runs, temple is in the group.
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
-        group = lib.mkDefault "root";
-        mode = lib.mkDefault "0440";
-      };
-    })
     (lib.mkIf config.systemOptions.services.searxng.enable {
       # Read by the searx service (runs as user `searx`) as an EnvironmentFile;
       # provides $SEARX_SECRET_KEY referenced from settings.server.secret_key.
@@ -86,14 +74,6 @@
         mode = "0400";
       };
     })
-    (lib.mkIf config.systemOptions.services.templeServer.enable {
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
-        owner = lib.mkForce "temple";
-        group = lib.mkForce "temple";
-        mode = lib.mkForce "0440";
-      };
-    })
     (lib.mkIf config.systemOptions.services.signal-cli.enable {
       # signal-cli reads SIGNAL_PHONE (the bot's number) from this file.
       # Runs as user `signal-cli`.
@@ -101,22 +81,6 @@
         file = ../../secrets/signal-cli-env.age;
         owner = "signal-cli";
         group = "signal-cli";
-        mode = "0440";
-      };
-    })
-    (lib.mkIf config.systemOptions.owner.e.enable {
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
-        owner = "e-work";
-        group = "users";
-        mode = "0440";
-      };
-    })
-    (lib.mkIf config.systemOptions.owner.v.enable {
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
-        owner = "v-work";
-        group = "users";
         mode = "0440";
       };
     })

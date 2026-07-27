@@ -1,6 +1,6 @@
 # NixOS Multi-Host Configuration
 This repository manages **NixOS** systems with multiple hosts and user profiles.
-
+<!---->
 ## Overview
 The configuration is organized into three main layers:
 - **modules/** - System-level configuration (desktop env, hardware, security, services)
@@ -41,7 +41,7 @@ Hosts:
 - **server-mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - llama-swap inference (Vulkan, R9700 "antonino"): dense models + heretic variants
 - **son-of-anton** - llama-swap inference (ROCm, Strix Halo 128GB): MoE models + always-on router
-- **oracle** - LiteLLM proxy + MCP gateway, SearXNG, temple-server (aarch64)
+- **oracle** - MCP gateway, SearXNG, temple-server (aarch64)
 ```
 ## Important Notes
 ### `systemOptions`
@@ -120,33 +120,9 @@ The fleet distributes inference and gateway services across dedicated hosts:
 - **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-12b-it-qat
 - **anton** — AMD R9700 32GB ("antonino") — llama-swap with Vulkan backend; dense models (qwen3.6-27b, gemma-4-31b) and heretic variants
 - **oracle** (aarch64) hosts the gateway and tooling:
-  - **LiteLLM proxy**, single entry point: `https://litellm.ethanwtodd.com/v1`
-  - **MCP gateway** at `https://litellm.ethanwtodd.com/mcp/` (auth via `Authorization: Bearer <key>`), aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
+  - **MCP gateway** aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP
   - **temple-server** (renco agent)
-### Coding Agent
-
-**opencode** (e-workstations via `home-manager/packages/opencode`) — coding
-CLI/TUI pointed at the LiteLLM endpoint, default model **Qwen3.6-27b**.
-MCP servers are served via the remote LiteLLM MCP gateway at
-`https://litellm.ethanwtodd.com/mcp/`, aggregating `fetch`, `searxng`, `nixos`,
-`arxiv`, and `context7`. The wrapper sources `LITELLM_MASTER_KEY` from the
-agenix secret at launch.
-
-#### Specialized Agents
-
-Opencode dispatches to specialized subagents for specific tasks:
-
-| Agent | Model | Role |
-|---|---|---|
-| **code-reviewer** | `qwen3.6-27b-coding` | Reviews code for bugs, security, performance, and maintainability. Read-only. |
-| **security-auditor** | `deepseek-v4-flash-max` | Deep security audit for auth, crypto, secrets, and user input. Read-only. |
-| **debugger** | `deepseek-v4-flash-high` | Systematic root-cause analysis for broken or unclear behavior. |
-| **architect** | `deepseek-v4-flash-high` | High-level design decisions, module boundaries, and API contracts. Read-only. |
-| **test-writer** | `qwen3.6-27b-coding` | Generates comprehensive tests after feature or bug-fix implementation. |
-| **refactorer** | `deepseek-v4-flash-max` | Improves code structure without changing behavior. |
-| **docs-writer** | `qwen3.6-27b-coding` | Writes documentation, docstrings, and READMEs. |
-
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
 The hive (`colmena` / `colmenaHive` flake outputs) reuses each host's NixOS
@@ -179,8 +155,7 @@ init-analysis-env     # ROOT analysis using custom library
 - [x] Switch from nix-colors to base16.nix since that is actually maintained
 - [x] Move geant4 development environment into its own repo as a flake
 - [x] Expose nixvim configuration as a runnable package (`nix run`)
-- [x] Set up multi-model LLM infrastructure with llama-swap + LiteLLM
-- [x] Add opencode AI assistant with fleet model access
+- [x] Set up multi-model LLM infrastructure
 - [ ] Create proper headless compositor sessions for remote access (Sunshine/Moonlight)
 - [ ] Add screenshots to README
 - [ ] Create live USB system configuration (with Calamares installer)

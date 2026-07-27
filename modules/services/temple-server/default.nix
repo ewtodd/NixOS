@@ -13,20 +13,25 @@ in
   config = lib.mkIf cfg.enable {
     services.temple-server = {
       enable = true;
-      litellmUrl = "http://127.0.0.1:4000";
+      modelEndpoints = {
+        "qwen3.6-27b" = "http://10.0.0.3:8080/v1";
+        "gemma-4-31b" = "http://10.0.0.3:8080/v1";
+        "qwen3.6-27b-heretic" = "http://10.0.0.3:8080/v1";
+        "gemma-4-31b-heretic" = "http://10.0.0.3:8080/v1";
+        "gemma-4-12b-it-qat" = "http://10.0.0.3:8080/v1";
+        "deepseek-v4-flash" = "http://10.0.0.5:8080/v1";
+        "supra-router" = "http://127.0.0.1:8080/v1";
+      };
       openFirewall = true;
-      environmentFile = [
-        config.age.secrets.litellm-master-key.path
-      ];
 
-      defaultModel = "qwen3.6-27b-coding";
+      defaultModel = "deepseek-v4-flash";
       simpleModel = "gemma-4-12b-it-qat";
       plannerModel = "deepseek-v4-flash";
-      executorModel = "qwen3.6-27b-coding";
+      executorModel = "qwen3.6-27b";
       reviewerModel = "deepseek-v4-flash";
       criticalModel = "deepseek-v4-flash";
-      researcherModel = "deepseek-v4-flash";
-      routerModel = "gemma-4-12b-it-qat";
+      researcherModel = "qwen3.6-27b";
+      routerModel = "supra-router";
 
       # Signal bot: two-way notifications + free-form inbound commands.
       signal.enable = true;

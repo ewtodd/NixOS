@@ -69,13 +69,13 @@
           ];
         }
         {
-          # LiteLLM metrics exporter (son-of-anton): token counts, request
-          # counts, active sessions. Feeds the Fleet health dashboard's LLM row.
-          job_name = "litellm";
+          # Bifrost AI gateway metrics. Bifrost serves Prometheus metrics at
+          # /metrics on its main HTTP port. No separate metrics port needed.
+          job_name = "bifrost";
           static_configs = [
             {
-              targets = [ "10.0.0.5:9192" ];
-              labels.instance = "son-of-anton";
+              targets = [ "10.0.0.6:4000" ];
+              labels.instance = "oracle";
             }
           ];
         }

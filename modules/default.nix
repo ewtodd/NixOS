@@ -63,7 +63,7 @@ with lib;
         expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
         default) binds 127.0.0.1 only — correct for hosts where the sole consumer
         is local nvim FIM. Enable it on hosts another machine must reach (e.g.
-        son-of-anton, served to the LiteLLM proxy on oracle)'';
+        son-of-anton, served to temple-server on son-of-anton)'';
       services.llamaSwap.backend = mkOption {
         type = types.enum [
           "vulkan"
@@ -320,8 +320,7 @@ with lib;
           }
         );
       };
-      services.litellmProxy.enable = mkEnableOption "LiteLLM proxy + MCP gateway (containerized, son-of-anton)";
-      services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the LiteLLM searxng MCP)";
+      services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the searxng MCP)";
       services.templeServer.enable = mkEnableOption "temple renco agent server";
       services.temple-daemon = {
         enable = mkEnableOption "temple headless daemons — execute tool requests locally";

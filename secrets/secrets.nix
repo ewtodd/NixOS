@@ -29,8 +29,6 @@ in
   "nextcloud-admin-password.age".publicKeys = personal ++ [ server-mu ];
   "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
-  "litellm-master-key.age".publicKeys =
-    personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
   "searxng-secret-key.age".publicKeys = personal ++ [
     server-son-of-anton
     server-oracle

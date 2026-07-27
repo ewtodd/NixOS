@@ -20,8 +20,19 @@ in
     services.deploy.enable = true;
     services.nodeExporter.enable = true;
     services.templeServer.enable = true;
-    services.litellmProxy.enable = true;
     services.searxng.enable = true;
+    services.llamaSwap = {
+      enable = true;
+      lanExpose = false;
+      backend = "vulkan";
+      models = {
+        "supra-router" = {
+          hf = "SupraLabs/Supra-Router-51M-GGUF:Q8";
+          alwaysResident = true;
+          ctxSize = 4096;
+        };
+      };
+    };
     security.harden.enable = true;
   };
 
