@@ -27,7 +27,13 @@ in
       backend = "vulkan";
       models = {
         "supra-router" = {
-          hf = "SupraLabs/Supra-Router-51M-GGUF:Q8";
+          hf = "SupraLabs/Supra-Router-51M-GGUF:Q8_0";
+          alwaysResident = true;
+          parallel = 1;
+          ctxSize = 4096;
+        };
+        "supra-title" = {
+          hf = "SupraLabs/supra-title-50M-pre-gguf:Q8_0";
           alwaysResident = true;
           ctxSize = 4096;
         };

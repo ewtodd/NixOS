@@ -62,6 +62,21 @@
     '';
 
     settings = {
+      model = "anton/qwen3.6-27b";
+      provider = {
+        anton = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Anton (llama-swap)";
+          options = {
+            baseURL = "http://10.0.0.3:8080/v1";
+          };
+          models = {
+            "qwen3.6-27b" = {
+              name = "Qwen3.6 27B (Anton)";
+            };
+          };
+        };
+      };
       permission = {
         edit = "ask";
         bash = {
