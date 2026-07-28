@@ -9,6 +9,5 @@
   ]
   ++ (with pkgs; [
     proton-pass
-    losslesscut-bin
   ]);
 }

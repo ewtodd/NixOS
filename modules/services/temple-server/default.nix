@@ -18,20 +18,20 @@ in
         "gemma-4-31b" = "http://10.0.0.3:8080/v1";
         "qwen3.6-27b-heretic" = "http://10.0.0.3:8080/v1";
         "gemma-4-31b-heretic" = "http://10.0.0.3:8080/v1";
-        "gemma-4-12b-it-qat" = "http://10.0.0.3:8080/v1";
         "deepseek-v4-flash" = "http://10.0.0.5:8080/v1";
         "supra-router" = "http://127.0.0.1:8080/v1";
+        "supra-title" = "http://127.0.0.1:8080/v1";
       };
       openFirewall = true;
 
       defaultModel = "deepseek-v4-flash";
-      simpleModel = "gemma-4-12b-it-qat";
+      simpleModel = "qwen3.6-27b";
       plannerModel = "deepseek-v4-flash";
       executorModel = "qwen3.6-27b";
       reviewerModel = "deepseek-v4-flash";
-      criticalModel = "deepseek-v4-flash";
       researcherModel = "qwen3.6-27b";
       routerModel = "supra-router";
+      titleModel = "supra-title";
 
       # Signal bot: two-way notifications + free-form inbound commands.
       signal.enable = true;
