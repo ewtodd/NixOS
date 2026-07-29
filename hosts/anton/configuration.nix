@@ -27,7 +27,6 @@ in
       enable = true;
       lanExpose = true;
       backend = "vulkan";
-      cacheDir = "/var/cache/llama-cache";
       models = {
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";

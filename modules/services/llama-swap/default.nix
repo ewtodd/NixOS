@@ -91,7 +91,7 @@ let
       "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.${arch}.json";
 
   useCustomCache = cfg.cacheDir != null;
-  cacheDir = if useCustomCache then cfg.cacheDir else "/var/cache/llama-swap";
+  cacheDir = cfg.cacheDir;
 
   mkCmd =
     m:
@@ -234,10 +234,10 @@ in
 
     systemd.services.llama-swap = {
       environment = lib.mkMerge [
-        { LLAMA_CACHE = cacheDir; }
+        { LLAMA_CACHE = lib.mkForce cacheDir; }
         (lib.mkIf (cfg.backend == "vulkan") {
           VK_ICD_FILENAMES = vulkanIcd;
-          MESA_SHADER_CACHE_DIR = "${cacheDir}/mesa-shader-cache";
+          MESA_SHADER_CACHE_DIR = "${lib.toString cacheDir}/mesa-shader-cache";
         })
       ];
 
