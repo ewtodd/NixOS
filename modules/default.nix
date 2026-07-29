@@ -75,10 +75,10 @@ with lib;
       };
       services.llamaSwap.cacheDir = mkOption {
         type = types.nullOr types.str;
-        default = null;
+        default = "/var/cache/llama-cache";
         example = "/scratch/llama-cache";
         description = ''
-          Directory for -hf model downloads (LLAMA_CACHE). Null uses a
+          Directory for -hf model downloads (LLAMA_CACHE). Default is a
           systemd-managed CacheDirectory under /var/cache; set this to keep large
           models on a big mount (the module provisions it with a shared group so
           the sandboxed service can write to it).
