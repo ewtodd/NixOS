@@ -36,7 +36,6 @@ in
     ./nixvim
     ./opencode
     ./shell
-    ./syncthing
     ./temple
     ./zathura
   ];
