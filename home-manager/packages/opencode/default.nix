@@ -66,13 +66,25 @@
       provider = {
         anton = {
           npm = "@ai-sdk/openai-compatible";
-          name = "Anton (llama-swap)";
+          name = "anton";
           options = {
             baseURL = "http://10.0.0.3:8080/v1";
           };
           models = {
             "qwen3.6-27b" = {
-              name = "Qwen3.6 27B (Anton)";
+              name = "Qwen3.6 27B";
+            };
+          };
+        };
+        son-of-anton = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "son-of-anton";
+          options = {
+            baseURL = "http://10.0.0.5:8080/v1";
+          };
+          models = {
+            "deepseek-v4-flash" = {
+              name = "Deepseek V4 Flash";
             };
           };
         };
