@@ -62,7 +62,7 @@
     '';
 
     settings = {
-      model = "anton/qwen3.6-27b";
+      model = "son-of-anton/deepseek-v4-flash";
       provider = {
         anton = {
           npm = "@ai-sdk/openai-compatible";
