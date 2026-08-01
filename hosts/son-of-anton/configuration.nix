@@ -33,18 +33,19 @@ in
       cacheDir = "/scratch/llama-cache";
       models = {
         "deepseek-v4-flash" = {
-          hf = "unsloth/DeepSeek-V4-Flash-GGUF:UD-IQ3_XXS";
-          ctxSize = 524288;
+          hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ3_XXS";
+          ctxSize = 1048576;
           alwaysResident = true;
           mlock = true;
           batchSize = 4096;
           ubatchSize = 4096;
+          kQuant = "f16";
+          vQuant = "f16";
           parallel = 2;
           flashAttn = "on";
           extraFlags = [
             "--temp 1.0"
-            "--top-p 1.0"
-            "--min-p 0.0"
+            "--top-p 0.95"
           ];
         };
       };
