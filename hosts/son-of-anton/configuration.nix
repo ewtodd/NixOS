@@ -34,15 +34,21 @@ in
       models = {
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ3_XXS";
-          ctxSize = 1048576;
+          ctxSize = 524288;
           alwaysResident = true;
           mlock = true;
-          batchSize = 4096;
-          ubatchSize = 4096;
-          kQuant = "f16";
-          vQuant = "f16";
-          parallel = 2;
+          batchSize = 2048;
+          ubatchSize = 2048;
+          kQuant = "q8_0";
+          vQuant = "q8_0";
+          parallel = 1;
           flashAttn = "on";
+          specType = "draft-dspark";
+          specDraftNMax = 3;
+          specDraftModel = pkgs.fetchurl {
+            url = "https://huggingface.co/am17an/DeepseekV4-Flash-20260731-DSpark/resolve/main/DeepseekV4-Flash-20260731-DSpark.gguf";
+            hash = "sha256-g10PxSFrinERFJLD+eZK3R1yNFvvp1BhD9+uEBGt8I8=";
+          };
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"

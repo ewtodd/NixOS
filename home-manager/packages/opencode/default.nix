@@ -85,6 +85,31 @@
           models = {
             "deepseek-v4-flash" = {
               name = "Deepseek V4 Flash";
+              variants = {
+                max = {
+                  reasoning_effort = "max";
+                  thinking = {
+                    type = "enabled";
+                  };
+                };
+                high = {
+                  reasoning_effort = "high";
+                  thinking = {
+                    type = "enabled";
+                  };
+                };
+                low = {
+                  reasoning_effort = "low";
+                  thinking = {
+                    type = "enabled";
+                  };
+                };
+                none = {
+                  thinking = {
+                    type = "disabled";
+                  };
+                };
+              };
             };
           };
         };
