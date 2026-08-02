@@ -9,8 +9,8 @@
     gtk.enable = true;
     home.pointerCursor = {
       enable = true;
-      package = pkgs.dracula-theme;
-      name = "Dracula-cursors";
+      package = pkgs.comixcursors.Opaque_Black;
+      name = "ComixCursors-Opaque-Black";
     };
   };
 }

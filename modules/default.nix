@@ -298,6 +298,7 @@ with lib;
                   "draft-simple"
                   "draft-eagle3"
                   "draft-dflash"
+                  "draft-dspark"
                   "draft-mtp"
                   "ngram-cache"
                   "ngram-simple"
@@ -310,6 +311,10 @@ with lib;
               specDraftNMax = mkOption {
                 type = types.ints.positive;
                 default = 3;
+              };
+              specDraftModel = mkOption {
+                type = types.nullOr types.path;
+                default = null;
               };
               extraFlags = mkOption {
                 type = types.listOf types.str;
