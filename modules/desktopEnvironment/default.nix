@@ -13,10 +13,10 @@ let
     output = [
       {
         _args = [ "HDMI-A-1" ];
-        transform = "270";
+        transform = "90";
         position._props = {
-          x = -1080;
-          y = 0;
+          x = 3440;
+          y = -276;
         };
         mode = "1920x1080@74.973";
       }
