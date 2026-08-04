@@ -38,9 +38,9 @@ in
           alwaysResident = true;
           mlock = true;
           batchSize = 2048;
-          ubatchSize = 2048;
-          kQuant = "q8_0";
-          vQuant = "q8_0";
+          ubatchSize = 1024;
+          kQuant = "bf16";
+          vQuant = "bf16";
           parallel = 1;
           flashAttn = "on";
           specType = "draft-dspark";
