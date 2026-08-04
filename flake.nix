@@ -78,6 +78,10 @@
       url = "github:ewtodd/temple";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    niri-utilities = {
+      url = "github:ewtodd/niri-utilities";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
