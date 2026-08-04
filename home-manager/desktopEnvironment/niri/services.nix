@@ -2,9 +2,12 @@
   pkgs,
   lib,
   osConfig,
+  inputs,
   ...
 }:
 let
+  niri-utilities = inputs.niri-utilities.packages.${pkgs.stdenv.hostPlatform.system}.niri-utilities;
+  primaryMonitor = if osConfig.systemOptions.deviceType.desktop.enable then "DP-3" else "eDP-1";
   lisgd-niri = pkgs.writeShellScript "lisgd-niri" ''
     # Find the touchscreen event device via libinput
     TOUCH_DEV=$(${pkgs.libinput}/bin/libinput list-devices \
@@ -58,5 +61,20 @@ in
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
+    systemd.user.services.niri-centering-daemon =
+      lib.mkIf (osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.desktop.enable)
+        {
+          Unit = {
+            Description = "Auto-center daemon for niri";
+            After = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
+          };
+          Service = {
+            ExecStart = "${niri-utilities}/bin/niri-utilities centering-daemon --output ${primaryMonitor}";
+            Restart = "on-failure";
+            RestartSec = 3;
+          };
+          Install.WantedBy = [ "graphical-session.target" ];
+        };
   };
 }
