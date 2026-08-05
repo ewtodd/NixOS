@@ -37,8 +37,8 @@ in
           ctxSize = 524288;
           alwaysResident = true;
           mlock = true;
-          batchSize = 2048;
-          ubatchSize = 1024;
+          batchSize = 4096;
+          ubatchSize = 2048;
           kQuant = "bf16";
           vQuant = "bf16";
           parallel = 1;
