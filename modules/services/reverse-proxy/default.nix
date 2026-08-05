@@ -44,7 +44,7 @@ in
 
     services.anubis.instances = {
       ai.settings = {
-        TARGET = "http://10.0.0.5:3080";
+        TARGET = "http://10.0.0.6:8081";
         BIND = anubisAi;
         BIND_NETWORK = "tcp";
       };
