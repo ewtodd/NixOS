@@ -46,8 +46,8 @@ in
           specType = "draft-dspark";
           specDraftNMax = 3;
           specDraftModel = pkgs.fetchurl {
-            url = "https://huggingface.co/am17an/DeepseekV4-Flash-20260731-DSpark/resolve/main/DeepseekV4-Flash-20260731-DSpark.gguf";
-            hash = "sha256-g10PxSFrinERFJLD+eZK3R1yNFvvp1BhD9+uEBGt8I8=";
+            url = "https://huggingface.co/unsloth/DeepSeek-V4-Flash-0731-GGUF/resolve/main/dspark-DeepSeek-V4-Flash-0731-Q8_0.gguf";
+            hash = "sha256-LHrFSwtkqZ3x8Tmp8TcaABmCZeHWphS3dZfSCmVaQkk=";
           };
           extraFlags = [
             "--temp 1.0"
