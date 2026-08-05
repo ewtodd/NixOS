@@ -20,6 +20,7 @@ in
     ./minecraft
     ./nextcloud
     ./node-exporter
+    ./open-webui
     ./prometheus
     ./reverse-proxy
     ./rgb-load

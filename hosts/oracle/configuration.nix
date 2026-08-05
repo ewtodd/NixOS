@@ -21,6 +21,7 @@ in
     services.nodeExporter.enable = true;
     services.templeServer.enable = true;
     services.searxng.enable = true;
+    services.openWebUI.enable = true;
     services.llamaSwap = {
       enable = true;
       lanExpose = false;

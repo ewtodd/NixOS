@@ -41,7 +41,7 @@ Hosts:
 - **server-mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - llama-swap inference (Vulkan, R9700 "antonino"): dense models + heretic variants
 - **son-of-anton** - llama-swap inference (ROCm, Strix Halo 128GB): MoE models + always-on router
-- **oracle** - MCP gateway, SearXNG, temple-server (aarch64)
+- **oracle** - MCP gateway, SearXNG, Open WebUI (ai.ethanwtodd.com), temple-server (aarch64)
 ```
 ## Important Notes
 ### `systemOptions`
@@ -122,6 +122,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
 - **oracle** (aarch64) hosts the gateway and tooling:
   - **MCP gateway** aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP
+  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via llama-swap on son-of-anton/anton)
   - **temple-server** (renco agent)
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).

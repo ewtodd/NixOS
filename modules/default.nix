@@ -51,11 +51,12 @@ with lib;
       services.bastion.enable = mkEnableOption "SSH bastion: hardened sshd + fail2ban + WoL helpers for inner hosts";
       services.wakeable.enable = mkEnableOption "Wake-on-LAN + initrd-SSH for remote unlock";
       services.nextcloud.enable = mkEnableOption "Nextcloud personal cloud (cloud.ethanwtodd.com)";
-      services.ntfy.enable = mkEnableOption "ntfy push-notification server (ntfy.ethanwtodd.com)";
       services.prometheus.enable = mkEnableOption "Prometheus metrics server (scrapes node_exporters)";
       services.nodeExporter.enable = mkEnableOption "Prometheus node_exporter (system metrics on :9100)";
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
+
+      services.openWebUI.enable = mkEnableOption "Open WebUI web interface (ai.ethanwtodd.com, behind Anubis on server-nu)";
 
       services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
 
