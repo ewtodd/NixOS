@@ -5,6 +5,7 @@
   config,
   lib,
   modulesPath,
+  pkgs,
   ...
 }:
 
@@ -17,6 +18,35 @@
     enable = true;
     powertop.enable = false;
     cpuFreqGovernor = lib.mkForce "performance";
+  };
+
+  systemd.services.platform-profile-performance = {
+    description = "Set ACPI platform profile to performance";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "oneshot";
+
+    script = ''
+      if [ -w /sys/firmware/acpi/platform_profile ]; then
+        choices="$(cat /sys/firmware/acpi/platform_profile_choices 2>/dev/null || true)"
+        if echo "$choices" | grep -qw performance; then
+          echo performance > /sys/firmware/acpi/platform_profile
+        fi
+      fi
+    '';
+  };
+
+  systemd.services.rocm-high-performance = {
+    description = "Set AMD GPU ROCm performance level to high";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+
+    script = ''
+      ${pkgs.rocmPackages.rocm-smi}/bin/rocm-smi --setperflevel high || true
+    '';
   };
 
   boot.initrd.availableKernelModules = [
