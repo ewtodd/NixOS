@@ -48,6 +48,6 @@ in
   };
 
   time.timeZone = "America/Chicago";
-  networking.hostName = "server-mu";
+  networking.hostName = "mu";
   system.stateVersion = "25.11";
 }

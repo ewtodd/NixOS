@@ -81,7 +81,7 @@ in
     })
 
     # Binary cache server (e-desktop). Public traffic terminates at Caddy on
-    # the router (server-nu) and is forwarded over the trusted LAN, so we
+    # the router (nu) and is forwarded over the trusted LAN, so we
     # open the cache port on the firewall — the Tailscale funnel that used
     # to front this is no longer needed.
     (lib.mkIf (config.systemOptions.services.binaryCache.serve) {

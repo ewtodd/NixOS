@@ -179,10 +179,10 @@
         e-laptop = {
           headless = false;
         };
-        server-nu = {
+        nu = {
           headless = true;
         };
-        server-mu = {
+        mu = {
           headless = true;
         };
         anton = {
@@ -208,13 +208,13 @@
           targetHost = null;
           tags = [ "workstation" ];
         };
-        server-nu = {
+        nu = {
           targetHost = "deploy-nu";
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [ "server" ];
         };
-        server-mu = {
+        mu = {
           targetHost = "deploy-mu";
           targetUser = "deploy";
           buildOnTarget = false;
