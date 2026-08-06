@@ -37,8 +37,8 @@ The configuration is organized into three main layers:
 Hosts:
 - **v-desktop, v-laptop** - AMD/Intel workstations (v-owner)
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
-- **server-nu** - Router, AdGuard, reverse proxy, dynamic DNS
-- **server-mu** - SSH bastion, Nextcloud, Minecraft
+- **nu** - Router, AdGuard, reverse proxy, dynamic DNS
+- **mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - llama-swap inference (Vulkan, R9700 "antonino"): dense models + heretic variants
 - **son-of-anton** - llama-swap inference (ROCm, Strix Halo 128GB): MoE models + always-on router
 - **oracle** - MCP gateway, SearXNG, Open WebUI (ai.ethanwtodd.com), temple-server (aarch64)
@@ -112,7 +112,7 @@ Edit `home-manager/packages/shell/default.nix` for bash aliases.
 ## Binary Cache
 **e-desktop** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source.
 This is especially useful for git-versioned packages like niri, quickshell, and DMS.
-- **Server:** `nix-serve-ng` on e-desktop, exposed via Caddy reverse proxy on server-nu
+- **Server:** `nix-serve-ng` on e-desktop, exposed via Caddy reverse proxy on nu
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
@@ -141,7 +141,7 @@ The headless servers are
   also sidesteps e-laptop's dynamic IP).
 - **Auth:** a key-only `deploy` user (`systemOptions.services.deploy.enable`)
   with scoped NOPASSWD sudo (only the activation commands) and nix trusted-user.
-  Connections jump through the `server-mu` bastion via the `*-deploy` SSH
+  Connections jump through the `mu` bastion via the `*-deploy` SSH
   aliases, so deploys work on- and off-LAN.
 - **Bootstrap:** the `deploy` user is created *by* this config, so a brand-new
   server must be switched once by other means before Colmena can take it over.

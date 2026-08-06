@@ -42,6 +42,6 @@ in
   };
 
   time.timeZone = "America/Chicago";
-  networking.hostName = "server-nu";
+  networking.hostName = "nu";
   system.stateVersion = "25.11";
 }

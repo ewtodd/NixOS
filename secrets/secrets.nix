@@ -5,8 +5,8 @@ let
   ethan-laptop-eplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA";
   val-laptop-vwork = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMhKUIc/JCW80ZOcEnL4mTFx35bp/AyRYVtJXpdamnDB";
   val-laptop-vplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILO1NgdbMcu5dL8bw6MGINcRLZFq1okTXepZsXuYYnlU";
-  server-nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@server-nu";
-  server-mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@server-mu";
+  nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@nu";
+  mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@mu";
   server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
   server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICY75cWf+2GLiTlKSouy2l5bkeSm7t2PM3f+rSYqCXrl root@son-of-anton";
   server-oracle = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzfIzVGX+XNGWRrLfL78OeYqt8MB5Xii9EwimFAL0WZ root@oracle";
@@ -23,12 +23,12 @@ let
 in
 {
   "onyx-ssh-config.age".publicKeys = personal;
-  "namecheap-ddns.age".publicKeys = personal ++ [ server-nu ];
-  "e-desktop-luks-passphrase.age".publicKeys = personal ++ [ server-mu ];
-  "bastion-initrd-unlock-key.age".publicKeys = personal ++ [ server-mu ];
-  "nextcloud-admin-password.age".publicKeys = personal ++ [ server-mu ];
-  "grafana-admin-password.age".publicKeys = personal ++ [ server-nu ];
-  "grafana-secret-key.age".publicKeys = personal ++ [ server-nu ];
+  "namecheap-ddns.age".publicKeys = personal ++ [ nu ];
+  "e-desktop-luks-passphrase.age".publicKeys = personal ++ [ mu ];
+  "bastion-initrd-unlock-key.age".publicKeys = personal ++ [ mu ];
+  "nextcloud-admin-password.age".publicKeys = personal ++ [ mu ];
+  "grafana-admin-password.age".publicKeys = personal ++ [ nu ];
+  "grafana-secret-key.age".publicKeys = personal ++ [ nu ];
   "searxng-secret-key.age".publicKeys = personal ++ [
     server-son-of-anton
     server-oracle
@@ -41,5 +41,5 @@ in
     server-son-of-anton
     server-oracle
   ];
-  "signal-cli-env.age".publicKeys = personal ++ [ server-mu ];
+  "signal-cli-env.age".publicKeys = personal ++ [ mu ];
 }
