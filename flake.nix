@@ -70,6 +70,10 @@
       url = "github:wurli/split.nvim";
       flake = false;
     };
+    proton-mcp-src = {
+      url = "github:ewtodd/proton-mcp";
+      flake = false;
+    };
     nixos-apple-silicon = {
       url = "github:tpwrules/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs";
