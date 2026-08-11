@@ -14,6 +14,10 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  services.fwupd = {
+    enable = true;
+  };
+
   powerManagement = {
     enable = true;
     powertop.enable = false;

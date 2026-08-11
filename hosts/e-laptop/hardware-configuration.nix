@@ -10,7 +10,9 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  services.fwupd.enable = true;
+  services.fwupd = {
+    enable = true;
+  };
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
