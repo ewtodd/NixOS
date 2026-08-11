@@ -17,54 +17,68 @@ let
         { proportion = 0.75; }
       ];
     };
-    output = [
-      {
-        _args = [ "DP-3" ];
-        transform = "normal";
-        position._props = {
-          x = -1920;
-          y = 0;
-        };
-        mode = "1920x1080";
-      }
-      {
-        _args = [ "DP-4" ];
-        transform = "normal";
-        position._props = {
-          x = -1920;
-          y = 0;
-        };
-        mode = "1920x1080";
-      }
-      {
-        _args = [ "HDMI-A-2" ];
-        transform = "normal";
-        position._props = {
-          x = -1920;
-          y = 0;
-        };
-        mode = "1920x1080";
-      }
-      {
-        _args = [ "HDMI-A-1" ];
-        transform = "normal";
-        position._props = {
-          x = -1920;
-          y = 0;
-        };
-        mode = "1920x1080";
-      }
-      {
-        _args = [ "eDP-1" ];
-        scale = 1.35;
-        transform = "normal";
-        position._props = {
-          x = 0;
-          y = 0;
-        };
-        mode = "2256x1504@60.000";
-      }
-    ];
+    output =
+      [
+        {
+          _args = [ "DP-3" ];
+          transform = "normal";
+          position._props = {
+            x = -1920;
+            y = 0;
+          };
+          mode = "1920x1080";
+        }
+        {
+          _args = [ "DP-4" ];
+          transform = "normal";
+          position._props = {
+            x = -1920;
+            y = 0;
+          };
+          mode = "1920x1080";
+        }
+        {
+          _args = [ "HDMI-A-2" ];
+          transform = "normal";
+          position._props = {
+            x = -1920;
+            y = 0;
+          };
+          mode = "1920x1080";
+        }
+        {
+          _args = [ "HDMI-A-1" ];
+          transform = "normal";
+          position._props = {
+            x = -1920;
+            y = 0;
+          };
+          mode = "1920x1080";
+        }
+      ]
+      ++ (if e then [
+        {
+          _args = [ "eDP-1" ];
+          scale = 1.35;
+          transform = "normal";
+          position._props = {
+            x = 0;
+            y = 0;
+          };
+          mode = "2256x1504@60.000";
+        }
+      ] else [
+        {
+          _args = [ "eDP-1" ];
+          scale = 1.65;
+          transform = "normal";
+          position._props = {
+            x = 0;
+            y = 0;
+          };
+          mode = "2880x1920@120";
+        }
+      ]);
   }
   // lib.optionalAttrs (!e) {
     window-rule = [
