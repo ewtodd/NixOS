@@ -129,9 +129,6 @@ in
                 high = {
                   reasoning_effort = "high";
                 };
-                low = {
-                  reasoning_effort = "low";
-                };
                 none = {
                   chat_template_kwargs = {
                     enable_thinking = false;
