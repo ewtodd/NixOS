@@ -1,9 +1,46 @@
 {
+  lib,
+  pkgs,
+  inputs,
   ...
 }:
+let
+  # Proton MCP server: talks to Proton Mail Bridge (IMAP/SMTP on localhost)
+  # to expose Mail tools (list/delete/move/reply, etc.) to opencode.
+  protonMCP = pkgs.buildNpmPackage {
+    pname = "proton-mcp";
+    version = "1.0.0";
+    src = inputs.proton-mcp-src;
+    nodejs = pkgs.nodejs;
+    npmDepsHash = "sha256-c6iNdB2Z84sOWETluJJhZdhPicWR9esL9SPi50CA7zo=";
+    dontNpmBuild = true;
+  };
+  entry = "${protonMCP}/lib/node_modules/proton-mcp/index.js";
+  # Wrapper: opencode launches this; it sources the agenix-decrypted bridge
+  # credentials (KEY=VALUE lines) then execs the MCP server. Keeps the
+  # password out of the world-readable opencode config in the nix store.
+  proton-mcp-wrapper = pkgs.writeShellScriptBin "proton-mcp" ''
+    set -a
+    . /run/agenix/proton-mail-bridge
+    set +a
+    exec ${pkgs.nodejs}/bin/node ${entry}
+  '';
+  # Wrapper: sources the agenix-decrypted LiteLLM master key so the
+  # {env:LITELLM_MASTER_KEY} reference in the provider config resolves,
+  # then execs the real opencode.
+  opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
+    if [ -r /run/agenix/litellm-master-key ]; then
+      set -a
+      . /run/agenix/litellm-master-key
+      set +a
+    fi
+    exec ${lib.getExe pkgs.opencode} "$@"
+  '';
+in
 {
   programs.opencode = {
     enable = true;
+    package = opencodeWrapped;
     tui.theme = "system";
     context = ''
       # Mandatory Rules
@@ -62,8 +99,51 @@
     '';
 
     settings = {
-      model = "son-of-anton/deepseek-v4-flash";
+      model = "litellm/deepseek-v4-flash";
       provider = {
+        # Public gateway via the bastion: works off-LAN. /v1 paths bypass
+        # anubis (litellm's master key is the auth) — see reverse-proxy.
+        litellm = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "LiteLLM";
+          options = {
+            baseURL = "https://litellm.ethanwtodd.com/v1";
+            apiKey = "{env:LITELLM_MASTER_KEY}";
+          };
+          models = {
+            "qwen3.6-27b-coding" = {
+              name = "Qwen3.6 27B Coding";
+            };
+            "qwen3.6-27b-heretic-coding" = {
+              name = "Qwen3.6 27B Heretic";
+            };
+            "gemma-4-31b" = {
+              name = "Gemma 4 31B";
+            };
+            "deepseek-v4-flash" = {
+              name = "Deepseek V4 Flash";
+              variants = {
+                max = {
+                  reasoning_effort = "max";
+                };
+                high = {
+                  reasoning_effort = "high";
+                };
+                low = {
+                  reasoning_effort = "low";
+                };
+                none = {
+                  chat_template_kwargs = {
+                    enable_thinking = false;
+                  };
+                };
+              };
+            };
+            "gemma-4-12b-it-qat" = {
+              name = "Gemma 4 12B IT QAT";
+            };
+          };
+        };
         anton = {
           npm = "@ai-sdk/openai-compatible";
           name = "anton";
@@ -88,30 +168,28 @@
               variants = {
                 max = {
                   reasoning_effort = "max";
-                  thinking = {
-                    type = "enabled";
-                  };
                 };
                 high = {
                   reasoning_effort = "high";
-                  thinking = {
-                    type = "enabled";
-                  };
                 };
                 low = {
                   reasoning_effort = "low";
-                  thinking = {
-                    type = "enabled";
-                  };
                 };
                 none = {
-                  thinking = {
-                    type = "disabled";
+                  chat_template_kwargs = {
+                    enable_thinking = false;
                   };
                 };
               };
             };
           };
+        };
+      };
+      mcp = {
+        proton = {
+          type = "local";
+          command = [ "${proton-mcp-wrapper}/bin/proton-mcp" ];
+          enabled = true;
         };
       };
       permission = {

@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -27,7 +27,6 @@ in
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
     services.suspend-then-hibernate.enable = true;
-    services.binaryCache.serve = true;
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
     apps.docker.enable = true;
@@ -99,6 +98,15 @@ in
     initrdNicModule = "r8169";
     initrdAuthorizedKeys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOzNCr4bzaMgmGGlYuFvkt7yRi8xgQ1kaSwxvJCiSMf bastion-initrd-unlock"
+    ];
+  };
+
+  services.protonmail-bridge = {
+    enable = true;
+    # Secret-service backends for Proton Bridge's headless credential storage.
+    path = with pkgs; [
+      pass
+      gnome-keyring
     ];
   };
 

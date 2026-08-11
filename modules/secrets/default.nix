@@ -84,5 +84,40 @@
         mode = "0440";
       };
     })
+    # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
+    (lib.mkIf config.systemOptions.services.litellmProxy.enable {
+      # Read by the litellm container (bind-mounted as root).
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        mode = "0400";
+      };
+    })
+    (lib.mkIf config.systemOptions.owner.e.enable {
+      # Read by the opencode wrapper script (runs as e-work / e-play),
+      # which sources this file to provide $LITELLM_MASTER_KEY.
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        group = "users";
+        mode = "0440";
+      };
+    })
+    (lib.mkIf config.systemOptions.owner.v.enable {
+      # Same as the e-device block, for v-work / v-play.
+      litellm-master-key = {
+        file = ../../secrets/litellm-master-key.age;
+        group = "users";
+        mode = "0440";
+      };
+    })
+    (lib.mkIf config.services.protonmail-bridge.enable {
+      # Proton Bridge IMAP/SMTP credentials for the proton-mcp opencode server.
+      # Read at runtime by the proton-mcp wrapper (opencode runs as e-play),
+      # which sources this file for PROTON_BRIDGE_* env vars.
+      proton-mail-bridge = {
+        file = ../../secrets/proton-mail-bridge.age;
+        owner = "e-play";
+        mode = "0400";
+      };
+    })
   ];
 }
