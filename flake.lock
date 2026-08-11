@@ -685,6 +685,22 @@
         "type": "github"
       }
     },
+    "proton-mcp-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786307816,
+        "narHash": "sha256-Iep2RgPa61PEQTJ93zBYcgfBUCEYAveeFbwyx349Mgo=",
+        "owner": "ewtodd",
+        "repo": "proton-mcp",
+        "rev": "411c5021cc29454b6f00e1a38cd37d9a85ab9bf5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "proton-mcp",
+        "type": "github"
+      }
+    },
     "remarkable": {
       "inputs": {
         "flake-utils": "flake-utils_5",
@@ -726,6 +742,7 @@
         "nixos-apple-silicon": "nixos-apple-silicon",
         "nixpkgs": "nixpkgs_3",
         "nixvim": "nixvim",
+        "proton-mcp-src": "proton-mcp-src",
         "remarkable": "remarkable",
         "split-nvim-src": "split-nvim-src",
         "temple": "temple"
