@@ -41,5 +41,8 @@ in
     server-son-of-anton
     server-oracle
   ];
+  "litellm-master-key.age".publicKeys =
+    personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
+  "proton-mail-bridge.age".publicKeys = personal;
 }
