@@ -395,7 +395,7 @@ in
         ]
         ++ lib.optionals (deviceType == "desktop") [
           {
-            name = "HDMI-A-1";
+            name = "HDMI-A-2";
             model = "Sceptre F22";
           }
         ]
