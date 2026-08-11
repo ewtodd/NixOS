@@ -10,6 +10,7 @@ let
     "ai"
     "cache"
     "cloud"
+    "litellm"
     "mc"
     "office"
     "ssh"

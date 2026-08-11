@@ -20,6 +20,7 @@ in
     services.deploy.enable = true;
     services.nodeExporter.enable = true;
     services.templeServer.enable = true;
+    services.litellmProxy.enable = true;
     services.searxng.enable = true;
     services.openWebUI.enable = true;
     services.llamaSwap = {
