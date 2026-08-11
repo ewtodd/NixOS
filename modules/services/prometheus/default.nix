@@ -68,17 +68,6 @@
             }
           ];
         }
-        {
-          # Bifrost AI gateway metrics. Bifrost serves Prometheus metrics at
-          # /metrics on its main HTTP port. No separate metrics port needed.
-          job_name = "bifrost";
-          static_configs = [
-            {
-              targets = [ "10.0.0.6:4000" ];
-              labels.instance = "oracle";
-            }
-          ];
-        }
       ];
     };
   };
