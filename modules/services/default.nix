@@ -16,6 +16,7 @@ in
     ./deploy
     ./dyndns
     ./grafana
+    ./litellm-proxy
     ./llama-swap
     ./minecraft
     ./nextcloud

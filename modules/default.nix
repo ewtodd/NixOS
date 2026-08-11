@@ -327,6 +327,7 @@ with lib;
         );
       };
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the searxng MCP)";
+      services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
       services.templeServer.enable = mkEnableOption "temple renco agent server";
       services.temple-daemon = {
         enable = mkEnableOption "temple headless daemons — execute tool requests locally";
