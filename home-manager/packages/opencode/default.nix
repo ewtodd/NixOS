@@ -136,41 +136,14 @@ in
                 };
               };
             };
-            "gemma-4-12b-it-qat" = {
-              name = "Gemma 4 12B IT QAT";
-            };
-          };
-        };
-        anton = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "anton";
-          options = {
-            baseURL = "http://10.0.0.3:8080/v1";
-          };
-          models = {
-            "qwen3.6-27b" = {
-              name = "Qwen3.6 27B";
-            };
-          };
-        };
-        son-of-anton = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "son-of-anton";
-          options = {
-            baseURL = "http://10.0.0.5:8080/v1";
-          };
-          models = {
-            "deepseek-v4-flash" = {
-              name = "Deepseek V4 Flash";
+            "deepseek-v4-flash-full" = {
+              name = "Deepseek V4 Flash (full precision)";
               variants = {
                 max = {
                   reasoning_effort = "max";
                 };
                 high = {
                   reasoning_effort = "high";
-                };
-                low = {
-                  reasoning_effort = "low";
                 };
                 none = {
                   chat_template_kwargs = {

@@ -20,5 +20,6 @@
     "iommu=pt"
     "ttm.pages_limit=32505856"
     "ttm.page_pool_size=32505856"
+    "pcie_aspm=off"
   ];
 }

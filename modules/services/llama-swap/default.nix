@@ -40,17 +40,11 @@ let
       cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
         (pkgs.lib.cmakeFeature "CMAKE_HIP_ARCHITECTURES" "gfx1151;gfx1201")
         "-DGPU_TARGETS=gfx1151;gfx1201"
-        (pkgs.lib.cmakeFeature "CMAKE_HIP_FLAGS" "-funsafe-math-optimizations")
       ];
-
-      postConfigure = (oldAttrs.postConfigure or "") + ''
-        grep -q -- '-funsafe-math-optimizations' CMakeCache.txt
-      '';
 
       postInstall = (oldAttrs.postInstall or "") + ''
         mkdir -p $out/nix-support
         echo "-DGPU_TARGETS=gfx1151,gfx1201" > $out/nix-support/supported-hardware 
-        echo "CMAKE_HIP_FLAGS=-funsafe-math-optimizations" > $out/nix-support/hip-flags
       '';
     }
   );
@@ -107,6 +101,9 @@ let
         "--n-gpu-layers ${m.gpuLayers}"
         "--prio 1"
       ]
+      ++ lib.optional (m.device != null) "--device ${m.device}"
+      ++ lib.optional (m.splitMode != null) "--split-mode ${m.splitMode}"
+      ++ lib.optional (m.tensorSplit != null) "--tensor-split ${m.tensorSplit}"
       ++ [ (if m.mmap then "--mmap" else "--no-mmap") ]
       ++ lib.optionals m.mlock [ "--mlock" ]
       ++ (
@@ -134,6 +131,8 @@ let
       ++ lib.optional (m.specType != "none") "--spec-type ${m.specType} --spec-draft-ngl all"
       ++ lib.optional (m.specType != "none") "--spec-draft-n-max ${toString m.specDraftNMax}"
       ++ lib.optional (m.specDraftModel != null) "--spec-draft-model ${m.specDraftModel}"
+      ++ lib.optional (m.specDraftHf != null) "--spec-draft-hf ${m.specDraftHf}"
+      ++ lib.optional (m.specDraftDevice != null) "--spec-draft-device ${m.specDraftDevice}"
       ++ m.extraFlags
       ++ [
         "--host 0.0.0.0 --port \${PORT}"
@@ -141,35 +140,103 @@ let
       ]
     );
 
+  modelNames = lib.attrNames cfg.models;
+
+  # llama-swap's matrix DSL can only reference models through short var ids
+  # (alphanumeric, 1-8 chars in the pinned llama-swap), so every model gets
+  # an id in definition order.
   modelList = lib.imap0 (i: name: {
     inherit name;
     var = "m${toString i}";
-  }) (lib.attrNames cfg.models);
+  }) modelNames;
+
+  nameToVar = lib.listToAttrs (
+    map (e: {
+      name = e.name;
+      value = e.var;
+    }) modelList
+  );
 
   isResident = name: cfg.models.${name}.alwaysResident;
 
-  isSolo = name: cfg.models.${name}.solo;
+  residentNames = builtins.filter isResident modelNames;
 
-  isChat = name: !isResident name;
+  # A comma list in `device` spans several devices, so such a model occupies
+  # the whole host: it is solo.
+  spansMultiDevice =
+    name:
+    let
+      d = cfg.models.${name}.device;
+    in
+    d != null && builtins.match ".*,.*" d != null;
 
-  soloNames = map (e: e.name) (lib.filter (e: isChat e.name && isSolo e.name) modelList);
+  isSolo = name: cfg.models.${name}.solo || spansMultiDevice name;
 
-  bigNames = map (e: e.name) (lib.filter (e: isChat e.name && cfg.models.${e.name}.big) modelList);
+  soloNames = builtins.filter isSolo modelNames;
 
-  smallNames = map (e: e.name) (
-    lib.filter (e: isChat e.name && !isSolo e.name && !cfg.models.${e.name}.big) modelList
+  # Remaining models are grouped by device: models on the same device are
+  # alternatives (one resident per device at a time); models on distinct
+  # devices may all be resident together.
+  groupableNames = builtins.filter (n: !isResident n && !isSolo n) modelNames;
+
+  deviceKey =
+    name:
+    let
+      d = cfg.models.${name}.device;
+    in
+    if d == null then "unpinned:${name}" else d;
+
+  deviceGroups = lib.groupBy deviceKey groupableNames;
+
+  deviceKeys = lib.attrNames deviceGroups;
+
+  powerset = xs: lib.foldl' (acc: x: acc ++ map (s: s ++ [ x ]) acc) [ [ ] ] xs;
+
+  groupExpr =
+    key: "(" + lib.concatStringsSep " | " (map (n: nameToVar.${n}) deviceGroups.${key}) + ")";
+
+  subsetExpr = subset: lib.concatStringsSep " & " (map groupExpr subset);
+
+  # every non-empty combination of devices may be resident together
+  deviceSetExprs = map subsetExpr (builtins.filter (s: s != [ ]) (powerset deviceKeys));
+
+  soloSetExprs = map (n: nameToVar.${n}) soloNames;
+
+  residentSuffix =
+    if residentNames == [ ] then
+      ""
+    else
+      " & " + lib.concatStringsSep " & " (map (n: nameToVar.${n}) residentNames);
+
+  withResidents = e: if residentSuffix == "" then e else "(${e})${residentSuffix}";
+
+  setExprs = map withResidents (soloSetExprs ++ deviceSetExprs);
+
+  # A residents-only host (e.g. oracle's router pair) would otherwise produce
+  # an empty matrix, which llama-swap rejects: give it the resident set.
+  matrixSetExprs =
+    if setExprs != [ ] then
+      setExprs
+    else if residentNames != [ ] then
+      [ (lib.concatStringsSep " & " (map (n: nameToVar.${n}) residentNames)) ]
+    else
+      [ ];
+
+  preloadNames = lib.unique (
+    residentNames ++ builtins.filter (n: cfg.models.${n}.preload) modelNames
   );
-
-  chatNames = soloNames ++ bigNames ++ smallNames;
-
-  residentNames = map (e: e.name) (lib.filter (e: isResident e.name) modelList);
 in
 {
   config = lib.mkIf cfg.enable {
-    assertions = lib.mapAttrsToList (name: m: {
-      assertion = (m.path != null) != (m.hf != null);
-      message = "systemOptions.services.llamaSwap.models.${name}: set exactly one of `path` or `hf`.";
-    }) cfg.models;
+    assertions =
+      lib.mapAttrsToList (name: m: {
+        assertion = (m.path != null) != (m.hf != null);
+        message = "systemOptions.services.llamaSwap.models.${name}: set exactly one of `path` or `hf`.";
+      }) cfg.models
+      ++ lib.mapAttrsToList (name: m: {
+        assertion = !(m.specDraftModel != null && m.specDraftHf != null);
+        message = "systemOptions.services.llamaSwap.models.${name}: set at most one of `specDraftModel` or `specDraftHf`.";
+      }) cfg.models;
 
     services.llama-swap = {
       enable = true;
@@ -188,40 +255,31 @@ in
         }
       ) cfg.models;
 
-      settings.groups = lib.mkIf (residentNames != [ ] || chatNames != [ ]) (
-        lib.optionalAttrs (residentNames != [ ]) {
-          resident = {
-            persistent = true;
-            exclusive = false;
-            swap = false;
-            members = residentNames;
+      # The swap matrix: models are referenced through short var ids (the
+      # pinned llama-swap cannot use raw model names in expressions). Every
+      # set is one allowed combination of co-resident models.
+      settings.routing = lib.mkIf (modelNames != [ ]) {
+        router = {
+          use = "matrix";
+          settings.matrix = {
+            vars = lib.listToAttrs (
+              map (e: {
+                name = e.var;
+                value = e.name;
+              }) modelList
+            );
+            sets = lib.listToAttrs (
+              lib.imap1 (i: expr: {
+                name = "set${toString i}";
+                value = expr;
+              }) matrixSetExprs
+            );
           };
-        }
-        // lib.optionalAttrs (soloNames != [ ]) {
-          solo = {
-            exclusive = true;
-            swap = true;
-            members = soloNames;
-          };
-        }
-        // lib.optionalAttrs (bigNames != [ ]) {
-          big = {
-            exclusive = false;
-            swap = true;
-            members = bigNames;
-          };
-        }
-        // lib.optionalAttrs (smallNames != [ ]) {
-          small = {
-            exclusive = false;
-            swap = true;
-            members = smallNames;
-          };
-        }
-      );
+        };
+      };
 
-      settings.hooks = lib.mkIf (residentNames != [ ]) {
-        on_startup.preload = residentNames;
+      settings.hooks = lib.mkIf (preloadNames != [ ]) {
+        on_startup.preload = preloadNames;
       };
     };
 

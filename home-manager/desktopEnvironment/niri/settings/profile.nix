@@ -17,7 +17,7 @@ let
   primaryMonitor = if deviceType == "desktop" then "DP-3" else "eDP-1";
   secondaryMonitor =
     if deviceType == "desktop" then
-      "HDMI-A-2"
+      "HDMI-A-1"
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;

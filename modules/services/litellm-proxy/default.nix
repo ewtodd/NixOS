@@ -46,9 +46,8 @@
             "frequency_penalty"
             "response_format"
           ];
-          # Inference hosts on the LAN:
-          sonOfAnton = "http://10.0.0.5:8080/v1"; # Strix Halo 128GB — deepseek only
-          anton = "http://10.0.0.3:8080/v1"; # R9700 32GB — qwen + gemma
+          # Inference host on the LAN (everything now lives on son-of-anton):
+          sonOfAnton = "http://10.0.0.5:8080/v1"; # 2x R9700 32GB + Strix Halo iGPU
 
           mkLocal = api_base: model: {
             inherit model api_base;
@@ -122,32 +121,36 @@
               model_list = [
                 {
                   model_name = "qwen3.6-27b-coding";
-                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b" sampling.coding;
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b" sampling.coding;
                 }
                 {
                   model_name = "qwen3.6-27b-general";
-                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b" sampling.general;
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b" sampling.general;
                 }
                 {
                   model_name = "gemma-4-31b";
-                  litellm_params = mkLocal anton "openai/gemma-4-31b";
+                  litellm_params = mkLocal sonOfAnton "openai/gemma-4-31b";
                 }
                 {
                   model_name = "qwen3.6-27b-heretic-coding";
-                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b-heretic" sampling.coding;
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b-heretic" sampling.coding;
                 }
                 {
                   model_name = "qwen3.6-27b-heretic-general";
-                  litellm_params = mkLocalSampled anton "openai/qwen3.6-27b-heretic" sampling.general;
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b-heretic" sampling.general;
                 }
                 {
                   model_name = "gemma-4-31b-heretic";
-                  litellm_params = mkLocal anton "openai/gemma-4-31b-heretic";
+                  litellm_params = mkLocal sonOfAnton "openai/gemma-4-31b-heretic";
                 }
 
                 {
                   model_name = "deepseek-v4-flash";
                   litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash";
+                }
+                {
+                  model_name = "deepseek-v4-flash-full";
+                  litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash-full";
                 }
                 {
                   model_name = "gemma-4-12b-it-qat";

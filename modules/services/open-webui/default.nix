@@ -1,8 +1,7 @@
 # Open WebUI — self-hosted LLM web interface, served at ai.ethanwtodd.com.
 # Public traffic terminates at Caddy on nu, passes Anubis proof-of-work,
 # and lands here on oracle (:8081; 8080 is already llama-swap). Models are
-# OpenAI-compatible llama-swap endpoints on son-of-anton (10.0.0.5) and
-# anton (10.0.0.3).
+# OpenAI-compatible llama-swap endpoints on son-of-anton (10.0.0.5).
 {
   config,
   lib,

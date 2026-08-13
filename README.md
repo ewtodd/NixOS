@@ -39,8 +39,8 @@ Hosts:
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
 - **nu** - Router, AdGuard, reverse proxy, dynamic DNS
 - **mu** - SSH bastion, Nextcloud, Minecraft
-- **anton** - llama-swap inference (Vulkan, R9700 "antonino"): dense models + heretic variants
-- **son-of-anton** - llama-swap inference (ROCm, Strix Halo 128GB): MoE models + always-on router
+- **anton** - headless server (no inference role)
+- **son-of-anton** - llama-swap inference (ROCm, 2x R9700 Pro + Strix Halo iGPU): full-precision deepseek-v4-flash + dense models + heretic variants
 - **oracle** - MCP gateway, SearXNG, Open WebUI (ai.ethanwtodd.com), temple-server (aarch64)
 ```
 ## Important Notes
@@ -117,12 +117,11 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
-- **son-of-anton** (AMD Strix Halo 128GB): llama-swap with ROCm backend; deepseek-v4-flash (always-resident) and gemma-4-12b-it-qat
-- **anton** — AMD R9700 32GB ("antonino") — llama-swap with Vulkan backend; dense models (qwen3.6-27b, gemma-4-31b) and heretic variants
+- **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU 128GB): llama-swap with ROCm backend. deepseek-v4-flash in two quants (IQ3_XXS on the iGPU, full-precision UD-Q8_K_XL spanning every device as a solo model), plus dense models pinned one-per-GPU (qwen3.6-27b, gemma-4-31b and heretic variants)
 - **oracle** (aarch64) hosts the gateway and tooling:
   - **MCP gateway** aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP
-  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via llama-swap on son-of-anton/anton)
+  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via llama-swap on son-of-anton)
   - **temple-server** (renco agent)
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
