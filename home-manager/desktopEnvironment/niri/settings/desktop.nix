@@ -74,7 +74,7 @@ let
       };
     }
     {
-      _args = [ "HDMI-A-2" ];
+      _args = [ "HDMI-A-1" ];
       transform = "90";
       position._props = {
         x = 3440;

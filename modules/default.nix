@@ -131,42 +131,53 @@ with lib;
                   Whether to include --mlock flag in llama-server command. Including breaks gemma models.
                 '';
               };
-              big = mkOption {
-                type = types.bool;
-                default = false;
+              device = mkOption {
+                type = types.nullOr types.str;
+                default = null;
                 description = ''
-                  Mark a chat model as "big" (too large to co-reside with
-                  another big model on this host). The llama-swap matrix makes
-                  big models mutually exclusive: at most one big is resident at a
-                  time, and it may pair with at most one small model. Small
-                  models (big = false) may all co-reside. Set on the ~100B-class
-                  models so the solver never tries to keep two of them loaded.
+                  Value for llama.cpp --device (e.g. "ROCm0", or a comma list
+                  "ROCm0,ROCm1,ROCm2" to span several devices). Also drives
+                  co-residency in the swap matrix: models sharing the exact
+                  same value are mutual alternatives (they contend for the
+                  same device), models on distinct devices may all be resident
+                  together, and a comma list (multi-device) is treated as solo
+                  — it can never co-reside with anything. Null lets llama.cpp
+                  pick the device and gives the model its own exclusive slot.
                 '';
               };
               solo = mkOption {
                 type = types.bool;
                 default = false;
                 description = ''
-                  Mark a chat model as "solo": exclusive against *every* other
-                  chat model — never co-resident with a big OR a small (only the
-                  always-on embedding model rides alongside it). Use for models
-                  so large they can't even pair with a small (e.g. a Q8 ~85GB+
-                  big), where the ordinary `big` lane's "big + one small" would
-                  OOM. Implies the model occupies the host alone; takes
-                  precedence over `big`.
+                  Mark a model as "solo": it can never co-reside with any
+                  other model. When requested, every other model (including
+                  preloaded ones) is evicted, and it stays resident alone
+                  until another model is requested. Use for models so large
+                  they must occupy the whole host — e.g. a Q8 ~85GB+ model
+                  that spans every GPU. Takes precedence over device-based
+                  co-residency (a multi-device `device` list is auto-solo).
                 '';
               };
               alwaysResident = mkOption {
                 type = types.bool;
                 default = false;
                 description = ''
-                  Keep this chat model loaded at all times, co-resident with
-                  whatever else is running — including `solo` models (which
-                  otherwise admit only the embedding model alongside them). It's
-                  ANDed into every matrix set, exactly like an embedding model,
-                  and never participates in the big/small/solo lanes. Use for a
-                  tiny utility model that must never be evicted — e.g. a dedicated
-                  router model consumed by temple. Keep it small: it occupies RAM permanently.
+                  Keep this model loaded at all times. It is ANDed into every
+                  swap-matrix set and preloaded at startup, so it is never
+                  evicted — regardless of what else is running, including
+                  solo models. Use only for tiny utility models that must
+                  never go down (e.g. the router model consumed by temple).
+                  Keep it small: it occupies RAM permanently.
+                '';
+              };
+              preload = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Preload this model at llama-swap startup so it is warm
+                  before the first request. Unlike `alwaysResident`, a
+                  preloaded model CAN be evicted when another request (e.g. a
+                  solo model) needs its resources.
                 '';
               };
               gpuLayers = mkOption {
@@ -177,6 +188,28 @@ with lib;
                   Value for --n-gpu-layers. Use "999" to offload all layers (the
                   default), or "auto" to let llama.cpp decide (useful for large MoE
                   models like DeepSeek V4 Flash that may not offload cleanly).
+                '';
+              };
+              splitMode = mkOption {
+                type = types.nullOr (
+                  types.enum [
+                    "layer"
+                    "row"
+                  ]
+                );
+                default = null;
+                description = ''
+                  Value for --split-mode (how tensors are split across
+                  devices). Only relevant for multi-device models.
+                '';
+              };
+              tensorSplit = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  Value for --tensor-split (proportional VRAM split across
+                  devices, e.g. "1,1,4"). Only relevant for multi-device
+                  models.
                 '';
               };
               mmap = mkOption {
@@ -316,6 +349,29 @@ with lib;
               specDraftModel = mkOption {
                 type = types.nullOr types.path;
                 default = null;
+                description = ''
+                  Local GGUF path for the speculative draft model, emitted as
+                  --spec-draft-model PATH. Mutually exclusive with
+                  `specDraftHf`.
+                '';
+              };
+              specDraftHf = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  Hugging Face repo[:quant] for the speculative draft model,
+                  emitted as --spec-draft-hf (auto-downloaded to
+                  LLAMA_CACHE). Mutually exclusive with `specDraftModel`.
+                '';
+              };
+              specDraftDevice = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  Value for --spec-draft-device (device that hosts the
+                  speculative draft model, e.g. "ROCm2"). Null lets llama.cpp
+                  pick.
+                '';
               };
               extraFlags = mkOption {
                 type = types.listOf types.str;

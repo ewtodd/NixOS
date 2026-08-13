@@ -9,8 +9,9 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
     ./environment.nix
+    ./extra-packages.nix
+    ./hardware-configuration.nix
   ];
 
   systemOptions = {
@@ -32,10 +33,31 @@ in
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
       models = {
+        # Full-precision DSV4 spanning every device (2x R9700 Pro + iGPU).
+        # Solo: requesting it evicts everything else, and vice versa.
+        "deepseek-v4-flash-full" = {
+          hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
+          ctxSize = 524288;
+          mlock = true;
+          batchSize = 2048;
+          ubatchSize = 1024;
+          kQuant = "bf16";
+          vQuant = "bf16";
+          parallel = 1;
+          flashAttn = "on";
+          device = "ROCm0,ROCm1,ROCm2";
+          specType = "draft-dspark";
+          specDraftNMax = 6;
+          specDraftDevice = "ROCm2";
+          specDraftHf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:BF16";
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+          ];
+        };
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ3_XXS";
           ctxSize = 524288;
-          alwaysResident = true;
           mlock = true;
           batchSize = 4096;
           ubatchSize = 2048;
@@ -43,16 +65,77 @@ in
           vQuant = "bf16";
           parallel = 1;
           flashAttn = "on";
+          device = "ROCm2";
           specType = "draft-dspark";
           specDraftNMax = 3;
-          specDraftModel = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/DeepSeek-V4-Flash-0731-GGUF/resolve/main/dspark-DeepSeek-V4-Flash-0731-Q8_0.gguf";
-            hash = "sha256-LHrFSwtkqZ3x8Tmp8TcaABmCZeHWphS3dZfSCmVaQkk=";
-          };
+          specDraftDevice = "ROCm2";
+          specDraftHf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:Q8_0";
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
           ];
+        };
+        "qwen3.6-27b" = {
+          hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
+          ctxSize = 131072;
+          mlock = false;
+          device = "ROCm0";
+          specType = "draft-mtp";
+          specDraftNMax = 2;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+          ];
+        };
+        "qwen3.6-27b-heretic" = {
+          hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
+          ctxSize = 131072;
+          mlock = false;
+          device = "ROCm0";
+          specType = "draft-mtp";
+          specDraftNMax = 2;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF/resolve/main/Qwen3.6-27B-mmproj-BF16.gguf";
+            hash = "sha256-xcjEHabRVaYe3SG346pQtu938SLVAtNq/kpNXD5JTU8=";
+          };
+        };
+        "gemma-4-31b" = {
+          hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
+          ctxSize = 131072;
+          mlock = false;
+          device = "ROCm1";
+          extraFlags = [
+            "--temp 1.0"
+            "--top-k 64"
+            "--top-p 0.95"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/gemma-4-31B-it-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-btzKIoITwo01Z6NdIvhJ7qUtg2CHUJOFGVmt9dLycOs=";
+          };
+        };
+        "gemma-4-31b-heretic" = {
+          hf = "llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF:Q5_K_M";
+          ctxSize = 131072;
+          mlock = false;
+          device = "ROCm1";
+          extraFlags = [
+            "--temp 1.0"
+            "--top-k 64"
+            "--top-p 0.95"
+          ];
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF/resolve/main/gemma-4-31B-it-mmproj-BF16.gguf";
+            hash = "sha256-IUh/8m0I993R1lTTu/wa4QIKqzEZ9b9lR0LORpdzLk4=";
+          };
         };
       };
     };
@@ -61,6 +144,7 @@ in
 
   nixpkgs.config.rocmTargets = [
     "gfx1151"
+    "gfx1201"
   ];
 
   users.users.son-of-anton = {

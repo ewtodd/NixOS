@@ -14,10 +14,10 @@ in
     services.temple-server = {
       enable = true;
       modelEndpoints = {
-        "qwen3.6-27b" = "http://10.0.0.3:8080/v1";
-        "gemma-4-31b" = "http://10.0.0.3:8080/v1";
-        "qwen3.6-27b-heretic" = "http://10.0.0.3:8080/v1";
-        "gemma-4-31b-heretic" = "http://10.0.0.3:8080/v1";
+        "qwen3.6-27b" = "http://10.0.0.5:8080/v1";
+        "gemma-4-31b" = "http://10.0.0.5:8080/v1";
+        "qwen3.6-27b-heretic" = "http://10.0.0.5:8080/v1";
+        "gemma-4-31b-heretic" = "http://10.0.0.5:8080/v1";
         "deepseek-v4-flash" = "http://10.0.0.5:8080/v1";
         "supra-router" = "http://127.0.0.1:8080/v1";
         "supra-title" = "http://127.0.0.1:8080/v1";
