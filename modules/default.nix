@@ -124,13 +124,6 @@ with lib;
                   isn't auto-pulled by `-hf` (e.g. Qwen3-VL). Chat models only.
                 '';
               };
-              mlock = mkOption {
-                type = types.bool;
-                default = true;
-                description = ''
-                  Whether to include --mlock flag in llama-server command. Including breaks gemma models.
-                '';
-              };
               device = mkOption {
                 type = types.nullOr types.str;
                 default = null;
@@ -212,14 +205,24 @@ with lib;
                   models.
                 '';
               };
-              mmap = mkOption {
-                type = types.bool;
-                default = false;
+              loadMode = mkOption {
+                type = types.enum [
+                  "auto"
+                  "none"
+                  "mmap"
+                  "mlock"
+                  "mmap+mlock"
+                  "dio"
+                ];
+                default = "auto";
                 description = ''
-                  Whether to enable memory mapping (--mmap). When false, --no-mmap
-                  is emitted. Enable for models that fail to load without mmap
-                  (e.g. DeepSeek V4 Flash with mixed quantization).
-                '';
+                  model loading mode (default: auto)
+                  - auto: mmap, unless a device does not support it
+                  - none: no special loading mode
+                  - mmap: memory-map model (if mmap disabled, slower load but may reduce pageouts if not using mlock)
+                  - mlock: force system to keep model in RAM rather than swapping or compressing
+                  - mmap+mlock: mmap + force system to keep model in RAM rather than swapping or compressing
+                  - dio: use DirectIO if available                '';
               };
               flashAttn = mkOption {
                 type = types.str;
@@ -239,7 +242,7 @@ with lib;
               };
               cacheReuse = mkOption {
                 type = types.nullOr types.ints.positive;
-                default = 256;
+                default = null;
                 description = ''
                   Value for --cache-reuse (KV cache tokens to reuse between
                   requests). Set to null to omit the flag entirely.
