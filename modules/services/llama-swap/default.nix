@@ -104,8 +104,7 @@ let
       ++ lib.optional (m.device != null) "--device ${m.device}"
       ++ lib.optional (m.splitMode != null) "--split-mode ${m.splitMode}"
       ++ lib.optional (m.tensorSplit != null) "--tensor-split ${m.tensorSplit}"
-      ++ [ (if m.mmap then "--mmap" else "--no-mmap") ]
-      ++ lib.optionals m.mlock [ "--mlock" ]
+      ++ lib.optionals (m.loadMode != "none") [ "--load-mode ${m.loadMode}" ]
       ++ (
         [
           "--jinja"

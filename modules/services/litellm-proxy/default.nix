@@ -152,10 +152,6 @@
                   model_name = "deepseek-v4-flash-full";
                   litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash-full";
                 }
-                {
-                  model_name = "gemma-4-12b-it-qat";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-12b-it-qat" sampling.gemmaTool;
-                }
               ];
             };
           };

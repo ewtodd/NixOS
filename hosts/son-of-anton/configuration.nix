@@ -38,9 +38,10 @@ in
         "deepseek-v4-flash-full" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
           ctxSize = 524288;
-          mlock = true;
+          loadMode = "mlock";
           batchSize = 2048;
           ubatchSize = 1024;
+          solo = true;
           kQuant = "bf16";
           vQuant = "bf16";
           parallel = 1;
@@ -58,9 +59,9 @@ in
         "deepseek-v4-flash" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ3_XXS";
           ctxSize = 524288;
-          mlock = true;
           batchSize = 4096;
           ubatchSize = 2048;
+          loadMode = "mlock";
           kQuant = "bf16";
           vQuant = "bf16";
           parallel = 1;
@@ -78,7 +79,7 @@ in
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 131072;
-          mlock = false;
+          loadMode = "mlock";
           device = "ROCm0";
           specType = "draft-mtp";
           specDraftNMax = 2;
@@ -92,7 +93,6 @@ in
         "qwen3.6-27b-heretic" = {
           hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
           ctxSize = 131072;
-          mlock = false;
           device = "ROCm0";
           specType = "draft-mtp";
           specDraftNMax = 2;
@@ -110,7 +110,7 @@ in
         "gemma-4-31b" = {
           hf = "unsloth/gemma-4-31B-it-GGUF:UD-Q5_K_XL";
           ctxSize = 131072;
-          mlock = false;
+          loadMode = "mlock";
           device = "ROCm1";
           extraFlags = [
             "--temp 1.0"
@@ -125,7 +125,6 @@ in
         "gemma-4-31b-heretic" = {
           hf = "llmfan46/gemma-4-31B-it-uncensored-heretic-GGUF:Q5_K_M";
           ctxSize = 131072;
-          mlock = false;
           device = "ROCm1";
           extraFlags = [
             "--temp 1.0"
