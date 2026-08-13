@@ -8,7 +8,7 @@ let
   nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@nu";
   mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@mu";
   server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
-  server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICY75cWf+2GLiTlKSouy2l5bkeSm7t2PM3f+rSYqCXrl root@son-of-anton";
+  server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNP13u10CY6dMNzWze+Hk+as+Esm35XGR4WGXMccgtH root@son-of-anton";
   server-oracle = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzfIzVGX+XNGWRrLfL78OeYqt8MB5Xii9EwimFAL0WZ root@oracle";
   personal = [
     ethan-desktop-ework
