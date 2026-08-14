@@ -239,7 +239,7 @@ in
 
     services.llama-swap = {
       enable = true;
-      port = 8080;
+      port = cfg.port;
       listenAddress = if cfg.lanExpose then "0.0.0.0" else "127.0.0.1";
       openFirewall = cfg.lanExpose;
       settings.healthCheckTimeout = 1200;

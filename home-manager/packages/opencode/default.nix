@@ -99,7 +99,7 @@ in
     '';
 
     settings = {
-      model = "litellm/deepseek-v4-flash";
+      model = "litellm/qwen3.8-27b-coding";
       provider = {
         # Public gateway via the bastion: works off-LAN. /v1 paths bypass
         # anubis (litellm's master key is the auth) — see reverse-proxy.
@@ -111,6 +111,23 @@ in
             apiKey = "{env:LITELLM_MASTER_KEY}";
           };
           models = {
+            "qwen3.8-27b-coding" = {
+              name = "Qwen3.8 27B Coding";
+              variants = {
+                xhigh = {
+                  reasoning_effort = "xhigh";
+                };
+                medium = {
+                  reasoning_effort = "medium";
+                };
+                low = {
+                  reasoning_effort = "low";
+                };
+                none = {
+                  reasoning_effort = "none";
+                };
+              };
+            };
             "qwen3.6-27b-coding" = {
               name = "Qwen3.6 27B Coding";
             };
