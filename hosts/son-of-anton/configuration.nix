@@ -57,10 +57,10 @@ in
           ];
         };
         "deepseek-v4-flash" = {
-          hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ3_XXS";
+          hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ2_M";
           ctxSize = 524288;
-          batchSize = 4096;
-          ubatchSize = 2048;
+          batchSize = 2048;
+          ubatchSize = 1024;
           loadMode = "mlock";
           kQuant = "bf16";
           vQuant = "bf16";

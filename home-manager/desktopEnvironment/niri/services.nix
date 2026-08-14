@@ -7,7 +7,7 @@
 }:
 let
   niri-utilities = inputs.niri-utilities.packages.${pkgs.stdenv.hostPlatform.system}.niri-utilities;
-  primaryMonitor = if osConfig.systemOptions.deviceType.desktop.enable then "DP-1" else "eDP-1";
+  primaryMonitor = if osConfig.systemOptions.deviceType.desktop.enable then "DP-3" else "eDP-1";
   lisgd-niri = pkgs.writeShellScript "lisgd-niri" ''
     # Find the touchscreen event device via libinput
     TOUCH_DEV=$(${pkgs.libinput}/bin/libinput list-devices \
