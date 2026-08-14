@@ -302,7 +302,7 @@ in
     showOnLastDisplay = { };
     barConfigs = [
       {
-        autoHide = if (deviceType == "laptop") then true else false;
+        autoHide = false;
         autoHideDelay = 250;
         borderColor = "primary";
         borderEnabled = true;
@@ -400,7 +400,9 @@ in
           }
         ]
         ++ lib.optionals (deviceType == "laptop") [
-          "all"
+          {
+            name = "eDP-1";
+          }
         ];
         showOnLastDisplay = true;
         spacing = 0;
