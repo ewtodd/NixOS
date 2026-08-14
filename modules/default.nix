@@ -65,6 +65,11 @@ with lib;
         default) binds 127.0.0.1 only — correct for hosts where the sole consumer
         is local nvim FIM. Enable it on hosts another machine must reach (e.g.
         son-of-anton, served to temple-server on son-of-anton)'';
+      services.llamaSwap.port = mkOption {
+        type = types.ints.positive;
+        default = 8080;
+        example = 1234;
+      };
       services.llamaSwap.backend = mkOption {
         type = types.enum [
           "vulkan"

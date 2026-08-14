@@ -46,7 +46,6 @@
             "frequency_penalty"
             "response_format"
           ];
-          # Inference host on the LAN (everything now lives on son-of-anton):
           sonOfAnton = "http://10.0.0.5:8080/v1"; # 2x R9700 32GB + Strix Halo iGPU
 
           mkLocal = api_base: model: {
@@ -98,6 +97,24 @@
               frequency_penalty = 0.15;
               presence_penalty = 0;
             };
+            # Qwen3.8 model card recommended sampling per use case.
+            qwen38Thinking = {
+              temperature = 1.0;
+              top_p = 0.95;
+              top_k = 20;
+              min_p = 0;
+              presence_penalty = 0;
+            };
+            qwen38Instruct = {
+              temperature = 0.7;
+              top_p = 0.8;
+              top_k = 20;
+              min_p = 0;
+              presence_penalty = 1.5;
+              chat_template_kwargs = {
+                enable_thinking = false;
+              };
+            };
           };
           mkLocalSampled =
             api_base: model: profile:
@@ -119,6 +136,14 @@
               };
 
               model_list = [
+                {
+                  model_name = "qwen3.8-27b-coding";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking;
+                }
+                {
+                  model_name = "qwen3.8-27b-general";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
+                }
                 {
                   model_name = "qwen3.6-27b-coding";
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b" sampling.coding;

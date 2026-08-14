@@ -76,6 +76,19 @@ in
             "--top-p 0.95"
           ];
         };
+        "qwen3.8-27b" = {
+          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q6_K_XL";
+          ctxSize = 179200;
+          loadMode = "mlock";
+          device = "ROCm0";
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+          ];
+        };
+
         "qwen3.6-27b" = {
           hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
           ctxSize = 131072;
