@@ -141,7 +141,7 @@
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking;
                 }
                 {
-                  model_name = "qwen3.8-27b-general";
+                  model_name = "qwen3.8-27b-instruct";
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
                 }
                 {
@@ -170,8 +170,8 @@
                 }
 
                 {
-                  model_name = "deepseek-v4-flash";
-                  litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash";
+                  model_name = "qwen3.6-35b-a3b";
+                  litellm_params = mkLocal sonOfAnton "openai/qwen3.6-35b-a3b";
                 }
                 {
                   model_name = "deepseek-v4-flash-full";

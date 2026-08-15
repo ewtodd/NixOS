@@ -61,7 +61,7 @@ in
           "WEBUI_URL=https://ai.ethanwtodd.com"
           "ENABLE_SIGNUP=false"
           "WEBUI_AUTH_COOKIE_SECURE=true"
-          # Default connection seeded on first run: deepseek-v4-flash via
+          # Default connection seeded on first run: qwen3.6-35b-a3b via
           # llama-swap on son-of-anton. llama-swap does not validate keys.
           "OPENAI_API_BASE_URL=http://10.0.0.5:8080/v1"
           "OPENAI_API_KEY=llama-swap"

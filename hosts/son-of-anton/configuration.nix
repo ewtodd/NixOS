@@ -38,14 +38,14 @@ in
         "deepseek-v4-flash-full" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
           ctxSize = 524288;
-          loadMode = "mlock";
+          loadMode = "auto";
           batchSize = 2048;
           ubatchSize = 1024;
           solo = true;
           kQuant = "bf16";
           vQuant = "bf16";
           parallel = 1;
-          flashAttn = "on";
+          flashAttn = "auto";
           device = "ROCm0,ROCm1,ROCm2";
           specType = "draft-dspark";
           specDraftNMax = 6;
@@ -56,36 +56,41 @@ in
             "--top-p 0.95"
           ];
         };
-        "deepseek-v4-flash" = {
-          hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-IQ2_M";
+        # Everyday model on the Strix Halo iGPU. Native ctx 262144; 524288
+        # total gives two full 262144 parallel slots (no rope scaling).
+        "qwen3.6-35b-a3b" = {
+          hf = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q8_K_XL";
           ctxSize = 524288;
-          batchSize = 2048;
-          ubatchSize = 1024;
+          parallel = 2;
           loadMode = "mlock";
-          kQuant = "bf16";
-          vQuant = "bf16";
-          parallel = 1;
-          flashAttn = "on";
           device = "ROCm2";
-          specType = "draft-dspark";
-          specDraftNMax = 3;
-          specDraftDevice = "ROCm2";
-          specDraftHf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:Q8_0";
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-          ];
-        };
-        "qwen3.8-27b" = {
-          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q6_K_XL";
-          ctxSize = 179200;
-          loadMode = "mlock";
-          device = "ROCm0";
+          flashAttn = "on";
+          kQuant = "q8_0";
+          vQuant = "q8_0";
+          reasoningPreserve = true;
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/main/mmproj-BF16.gguf";
+            hash = "sha256-NW36oxETdqT3Fl4y6HSXEzeNFwCzfPUuDFDZ8jMiM00=";
+          };
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
             "--top-k 20"
             "--min-p 0"
+          ];
+        };
+        "qwen3.8-27b" = {
+          hf = "unsloth/Qwen3.8-27B-GGUF:Q6_K";
+          ctxSize = 262144;
+          loadMode = "mlock";
+          device = "ROCm0";
+          reasoningPreserve = true;
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 20"
+            "--min-p 0"
+            "--no-mmproj"
           ];
         };
 
@@ -94,6 +99,7 @@ in
           ctxSize = 131072;
           loadMode = "mlock";
           device = "ROCm0";
+          reasoningPreserve = true;
           specType = "draft-mtp";
           specDraftNMax = 2;
           extraFlags = [
@@ -107,6 +113,7 @@ in
           hf = "llmfan46/Qwen3.6-27B-uncensored-heretic-v2-Native-MTP-Preserved-GGUF:Q6_K";
           ctxSize = 131072;
           device = "ROCm0";
+          reasoningPreserve = true;
           specType = "draft-mtp";
           specDraftNMax = 2;
           extraFlags = [

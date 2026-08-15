@@ -100,6 +100,88 @@ in
 
     settings = {
       model = "litellm/qwen3.8-27b-coding";
+      # No-think profile of qwen3.8 (same model file on son-of-anton ROCm0,
+      # so titles/summaries stay fast without a llama-swap reload).
+      small_model = "litellm/qwen3.8-27b-instruct";
+      default_agent = "build";
+
+      agent = {
+        build = {
+          variant = "low";
+          description = "Coding agent; the default. Fast interactive model (qwen3.8).";
+          prompt = ''
+            You are a coding agent in a terminal. Work tasks through end to end:
+            inspect the code, edit files, run commands, verify. Prefer acting
+            over asking. Keep prose brief; the rules in AGENTS.md carry the
+            style details.
+          '';
+        };
+        plan = {
+          model = "litellm/qwen3.6-35b-a3b";
+          variant = "high";
+          description = "Plans and designs before acting. Deep thinking model (qwen3.6-35b-a3b).";
+          permission = {
+            edit = "deny";
+          };
+          prompt = ''
+            You are a planning agent. Read whatever code you need — your context
+            is huge, use it. Then ship a plan that is a handoff contract for an
+            executor who has only this plan and the task: exact file paths,
+            symbols, what changes in each file, the order, and how to verify.
+            Do not dump exploration or full file contents into the plan; keep it
+            distilled. Do not edit anything.
+          '';
+        };
+        execute = {
+          model = "litellm/qwen3.8-27b-coding";
+          variant = "low";
+          description = "Executes a plan or task with the fast model (qwen3.8).";
+          prompt = ''
+            You are the executor. You get a task and, usually, a plan from the
+            planning agent. Follow the plan exactly: read the files it names,
+            edit, run, verify. Do not re-explore the repo — the plan already
+            did. Keep your context small: read targeted ranges, not whole
+            files. If a plan step is missing, make the smallest sensible
+            choice and say so. Report what you changed and how you verified.
+          '';
+        };
+        explore = {
+          model = "litellm/qwen3.8-27b-instruct";
+          description = "Finds and reads code. Fast no-think qwen; returns file:line evidence.";
+          permission = {
+            edit = "deny";
+          };
+          prompt = ''
+            You are a search agent. Answer with evidence: file:line references
+            gathered with grep/glob/read. Return findings as a short list plus
+            a one-line summary. Never edit; run commands only when needed to
+            locate things.
+          '';
+        };
+        general = {
+          model = "litellm/qwen3.6-35b-a3b";
+          variant = "high";
+          description = "Runs self-contained multi-step tasks and returns a final report (qwen3.6-35b-a3b).";
+          prompt = ''
+            You are a worker subagent. You get one self-contained task; finish
+            it with your tools and return a single final report. Do not ask the
+            caller to do anything you can do yourself.
+          '';
+        };
+        # Full-precision deepseek is solo in llama-swap: loading it evicts
+        # every other model. Rare and deliberate.
+        reviewer = {
+          model = "litellm/deepseek-v4-flash-full";
+          variant = "max";
+          description = "Reviews diffs and code for problems, fixes what it finds. Full-precision deepseek; rare, heavy.";
+          prompt = ''
+            You are a code reviewer. Read the change and its surroundings.
+            Report problems by severity, each with file:line: correctness,
+            edge cases, AGENTS.md violations, dead code, missing tests. Be
+            specific and cold. Fix what you find, then verify.
+          '';
+        };
+      };
       provider = {
         # Public gateway via the bastion: works off-LAN. /v1 paths bypass
         # anubis (litellm's master key is the auth) — see reverse-proxy.
@@ -111,6 +193,9 @@ in
             apiKey = "{env:LITELLM_MASTER_KEY}";
           };
           models = {
+            "qwen3.8-27b-instruct" = {
+              name = "Qwen3.8 27B Instruct";
+            };
             "qwen3.8-27b-coding" = {
               name = "Qwen3.8 27B Coding";
               variants = {
@@ -128,30 +213,11 @@ in
                 };
               };
             };
-            "qwen3.6-27b-coding" = {
-              name = "Qwen3.6 27B Coding";
-            };
             "qwen3.6-27b-heretic-coding" = {
               name = "Qwen3.6 27B Heretic";
             };
-            "gemma-4-31b" = {
-              name = "Gemma 4 31B";
-            };
-            "deepseek-v4-flash" = {
-              name = "Deepseek V4 Flash";
-              variants = {
-                max = {
-                  reasoning_effort = "max";
-                };
-                high = {
-                  reasoning_effort = "high";
-                };
-                none = {
-                  chat_template_kwargs = {
-                    enable_thinking = false;
-                  };
-                };
-              };
+            "qwen3.6-35b-a3b" = {
+              name = "Qwen3.6 35B A3B";
             };
             "deepseek-v4-flash-full" = {
               name = "Deepseek V4 Flash (full precision)";

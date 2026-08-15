@@ -18,17 +18,17 @@ in
         "gemma-4-31b" = "http://10.0.0.5:8080/v1";
         "qwen3.6-27b-heretic" = "http://10.0.0.5:8080/v1";
         "gemma-4-31b-heretic" = "http://10.0.0.5:8080/v1";
-        "deepseek-v4-flash" = "http://10.0.0.5:8080/v1";
+        "qwen3.6-35b-a3b" = "http://10.0.0.5:8080/v1";
         "supra-router" = "http://127.0.0.1:8080/v1";
         "supra-title" = "http://127.0.0.1:8080/v1";
       };
       openFirewall = true;
 
-      defaultModel = "deepseek-v4-flash";
+      defaultModel = "qwen3.6-35b-a3b";
       simpleModel = "qwen3.6-27b";
-      plannerModel = "deepseek-v4-flash";
+      plannerModel = "qwen3.6-35b-a3b";
       executorModel = "qwen3.6-27b";
-      reviewerModel = "deepseek-v4-flash";
+      reviewerModel = "qwen3.6-35b-a3b";
       researcherModel = "qwen3.6-27b";
       routerModel = "supra-router";
       titleModel = "supra-title";
