@@ -122,6 +122,7 @@ let
       ++ lib.optionals (m.chatTemplateFile != null) [ "--chat-template-file ${m.chatTemplateFile}" ]
       ++ lib.optionals m.noWarmup [ "--no-warmup" ]
       ++ lib.optionals m.noRepack [ "--no-repack" ]
+      ++ lib.optionals m.reasoningPreserve [ "--reasoning-preserve" ]
       ++ [
         "--cache-type-k ${m.kQuant}"
         "--cache-type-v ${m.vQuant}"

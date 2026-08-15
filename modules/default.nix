@@ -294,6 +294,16 @@ with lib;
                   Some models produce garbled output with repacking enabled.
                 '';
               };
+              reasoningPreserve = mkOption {
+                type = types.bool;
+                default = false;
+                description = ''
+                  Whether to emit --reasoning-preserve (keep reasoning traces
+                  across turns, not just the last assistant message). Requires
+                  a chat template with the supports_preserve_reasoning
+                  capability; no-op otherwise.
+                '';
+              };
               hfFile = mkOption {
                 type = types.nullOr types.str;
                 default = null;
