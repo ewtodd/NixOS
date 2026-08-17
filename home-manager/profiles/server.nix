@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
+    ../packages/btop
     ../packages/fastfetch
     ../packages/nixvim
   ];
@@ -22,21 +23,6 @@
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
-  };
-
-  programs.btop = {
-    enable = true;
-    settings = {
-      color_theme = "TTY";
-      vim_keys = true;
-      proc_tree = true;
-      proc_per_core = false;
-      proc_mem_bytes = false;
-      show_swap = false;
-      io_mode = true;
-      update_ms = 1000;
-      base_10_sizes = true;
-    };
   };
 
   programs.git = {

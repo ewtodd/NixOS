@@ -9,6 +9,16 @@ let
   hasAMD = if osConfig != null then (osConfig.systemOptions.graphics.amd.enable or false) else false;
   hasNvidia =
     if osConfig != null then (osConfig.systemOptions.graphics.nvidia.enable or false) else false;
+  deviceType =
+    if osConfig.systemOptions.deviceType.server.enable then
+      "server"
+    else
+      (
+        if osConfig.systemOptions.deviceType.desktop.enable then
+          "desktop"
+        else
+          (if osConfig.systemOptions.deviceType.laptop.enable then "laptop" else null)
+      );
 in
 {
   programs.btop = {
@@ -32,7 +42,18 @@ in
       io_mode = true;
       update_ms = 1000;
       base_10_sizes = true;
-      shown_boxes = "cpu mem proc";
+      shown_boxes =
+        if (deviceType != null) then
+          (
+            if deviceType == "laptop" then
+              "cpu mem proc"
+            else if deviceType == "desktop" then
+              "cpu gpu0"
+            else
+              "mem net"
+          )
+        else
+          "";
     };
   };
 
