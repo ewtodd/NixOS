@@ -100,6 +100,14 @@
         mode = "0400";
       };
     })
+    # The e-desktop daemons need the same env (Open WebUI bridge key).
+    (lib.mkIf config.systemOptions.services.temple-daemon.enable {
+      temple-server-env = {
+        file = ../../secrets/temple-server-env.age;
+        owner = "root";
+        mode = "0400";
+      };
+    })
     (lib.mkIf config.systemOptions.owner.e.enable {
       # Read by the opencode wrapper script (runs as e-work / e-play),
       # which sources this file to provide $LITELLM_MASTER_KEY.

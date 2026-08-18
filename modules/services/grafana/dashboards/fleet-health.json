@@ -3,13 +3,29 @@
   "title": "Fleet health",
   "tags": ["nixos", "node"],
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "editable": true,
   "time": { "from": "now-6h", "to": "now" },
   "timezone": "browser",
   "refresh": "30s",
   "timepicker": { "refresh_intervals": ["30s", "1m", "5m", "15m", "1h"] },
-  "templating": { "list": [] },
+  "templating": {
+    "list": [
+      {
+        "name": "instance",
+        "label": "Host",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(up{job=\"node\"}, instance)",
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "refresh": 2,
+        "sort": 1,
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
   "annotations": { "list": [] },
   "panels": [
     {
@@ -110,7 +126,7 @@
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "100 - avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m]) * 100)",
+          "expr": "100 - avg by (instance) (rate(node_cpu_seconds_total{instance=~\"$instance\",mode=\"idle\"}[5m]) * 100)",
           "legendFormat": "{{instance}}"
         }
       ],
@@ -138,7 +154,7 @@
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "100 * (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)",
+          "expr": "100 * (1 - node_memory_MemAvailable_bytes{instance=~\"$instance\"} / node_memory_MemTotal_bytes{instance=~\"$instance\"})",
           "legendFormat": "{{instance}}"
         }
       ],
@@ -166,7 +182,7 @@
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "100 - node_filesystem_avail_bytes{mountpoint=\"/\",fstype!=\"tmpfs\"} / node_filesystem_size_bytes{mountpoint=\"/\",fstype!=\"tmpfs\"} * 100",
+          "expr": "100 - node_filesystem_avail_bytes{instance=~\"$instance\",mountpoint=\"/\",fstype!=\"tmpfs\"} / node_filesystem_size_bytes{instance=~\"$instance\",mountpoint=\"/\",fstype!=\"tmpfs\"} * 100",
           "legendFormat": "{{instance}}"
         }
       ],
@@ -194,13 +210,13 @@
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum by (instance) (rate(node_network_receive_bytes_total{device!=\"lo\"}[5m]))",
+          "expr": "sum by (instance) (rate(node_network_receive_bytes_total{instance=~\"$instance\",device!=\"lo\"}[5m]))",
           "legendFormat": "{{instance}} rx"
         },
         {
           "refId": "B",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "-sum by (instance) (rate(node_network_transmit_bytes_total{device!=\"lo\"}[5m]))",
+          "expr": "-sum by (instance) (rate(node_network_transmit_bytes_total{instance=~\"$instance\",device!=\"lo\"}[5m]))",
           "legendFormat": "{{instance}} tx"
         }
       ],
@@ -219,7 +235,7 @@
     {
       "id": 9,
       "type": "row",
-      "title": "LLM — son-of-anton",
+      "title": "WireView — e-desktop",
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
       "panels": []
@@ -227,15 +243,15 @@
     {
       "id": 10,
       "type": "stat",
-      "title": "Active sessions",
-      "gridPos": { "h": 5, "w": 8, "x": 0, "y": 27 },
+      "title": "Total power",
+      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 27 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum(litellm_active_sessions)",
-          "legendFormat": "sessions",
+          "expr": "wireview_total_power_w",
+          "legendFormat": "W",
           "instant": true
         }
       ],
@@ -247,14 +263,14 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "watt",
           "color": { "mode": "thresholds" },
           "thresholds": {
             "mode": "absolute",
             "steps": [
               { "color": "green", "value": null },
-              { "color": "yellow", "value": 3 },
-              { "color": "orange", "value": 6 }
+              { "color": "yellow", "value": 500 },
+              { "color": "red", "value": 580 }
             ]
           }
         },
@@ -264,15 +280,15 @@
     {
       "id": 11,
       "type": "stat",
-      "title": "Active requests",
-      "gridPos": { "h": 5, "w": 8, "x": 8, "y": 27 },
+      "title": "Total current",
+      "gridPos": { "h": 6, "w": 4, "x": 4, "y": 27 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum(litellm_active_requests)",
-          "legendFormat": "requests",
+          "expr": "wireview_total_current_a",
+          "legendFormat": "A",
           "instant": true
         }
       ],
@@ -284,8 +300,16 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
-          "color": { "mode": "fixed", "fixedColor": "blue" }
+          "unit": "ampere",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 42 },
+              { "color": "red", "value": 48 }
+            ]
+          }
         },
         "overrides": []
       }
@@ -293,15 +317,15 @@
     {
       "id": 12,
       "type": "stat",
-      "title": "Total tokens (all time)",
-      "gridPos": { "h": 5, "w": 8, "x": 16, "y": 27 },
+      "title": "Max temperature",
+      "gridPos": { "h": 6, "w": 4, "x": 8, "y": 27 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum(litellm_tokens_total)",
-          "legendFormat": "tokens",
+          "expr": "max(wireview_temperature_c)",
+          "legendFormat": "°C",
           "instant": true
         }
       ],
@@ -313,144 +337,260 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
-          "color": { "mode": "fixed", "fixedColor": "purple" }
+          "unit": "celsius",
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 80 },
+              { "color": "red", "value": 90 }
+            ]
+          }
         },
         "overrides": []
       }
     },
     {
       "id": 13,
-      "type": "timeseries",
-      "title": "Tokens over time (1h increase)",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
+      "type": "stat",
+      "title": "Faults",
+      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 27 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "increase(litellm_tokens_total{type=\"prompt\"}[1h])",
-          "legendFormat": "prompt"
-        },
-        {
-          "refId": "B",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "increase(litellm_tokens_total{type=\"completion\"}[1h])",
-          "legendFormat": "completion"
+          "expr": "sum(wireview_fault_status)",
+          "legendFormat": "faults",
+          "instant": true
         }
       ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "textMode": "value",
+        "graphMode": "none"
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1 }
+          "color": { "mode": "thresholds" },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "OK", "index": 0 }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
         },
         "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
-        "tooltip": { "mode": "multi", "sort": "desc" }
       }
     },
     {
       "id": 14,
-      "type": "timeseries",
-      "title": "Requests over time (1h increase, by status)",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+      "type": "stat",
+      "title": "Fan duty",
+      "gridPos": { "h": 6, "w": 4, "x": 16, "y": 27 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum by (status) (increase(litellm_requests_total[1h]))",
-          "legendFormat": "{{status}}"
+          "expr": "wireview_fan_duty",
+          "legendFormat": "%",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "textMode": "value",
+        "graphMode": "area"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 70 },
+              { "color": "red", "value": 90 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 15,
+      "type": "stat",
+      "title": "PSU capability",
+      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 27 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "wireview_psu_capability_w",
+          "legendFormat": "W",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "none",
+        "textMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "color": { "mode": "fixed", "fixedColor": "text" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Power",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 33 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "wireview_total_power_w",
+          "legendFormat": "total"
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "wireview_psu_capability_w",
+          "legendFormat": "PSU cap",
+          "hide": false
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "watt",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "lineStyle": { "fill": "dash" }
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Current per pin",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 33 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "wireview_current_a",
+          "legendFormat": "pin {{pin}}"
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "wireview_total_current_a",
+          "legendFormat": "total"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ampere",
           "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1 }
         },
         "overrides": []
       },
       "options": {
-        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
         "tooltip": { "mode": "multi", "sort": "desc" }
       }
     },
     {
-      "id": 15,
-      "type": "table",
-      "title": "Tokens by model",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 40 },
+      "id": 18,
+      "type": "timeseries",
+      "title": "Voltage per pin",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 42 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum by (model) (litellm_tokens_total)",
-          "format": "table",
-          "instant": true
+          "expr": "wireview_voltage_v",
+          "legendFormat": "pin {{pin}}"
         }
       ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": { "Time": true },
-            "renameByName": { "model": "Model", "Value": "Tokens" }
-          }
-        }
-      ],
-      "options": { "showTypeIcons": true, "cellHeight": "sm" },
       "fieldConfig": {
-        "defaults": { "custom": { "align": "auto", "filterable": true } },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Tokens" },
-            "properties": [
-              { "id": "custom.cellOptions", "value": { "type": "gauge", "mode": "gradient" } },
-              { "id": "color", "value": { "mode": "continuous-GrYlRd" } }
-            ]
-          }
-        ]
+        "defaults": {
+          "unit": "volt",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1 }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
       }
     },
     {
-      "id": 16,
-      "type": "table",
-      "title": "Requests by model",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 40 },
+      "id": 19,
+      "type": "timeseries",
+      "title": "Temperature",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 42 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "sum by (model) (litellm_requests_total)",
-          "format": "table",
-          "instant": true
+          "expr": "wireview_temperature_c",
+          "legendFormat": "{{sensor}}"
         }
       ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": { "Time": true },
-            "renameByName": { "model": "Model", "Value": "Requests" }
-          }
-        }
-      ],
-      "options": { "showTypeIcons": true, "cellHeight": "sm" },
       "fieldConfig": {
-        "defaults": { "custom": { "align": "auto", "filterable": true } },
-        "overrides": [
-          {
-            "matcher": { "id": "byName", "options": "Requests" },
-            "properties": [
-              { "id": "custom.cellOptions", "value": { "type": "gauge", "mode": "gradient" } },
-              { "id": "color", "value": { "mode": "continuous-GrYlRd" } }
+        "defaults": {
+          "unit": "celsius",
+          "custom": { "drawStyle": "line", "fillOpacity": 10, "lineWidth": 1 },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 80 },
+              { "color": "red", "value": 85 }
             ]
           }
-        ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
       }
     }
   ]

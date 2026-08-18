@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -29,6 +34,12 @@ in
     services.suspend-then-hibernate.enable = true;
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
+    # WireView Pro II GPU power monitor: Prometheus exporter + safety
+    # watchdog (power off on sustained fault / over-temperature). The
+    # WireView fault output is also wired to the mains switch as the
+    # primary cut; this is software redundancy.
+    services.wireview-monitor.enable = true;
+    services.wireview-safety.enable = true;
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
@@ -38,6 +49,41 @@ in
         "e-play"
         "e-work"
       ];
+      # Everything model-related lives on son-of-anton.
+      modelEndpoints = {
+        "qwen3.6-27b" = "http://10.0.0.5:8080/v1";
+        "gemma-4-31b" = "http://10.0.0.5:8080/v1";
+        "qwen3.6-27b-heretic" = "http://10.0.0.5:8080/v1";
+        "gemma-4-31b-heretic" = "http://10.0.0.5:8080/v1";
+        "qwen3.6-35b-a3b" = "http://10.0.0.5:8080/v1";
+        "qwen3.8-27b" = "http://10.0.0.5:8080/v1";
+      };
+      defaultModel = "qwen3.6-35b-a3b";
+      simpleModel = "qwen3.6-27b";
+      plannerModel = "qwen3.6-35b-a3b";
+      executorModel = "qwen3.6-27b";
+      reviewerModel = "qwen3.6-35b-a3b";
+      researcherModel = "qwen3.6-27b";
+      # SearXNG lives on oracle; the searxng module binds it to the LAN.
+      searxngUrl = "http://10.0.0.6:8888/search";
+      # Memory bridge to the Open WebUI on oracle.
+      openWebUI = {
+        enable = true;
+        baseUrl = "http://10.0.0.6:8081";
+        apiKeyEnv = "OPENWEBUI_API_KEY";
+      };
+      environmentFile = config.age.secrets.temple-server-env.path;
+      # The shared Signal number is owned by the e-play daemon; signal-cli
+      # runs on mu.
+      signal = {
+        enable = true;
+        owner = "e-play";
+        socketAddr = "10.0.0.2:7583";
+      };
+      authorizedKeys = {
+        e-play = personalKeys;
+        e-work = personalKeys;
+      };
     };
   };
 

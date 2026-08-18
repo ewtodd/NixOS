@@ -45,13 +45,6 @@ in
           header_up X-Real-IP {remote_host}
         }
       '';
-
-      virtualHosts."temple.ethanwtodd.com".extraConfig = ''
-        handle /web* {
-          reverse_proxy http://10.0.0.6:8080
-        }
-        reverse_proxy http://10.0.0.6:42123
-      '';
     };
 
     services.anubis.instances = {

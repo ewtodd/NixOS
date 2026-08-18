@@ -19,9 +19,15 @@ in
     services.ssh.enable = true;
     services.deploy.enable = true;
     services.nodeExporter.enable = true;
-    services.templeServer.enable = true;
     services.litellmProxy.enable = true;
-    services.searxng.enable = true;
+    services.searxng = {
+      enable = true;
+      # The temple daemons on e-desktop search through this instance, so
+      # it must be reachable on the LAN (loopback-only was fine when the
+      # only consumer was on this host).
+      listenAddress = "0.0.0.0";
+      openFirewall = true;
+    };
     services.openWebUI.enable = true;
     services.llamaSwap = {
       enable = true;

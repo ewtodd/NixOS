@@ -3,6 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    # Local checkout of the wireview-linux repo (GUI client + headless
+    # wireview-monitor Prometheus exporter). Path input: local dev copy,
+    # nixpkgs pinned to the fleet's so everything builds on one channel.
+    wireview-linux = {
+      url = "path:/home/e-play/Software/wireview-linux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -4,12 +4,27 @@
   pkgs,
   ...
 }:
+let
+  cfg = config.systemOptions.services.searxng;
+in
 {
-  config = lib.mkIf config.systemOptions.services.searxng.enable {
-    # SearXNG metasearch, bound 127.0.0.1:8888 (loopback only -- NOT public).
-    # Its sole consumer is the LiteLLM container on the same host, which shares
-    # the host network namespace and hits 127.0.0.1:8888 directly for the
-    # web_search MCP tool. No Caddy/Anubis route fronts it.
+  options.systemOptions.services.searxng = {
+    enable = lib.mkEnableOption "SearXNG metasearch";
+    listenAddress = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+      description = "Bind address. Loopback by default; set 0.0.0.0 + openFirewall when other hosts (e.g. temple daemons) search through it.";
+    };
+    openFirewall = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    # SearXNG metasearch, loopback by default. Sole consumers were local;
+    # temple daemons on e-desktop now search through it too, so oracle
+    # binds it to the LAN.
     services.searx = {
       enable = true;
       package = pkgs.searxng;
@@ -19,17 +34,19 @@
       settings = {
         server = {
           port = 8888;
-          bind_address = "127.0.0.1";
+          bind_address = cfg.listenAddress;
           secret_key = "$SEARX_SECRET_KEY";
           base_url = "http://127.0.0.1:8888/";
         };
-        # The MCP server queries the JSON API (?format=json); it is disabled by
-        # default and must be enabled explicitly.
+        # The JSON API (?format=json) is disabled by default and must be
+        # enabled explicitly.
         search.formats = [
           "html"
           "json"
         ];
       };
     };
+
+    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ 8888 ];
   };
 }

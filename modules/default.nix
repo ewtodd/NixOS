@@ -515,11 +515,10 @@ with lib;
           recall (e.g. bge-m3).
         '';
       };
-      services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the searxng MCP)";
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
       services.templeServer.enable = mkEnableOption "temple renco agent server";
       services.temple-daemon = {
-        enable = mkEnableOption "temple headless daemons — execute tool requests locally";
+        enable = mkEnableOption "temple full-agent daemons — one per user on the workstation";
         userDaemons = mkOption {
           type = types.listOf types.str;
           default = [ ];
@@ -527,7 +526,111 @@ with lib;
             "e-play"
             "e-work"
           ];
-          description = "System usernames to run daemons for.";
+          description = "System usernames to run a full agent for.";
+        };
+        stateDir = mkOption {
+          type = types.str;
+          default = "/var/lib/temple";
+        };
+        modelEndpoints = mkOption {
+          type = types.attrsOf types.str;
+          default = { };
+          description = "Model name to llama-swap endpoint mappings (with /v1).";
+        };
+        defaultModel = mkOption {
+          type = types.str;
+          default = "qwen3.6-35b-a3b";
+        };
+        simpleModel = mkOption {
+          type = types.str;
+          default = "qwen3.6-27b";
+        };
+        plannerModel = mkOption {
+          type = types.str;
+          default = "qwen3.6-35b-a3b";
+        };
+        executorModel = mkOption {
+          type = types.str;
+          default = "qwen3.6-27b";
+        };
+        reviewerModel = mkOption {
+          type = types.str;
+          default = "qwen3.6-35b-a3b";
+        };
+        researcherModel = mkOption {
+          type = types.str;
+          default = "qwen3.6-27b";
+        };
+        routerModel = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        titleModel = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+        };
+        searxngUrl = mkOption {
+          type = types.str;
+          default = "http://127.0.0.1:8888/search";
+          description = "SearXNG JSON API endpoint reachable from this host.";
+        };
+        allowedDirs = mkOption {
+          type = types.listOf types.str;
+          default = [
+            "/etc/nixos"
+            "/home"
+          ];
+        };
+        defaultPermission = mkOption {
+          type = types.str;
+          default = "default";
+        };
+        authTokenFile = mkOption {
+          type = types.nullOr types.path;
+          default = null;
+          description = "Auth token file for Signal /verify (Signal-owning daemon).";
+        };
+        environmentFile = mkOption {
+          type = types.nullOr types.path;
+          default = null;
+          description = "EnvironmentFile with secrets (e.g. OPENWEBUI_API_KEY).";
+        };
+        signal = {
+          enable = mkEnableOption "Signal presence (one daemon owns the shared number)";
+          owner = mkOption {
+            type = types.str;
+            default = "";
+            description = "Username whose daemon owns the shared Signal number.";
+          };
+          socketAddr = mkOption {
+            type = types.str;
+            default = "127.0.0.1:7583";
+            description = "signal-cli JSON-RPC socket.";
+          };
+          defaultRecipient = mkOption {
+            type = types.str;
+            default = "";
+          };
+          allowedSenders = mkOption {
+            type = types.listOf types.str;
+            default = [ ];
+          };
+        };
+        openWebUI = {
+          enable = mkEnableOption "Open WebUI memory bridge";
+          baseUrl = mkOption {
+            type = types.str;
+            default = "http://127.0.0.1:8081";
+          };
+          apiKeyEnv = mkOption {
+            type = types.str;
+            default = "OPENWEBUI_API_KEY";
+          };
+        };
+        authorizedKeys = mkOption {
+          type = types.attrsOf (types.listOf types.str);
+          default = { };
+          description = "TUI client public keys per daemon user.";
         };
       };
 

@@ -218,6 +218,14 @@ in
             };
             "qwen3.6-35b-a3b" = {
               name = "Qwen3.6 35B A3B";
+              attachment = true;
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
             };
             "deepseek-v4-flash-full" = {
               name = "Deepseek V4 Flash (full precision)";
