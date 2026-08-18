@@ -37,6 +37,10 @@
               targets = [ "10.0.0.5:9100" ];
               labels.instance = "son-of-anton";
             }
+            {
+              targets = [ "10.0.0.6:9100" ];
+              labels.instance = "oracle";
+            }
           ];
         }
         {
@@ -65,6 +69,20 @@
             {
               targets = [ "127.0.0.1:2112" ];
               labels.instance = "nu";
+            }
+          ];
+        }
+      ]
+      # WireView Pro II GPU power monitor; the exporter runs on e-desktop
+      # and the target is configured per host (see
+      # systemOptions.services.prometheus.wireviewTarget).
+      ++ lib.optionals (config.systemOptions.services.prometheus.wireviewTarget != null) [
+        {
+          job_name = "wireview";
+          static_configs = [
+            {
+              targets = [ config.systemOptions.services.prometheus.wireviewTarget ];
+              labels.instance = "e-desktop";
             }
           ];
         }

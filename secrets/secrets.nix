@@ -10,6 +10,7 @@ let
   server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
   server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNP13u10CY6dMNzWze+Hk+as+Esm35XGR4WGXMccgtH root@son-of-anton";
   server-oracle = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzfIzVGX+XNGWRrLfL78OeYqt8MB5Xii9EwimFAL0WZ root@oracle";
+  server-e-desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPftrHYU/cCgJyXdpIX5FHNpjqfnHRLkytx65JV4uHO root@e-desktop";
   personal = [
     ethan-desktop-ework
     ethan-desktop-eplay
@@ -43,7 +44,10 @@ in
   ];
   "litellm-master-key.age".publicKeys =
     personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
-  "temple-server-env.age".publicKeys = personal ++ [ server-oracle ];
+  "temple-server-env.age".publicKeys = personal ++ [
+    server-oracle
+    server-e-desktop
+  ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
   "proton-mail-bridge.age".publicKeys = personal;
 }

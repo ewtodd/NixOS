@@ -32,6 +32,8 @@ in
     ./temple-server
     ./temple-daemon
     ./wakeable
+    ./wireview-monitor
+    ./wireview-safety
   ];
 
   config = lib.mkMerge [
