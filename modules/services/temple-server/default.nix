@@ -13,6 +13,7 @@ in
   config = lib.mkIf cfg.enable {
     services.temple-server = {
       enable = true;
+      environmentFile = config.age.secrets.temple-server-env.path;
       modelEndpoints = {
         "qwen3.6-27b" = "http://10.0.0.5:8080/v1";
         "gemma-4-31b" = "http://10.0.0.5:8080/v1";
@@ -23,6 +24,15 @@ in
         "supra-title" = "http://127.0.0.1:8080/v1";
       };
       openFirewall = true;
+
+      # Bridge temple memories to the Open WebUI on this host. The API key
+      # (OPENWEBUI_API_KEY, one Open WebUI user) comes from the
+      # temple-server-env agenix secret.
+      openWebUI = {
+        enable = true;
+        baseUrl = "http://127.0.0.1:8081";
+        apiKeyEnv = "OPENWEBUI_API_KEY";
+      };
 
       defaultModel = "qwen3.6-35b-a3b";
       simpleModel = "qwen3.6-27b";
