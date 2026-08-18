@@ -480,9 +480,9 @@ with lib;
                 description = "Explicit file within the -hf repo (--hf-file).";
               };
               gpuLayers = mkOption {
-                type = types.ints.positive;
+                type = types.ints.unsigned;
                 default = 99;
-                description = "--n-gpu-layers for the embedding model.";
+                description = "--n-gpu-layers for the embedding model (0 = CPU-only).";
               };
               pooling = mkOption {
                 type = types.enum [
