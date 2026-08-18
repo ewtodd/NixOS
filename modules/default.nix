@@ -590,6 +590,14 @@ with lib;
           default = null;
           description = "Auth token file for Signal /verify.";
         };
+        sandbox = {
+          enable = mkEnableOption "Landlock confinement for executed commands";
+          extraWritableDirs = mkOption {
+            type = types.listOf types.str;
+            default = [ ];
+            description = "Extra writable directories for sandboxed commands.";
+          };
+        };
         environmentFile = mkOption {
           type = types.nullOr types.path;
           default = null;

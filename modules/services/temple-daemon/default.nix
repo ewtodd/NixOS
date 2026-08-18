@@ -39,6 +39,11 @@ in
       readWritePaths = cfg.readWritePaths;
       gitSafeDirectories = cfg.gitSafeDirectories;
 
+      sandbox = {
+        enable = cfg.sandbox.enable;
+        extraWritableDirs = cfg.sandbox.extraWritableDirs;
+      };
+
       signal = {
         enable = cfg.signal.enable;
         socketAddr = cfg.signal.socketAddr;
