@@ -74,6 +74,9 @@ in
         apiKeyEnv = "OPENWEBUI_API_KEY";
       };
       environmentFile = config.age.secrets.temple-server-env.path;
+      # Token file for Signal /verify registration (written by
+      # temple-server --generate-token, run as the temple user).
+      authTokenFile = "/var/lib/temple/tokens";
       # Shared Signal number; signal-cli runs on mu.
       signal = {
         enable = true;
