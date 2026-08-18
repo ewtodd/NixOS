@@ -84,6 +84,12 @@ in
       supplementaryGroups = [ "nixconfig" ];
       readWritePaths = [ "/etc/nixos" ];
       gitSafeDirectories = [ "/etc/nixos" ];
+      # Landlock: executed commands see a read-only fs except the session
+      # cwd, allowed dirs, HOME, and /tmp + /dev.
+      sandbox = {
+        enable = true;
+        extraWritableDirs = [ "/scratch" ];
+      };
       authorizedKeys = {
         e-play = personalKeys;
         e-work = personalKeys;
