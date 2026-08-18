@@ -52,7 +52,6 @@ in
       serviceUser = "temple";
       # Everything model-related lives on son-of-anton.
       modelEndpoints = {
-        "qwen3.6-27b" = "http://10.0.0.5:8080/v1";
         "gemma-4-31b" = "http://10.0.0.5:8080/v1";
         "qwen3.6-27b-heretic" = "http://10.0.0.5:8080/v1";
         "gemma-4-31b-heretic" = "http://10.0.0.5:8080/v1";
@@ -61,11 +60,12 @@ in
       };
       defaultModel = "qwen3.6-35b-a3b";
       simpleModel = "qwen3.6-27b";
-      plannerModel = "qwen3.6-35b-a3b";
-      executorModel = "qwen3.6-27b";
+      plannerModel = "qwen3.8-27b";
+      executorModel = "qwen3.8-27b";
       reviewerModel = "qwen3.6-35b-a3b";
       researcherModel = "qwen3.6-27b";
-      # SearXNG lives on oracle; the searxng module binds it to the LAN.
+      routerModel = "supra-router";
+      titleModel = "supra-title";
       searxngUrl = "http://10.0.0.6:8888/search";
       # Memory bridge to the Open WebUI on oracle.
       openWebUI = {
