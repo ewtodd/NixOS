@@ -32,15 +32,6 @@ in
       lanExpose = true;
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
-      # Always-resident embedding server (outside the swap matrix) for
-      # Open WebUI RAG + temple memory recall. bge-m3 Q8 ~1.2GB, mean
-      # pooling, tiny ctx — fits alongside any chat model.
-      embeddingModel = {
-        hf = "ggml-org/bge-m3-Q8_0-GGUF:bge-m3-q8_0.gguf";
-        pooling = "mean";
-        ctxSize = 8192;
-        port = 8082;
-      };
       models = {
         # Full-precision DSV4 spanning every device (2x R9700 Pro + iGPU).
         # Solo: requesting it evicts everything else, and vice versa.

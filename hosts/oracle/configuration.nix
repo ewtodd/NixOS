@@ -33,6 +33,18 @@ in
       enable = true;
       lanExpose = false;
       backend = "vulkan";
+      # Always-resident embedding server for Open WebUI RAG + temple memory
+      # recall. bge-m3 Q8 ~1.2GB on CPU (gpuLayers 0): asahi Vulkan is slow
+      # for generation, but embeddings are tiny and latency-tolerant. Must
+      # NOT share son-of-anton's GPUs — deepseek-v4-flash-full is solo and
+      # needs every byte of VRAM.
+      embeddingModel = {
+        hf = "ggml-org/bge-m3-Q8_0-GGUF:bge-m3-q8_0.gguf";
+        pooling = "mean";
+        ctxSize = 8192;
+        gpuLayers = 0;
+        port = 8082;
+      };
       models = {
         "supra-router" = {
           hf = "SupraLabs/Supra-Router-51M-GGUF:Q8_0";
