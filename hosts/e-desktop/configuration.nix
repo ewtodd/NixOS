@@ -45,10 +45,11 @@ in
     owner.e.enable = true;
     services.temple-daemon = {
       enable = true;
-      userDaemons = [
-        "e-play"
-        "e-work"
-      ];
+      # Single shared agent instance under its own service account.
+      # Session isolation: TUI clients authenticate by pubkey and only
+      # ever see sessions owned by their key's file name (e-play vs
+      # e-work, same DB). Signal handles all sessions with owner labels.
+      serviceUser = "temple";
       # Everything model-related lives on son-of-anton.
       modelEndpoints = {
         "qwen3.6-27b" = "http://10.0.0.5:8080/v1";
@@ -73,13 +74,16 @@ in
         apiKeyEnv = "OPENWEBUI_API_KEY";
       };
       environmentFile = config.age.secrets.temple-server-env.path;
-      # The shared Signal number is owned by the e-play daemon; signal-cli
-      # runs on mu.
+      # Shared Signal number; signal-cli runs on mu.
       signal = {
         enable = true;
-        owner = "e-play";
         socketAddr = "10.0.0.2:7583";
       };
+      # The service account joins nixconfig so the flake-update cron can
+      # write /etc/nixos (group-writable).
+      supplementaryGroups = [ "nixconfig" ];
+      readWritePaths = [ "/etc/nixos" ];
+      gitSafeDirectories = [ "/etc/nixos" ];
       authorizedKeys = {
         e-play = personalKeys;
         e-work = personalKeys;

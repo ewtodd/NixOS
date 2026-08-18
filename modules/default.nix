@@ -518,19 +518,19 @@ with lib;
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
       services.templeServer.enable = mkEnableOption "temple renco agent server";
       services.temple-daemon = {
-        enable = mkEnableOption "temple full-agent daemons — one per user on the workstation";
-        userDaemons = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          example = [
-            "e-play"
-            "e-work"
-          ];
-          description = "System usernames to run a full agent for.";
+        enable = mkEnableOption "temple agent daemon — one shared instance on the workstation";
+        serviceUser = mkOption {
+          type = types.str;
+          default = "temple";
+          description = "System account the daemon runs as.";
         };
         stateDir = mkOption {
           type = types.str;
           default = "/var/lib/temple";
+        };
+        listen = mkOption {
+          type = types.str;
+          default = "127.0.0.1:42123";
         };
         modelEndpoints = mkOption {
           type = types.attrsOf types.str;
@@ -588,20 +588,30 @@ with lib;
         authTokenFile = mkOption {
           type = types.nullOr types.path;
           default = null;
-          description = "Auth token file for Signal /verify (Signal-owning daemon).";
+          description = "Auth token file for Signal /verify.";
         };
         environmentFile = mkOption {
           type = types.nullOr types.path;
           default = null;
           description = "EnvironmentFile with secrets (e.g. OPENWEBUI_API_KEY).";
         };
+        supplementaryGroups = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          description = "Extra groups for the service account (e.g. nixconfig).";
+        };
+        readWritePaths = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          description = "Additional writable paths under ProtectSystem=full (e.g. /etc/nixos).";
+        };
+        gitSafeDirectories = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          description = "Git repos the service may open despite not owning them (cron flake updates).";
+        };
         signal = {
-          enable = mkEnableOption "Signal presence (one daemon owns the shared number)";
-          owner = mkOption {
-            type = types.str;
-            default = "";
-            description = "Username whose daemon owns the shared Signal number.";
-          };
+          enable = mkEnableOption "Signal presence (shared number)";
           socketAddr = mkOption {
             type = types.str;
             default = "127.0.0.1:7583";
@@ -630,7 +640,7 @@ with lib;
         authorizedKeys = mkOption {
           type = types.attrsOf (types.listOf types.str);
           default = { };
-          description = "TUI client public keys per daemon user.";
+          description = "TUI client public keys per owner — the key file name is the session owner.";
         };
       };
 
