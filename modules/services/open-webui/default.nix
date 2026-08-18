@@ -65,6 +65,15 @@ in
           # llama-swap on son-of-anton. llama-swap does not validate keys.
           "OPENAI_API_BASE_URL=http://10.0.0.5:8080/v1"
           "OPENAI_API_KEY=llama-swap"
+          # RAG embeddings via the dedicated llama.cpp embedding server on
+          # son-of-anton (bge-m3, modules/services/llama-swap
+          # embeddingModel). RAG_OPENAI_API_BASE_URL must be set explicitly —
+          # it defaults to OPENAI_API_BASE_URL (the chat endpoint), which
+          # would fail every embedding call.
+          "RAG_EMBEDDING_ENGINE=openai"
+          "RAG_EMBEDDING_MODEL=bge-m3"
+          "RAG_OPENAI_API_BASE_URL=http://10.0.0.5:8082/v1"
+          "RAG_OPENAI_API_KEY=llama-swap"
           # Built-in web search backed by the SearXNG instance on this host
           # (modules/services/searxng binds 127.0.0.1:8888). The provider appends
           # q= and format=json itself, so only the bare endpoint is needed.

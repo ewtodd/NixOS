@@ -52,8 +52,68 @@ with lib;
       services.wakeable.enable = mkEnableOption "Wake-on-LAN + initrd-SSH for remote unlock";
       services.nextcloud.enable = mkEnableOption "Nextcloud personal cloud (cloud.ethanwtodd.com)";
       services.prometheus.enable = mkEnableOption "Prometheus metrics server (scrapes node_exporters)";
+      services.prometheus.wireviewTarget = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = "10.0.0.4:9877";
+        description = "host:port of the wireview-monitor exporter to scrape (adds a `wireview` job).";
+      };
       services.nodeExporter.enable = mkEnableOption "Prometheus node_exporter (system metrics on :9100)";
       services.grafana.enable = mkEnableOption "Grafana dashboards (status.ethanwtodd.com)";
+      services.wireview-monitor = {
+        enable = mkEnableOption "WireView Pro II Prometheus exporter (reads the device over /dev/ttyACM*, serves /metrics)";
+        port = mkOption {
+          type = types.ints.positive;
+          default = 9877;
+          description = "TCP port for the Prometheus /metrics endpoint.";
+        };
+        listenAddress = mkOption {
+          type = types.str;
+          default = "0.0.0.0";
+          description = "Address the exporter binds (0.0.0.0 so the fleet Prometheus on nu can scrape it).";
+        };
+      };
+      services.wireview-safety = {
+        enable = mkEnableOption "WireView safety watchdog: power off the machine when the WireView reports a sustained dangerous condition (fault or over-temperature)";
+        metricsUrl = mkOption {
+          type = types.str;
+          default = "http://127.0.0.1:9877/metrics";
+          description = "URL of the wireview-monitor exporter to poll.";
+        };
+        pollIntervalSeconds = mkOption {
+          type = types.ints.positive;
+          default = 5;
+          description = "Seconds between checks of the exporter metrics.";
+        };
+        consecutiveHits = mkOption {
+          type = types.ints.positive;
+          default = 3;
+          description = "How many consecutive checks must show a dangerous condition before acting (debounce).";
+        };
+        tempThresholdC = mkOption {
+          type = types.float;
+          default = 85.0;
+          description = "Power off when any WireView temperature stays at or above this (belt and braces on top of the firmware OTP fault).";
+        };
+        triggerOnFaults = mkOption {
+          type = types.bool;
+          default = true;
+          description = "Act on any WireView fault bit (OTP, OCP, wire OCP, OPP, current imbalance).";
+        };
+        action = mkOption {
+          type = types.enum [
+            "poweroff"
+            "reboot"
+          ];
+          default = "poweroff";
+          description = "What to do when a dangerous condition is sustained.";
+        };
+        dryRun = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Log the trigger without acting (safe for testing the watchdog).";
+        };
+      };
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
 
       services.openWebUI.enable = mkEnableOption "Open WebUI web interface (ai.ethanwtodd.com, behind Anubis on nu)";
@@ -399,6 +459,61 @@ with lib;
             };
           }
         );
+      };
+      services.llamaSwap.embeddingModel = mkOption {
+        type = types.nullOr (
+          types.submodule {
+            options = {
+              path = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "Local GGUF path. Mutually exclusive with `hf`.";
+              };
+              hf = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "Hugging Face repo[:file] for llama.cpp -hf auto-download.";
+              };
+              hfFile = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "Explicit file within the -hf repo (--hf-file).";
+              };
+              gpuLayers = mkOption {
+                type = types.ints.positive;
+                default = 99;
+                description = "--n-gpu-layers for the embedding model.";
+              };
+              pooling = mkOption {
+                type = types.enum [
+                  "none"
+                  "mean"
+                  "cls"
+                  "last"
+                ];
+                default = "mean";
+                description = "llama.cpp --pooling (bge models: mean or cls).";
+              };
+              ctxSize = mkOption {
+                type = types.ints.positive;
+                default = 8192;
+                description = "--ctx-size for embedding batches.";
+              };
+              port = mkOption {
+                type = types.port;
+                default = 8082;
+                description = "Dedicated OpenAI-compatible /v1/embeddings endpoint port.";
+              };
+            };
+          }
+        );
+        default = null;
+        description = ''
+          Run a dedicated always-resident llama.cpp embedding server
+          (llama-server --embedding) outside the swap matrix — embeddings
+          must never be evicted. Serves Open WebUI RAG / temple memory
+          recall (e.g. bge-m3).
+        '';
       };
       services.searxng.enable = mkEnableOption "SearXNG metasearch (localhost; backs the searxng MCP)";
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";

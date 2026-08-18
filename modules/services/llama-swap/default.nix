@@ -87,6 +87,33 @@ let
   useCustomCache = cfg.cacheDir != null;
   cacheDir = cfg.cacheDir;
 
+  embedding = cfg.embeddingModel;
+
+  embeddingCmd =
+    if embedding == null then
+      null
+    else
+      lib.concatStringsSep " " (
+        [ "${llamaCpp}/bin/llama-server" ]
+        ++ (
+          if embedding.path != null then
+            [ "-m ${embedding.path}" ]
+          else
+            [ "-hf ${embedding.hf}" ]
+            ++ lib.optionals (embedding.hfFile != null) [ "--hf-file ${embedding.hfFile}" ]
+        )
+        ++ [
+          "--embedding"
+          "--pooling ${embedding.pooling}"
+          "--ctx-size ${toString embedding.ctxSize}"
+          "--batch-size 2048"
+          "--ubatch-size 512"
+          "--n-gpu-layers ${toString embedding.gpuLayers}"
+          "--host 127.0.0.1 --port ${toString embedding.port}"
+          "--no-webui"
+        ]
+      );
+
   mkCmd =
     m:
     lib.concatStringsSep " " (
@@ -290,6 +317,52 @@ in
     systemd.tmpfiles.rules = lib.mkIf useCustomCache [
       "d ${cfg.cacheDir} 2770 root llama-cache - -"
     ];
+
+    systemd.services.llama-embeddings = lib.mkIf (embeddingCmd != null) {
+      description = "llama.cpp embedding server (always resident)";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+
+      serviceConfig = lib.mkMerge [
+        {
+          Type = "simple";
+          ExecStart = embeddingCmd;
+          Restart = "on-failure";
+          RestartSec = "5s";
+
+          SupplementaryGroups = [
+            "video"
+            "render"
+          ]
+          ++ lib.optionals useCustomCache [ "llama-cache" ];
+
+          LimitMEMLOCK = "infinity";
+        }
+        (
+          if useCustomCache then
+            {
+              ReadWritePaths = [ cfg.cacheDir ];
+              UMask = "0002";
+            }
+          else
+            {
+              CacheDirectory = "llama-embeddings";
+            }
+        )
+        (lib.mkIf (cfg.backend == "cuda") {
+          MemoryDenyWriteExecute = lib.mkForce false;
+        })
+      ];
+
+      environment = lib.mkMerge [
+        { LLAMA_CACHE = lib.mkForce cacheDir; }
+        (lib.mkIf (cfg.backend == "vulkan") {
+          VK_ICD_FILENAMES = vulkanIcd;
+          MESA_SHADER_CACHE_DIR = "${lib.toString cacheDir}/mesa-shader-cache";
+        })
+      ];
+    };
 
     systemd.services.llama-swap = {
       environment = lib.mkMerge [

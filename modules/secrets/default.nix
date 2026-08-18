@@ -92,6 +92,14 @@
         mode = "0400";
       };
     })
+    # Temple server secrets (content: OPENWEBUI_API_KEY=...).
+    (lib.mkIf config.systemOptions.services.templeServer.enable {
+      temple-server-env = {
+        file = ../../secrets/temple-server-env.age;
+        owner = "temple";
+        mode = "0400";
+      };
+    })
     (lib.mkIf config.systemOptions.owner.e.enable {
       # Read by the opencode wrapper script (runs as e-work / e-play),
       # which sources this file to provide $LITELLM_MASTER_KEY.

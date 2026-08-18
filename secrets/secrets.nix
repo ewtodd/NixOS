@@ -43,6 +43,7 @@ in
   ];
   "litellm-master-key.age".publicKeys =
     personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
+  "temple-server-env.age".publicKeys = personal ++ [ server-oracle ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
   "proton-mail-bridge.age".publicKeys = personal;
 }
