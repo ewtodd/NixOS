@@ -15,7 +15,7 @@ in
       enable = true;
       environmentFile = config.age.secrets.temple-server-env.path;
       modelEndpoints = {
-        "qwen3.6-27b" = "http://10.0.0.5:8080/v1";
+        "qwen3.8-27b" = "http://10.0.0.5:8080/v1";
         "gemma-4-31b" = "http://10.0.0.5:8080/v1";
         "qwen3.6-27b-heretic" = "http://10.0.0.5:8080/v1";
         "gemma-4-31b-heretic" = "http://10.0.0.5:8080/v1";
@@ -35,11 +35,11 @@ in
       };
 
       defaultModel = "qwen3.6-35b-a3b";
-      simpleModel = "qwen3.6-27b";
+      simpleModel = "qwen3.8-27b";
       plannerModel = "qwen3.6-35b-a3b";
-      executorModel = "qwen3.6-27b";
+      executorModel = "qwen3.8-27b";
       reviewerModel = "qwen3.6-35b-a3b";
-      researcherModel = "qwen3.6-27b";
+      researcherModel = "qwen3.8-27b";
       routerModel = "supra-router";
       titleModel = "supra-title";
 

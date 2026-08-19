@@ -70,11 +70,11 @@ in
         "qwen3.8-27b" = "http://10.0.0.5:8080/v1";
       };
       defaultModel = "qwen3.6-35b-a3b";
-      simpleModel = "qwen3.6-27b";
+      simpleModel = "qwen3.8-27b";
       plannerModel = "qwen3.8-27b";
       executorModel = "qwen3.8-27b";
       reviewerModel = "qwen3.6-35b-a3b";
-      researcherModel = "qwen3.6-27b";
+      researcherModel = "qwen3.8-27b";
       routerModel = "supra-router";
       titleModel = "supra-title";
       searxngUrl = "http://10.0.0.6:8888/search";

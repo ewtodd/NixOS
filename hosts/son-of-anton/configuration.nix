@@ -33,8 +33,6 @@ in
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
       models = {
-        # Full-precision DSV4 spanning every device (2x R9700 Pro + iGPU).
-        # Solo: requesting it evicts everything else, and vice versa.
         "deepseek-v4-flash-full" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
           ctxSize = 524288;
@@ -56,8 +54,6 @@ in
             "--top-p 0.95"
           ];
         };
-        # Everyday model on the Strix Halo iGPU. Native ctx 262144; 524288
-        # total gives two full 262144 parallel slots (no rope scaling).
         "qwen3.6-35b-a3b" = {
           hf = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q8_K_XL";
           ctxSize = 524288;
@@ -80,28 +76,15 @@ in
           ];
         };
         "qwen3.8-27b" = {
-          hf = "unsloth/Qwen3.8-27B-GGUF:Q6_K";
+          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q5_K_XL";
           ctxSize = 262144;
           loadMode = "mlock";
           device = "ROCm0";
           reasoningPreserve = true;
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-            "--no-mmproj"
-          ];
-        };
-
-        "qwen3.6-27b" = {
-          hf = "unsloth/Qwen3.6-27B-MTP-GGUF:UD-Q5_K_XL";
-          ctxSize = 131072;
-          loadMode = "mlock";
-          device = "ROCm0";
-          reasoningPreserve = true;
-          specType = "draft-mtp";
-          specDraftNMax = 2;
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-y7hBqe4GNrLsFy9buN8uqN/rAekP58YSZYHWYqC05D4=";
+          };
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
