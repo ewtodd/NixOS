@@ -11,6 +11,7 @@
 
     systemd.services."container@litellm".restartTriggers = [
       config.age.secrets.litellm-master-key.file
+      config.age.secrets.litellm-deepseek-key.file
     ];
 
     containers.litellm = {
@@ -18,6 +19,11 @@
 
       bindMounts."/run/agenix/litellm-master-key" = {
         hostPath = "/run/agenix/litellm-master-key";
+        isReadOnly = true;
+      };
+
+      bindMounts."/run/agenix/litellm-deepseek-key" = {
+        hostPath = "/run/agenix/litellm-deepseek-key";
         isReadOnly = true;
       };
 
@@ -177,6 +183,32 @@
                   model_name = "deepseek-v4-flash-full";
                   litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash-full";
                 }
+                # Hosted DeepSeek API (api.deepseek.com) — default params,
+                # key comes from the agenix env file via $DEEPSEEK_API_KEY.
+                # Names are the API's current model IDs (V4 family); they match
+                # the opencode/models.dev catalog names one-to-one.
+                # Costs are per token, off-peak rates from the DeepSeek pricing
+                # page (cache miss for input; cache-hit input billed separately).
+                {
+                  model_name = "deepseek-v4-flash";
+                  litellm_params = {
+                    model = "deepseek/deepseek-v4-flash";
+                    api_key = "os.environ/DEEPSEEK_API_KEY";
+                    input_cost_per_token_float = 0.00000022; # $0.22 / 1M
+                    output_cost_per_token_float = 0.00000066; # $0.66 / 1M
+                    cache_read_input_token_cost_float = 0.000000007; # $0.007 / 1M
+                  };
+                }
+                {
+                  model_name = "deepseek-v4-pro";
+                  litellm_params = {
+                    model = "deepseek/deepseek-v4-pro";
+                    api_key = "os.environ/DEEPSEEK_API_KEY";
+                    input_cost_per_token_float = 0.00000066; # $0.66 / 1M
+                    output_cost_per_token_float = 0.00000198; # $1.98 / 1M
+                    cache_read_input_token_cost_float = 0.000000022; # $0.022 / 1M
+                  };
+                }
               ];
             };
           };
@@ -192,6 +224,11 @@
               "--config /etc/litellm/config.yaml"
             ]
           );
+          # Second EnvironmentFile (appended to the module's list) for the
+          # DeepSeek API key, keeping it out of the nix store config.
+          systemd.services.litellm.serviceConfig.EnvironmentFile = [
+            "/run/agenix/litellm-deepseek-key"
+          ];
 
           system.stateVersion = "26.11";
         };
