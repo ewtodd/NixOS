@@ -44,6 +44,7 @@ in
   ];
   "litellm-master-key.age".publicKeys =
     personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
+  "litellm-deepseek-key.age".publicKeys = personal ++ [ server-oracle ];
   "temple-server-env.age".publicKeys = personal ++ [
     server-oracle
     server-e-desktop

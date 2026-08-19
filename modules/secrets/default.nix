@@ -91,6 +91,11 @@
         file = ../../secrets/litellm-master-key.age;
         mode = "0400";
       };
+      # DeepSeek API key for the hosted models (file content: DEEPSEEK_API_KEY=sk-...).
+      litellm-deepseek-key = {
+        file = ../../secrets/litellm-deepseek-key.age;
+        mode = "0400";
+      };
     })
     # Temple server secrets (content: OPENWEBUI_API_KEY=...).
     (lib.mkIf config.systemOptions.services.templeServer.enable {

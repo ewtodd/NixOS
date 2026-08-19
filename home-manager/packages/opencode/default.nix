@@ -243,6 +243,39 @@ in
                 };
               };
             };
+            # Hosted DeepSeek API models (routed via litellm, key in agenix).
+            "deepseek-v4-flash" = {
+              name = "DeepSeek V4 Flash (API)";
+              variants = {
+                max = {
+                  reasoning_effort = "max";
+                };
+                high = {
+                  reasoning_effort = "high";
+                };
+                none = {
+                  chat_template_kwargs = {
+                    enable_thinking = false;
+                  };
+                };
+              };
+            };
+            "deepseek-v4-pro" = {
+              name = "DeepSeek V4 Pro (API)";
+              variants = {
+                max = {
+                  reasoning_effort = "max";
+                };
+                high = {
+                  reasoning_effort = "high";
+                };
+                none = {
+                  chat_template_kwargs = {
+                    enable_thinking = false;
+                  };
+                };
+              };
+            };
           };
         };
       };
