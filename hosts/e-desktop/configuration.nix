@@ -42,6 +42,7 @@ in
     hardware.xbox.enable = true;
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
+    services.binaryCache.serve = true;
     services.suspend-then-hibernate.enable = true;
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
