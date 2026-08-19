@@ -155,7 +155,7 @@ let
         "--cache-type-v ${m.vQuant}"
       ]
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
-      ++ lib.optional (m.specType != "none") "--spec-type ${m.specType} --spec-draft-ngl all"
+      ++ lib.optional (m.specType != "none") "--spec-type ngram-mod,${m.specType} --spec-draft-ngl all"
       ++ lib.optional (m.specType != "none") "--spec-draft-n-max ${toString m.specDraftNMax}"
       ++ lib.optional (m.specDraftModel != null) "--spec-draft-model ${m.specDraftModel}"
       ++ lib.optional (m.specDraftHf != null) "--spec-draft-hf ${m.specDraftHf}"

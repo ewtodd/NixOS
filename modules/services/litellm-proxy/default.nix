@@ -151,14 +151,6 @@
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
                 }
                 {
-                  model_name = "qwen3.6-27b-coding";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b" sampling.coding;
-                }
-                {
-                  model_name = "qwen3.6-27b-general";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b" sampling.general;
-                }
-                {
                   model_name = "gemma-4-31b";
                   litellm_params = mkLocal sonOfAnton "openai/gemma-4-31b";
                 }
@@ -183,12 +175,6 @@
                   model_name = "deepseek-v4-flash-full";
                   litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash-full";
                 }
-                # Hosted DeepSeek API (api.deepseek.com) — default params,
-                # key comes from the agenix env file via $DEEPSEEK_API_KEY.
-                # Names are the API's current model IDs (V4 family); they match
-                # the opencode/models.dev catalog names one-to-one.
-                # Costs are per token, off-peak rates from the DeepSeek pricing
-                # page (cache miss for input; cache-hit input billed separately).
                 {
                   model_name = "deepseek-v4-flash";
                   litellm_params = {

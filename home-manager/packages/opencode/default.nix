@@ -195,6 +195,13 @@ in
           models = {
             "qwen3.8-27b-instruct" = {
               name = "Qwen3.8 27B Instruct";
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
             };
             "qwen3.8-27b-coding" = {
               name = "Qwen3.8 27B Coding";
@@ -212,6 +219,14 @@ in
                   reasoning_effort = "none";
                 };
               };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+
             };
             "qwen3.6-27b-heretic-coding" = {
               name = "Qwen3.6 27B Heretic";
