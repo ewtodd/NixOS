@@ -89,19 +89,10 @@ in
        ## Explanations
        - For non-trivial changes, explain thoroughly what changed and why. Do not
        over-summarize or truncate the reasoning. Trivial edits can stay terse. 
-
-       ## git
-       - Git conventions: renco-bot is the SOLE author of all commits in the temple repo — always commit there with:
-         git -c user.name=renco-bot -c user.email=307402699+renco-bot@users.noreply.github.com commit -m \"...\"
-         (no Co-authored-by trailer). Where his key exists (/var/lib/temple/renco_bot_github), also push with: 
-         git -c core.sshCommand=\"ssh -i /var/lib/temple/renco_bot_github -o IdentitiesOnly=yes\" push
-         Otherwise, just try to push normally. Only commit and push without being asked to in the temple repo.
     '';
 
     settings = {
       model = "litellm/qwen3.8-27b-coding";
-      # No-think profile of qwen3.8 (same model file on son-of-anton ROCm0,
-      # so titles/summaries stay fast without a llama-swap reload).
       small_model = "litellm/qwen3.8-27b-instruct";
       default_agent = "build";
 
@@ -114,9 +105,8 @@ in
           description = "Coding agent; the default. Fast interactive model (qwen3.8).";
           prompt = ''
             You are a coding agent in a terminal. Work tasks through end to end:
-            inspect the code, edit files, run commands, verify. Prefer acting
-            over asking. Keep prose brief; the rules in AGENTS.md carry the
-            style details.
+            inspect the code, edit files, run commands, verify. Use the questions tool if you need more 
+            information. Keep prose brief; the rules in AGENTS.md carry the style details.
           '';
         };
         plan = {
@@ -171,8 +161,6 @@ in
             caller to do anything you can do yourself.
           '';
         };
-        # Full-precision deepseek is solo in llama-swap: loading it evicts
-        # every other model. Rare and deliberate.
         reviewer = {
           model = "litellm/deepseek-v4-flash-full";
           variant = "max";
@@ -188,7 +176,9 @@ in
           hidden = true;
           description = "Use to accurately summarize uncommitted git changes, and then commit them.";
           prompt = ''
-            You are a summarization agent. Your job is to review all uncommitted git changes in the current repository, write an accurate commit message matching the existing style, and then stage+commit them.
+            You are a summarization agent. Your job is to review all uncommitted git changes in the
+            current repository, write an accurate commit message matching the existing style, and then 
+            stage+commit them. Do not add a co-authorship line unless explicitly asked.
           '';
           model = "litellm/qwen3.8-27b-instruct";
 
@@ -196,8 +186,11 @@ in
       };
       command = {
         commit = {
-          template = "You are a summarization agent. Your job is to review all uncommitted git changes in the current repository, write an accurate commit message matching the existing style, and then stage+commit them.
-";
+          template = ''
+            You are a summarization agent. Your job is to review all uncommitted git changes in the
+            current repository, write an accurate commit message matching the existing style, and then 
+            stage+commit them. Do not add a co-authorship line unless explicitly asked.
+          '';
           description = "Automated git commit.";
           agent = "commit";
         };
