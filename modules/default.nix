@@ -150,6 +150,24 @@ with lib;
           the sandboxed service can write to it).
         '';
       };
+      services.llamaSwap.verboseLogging = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Verbose logging for llama-swap and every llama-server it spawns:
+
+          - llama-server runs with --verbose (per-token timing, full debug
+            output — extremely chatty, so off by default).
+          - llama-swap logs at debug level with RFC3339 timestamps.
+          - llama-server output is routed to llama-swap's stdout
+            (logToStdout = both), so it lands in the systemd journal
+            (journalctl -u llama-swap).
+
+          Logs are always available while llama-swap runs, regardless of this
+          toggle, via its in-memory /logs endpoints (see the llama-swap
+          service description for details).
+        '';
+      };
       services.llamaSwap.models = mkOption {
         default = { };
         description = "Models served via llama-swap; the module builds each llama-server command.";

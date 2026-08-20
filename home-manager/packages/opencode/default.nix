@@ -106,6 +106,9 @@ in
       default_agent = "build";
 
       agent = {
+        compaction = {
+          model = "litellm/qwen3.6-35b-a3b";
+        };
         build = {
           variant = "low";
           description = "Coding agent; the default. Fast interactive model (qwen3.8).";
@@ -181,10 +184,25 @@ in
             specific and cold. Fix what you find, then verify.
           '';
         };
+        commit = {
+          hidden = true;
+          description = "Use to accurately summarize uncommitted git changes, and then commit them.";
+          prompt = ''
+            You are a summarization agent. Your job is to review all uncommitted git changes in the current repository, write an accurate commit message matching the existing style, and then stage+commit them.
+          '';
+          model = "litellm/qwen3.8-27b-instruct";
+
+        };
+      };
+      command = {
+        commit = {
+          template = "You are a summarization agent. Your job is to review all uncommitted git changes in the current repository, write an accurate commit message matching the existing style, and then stage+commit them.
+";
+          description = "Automated git commit.";
+          agent = "commit";
+        };
       };
       provider = {
-        # Public gateway via the bastion: works off-LAN. /v1 paths bypass
-        # anubis (litellm's master key is the auth) — see reverse-proxy.
         litellm = {
           npm = "@ai-sdk/openai-compatible";
           name = "LiteLLM";
