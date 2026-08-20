@@ -112,6 +112,7 @@ let
           "--host 127.0.0.1 --port ${toString embedding.port}"
           "--no-webui"
         ]
+        ++ lib.optionals cfg.verboseLogging [ "--verbose" ]
       );
 
   mkCmd =
@@ -165,6 +166,7 @@ let
         "--host 0.0.0.0 --port \${PORT}"
         "--no-webui"
       ]
+      ++ lib.optionals cfg.verboseLogging [ "--verbose" ]
     );
 
   modelNames = lib.attrNames cfg.models;
@@ -271,6 +273,14 @@ in
       listenAddress = if cfg.lanExpose then "0.0.0.0" else "127.0.0.1";
       openFirewall = cfg.lanExpose;
       settings.healthCheckTimeout = 1200;
+
+      # Verbose mode (systemOptions.services.llamaSwap.verboseLogging): debug
+      # log level, RFC3339 timestamps, and route llama-server output to stdout
+      # so the journal captures it. Logs are otherwise only in llama-swap's
+      # in-memory history (/logs, /logs/stream/...).
+      settings.logLevel = lib.mkIf cfg.verboseLogging "debug";
+      settings.logTimeFormat = lib.mkIf cfg.verboseLogging "rfc3339nano";
+      settings.logToStdout = lib.mkIf cfg.verboseLogging "both";
 
       settings.models = lib.mapAttrs (
         _name: m:

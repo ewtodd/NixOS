@@ -32,6 +32,7 @@ in
       lanExpose = true;
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
+      verboseLogging = true;
       models = {
         "deepseek-v4-flash-full" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
