@@ -3,9 +3,11 @@ let
   inherit (inputs.niri-nix.lib) mkNiriKDL;
   e = osConfig.systemOptions.owner.e.enable;
 
+  # The ultrawide (Sceptre O34) is sometimes probed as DP-5, DP-3, or DP-1.
+  # Match by make/model/serial so the layout applies no matter the connector.
   eOutputs = [
     {
-      _args = [ "DP-5" ];
+      _args = [ "Sceptre Tech Inc Sceptre O34 Unknown" ];
       transform = "normal";
       position._props = {
         x = 0;
@@ -28,57 +30,11 @@ let
       };
     }
     {
-      _args = [ "DP-3" ];
-      transform = "normal";
+      _args = [ "Sceptre Tech Inc Sceptre F22 Unknown" ];
+      transform = "270";
       position._props = {
-        x = 0;
+        x = -1080;
         y = 0;
-      };
-      mode = "3440x1440@180.000000";
-      variable-refresh-rate._props = {
-        on-demand = true;
-      };
-      focus-at-startup = [ ];
-      layout = {
-        default-column-width = {
-          proportion = 0.33333;
-        };
-        preset-column-widths._children = [
-          { proportion = 0.66667; }
-          { proportion = 0.5; }
-          { proportion = 0.33333; }
-        ];
-      };
-    }
-    {
-      _args = [ "DP-1" ];
-      transform = "normal";
-      position._props = {
-        x = 0;
-        y = 0;
-      };
-      mode = "3440x1440@180.000000";
-      variable-refresh-rate._props = {
-        on-demand = true;
-      };
-      focus-at-startup = [ ];
-      layout = {
-        default-column-width = {
-          proportion = 0.33333;
-        };
-        preset-column-widths._children = [
-          { proportion = 0.66667; }
-          { proportion = 0.5; }
-          { proportion = 0.33333; }
-        ];
-      };
-    }
-    {
-      _args = [ "HDMI-A-1" ];
-      transform = "90";
-      position._props = {
-        x = 3440;
-        y = -276;
       };
       mode = "1920x1080@74.973";
       layout = {

@@ -394,10 +394,9 @@ in
         screenPreferences = [
         ]
         ++ lib.optionals (deviceType == "desktop") [
-          {
-            name = "HDMI-A-1";
-            model = "Sceptre F22";
-          }
+          # The ultrawide is sometimes probed as DP-5 / DP-3 / DP-1; match by
+          # model (a string pref matches screen.model in "system" mode).
+          "Sceptre O34"
         ]
         ++ lib.optionals (deviceType == "laptop") [
           {

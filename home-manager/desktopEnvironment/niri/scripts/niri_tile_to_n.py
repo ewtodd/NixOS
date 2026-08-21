@@ -416,6 +416,16 @@ if not is_outputs_ok:
 output_full_info = {out_key: out_dict["logical"] for out_key, out_dict in outputs_resp["Outputs"].items()}
 output_width_lut = {out_key: out_info["width"] for out_key, out_info in output_full_info.items() if out_info is not None}
 
+# If --output was given as a monitor model string (e.g. "Sceptre F22"), resolve
+# it to the current connector name, since niri may probe the same monitor under
+# different connectors across boots (e.g. DP-5 / DP-3 / DP-1).
+if TARGET_OUTPUT is not None:
+    for out_name, out_dict in outputs_resp["Outputs"].items():
+        full_name = " ".join(filter(None, [out_dict.get("make"), out_dict.get("model"), out_dict.get("serial")]))
+        if out_dict.get("model") == TARGET_OUTPUT or full_name == TARGET_OUTPUT:
+            TARGET_OUTPUT = out_name
+            break
+
 # Initialize state tracking
 prev_focus_state = FocusState()
 focus_state = FocusState()
