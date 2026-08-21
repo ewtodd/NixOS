@@ -12,19 +12,11 @@ let
   eDesktopGreeterNiriConfig = mkNiriKDL {
     output = [
       {
-        _args = [ "DP-3" ];
-        transform = "normal";
+        _args = [ "Sceptre Tech Inc Sceptre F22 Unknown" ];
+        transform = "270";
         position._props = {
-          x = 0;
+          x = -1080;
           y = 0;
-        };
-      }
-      {
-        _args = [ "HDMI-A-1" ];
-        transform = "90";
-        position._props = {
-          x = 3440;
-          y = -276;
         };
         mode = "1920x1080@74.973";
       }

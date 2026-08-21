@@ -10,14 +10,14 @@
 with lib;
 let
   inherit (inputs.niri-nix.lib) mkNiriKDL;
-  niri-tile-to-n = pkgs.writers.writePython3Bin "niri-tile-to-n" { doCheck = false; } (
-    builtins.readFile ../scripts/niri_tile_to_n.py
-  );
   deviceType = if (osConfig.systemOptions.deviceType.desktop.enable) then "desktop" else "laptop";
-  primaryMonitor = if deviceType == "desktop" then "DP-3" else "eDP-1";
+  # The ultrawide (Sceptre O34) is sometimes probed as DP-5, DP-3, or DP-1.
+  # Match by make/model/serial so this works no matter the connector name.
+  primaryMonitor =
+    if deviceType == "desktop" then "Sceptre Tech Inc Sceptre O34 Unknown" else "eDP-1";
   secondaryMonitor =
     if deviceType == "desktop" then
-      "HDMI-A-1"
+      "Sceptre Tech Inc Sceptre F22 Unknown"
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
@@ -110,7 +110,6 @@ let
     spawn-sh-at-startup = [
       [ "sleep 2 && ${pkgs.spotify}/bin/spotify" ]
       [ "sleep 5 && ${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
-      [ "${niri-tile-to-n}/bin/niri-tile-to-n -n 3 --output ${secondaryMonitor}" ]
     ];
   };
 
@@ -191,7 +190,6 @@ let
       [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
       [ "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right" ]
       [ "sleep 5 && ${pkgs.kitty}/bin/kitty --class btopkitty btop" ]
-      [ "${niri-tile-to-n}/bin/niri-tile-to-n -n 3 --output ${secondaryMonitor}" ]
     ];
   };
 

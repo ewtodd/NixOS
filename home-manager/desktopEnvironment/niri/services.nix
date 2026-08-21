@@ -7,7 +7,37 @@
 }:
 let
   niri-utilities = inputs.niri-utilities.packages.${pkgs.stdenv.hostPlatform.system}.niri-utilities;
-  primaryMonitor = if osConfig.systemOptions.deviceType.desktop.enable then "DP-3" else "eDP-1";
+  niri-tile-to-n = pkgs.writers.writePython3Bin "niri-tile-to-n" { doCheck = false; } (
+    builtins.readFile ./scripts/niri_tile_to_n.py
+  );
+  # The tiler takes a model string (resolved to the current connector inside the
+  # script) so it keeps working no matter which DP-* connector niri probes.
+  niri-tile-to-n-daemon = pkgs.writeShellScript "niri-tile-to-n-daemon" ''
+    sleep 2
+    exec ${niri-tile-to-n}/bin/niri-tile-to-n -n 3 --output 'Sceptre F22'
+  '';
+  # The centering daemon compares against the IPC connector name, which can
+  # change between boots (DP-5 / DP-3 / DP-1). Resolve the current connector
+  # from the monitor model at runtime instead of hardcoding one name.
+  niri-centering-daemon = pkgs.writeShellScript "niri-centering-daemon" ''
+    niri() { ${osConfig.programs.niri.package}/bin/niri "$@"; }
+    OUTPUT=""
+    i=0
+    while [ -z "$OUTPUT" ] && [ $i -lt 20 ]; do
+      OUTPUT=$(niri msg --json outputs 2>/dev/null \
+        | ${pkgs.jq}/bin/jq -r 'to_entries[] | select(.value.model == "Sceptre O34") | .key' 2>/dev/null \
+        | ${pkgs.coreutils}/bin/head -n1)
+      if [ -z "$OUTPUT" ]; then
+        sleep 0.5
+        i=$((i + 1))
+      fi
+    done
+    if [ -n "$OUTPUT" ]; then
+      exec ${niri-utilities}/bin/niri-utilities centering-daemon --output "$OUTPUT"
+    else
+      exec ${niri-utilities}/bin/niri-utilities centering-daemon
+    fi
+  '';
   lisgd-niri = pkgs.writeShellScript "lisgd-niri" ''
     # Find the touchscreen event device via libinput
     TOUCH_DEV=$(${pkgs.libinput}/bin/libinput list-devices \
@@ -70,7 +100,22 @@ in
             PartOf = [ "graphical-session.target" ];
           };
           Service = {
-            ExecStart = "${niri-utilities}/bin/niri-utilities centering-daemon --output ${primaryMonitor}";
+            ExecStart = "${niri-centering-daemon}";
+            Restart = "on-failure";
+            RestartSec = 3;
+          };
+          Install.WantedBy = [ "graphical-session.target" ];
+        };
+    systemd.user.services.niri-tile-to-n =
+      lib.mkIf (osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.desktop.enable)
+        {
+          Unit = {
+            Description = "Auto-tiler for niri";
+            After = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
+          };
+          Service = {
+            ExecStart = "${niri-tile-to-n-daemon}";
             Restart = "on-failure";
             RestartSec = 3;
           };
