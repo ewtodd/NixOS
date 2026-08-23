@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 {
@@ -132,6 +133,12 @@
             host = "0.0.0.0";
             port = 4000;
             environmentFile = "/run/agenix/litellm-master-key";
+
+            # litellm 1.97 in nixos-unstable fails to start (`Missing
+            # dependency No module named 'expression'`). Pin the package
+            # from the last-known-working nixpkgs rev until upstream
+            # packages expression.
+            package = inputs.nixpkgs-litellm.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
 
             settings = {
               general_settings.master_key = "os.environ/LITELLM_MASTER_KEY";
