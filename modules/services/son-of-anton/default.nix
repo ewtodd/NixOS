@@ -78,6 +78,17 @@ in
               chown -R son-of-anton:son-of-anton ${profileDir}
               chmod 640 ${profileDir}/config.yaml
               chmod 600 ${profileDir}/.env
+
+              # Recursive ACLs: the service user needs real access to this
+              # profile's working directory (existing user files are 0700).
+              # Skip .ssh and .gnupg (secrets) and .cache (noise). The default
+              # ACL keeps newly-created user files accessible too.
+              find ${profile.workingDirectory} -xdev \
+                \( -name .ssh -o -name .gnupg -o -name .cache \) -prune -o -print0 \
+              | xargs -0 -r ${pkgs.acl}/bin/setfacl -m u:son-of-anton:rwx 2>/dev/null || true
+              find ${profile.workingDirectory} -xdev \
+                \( -name .ssh -o -name .gnupg -o -name .cache \) -prune -o -type d -print0 \
+              | xargs -0 -r ${pkgs.acl}/bin/setfacl -d -m u:son-of-anton:rwx 2>/dev/null || true
             ''
           ) (builtins.attrNames cfg.profiles)
         );

@@ -92,6 +92,8 @@ in
         };
         web.backend = "searxng";
         gateway.multiplex_profiles = true;
+        # Read receipts on the shared daemon replace typing indicators.
+        platforms.signal.typing_indicator = false;
       };
     };
   };
