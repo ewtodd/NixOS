@@ -54,6 +54,10 @@ in
           "--data-dir ${cfg.dataDir}/data"
           "daemon"
           "--http=${cfg.socketAddr}"
+          # Mark incoming messages read (delivery receipts are sent by
+          # default; this adds read receipts too) — the bot's message
+          # "presence" signal, in place of typing indicators.
+          "--send-read-receipts"
         ];
         Restart = "always";
         RestartSec = "10s";
