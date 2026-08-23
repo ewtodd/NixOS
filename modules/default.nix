@@ -544,8 +544,20 @@ with lib;
         enable = mkEnableOption "son-of-anton gateway daemon (successor to the temple daemon)";
         workingDirectory = mkOption {
           type = types.str;
-          default = "/scratch/son-of-anton";
-          description = "The agent's terminal.cwd — where the gateway's agent runs commands.";
+          default = "/var/lib/son-of-anton/workspace";
+          description = "The default profile's terminal.cwd — where the gateway's agent runs commands.";
+        };
+        profiles = mkOption {
+          type = types.attrsOf (
+            types.submodule {
+              options.workingDirectory = mkOption {
+                type = types.str;
+                description = "terminal.cwd for this profile's agent.";
+              };
+            }
+          );
+          default = { };
+          description = "Named gateway profiles, each with its own SON_OF_ANTON_HOME + config.yaml. Switchable per chat via /profile <name>.";
         };
         environmentFiles = mkOption {
           type = types.listOf types.str;

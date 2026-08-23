@@ -47,18 +47,23 @@ in
     services.son-of-anton = {
       enable = true;
       # One shared gateway under its own service account. Everything
-      # model-related lives on son-of-anton (llama-swap, 10.0.0.5:8080).
-      # Per-user CLI/TUI profiles: each account keeps its own
+      # model-related lives on son-of-anton (llama-swap) via litellm on
+      # oracle. Per-user CLI/TUI profiles: each account keeps its own
       # ~/.son-of-anton (addToSystemPackages stays false so the system-wide
       # SON_OF_ANTON_HOME export does not force everyone onto the gateway
       # state). The binary itself comes from home-manager.
-      workingDirectory = "/scratch/son-of-anton";
+      # Gateway multiplexing: one Signal sender owns both profiles and
+      # switches per chat with /profile play|work.
       environmentFiles = [ config.age.secrets.son-of-anton-env.path ];
       environment = {
         # signal-cli HTTP daemon on mu (shared bot number).
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
         # SearXNG on oracle.
         SEARXNG_URL = "http://10.0.0.6:8888/search";
+      };
+      profiles = {
+        play.workingDirectory = "/home/e-play";
+        work.workingDirectory = "/home/e-work";
       };
       settings = {
         model = {
@@ -86,6 +91,7 @@ in
           researcher_model = "qwen3.8-27b-instruct";
         };
         web.backend = "searxng";
+        gateway.multiplex_profiles = true;
       };
     };
   };
