@@ -2,6 +2,7 @@
   lib,
   pkgs,
   inputs,
+  osConfig,
   ...
 }:
 let
@@ -139,7 +140,11 @@ in
           '';
         };
         explore = {
-          model = "litellm/qwen3.8-27b-instruct";
+          model =
+            if osConfig.systemOptions.owner.v.enable then
+              "litellm/qwen3.8-27b-instruct"
+            else
+              "deepseek/deepseek-v4-flash";
           description = "Finds and reads code. Fast no-think qwen; returns file:line evidence.";
           permission = {
             edit = "deny";
@@ -152,7 +157,11 @@ in
           '';
         };
         general = {
-          model = "litellm/qwen3.6-35b-a3b";
+          model =
+            if osConfig.systemOptions.owner.v.enable then
+              "litellm/qwen3.6-35b-a3b"
+            else
+              "deepseek/deepseek-v4-flash";
           variant = "high";
           description = "Runs self-contained multi-step tasks and returns a final report (qwen3.6-35b-a3b).";
           prompt = ''
@@ -269,8 +278,8 @@ in
                 };
               };
             };
-            # Hosted DeepSeek API models (routed via litellm, key in agenix).
-            "deepseek-v4-flash" = {
+
+            "deepseek-v4-flash" = lib.mkIf (osConfig.systemOptions.owner.v.enable) {
               name = "DeepSeek V4 Flash (API)";
               variants = {
                 max = {
@@ -286,7 +295,8 @@ in
                 };
               };
             };
-            "deepseek-v4-pro" = {
+
+            "deepseek-v4-pro" = lib.mkIf (osConfig.systemOptions.owner.v.enable) {
               name = "DeepSeek V4 Pro (API)";
               variants = {
                 max = {
