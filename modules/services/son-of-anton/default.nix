@@ -38,11 +38,13 @@ in
       "/etc/nixos"
     ];
 
-    # Each profile works in its user's home. POSIX ACLs grant the service
-    # user rwx there without touching mode bits (sshd StrictModes stays
-    # happy — homes remain 700 to the owner's group).
+    # Each profile works in its user's home. The home dir itself gets a
+    # traverse+list ACL (r-x) so the agent can enter and see top-level
+    # entries; only the dirs listed in the profile's allowedPaths get
+    # recursive rwx + default ACLs. Mode bits stay untouched, so sshd
+    # StrictModes keeps accepting the user's keys.
     systemd.tmpfiles.rules = lib.mapAttrsToList (
-      _: profile: "a+ ${profile.workingDirectory} - - - - u:son-of-anton:rwx"
+      _: profile: "a+ ${profile.workingDirectory} - - - - u:son-of-anton:r-x"
     ) cfg.profiles;
 
     # Provision each profile: its own SON_OF_ANTON_HOME under the gateway
@@ -79,16 +81,24 @@ in
               chmod 640 ${profileDir}/config.yaml
               chmod 600 ${profileDir}/.env
 
-              # Recursive ACLs: the service user needs real access to this
-              # profile's working directory (existing user files are 0700).
-              # Skip .ssh and .gnupg (secrets) and .cache (noise). The default
-              # ACL keeps newly-created user files accessible too.
-              find ${profile.workingDirectory} -xdev \
-                \( -name .ssh -o -name .gnupg -o -name .cache \) -prune -o -print0 \
-              | xargs -0 -r ${pkgs.acl}/bin/setfacl -m u:son-of-anton:rwx 2>/dev/null || true
-              find ${profile.workingDirectory} -xdev \
-                \( -name .ssh -o -name .gnupg -o -name .cache \) -prune -o -type d -print0 \
-              | xargs -0 -r ${pkgs.acl}/bin/setfacl -d -m u:son-of-anton:rwx 2>/dev/null || true
+              # Scoped home access. One-time cleanup: strip any pre-existing
+              # recursive ACLs (the earlier broad grant), then apply r-x on
+              # the home and recursive rwx + default ACLs on allowedPaths
+              # only. The marker skips the O(n) strip on later activations.
+              _acl_marker=/var/lib/son-of-anton/.son-of-anton/.acl-scoped
+              if [ ! -f "$_acl_marker" ]; then
+                find ${profile.workingDirectory} -xdev -print0 \
+                  | xargs -0 -r ${pkgs.acl}/bin/setfacl -b 2>/dev/null || true
+                touch "$_acl_marker"
+                chown son-of-anton:son-of-anton "$_acl_marker"
+              fi
+              ${pkgs.acl}/bin/setfacl -m u:son-of-anton:r-x ${profile.workingDirectory} 2>/dev/null || true
+              ${lib.concatMapStringsSep "\n" (p: ''
+                find ${p} -xdev -print0 \
+                  | xargs -0 -r ${pkgs.acl}/bin/setfacl -m u:son-of-anton:rwx 2>/dev/null || true
+                find ${p} -xdev -type d -print0 \
+                  | xargs -0 -r ${pkgs.acl}/bin/setfacl -d -m u:son-of-anton:rwx 2>/dev/null || true
+              '') profile.allowedPaths}
             ''
           ) (builtins.attrNames cfg.profiles)
         );
