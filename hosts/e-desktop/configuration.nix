@@ -104,6 +104,7 @@ in
       "dialout"
       "video"
       "lp"
+      "son-of-anton"
       "docker"
       "i2c"
     ];
@@ -120,6 +121,7 @@ in
       "dialout"
       "video"
       "lp"
+      "son-of-anton"
       "docker"
       "i2c"
     ];
