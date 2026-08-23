@@ -48,8 +48,11 @@ in
       enable = true;
       # One shared gateway under its own service account. Everything
       # model-related lives on son-of-anton (llama-swap, 10.0.0.5:8080).
+      # Per-user CLI/TUI profiles: each account keeps its own
+      # ~/.son-of-anton (addToSystemPackages stays false so the system-wide
+      # SON_OF_ANTON_HOME export does not force everyone onto the gateway
+      # state). The binary itself comes from home-manager.
       workingDirectory = "/scratch/son-of-anton";
-      addToSystemPackages = true;
       environmentFiles = [ config.age.secrets.son-of-anton-env.path ];
       environment = {
         # signal-cli HTTP daemon on mu (shared bot number).

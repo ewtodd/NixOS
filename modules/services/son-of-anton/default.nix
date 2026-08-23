@@ -27,5 +27,14 @@ in
       extraPackages = cfg.extraPackages;
       addToSystemPackages = cfg.addToSystemPackages;
     };
+
+    # Temple parity: the gateway's agent may read/write across the host
+    # filesystem where the daemon did — /home (both accounts' projects)
+    # and /etc/nixos (flake maintenance), beyond its own state + working
+    # directory. Unix permissions still gate actual access per path.
+    systemd.services.son-of-anton.serviceConfig.ReadWritePaths = [
+      "/home"
+      "/etc/nixos"
+    ];
   };
 }
