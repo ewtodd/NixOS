@@ -60,7 +60,7 @@ in
           ctxSize = 524288;
           parallel = 2;
           loadMode = "mlock";
-          device = "ROCm1";
+          device = "ROCm2";
           flashAttn = "on";
           kQuant = "q8_0";
           vQuant = "q8_0";

@@ -33,7 +33,7 @@ in
     };
   };
 
-  xdg.desktopEntries = lib.mkIf (!pkgs.stdenv.isDarwin) {
+  xdg.desktopEntries = lib.mkIf (!pkgs.stdenv.hostPlatform.isDarwin) {
     nvim = {
       name = "Neovim";
       genericName = "Text Editor";

@@ -2,7 +2,7 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     # litellm 1.97 in nixos-unstable is missing its `expression` dependency
     # (proxy fails to start). Pin the package from the last-known-working rev
     # until upstream nixpkgs packages expression. See modules/services/
