@@ -9,6 +9,7 @@
   config,
   lib,
   inputs,
+  pkgs,
   ...
 }:
 let
@@ -36,5 +37,49 @@ in
       "/home"
       "/etc/nixos"
     ];
+
+    # Each profile works in its user's home. POSIX ACLs grant the service
+    # user rwx there without touching mode bits (sshd StrictModes stays
+    # happy — homes remain 700 to the owner's group).
+    systemd.tmpfiles.rules = lib.mapAttrsToList (
+      name: profile: "a+ ${profile.workingDirectory} - - - - u:son-of-anton:rwx"
+    ) cfg.profiles;
+
+    # Provision each profile: its own SON_OF_ANTON_HOME under the gateway
+    # home's profiles/ dir, a config.yaml (the shared settings + the
+    # profile's terminal.cwd), and its own .env (same secrets as the
+    # default profile).
+    system.activationScripts."son-of-anton-profiles" =
+      lib.stringAfter
+        (
+          [ "son-of-anton-setup" ]
+          ++ lib.optional (config.system.activationScripts ? setupSecrets) "setupSecrets"
+        )
+        (
+          lib.concatMapStringsSep "\n" (
+            name:
+            let
+              profile = cfg.profiles.${name};
+              profileDir = "/var/lib/son-of-anton/.son-of-anton/profiles/${name}";
+              profileConfig = (pkgs.formats.yaml { }).generate "profile-${name}-config.yaml" (
+                lib.recursiveUpdate cfg.settings { terminal.cwd = profile.workingDirectory; }
+              );
+            in
+            ''
+              mkdir -p ${profileDir}
+              cp ${profileConfig} ${profileDir}/config.yaml
+              : > ${profileDir}/.env
+              ${
+                lib.concatMapStringsSep " " (f: "cat ${f}") cfg.environmentFiles
+              } >> ${profileDir}/.env 2>/dev/null || true
+              ${lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (k: v: "echo '${k}=${v}' >> ${profileDir}/.env") cfg.environment
+              )}
+              chown -R son-of-anton:son-of-anton ${profileDir}
+              chmod 640 ${profileDir}/config.yaml
+              chmod 600 ${profileDir}/.env
+            ''
+          ) (builtins.attrNames cfg.profiles)
+        );
   };
 }
