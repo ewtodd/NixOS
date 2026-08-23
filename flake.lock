@@ -888,11 +888,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1787502172,
-        "narHash": "sha256-z84Y4z2xzD/Iyl4cPdH8dPcvVx1PItqiijgEfw5Kj2A=",
+        "lastModified": 1787502982,
+        "narHash": "sha256-cF8RrtllcNTx5jqPs3tG+bKgKCZTZxMy3r8pBZeLLeI=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "e8ce246ded3ec5350a69d4394b77f31038668d20",
+        "rev": "571a88e7d9809dd6f4d78984608af7cbd8d0afcf",
         "type": "github"
       },
       "original": {
