@@ -97,19 +97,12 @@
         mode = "0400";
       };
     })
-    # Temple server secrets (content: OPENWEBUI_API_KEY=...).
-    (lib.mkIf config.systemOptions.services.templeServer.enable {
-      temple-server-env = {
-        file = ../../secrets/temple-server-env.age;
-        owner = "temple";
-        mode = "0400";
-      };
-    })
-    # The e-desktop daemons need the same env (Open WebUI bridge key).
-    (lib.mkIf config.systemOptions.services.temple-daemon.enable {
-      temple-server-env = {
-        file = ../../secrets/temple-server-env.age;
-        owner = "root";
+    # Son of Anton gateway secrets (content: SIGNAL_ACCOUNT=..., plus
+    # optional DISCORD_BOT_TOKEN / SLACK_BOT_TOKEN / SLACK_APP_TOKEN).
+    (lib.mkIf config.systemOptions.services.son-of-anton.enable {
+      son-of-anton-env = {
+        file = ../../secrets/son-of-anton-env.age;
+        owner = "son-of-anton";
         mode = "0400";
       };
     })

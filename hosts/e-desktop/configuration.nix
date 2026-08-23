@@ -11,17 +11,6 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPvp7uwfajl11rFuFbS9TaWGVQ1de5vaaKATv7z76nsi ethan-laptop-ework"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
   ];
-  # Per-account subsets for temple TUI auth: the daemon maps a client's
-  # pubkey to the OWNER of the first key file containing it, so keys must
-  # appear in exactly one file or ownership is ambiguous.
-  eplayKeys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOF2AcBcmt8acbIs5DwedIDZ0C02uKkMti5HJ1Mul/DH ethan-desktop-eplay"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
-  ];
-  eworkKeys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPvp7uwfajl11rFuFbS9TaWGVQ1de5vaaKATv7z76nsi ethan-laptop-ework"
-  ];
 in
 {
   imports = [
@@ -55,59 +44,39 @@ in
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
-    services.temple-daemon = {
+    services.son-of-anton = {
       enable = true;
-      # Single shared agent instance under its own service account.
-      # Session isolation: TUI clients authenticate by pubkey and only
-      # ever see sessions owned by their key's file name (e-play vs
-      # e-work, same DB). Signal handles all sessions with owner labels.
-      serviceUser = "temple";
-      # Everything model-related lives on son-of-anton.
-      modelEndpoints = {
-        "gemma-4-31b" = "http://10.0.0.5:8080/v1";
-        "qwen3.6-27b-heretic" = "http://10.0.0.5:8080/v1";
-        "gemma-4-31b-heretic" = "http://10.0.0.5:8080/v1";
-        "qwen3.6-35b-a3b" = "http://10.0.0.5:8080/v1";
-        "qwen3.8-27b" = "http://10.0.0.5:8080/v1";
+      # One shared gateway under its own service account. Everything
+      # model-related lives on son-of-anton (llama-swap, 10.0.0.5:8080).
+      workingDirectory = "/scratch/son-of-anton";
+      addToSystemPackages = true;
+      environmentFiles = [ config.age.secrets.son-of-anton-env.path ];
+      environment = {
+        # signal-cli HTTP daemon on mu (shared bot number).
+        SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
+        # SearXNG on oracle.
+        SEARXNG_URL = "http://10.0.0.6:8888/search";
       };
-      defaultModel = "qwen3.6-35b-a3b";
-      simpleModel = "qwen3.8-27b";
-      plannerModel = "qwen3.8-27b";
-      executorModel = "qwen3.8-27b";
-      reviewerModel = "qwen3.6-35b-a3b";
-      researcherModel = "qwen3.8-27b";
-      routerModel = "supra-router";
-      titleModel = "supra-title";
-      searxngUrl = "http://10.0.0.6:8888/search";
-      # Memory bridge to the Open WebUI on oracle.
-      openWebUI = {
-        enable = true;
-        baseUrl = "http://10.0.0.6:8081";
-        apiKeyEnv = "OPENWEBUI_API_KEY";
-      };
-      environmentFile = config.age.secrets.temple-server-env.path;
-      # Token file for Signal /verify registration (written by
-      # temple-server --generate-token, run as the temple user).
-      authTokenFile = "/var/lib/temple/tokens";
-      # Shared Signal number; signal-cli runs on mu.
-      signal = {
-        enable = true;
-        socketAddr = "10.0.0.2:7583";
-      };
-      # The service account joins nixconfig so the flake-update cron can
-      # write /etc/nixos (group-writable).
-      supplementaryGroups = [ "nixconfig" ];
-      readWritePaths = [ "/etc/nixos" ];
-      gitSafeDirectories = [ "/etc/nixos" ];
-      # Landlock: executed commands see a read-only fs except the session
-      # cwd, allowed dirs, HOME, and /tmp + /dev.
-      sandbox = {
-        enable = true;
-        extraWritableDirs = [ "/scratch" ];
-      };
-      authorizedKeys = {
-        e-play = personalKeys;
-        e-work = personalKeys;
+      settings = {
+        model = {
+          default = "qwen3.6-35b-a3b";
+          provider = "custom";
+        };
+        custom_providers.custom.base_url = "http://10.0.0.5:8080/v1";
+        physics = {
+          model = "qwen3.6-35b-a3b";
+          base_url = "http://10.0.0.5:8080/v1";
+        };
+        router = {
+          enabled = true;
+          simple_model = "qwen3.8-27b";
+          default_model = "qwen3.6-35b-a3b";
+          planner_model = "qwen3.8-27b";
+          executor_model = "qwen3.8-27b";
+          reviewer_model = "qwen3.6-35b-a3b";
+          researcher_model = "qwen3.8-27b";
+        };
+        web.backend = "searxng";
       };
     };
   };
@@ -138,12 +107,7 @@ in
       "docker"
       "i2c"
     ];
-    openssh.authorizedKeys.keys = personalKeys ++ [
-      # Temple server on oracle — remote tool execution. Connections arrive
-      # via the bastion's wake-and-relay (source = 10.0.0.2) or directly
-      # from oracle (10.0.0.6).
-      ''from="10.0.0.2,10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
-    ];
+    openssh.authorizedKeys.keys = personalKeys;
   };
 
   users.users.e-work = {
@@ -159,9 +123,7 @@ in
       "docker"
       "i2c"
     ];
-    openssh.authorizedKeys.keys = personalKeys ++ [
-      ''from="10.0.0.2,10.0.0.6",no-port-forwarding,no-X11-forwarding,no-agent-forwarding ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILtKDNPgyOKIfHSAsaTZJbI9uQyOxEevf6hK9c1Mn2Of temple@oracle''
-    ];
+    openssh.authorizedKeys.keys = personalKeys;
   };
 
   systemOptions.services.wakeable = {

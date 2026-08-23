@@ -124,7 +124,7 @@ with lib;
         expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
         default) binds 127.0.0.1 only — correct for hosts where the sole consumer
         is local nvim FIM. Enable it on hosts another machine must reach (e.g.
-        son-of-anton, served to temple-server on son-of-anton)'';
+        son-of-anton, serving the e-desktop gateway)'';
       services.llamaSwap.port = mkOption {
         type = types.ints.positive;
         default = 8080;
@@ -207,6 +207,13 @@ with lib;
                   isn't auto-pulled by `-hf` (e.g. Qwen3-VL). Chat models only.
                 '';
               };
+              mmprojDevice = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = ''
+                  Device for multimodal projector.
+                '';
+              };
               device = mkOption {
                 type = types.nullOr types.str;
                 default = null;
@@ -242,7 +249,7 @@ with lib;
                   swap-matrix set and preloaded at startup, so it is never
                   evicted — regardless of what else is running, including
                   solo models. Use only for tiny utility models that must
-                  never go down (e.g. the router model consumed by temple).
+                  never go down.
                   Keep it small: it occupies RAM permanently.
                 '';
               };
@@ -529,148 +536,44 @@ with lib;
         description = ''
           Run a dedicated always-resident llama.cpp embedding server
           (llama-server --embedding) outside the swap matrix — embeddings
-          must never be evicted. Serves Open WebUI RAG / temple memory
-          recall (e.g. bge-m3).
+          must never be evicted. Serves Open WebUI RAG (e.g. bge-m3).
         '';
       };
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
-      services.templeServer.enable = mkEnableOption "temple renco agent server";
-      services.temple-daemon = {
-        enable = mkEnableOption "temple agent daemon — one shared instance on the workstation";
-        serviceUser = mkOption {
+      services.son-of-anton = {
+        enable = mkEnableOption "son-of-anton gateway daemon (successor to the temple daemon)";
+        workingDirectory = mkOption {
           type = types.str;
-          default = "temple";
-          description = "System account the daemon runs as.";
+          default = "/scratch/son-of-anton";
+          description = "The agent's terminal.cwd — where the gateway's agent runs commands.";
         };
-        stateDir = mkOption {
-          type = types.str;
-          default = "/var/lib/temple";
+        environmentFiles = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          description = "Secret files whose contents land in ~/.son-of-anton/.env (agenix paths).";
         };
-        listen = mkOption {
-          type = types.str;
-          default = "127.0.0.1:42123";
-        };
-        modelEndpoints = mkOption {
+        environment = mkOption {
           type = types.attrsOf types.str;
           default = { };
-          description = "Model name to llama-swap endpoint mappings (with /v1).";
+          description = "Non-secret environment variables written to ~/.son-of-anton/.env.";
         };
-        defaultModel = mkOption {
-          type = types.str;
-          default = "qwen3.6-35b-a3b";
-        };
-        simpleModel = mkOption {
-          type = types.str;
-          default = "qwen3.6-27b";
-        };
-        plannerModel = mkOption {
-          type = types.str;
-          default = "qwen3.6-35b-a3b";
-        };
-        executorModel = mkOption {
-          type = types.str;
-          default = "qwen3.6-27b";
-        };
-        reviewerModel = mkOption {
-          type = types.str;
-          default = "qwen3.6-35b-a3b";
-        };
-        researcherModel = mkOption {
-          type = types.str;
-          default = "qwen3.6-27b";
-        };
-        routerModel = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-        };
-        titleModel = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-        };
-        searxngUrl = mkOption {
-          type = types.str;
-          default = "http://127.0.0.1:8888/search";
-          description = "SearXNG JSON API endpoint reachable from this host.";
-        };
-        allowedDirs = mkOption {
-          type = types.listOf types.str;
-          default = [
-            "/etc/nixos"
-            "/home"
-          ];
-        };
-        defaultPermission = mkOption {
-          type = types.str;
-          default = "default";
-        };
-        authTokenFile = mkOption {
-          type = types.nullOr types.path;
-          default = null;
-          description = "Auth token file for Signal /verify.";
-        };
-        sandbox = {
-          enable = mkEnableOption "Landlock confinement for executed commands";
-          extraWritableDirs = mkOption {
-            type = types.listOf types.str;
-            default = [ ];
-            description = "Extra writable directories for sandboxed commands.";
-          };
-        };
-        environmentFile = mkOption {
-          type = types.nullOr types.path;
-          default = null;
-          description = "EnvironmentFile with secrets (e.g. OPENWEBUI_API_KEY).";
-        };
-        supplementaryGroups = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          description = "Extra groups for the service account (e.g. nixconfig).";
-        };
-        readWritePaths = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          description = "Additional writable paths under ProtectSystem=full (e.g. /etc/nixos).";
-        };
-        gitSafeDirectories = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          description = "Git repos the service may open despite not owning them (cron flake updates).";
-        };
-        signal = {
-          enable = mkEnableOption "Signal presence (shared number)";
-          socketAddr = mkOption {
-            type = types.str;
-            default = "127.0.0.1:7583";
-            description = "signal-cli JSON-RPC socket.";
-          };
-          defaultRecipient = mkOption {
-            type = types.str;
-            default = "";
-          };
-          allowedSenders = mkOption {
-            type = types.listOf types.str;
-            default = [ ];
-          };
-        };
-        openWebUI = {
-          enable = mkEnableOption "Open WebUI memory bridge";
-          baseUrl = mkOption {
-            type = types.str;
-            default = "http://127.0.0.1:8081";
-          };
-          apiKeyEnv = mkOption {
-            type = types.str;
-            default = "OPENWEBUI_API_KEY";
-          };
-        };
-        authorizedKeys = mkOption {
-          type = types.attrsOf (types.listOf types.str);
+        settings = mkOption {
+          type = types.attrs;
           default = { };
-          description = "TUI client public keys per owner — the key file name is the session owner.";
+          description = "config.yaml settings (deep-merged with runtime edits).";
+        };
+        extraPackages = mkOption {
+          type = types.listOf types.package;
+          default = [ ];
+          description = "Extra packages for the son-of-anton user profile.";
+        };
+        addToSystemPackages = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Add the CLI to systemPackages and share SON_OF_ANTON_HOME system-wide.";
         };
       };
-
-      services.signal-cli.enable = mkEnableOption "signal-cli JSON-RPC daemon (Signal bot backend for temple)";
+      services.signal-cli.enable = mkEnableOption "signal-cli JSON-RPC daemon in HTTP mode (Signal bot backend for son-of-anton)";
       services.signal-cli.environmentFile = mkOption {
         type = types.nullOr types.path;
         default = null;
@@ -683,7 +586,7 @@ with lib;
       services.signal-cli.socketAddr = mkOption {
         type = types.str;
         default = "127.0.0.1:7583";
-        description = "TCP socket address for the JSON-RPC daemon.";
+        description = "Listen address for the HTTP JSON-RPC daemon.";
       };
       services.signal-cli.dataDir = mkOption {
         type = types.path;
@@ -693,7 +596,7 @@ with lib;
       services.signal-cli.openFirewall = mkOption {
         type = types.bool;
         default = false;
-        description = "Open the JSON-RPC socket port in the firewall (needed if temple-server is on a different host).";
+        description = "Open the JSON-RPC HTTP port in the firewall (needed when the gateway runs on a different host).";
       };
 
       services.deploy.enable = mkEnableOption ''

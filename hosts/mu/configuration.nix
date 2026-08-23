@@ -24,9 +24,9 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 04:30:00";
-    # Signal bot backend for temple (runs on x86_64 — signal-cli's native
-    # lib doesn't support aarch64 where temple-server lives).
-    # Temple on oracle connects to this daemon over the LAN.
+    # Signal bot backend for the son-of-anton gateway on e-desktop (HTTP
+    # JSON-RPC mode — the interface the gateway's Signal adapter speaks).
+    # Runs on x86_64; the gateway reaches it over the LAN.
     services.signal-cli = {
       enable = true;
       environmentFile = config.age.secrets.signal-cli-env.path;

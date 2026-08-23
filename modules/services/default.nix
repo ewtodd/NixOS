@@ -29,8 +29,7 @@ in
     ./scheduled-reboot
     ./searxng
     ./signal-cli
-    ./temple-server
-    ./temple-daemon
+    ./son-of-anton
     ./wakeable
     ./wireview-monitor
     ./wireview-safety
