@@ -130,6 +130,9 @@ in
         gateway.multiplex_profiles = true;
         # Read receipts on the shared daemon replace typing indicators.
         platforms.signal.typing_indicator = false;
+        # In a profile, subprocess HOME = the profile's working directory,
+        # so `~` means the user's home inside terminal commands.
+        terminal.home_mode = "cwd";
       };
     };
   };
