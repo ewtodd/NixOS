@@ -60,6 +60,8 @@ in
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
         # SearXNG on oracle.
         SEARXNG_URL = "http://10.0.0.6:8888/search";
+        # Native read receipts replace the 👀/✅ reaction set on messages.
+        SIGNAL_REACTIONS = "false";
       };
       profiles = {
         play = {
