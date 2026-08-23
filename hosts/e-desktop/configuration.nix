@@ -62,8 +62,42 @@ in
         SEARXNG_URL = "http://10.0.0.6:8888/search";
       };
       profiles = {
-        play.workingDirectory = "/home/e-play";
-        work.workingDirectory = "/home/e-work";
+        play = {
+          workingDirectory = "/home/e-play";
+          allowedPaths = [
+            "/home/e-play/AppImages"
+            "/home/e-play/Downloads"
+            "/home/e-play/Games"
+            "/home/e-play/go"
+            "/home/e-play/llama.cpp"
+            "/home/e-play/org"
+            "/home/e-play/Pictures"
+            "/home/e-play/ric"
+            "/home/e-play/Software"
+            "/home/e-play/TAKEOUT"
+            "/home/e-play/Writing"
+          ];
+        };
+        work = {
+          workingDirectory = "/home/e-work";
+          allowedPaths = [
+            "/home/e-work/Analysis-Utilities"
+            "/home/e-work/Curriculum-Vitae"
+            "/home/e-work/Dissertation"
+            "/home/e-work/Downloads"
+            "/home/e-work/Geant4"
+            "/home/e-work/Jobs"
+            "/home/e-work/LabData"
+            "/home/e-work/MUSIC"
+            "/home/e-work/Papers"
+            "/home/e-work/ProposalsAndApplications"
+            "/home/e-work/Remix-MUSIC-Sim"
+            "/home/e-work/Software-Miscellaneous"
+            "/home/e-work/Taxes"
+            "/home/e-work/Teaching"
+            "/home/e-work/UM-ANSG"
+          ];
+        };
       };
       settings = {
         model = {

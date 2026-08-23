@@ -552,7 +552,12 @@ with lib;
             types.submodule {
               options.workingDirectory = mkOption {
                 type = types.str;
-                description = "terminal.cwd for this profile's agent.";
+                description = "terminal.cwd for this profile's agent (the user's home).";
+              };
+              options.allowedPaths = mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+                description = "Directories under the working directory the agent may read/write (recursive + default ACLs). Everything else in the home stays private.";
               };
             }
           );
