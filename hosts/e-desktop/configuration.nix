@@ -62,19 +62,25 @@ in
           default = "qwen3.6-35b-a3b";
           provider = "custom";
         };
-        custom_providers.custom.base_url = "http://10.0.0.5:8080/v1";
+        # Route everything through litellm on oracle (10.0.0.6:4000), which
+        # fronts llama-swap on son-of-anton and holds the master key.
+        custom_providers.custom = {
+          base_url = "http://10.0.0.6:4000/v1";
+          key_env = "LITELLM_MASTER_KEY";
+        };
         physics = {
           model = "qwen3.6-35b-a3b";
-          base_url = "http://10.0.0.5:8080/v1";
+          base_url = "http://10.0.0.6:4000/v1";
+          api_key_env = "LITELLM_MASTER_KEY";
         };
         router = {
           enabled = true;
-          simple_model = "qwen3.8-27b";
+          simple_model = "qwen3.8-27b-instruct";
           default_model = "qwen3.6-35b-a3b";
-          planner_model = "qwen3.8-27b";
-          executor_model = "qwen3.8-27b";
+          planner_model = "qwen3.8-27b-coding";
+          executor_model = "qwen3.8-27b-coding";
           reviewer_model = "qwen3.6-35b-a3b";
-          researcher_model = "qwen3.8-27b";
+          researcher_model = "qwen3.8-27b-instruct";
         };
         web.backend = "searxng";
       };
