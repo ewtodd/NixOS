@@ -36,7 +36,7 @@ in
     ./nixvim
     ./opencode
     ./shell
-    ./temple
+    ./son-of-anton
     ./zathura
   ];
 

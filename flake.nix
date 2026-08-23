@@ -85,8 +85,8 @@
       url = "github:tpwrules/nixos-apple-silicon";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    temple = {
-      url = "github:ewtodd/temple";
+    son-of-anton = {
+      url = "github:ewtodd/son-of-anton";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri-utilities = {

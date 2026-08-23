@@ -13,7 +13,7 @@ in
     listenAddress = lib.mkOption {
       type = lib.types.str;
       default = "127.0.0.1";
-      description = "Bind address. Loopback by default; set 0.0.0.0 + openFirewall when other hosts (e.g. temple daemons) search through it.";
+      description = "Bind address. Loopback by default; set 0.0.0.0 + openFirewall when other hosts (e.g. the son-of-anton gateway) search through it.";
     };
     openFirewall = lib.mkOption {
       type = lib.types.bool;
@@ -23,7 +23,7 @@ in
 
   config = lib.mkIf cfg.enable {
     # SearXNG metasearch, loopback by default. Sole consumers were local;
-    # temple daemons on e-desktop now search through it too, so oracle
+    # The son-of-anton gateway on e-desktop searches through it too, so oracle
     # binds it to the LAN.
     services.searx = {
       enable = true;

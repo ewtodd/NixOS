@@ -22,9 +22,9 @@ in
     services.litellmProxy.enable = true;
     services.searxng = {
       enable = true;
-      # The temple daemons on e-desktop search through this instance, so
-      # it must be reachable on the LAN (loopback-only was fine when the
-      # only consumer was on this host).
+      # The son-of-anton gateway on e-desktop searches through this
+      # instance, so it must be reachable on the LAN (loopback-only was
+      # fine when the only consumer was on this host).
       listenAddress = "0.0.0.0";
       openFirewall = true;
     };
@@ -33,8 +33,8 @@ in
       enable = true;
       lanExpose = false;
       backend = "vulkan";
-      # Always-resident embedding server for Open WebUI RAG + temple memory
-      # recall. bge-m3 Q8 ~1.2GB on CPU (gpuLayers 0): asahi Vulkan is slow
+      # Always-resident embedding server for Open WebUI RAG. bge-m3 Q8
+      # ~1.2GB on CPU (gpuLayers 0): asahi Vulkan is slow
       # for generation, but embeddings are tiny and latency-tolerant. Must
       # NOT share son-of-anton's GPUs — deepseek-v4-flash-full is solo and
       # needs every byte of VRAM. hfFile is explicit: the repo's file name

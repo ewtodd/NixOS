@@ -1,5 +1,7 @@
 # signal-cli daemon module.
-# Runs signal-cli in JSON-RPC daemon mode as a systemd service.
+# Runs signal-cli in HTTP JSON-RPC daemon mode as a systemd service —
+# the interface the son-of-anton Signal platform adapter speaks
+# (SSE receive stream + JSON-RPC 2.0 over HTTP).
 #
 # One-time registration (before enabling the service):
 #   1. Get a phone number for the bot (VoIP or spare SIM)
@@ -51,7 +53,7 @@ in
           "-u \${SIGNAL_PHONE}"
           "--data-dir ${cfg.dataDir}/data"
           "daemon"
-          "--tcp=${cfg.socketAddr}"
+          "--http=${cfg.socketAddr}"
         ];
         Restart = "always";
         RestartSec = "10s";
