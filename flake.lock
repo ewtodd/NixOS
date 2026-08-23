@@ -871,11 +871,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1787447742,
-        "narHash": "sha256-jg58Asvi06CO/GN4k9e/rcb/KNpTiof+8Jr1Os4lFiY=",
+        "lastModified": 1787455318,
+        "narHash": "sha256-f49RZ0Y/ARezRrhhCumcdq/ggYYr5oT8q4s1h59G4wI=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "c822f5c144baa8c2cfeb5ab5067d94eae891f745",
+        "rev": "aa8bf7e3d30f12b01ae53ca5e1e0b63894002c97",
         "type": "github"
       },
       "original": {
