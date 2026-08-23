@@ -2,10 +2,12 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
-    # Local checkout of the wireview-linux repo (GUI client + headless
-    # wireview-monitor Prometheus exporter). Path input: local dev copy,
-    # nixpkgs pinned to the fleet's so everything builds on one channel.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # litellm 1.97 in nixos-unstable is missing its `expression` dependency
+    # (proxy fails to start). Pin the package from the last-known-working rev
+    # until upstream nixpkgs packages expression. See modules/services/
+    # litellm-proxy/default.nix for the overlay.
+    nixpkgs-litellm.url = "github:NixOS/nixpkgs/ced43465ad23b2fdea055be721e79895cbf96c28";
     wireview-linux = {
       url = "path:/home/e-play/Software/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
