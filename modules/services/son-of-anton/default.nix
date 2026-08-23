@@ -42,7 +42,7 @@ in
     # user rwx there without touching mode bits (sshd StrictModes stays
     # happy — homes remain 700 to the owner's group).
     systemd.tmpfiles.rules = lib.mapAttrsToList (
-      name: profile: "a+ ${profile.workingDirectory} - - - - u:son-of-anton:rwx"
+      _: profile: "a+ ${profile.workingDirectory} - - - - u:son-of-anton:rwx"
     ) cfg.profiles;
 
     # Provision each profile: its own SON_OF_ANTON_HOME under the gateway
