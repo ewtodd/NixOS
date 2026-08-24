@@ -55,15 +55,34 @@ in
             "--top-p 0.95"
           ];
         };
-        "qwen3.6-35b-a3b" = {
-          hf = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q8_K_XL";
+        "gemma-4-26B-A4B-it" = {
+          hf = "unsloth/gemma-4-26B-A4B-it-GGUF";
           ctxSize = 524288;
           parallel = 2;
           loadMode = "mlock";
           device = "ROCm2";
           flashAttn = "on";
-          kQuant = "q8_0";
-          vQuant = "q8_0";
+          kQuant = "f16";
+          vQuant = "f16";
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-QYpthyMGfNcSI1+su8XLpsj7vUE/wSktKqzloCfVpC8==";
+          };
+          extraFlags = [
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 64"
+          ];
+        };
+        "qwen3.6-35b-a3b" = {
+          hf = "unsloth/Qwen3.6-35B-A3B-GGUF:Q8_0";
+          ctxSize = 524288;
+          parallel = 2;
+          loadMode = "mlock";
+          device = "ROCm2";
+          flashAttn = "on";
+          kQuant = "f16";
+          vQuant = "f16";
           reasoningPreserve = true;
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/main/mmproj-F16.gguf";
@@ -77,11 +96,18 @@ in
           ];
         };
         "qwen3.8-27b" = {
-          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q5_K_XL";
+          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q8_K_XL";
           ctxSize = 262144;
           loadMode = "mlock";
-          device = "ROCm0";
+          device = "ROCm0,ROCm1";
+          splitMode = "tensor";
           reasoningPreserve = true;
+          specType = "draft-mtp";
+          specDraftNMax = 4;
+          batchSize = 4096;
+          ubatchSize = 4096;
+          kQuant = "f16";
+          vQuant = "f16";
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/mmproj-F16.gguf";
             hash = "sha256-y7hBqe4GNrLsFy9buN8uqN/rAekP58YSZYHWYqC05D4=";
