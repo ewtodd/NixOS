@@ -278,6 +278,7 @@ with lib;
                   types.enum [
                     "layer"
                     "row"
+                    "tensor"
                   ]
                 );
                 default = null;
