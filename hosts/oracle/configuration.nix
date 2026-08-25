@@ -52,10 +52,13 @@ in
       };
       models = {
         # Session-title generation for the e-desktop gateway (via litellm).
+        # Greedy sampling: a 50M model at llama.cpp's default temperature
+        # loops ("Response Response Response ...").
         "supra-title" = {
           hf = "SupraLabs/supra-title-50M-pre-gguf:Q8_0";
           alwaysResident = true;
           ctxSize = 4096;
+          extraFlags = [ "--temp 0" ];
         };
       };
     };
