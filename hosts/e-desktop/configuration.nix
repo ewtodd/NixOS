@@ -46,14 +46,17 @@ in
     owner.e.enable = true;
     services.son-of-anton = {
       enable = true;
+      # Interactive accounts: home-manager imports the repo's HM module,
+      # deep-merging `settings` into each user's ~/.son-of-anton/config.yaml,
+      # filling .env from the users-group litellm secret, and exporting a
+      # per-user SON_OF_ANTON_HOME — so the CLI/TUI work with no manual setup.
+      # addToSystemPackages stays false so the system-wide export does not
+      # force everyone onto the gateway state.
+      interactive.enable = true;
       # One shared gateway under its own service account. Everything
       # model-related lives on son-of-anton (llama-swap) via litellm on
-      # oracle. Per-user CLI/TUI profiles: each account keeps its own
-      # ~/.son-of-anton (addToSystemPackages stays false so the system-wide
-      # SON_OF_ANTON_HOME export does not force everyone onto the gateway
-      # state). The binary itself comes from home-manager.
-      # Gateway multiplexing: one Signal sender owns both profiles and
-      # switches per chat with /profile play|work.
+      # oracle. Gateway multiplexing: one Signal sender owns both profiles
+      # and switches per chat with /profile play|work.
       environmentFiles = [ config.age.secrets.son-of-anton-env.path ];
       environment = {
         # signal-cli HTTP daemon on mu (shared bot number).
@@ -103,7 +106,7 @@ in
       };
       settings = {
         model = {
-          default = "qwen3.6-35b-a3b";
+          default = "gemma-4-26B-A4B-it";
           provider = "custom";
         };
         # Route everything through litellm on oracle (10.0.0.6:4000), which
@@ -111,6 +114,19 @@ in
         custom_providers.custom = {
           base_url = "http://10.0.0.6:4000/v1";
           key_env = "LITELLM_MASTER_KEY";
+          # Mirror litellm's model_list (the oracle-side module) so the
+          # model pickers show the full catalog without a live /v1/models
+          # probe. deepseek-v4-flash/-pro route through litellm to the
+          # direct DeepSeek API.
+          models = [
+            "qwen3.8-27b-coding"
+            "qwen3.8-27b-instruct"
+            "gemma-4-26B-A4B-it"
+            "qwen3.6-35b-a3b"
+            "deepseek-v4-flash-full"
+            "deepseek-v4-flash"
+            "deepseek-v4-pro"
+          ];
         };
         physics = {
           model = "qwen3.6-35b-a3b";
@@ -120,7 +136,7 @@ in
         router = {
           enabled = true;
           simple_model = "qwen3.8-27b-instruct";
-          default_model = "qwen3.6-35b-a3b";
+          default_model = "gemma-4-26B-A4B-it";
           planner_model = "qwen3.8-27b-coding";
           executor_model = "qwen3.8-27b-coding";
           reviewer_model = "qwen3.6-35b-a3b";
@@ -128,11 +144,25 @@ in
         };
         web.backend = "searxng";
         gateway.multiplex_profiles = true;
+        # Session titles come from the tiny always-resident supra-title model
+        # on oracle, reached through litellm — never the main model.
+        auxiliary.title_generation = {
+          provider = "custom";
+          model = "supra-title";
+          base_url = "http://10.0.0.6:4000/v1";
+          key_env = "LITELLM_MASTER_KEY";
+        };
         # Read receipts on the shared daemon replace typing indicators.
         platforms.signal.typing_indicator = false;
         # In a profile, subprocess HOME = the profile's working directory,
         # so `~` means the user's home inside terminal commands.
         terminal.home_mode = "cwd";
+      };
+      # Interactive accounts default to the coding model; the gateway above
+      # defaults to gemma.
+      interactive.settings = {
+        model.default = "qwen3.8-27b-coding";
+        router.default_model = "qwen3.8-27b-coding";
       };
     };
   };

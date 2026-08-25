@@ -590,6 +590,14 @@ with lib;
           default = false;
           description = "Add the CLI to systemPackages and share SON_OF_ANTON_HOME system-wide.";
         };
+        interactive = {
+          enable = mkEnableOption "per-user interactive CLI state (home-manager merges settings into each account's ~/.son-of-anton/config.yaml + .env and exports a per-user SON_OF_ANTON_HOME, so the CLI works without `son-of-anton setup`)";
+          settings = mkOption {
+            type = types.attrs;
+            default = { };
+            description = "config.yaml overrides deep-merged over `settings` for interactive accounts (e.g. a per-surface default model).";
+          };
+        };
       };
       services.signal-cli.enable = mkEnableOption "signal-cli JSON-RPC daemon in HTTP mode (Signal bot backend for son-of-anton)";
       services.signal-cli.environmentFile = mkOption {

@@ -86,10 +86,12 @@
     })
     # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
     (lib.mkIf config.systemOptions.services.litellmProxy.enable {
-      # Read by the litellm container (bind-mounted as root).
+      # Read by the litellm container (bind-mounted as root) and by the
+      # open-webui service (its wrapper exports OPENAI_API_KEYS from it).
       litellm-master-key = {
         file = ../../secrets/litellm-master-key.age;
-        mode = "0400";
+        group = "open-webui";
+        mode = "0440";
       };
       # DeepSeek API key for the hosted models (file content: DEEPSEEK_API_KEY=sk-...).
       litellm-deepseek-key = {

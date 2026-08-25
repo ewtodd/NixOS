@@ -31,7 +31,10 @@ in
     services.openWebUI.enable = true;
     services.llamaSwap = {
       enable = true;
-      lanExpose = false;
+      # litellm (in its container on this host) routes the gateway's
+      # session-title task to supra-title, so the swap API must be
+      # reachable on the LAN — same trust model as son-of-anton's 8080.
+      lanExpose = true;
       backend = "vulkan";
       # Always-resident embedding server for Open WebUI RAG. bge-m3 Q8
       # ~1.2GB on CPU (gpuLayers 0): asahi Vulkan is slow
@@ -48,12 +51,7 @@ in
         port = 8082;
       };
       models = {
-        "supra-router" = {
-          hf = "SupraLabs/Supra-Router-51M-GGUF:Q8_0";
-          alwaysResident = true;
-          parallel = 1;
-          ctxSize = 4096;
-        };
+        # Session-title generation for the e-desktop gateway (via litellm).
         "supra-title" = {
           hf = "SupraLabs/supra-title-50M-pre-gguf:Q8_0";
           alwaysResident = true;
