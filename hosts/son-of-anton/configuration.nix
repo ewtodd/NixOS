@@ -67,12 +67,7 @@ in
             url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/main/mmproj-F32.gguf";
             hash = "sha256-7DFkCh9o/XiD4+9+8a/cmNi0KGf/SeoWZJoABEe88WM=";
           };
-          specDraftModel = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/main/MTP/mtp-gemma-4-26B-A4B-it-F16.gguf";
-            hash = "sha256-Nr8vZxDPBv8aXQJsykm6iL00UdhYikhMpaecXjCqRfI==";
-          };
-          specType = "draft-mtp";
-          specDraftNMax = 4;
+          mmprojDevice = "ROCm2";
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
