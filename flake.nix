@@ -9,7 +9,7 @@
     # litellm-proxy/default.nix for the overlay.
     nixpkgs-litellm.url = "github:NixOS/nixpkgs/ced43465ad23b2fdea055be721e79895cbf96c28";
     wireview-linux = {
-      url = "path:/home/e-play/Software/wireview-linux";
+      url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {

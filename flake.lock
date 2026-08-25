@@ -193,11 +193,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787538355,
-        "narHash": "sha256-h7RlDfstSdD4dg9qcSEZQE0YnOY+cIv+1AAX6r9lRaQ=",
+        "lastModified": 1787618763,
+        "narHash": "sha256-JFmbQx92QuB+4Po4hqmFUgwvopzFM8y/kXhdhYv1N+U=",
         "owner": "AvengeMedia",
         "repo": "dms-plugin-registry",
-        "rev": "5db9d64e8253864914f232a58230a6d79580f7ec",
+        "rev": "d5f2fbe3365a433b2b7b639ed22b6041d24837ed",
         "type": "github"
       },
       "original": {
@@ -481,11 +481,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787540599,
-        "narHash": "sha256-MHwk52ty3NsLhq9a1IbIfBJZlCUJIdiUYFo52JLK9hY=",
+        "lastModified": 1787661347,
+        "narHash": "sha256-THmnBAdAIV+jT348f3r/vyoeb6ilhcVLwVXkBU7Pai8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "03f4cd46bc1dd4f3a96da778d2ce9f7ce39dd450",
+        "rev": "52c3a5881c821ad7367bbde075e52b76cdb378ab",
         "type": "github"
       },
       "original": {
@@ -542,11 +542,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787567971,
-        "narHash": "sha256-pP4HFMGrkNnqGV/6cAjefVX3A8zZsvX2yO8Fu1w7Fpk=",
+        "lastModified": 1787675831,
+        "narHash": "sha256-fWE2B4CZdUI0EUJq7lA0omZqmM8msGLVEJTgzUM495Q=",
         "owner": "ggml-org",
         "repo": "llama.cpp",
-        "rev": "7584430716ee229751771ed0d6bbcb780d105eeb",
+        "rev": "0a5ac49bce4c42893368585edf3ffb41a38f0108",
         "type": "github"
       },
       "original": {
@@ -564,11 +564,11 @@
         "xwayland-satellite-unstable": []
       },
       "locked": {
-        "lastModified": 1787425425,
-        "narHash": "sha256-KzTiQ4vCnBEGK/Z+M8GgygRchah+PvmOfcQNNrBXfik=",
+        "lastModified": 1787616140,
+        "narHash": "sha256-z20tMEUTFuFGTWZyklqpQ4IjrFZWRfiJEhXP8CSL/Ss=",
         "ref": "refs/heads/main",
-        "rev": "ca504406e24da7fc2e2d1140d5b619d45a57b718",
-        "revCount": 172,
+        "rev": "86f5f56ca993bcb2edfc810229fd41dc4c2ee428",
+        "revCount": 173,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
@@ -626,11 +626,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1787535981,
-        "narHash": "sha256-XomjiVXFmz/k9S9kxH4bjVGVkNSqhg3du1emVP0GNFo=",
+        "lastModified": 1787622081,
+        "narHash": "sha256-N79fmlnKWnOxkXw0o8dyiB14DTNOoBHmGy+VpUbJ6Zw=",
         "owner": "Infinidoge",
         "repo": "nix-minecraft",
-        "rev": "9d708c4cccd94e0ce8fbf8f726471d727e48f756",
+        "rev": "25b4dfcd9a7c1215d1647529326250a9cf871fa7",
         "type": "github"
       },
       "original": {
@@ -725,11 +725,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1787505430,
-        "narHash": "sha256-Q0EAhFsvsJP9vAm+2q6zEwTWK+fm6Xbe4kOr1UKW6yc=",
+        "lastModified": 1787642242,
+        "narHash": "sha256-o7cd8Z4pejj8clfwmJGJiRp8PJ496VV0QASk1XLoKLU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "941ede61f9ab033fbf284f859af3b7f92562b85f",
+        "rev": "c31f86faf4b060a186e94ee258278de30c69b90b",
         "type": "github"
       },
       "original": {
@@ -748,11 +748,11 @@
         "systems": "systems_7"
       },
       "locked": {
-        "lastModified": 1787536748,
-        "narHash": "sha256-Q3E7Cs+tsgthLNpirXL984TNVIs6p56+Ww+EclZNFJs=",
+        "lastModified": 1787665745,
+        "narHash": "sha256-JzAp6bfS6o6nsUfjAh5dpZW0ezuNZnW8XqcYOLaggSM=",
         "owner": "nix-community",
         "repo": "nixvim",
-        "rev": "d1bd6882c028cc876df5e2d834248e48a2d8208c",
+        "rev": "6936df86ee44236ee55725b3b2e2a7213e1c29df",
         "type": "github"
       },
       "original": {
@@ -888,11 +888,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1787598498,
-        "narHash": "sha256-671IP51JhtBxpGYR8Tc4pTPSQsNMGhqmUQnLn52C4Ik=",
+        "lastModified": 1787676012,
+        "narHash": "sha256-vyENfWQW4g/w5whL24m0X7DqZaPuKH3ULqj+ZDGdG5g=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "76b925916a0b8dac38d74ab95326f43428df42b5",
+        "rev": "114a8483dbbb1a04cf026d1dc18a165043adbde4",
         "type": "github"
       },
       "original": {
@@ -1103,14 +1103,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1787509342,
-        "narHash": "sha256-3BPPMyLtbpAg2r3k7FUrLwJsuuGxwkwJ1h/GW49QB/Q=",
-        "path": "/home/e-play/Software/wireview-linux",
-        "type": "path"
+        "lastModified": 1787675255,
+        "narHash": "sha256-XEuP1BiY1a3/vpJ8L5tzMt2oT9aHAk4g823tANSkBtw=",
+        "owner": "ewtodd",
+        "repo": "wireview-linux",
+        "rev": "c258aea591eb0f5619e44d4188f51ad098936345",
+        "type": "github"
       },
       "original": {
-        "path": "/home/e-play/Software/wireview-linux",
-        "type": "path"
+        "owner": "ewtodd",
+        "repo": "wireview-linux",
+        "type": "github"
       }
     }
   },
