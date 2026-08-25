@@ -157,7 +157,7 @@ let
       ]
       ++ lib.optional (m.mmproj != null) "--mmproj ${m.mmproj}"
       ++ lib.optional (m.mmprojDevice != null) "--mmproj-device ${m.mmprojDevice}"
-      ++ lib.optional (m.specType != "none") "--spec-type ngram-mod,${m.specType} --spec-draft-ngl all"
+      ++ lib.optional (m.specType != "none") "--spec-type ${m.specType} --spec-draft-ngl all"
       ++ lib.optional (m.specType != "none") "--spec-draft-n-max ${toString m.specDraftNMax}"
       ++ lib.optional (m.specDraftModel != null) "--spec-draft-model ${m.specDraftModel}"
       ++ lib.optional (m.specDraftHf != null) "--spec-draft-hf ${m.specDraftHf}"
@@ -191,44 +191,25 @@ let
 
   residentNames = builtins.filter isResident modelNames;
 
-  # A comma list in `device` spans several devices, so such a model occupies
-  # the whole host: it is solo.
-  spansMultiDevice =
-    name:
-    let
-      d = cfg.models.${name}.device;
-    in
-    d != null && builtins.match ".*,.*" d != null;
-
-  isSolo = name: cfg.models.${name}.solo || spansMultiDevice name;
+  # Only the explicit `solo` flag makes a model solo. Everything else may
+  # co-reside freely: llama-swap has no device awareness beyond each
+  # llama-server's --device flag, and VRAM pressure at load time — not the
+  # matrix — decides when a swap actually happens. Grouping same-device
+  # models as "alternatives" would forbid valid co-residency (e.g. two
+  # models that both fit one GPU, or a tensor split sharing cards with
+  # other models' devices).
+  isSolo = name: cfg.models.${name}.solo;
 
   soloNames = builtins.filter isSolo modelNames;
 
-  # Remaining models are grouped by device: models on the same device are
-  # alternatives (one resident per device at a time); models on distinct
-  # devices may all be resident together.
   groupableNames = builtins.filter (n: !isResident n && !isSolo n) modelNames;
-
-  deviceKey =
-    name:
-    let
-      d = cfg.models.${name}.device;
-    in
-    if d == null then "unpinned:${name}" else d;
-
-  deviceGroups = lib.groupBy deviceKey groupableNames;
-
-  deviceKeys = lib.attrNames deviceGroups;
 
   powerset = xs: lib.foldl' (acc: x: acc ++ map (s: s ++ [ x ]) acc) [ [ ] ] xs;
 
-  groupExpr =
-    key: "(" + lib.concatStringsSep " | " (map (n: nameToVar.${n}) deviceGroups.${key}) + ")";
+  subsetExpr = subset: lib.concatStringsSep " & " (map (n: nameToVar.${n}) subset);
 
-  subsetExpr = subset: lib.concatStringsSep " & " (map groupExpr subset);
-
-  # every non-empty combination of devices may be resident together
-  deviceSetExprs = map subsetExpr (builtins.filter (s: s != [ ]) (powerset deviceKeys));
+  # every non-empty combination of non-solo models may be resident together
+  deviceSetExprs = map subsetExpr (builtins.filter (s: s != [ ]) (powerset groupableNames));
 
   soloSetExprs = map (n: nameToVar.${n}) soloNames;
 

@@ -1,7 +1,9 @@
 # Open WebUI — self-hosted LLM web interface, served at ai.ethanwtodd.com.
 # Public traffic terminates at Caddy on nu, passes Anubis proof-of-work,
-# and lands here on oracle (:8081; 8080 is already llama-swap). Models are
-# OpenAI-compatible llama-swap endpoints on son-of-anton (10.0.0.5).
+# and lands here on oracle (:8081; 8080 is already llama-swap). Models come
+# from litellm on this host (127.0.0.1:4000), the same router opencode and
+# the son-of-anton gateway use: llama-swap on son-of-anton (10.0.0.5),
+# oracle's always-resident supra-title, and the hosted DeepSeek models.
 {
   config,
   lib,
@@ -10,6 +12,20 @@
 }:
 let
   cfg = config.systemOptions.services.openWebUI;
+  # The litellm master key lives in an agenix secret as LITELLM_MASTER_KEY=
+  # KEY=VALUE lines. Sourcing it and re-exporting as OPENAI_API_KEYS (the
+  # env Open WebUI's OpenAI connection seeds from) keeps the key out of the
+  # nix store — same pattern as the opencode wrapper. Requires the secret
+  # to be group-readable by open-webui (see modules/secrets/default.nix).
+  openWebUIWrapped = pkgs.writeShellScriptBin "open-webui" ''
+    if [ -r /run/agenix/litellm-master-key ]; then
+      set -a
+      . /run/agenix/litellm-master-key
+      set +a
+      export OPENAI_API_KEYS="$LITELLM_MASTER_KEY"
+    fi
+    exec ${lib.getExe pkgs.open-webui} "$@"
+  '';
 in
 {
   options.systemOptions.services.openWebUI = {
@@ -49,7 +65,7 @@ in
         WorkingDirectory = cfg.dataDir;
         StateDirectory = "open-webui";
         StateDirectoryMode = "0700";
-        ExecStart = "${pkgs.open-webui}/bin/open-webui serve --host 0.0.0.0 --port ${toString cfg.port}";
+        ExecStart = "${openWebUIWrapped}/bin/open-webui serve --host 0.0.0.0 --port ${toString cfg.port}";
         Restart = "on-failure";
         RestartSec = "5s";
 
@@ -61,15 +77,22 @@ in
           "WEBUI_URL=https://ai.ethanwtodd.com"
           "ENABLE_SIGNUP=false"
           "WEBUI_AUTH_COOKIE_SECURE=true"
-          # Default connection seeded on first run: qwen3.6-35b-a3b via
-          # llama-swap on son-of-anton. llama-swap does not validate keys.
-          "OPENAI_API_BASE_URL=http://10.0.0.5:8080/v1"
-          "OPENAI_API_KEY=llama-swap"
+          # OpenAI connection: litellm on this host, key injected by the
+          # wrapper above. TASK_MODEL_EXTERNAL routes session-title
+          # generation to the tiny always-resident supra-title model (via
+          # litellm → oracle's llama-swap) instead of the chat's own model.
+          # Caveat: connections and the task model are seeded into the DB
+          # from these env vars on first run only (Config.seed_defaults
+          # skips existing keys), so on an already-initialized install the
+          # admin sets them once in Settings > Connections / Settings >
+          # Tasks.
+          "OPENAI_API_BASE_URL=http://127.0.0.1:4000/v1"
+          "TASK_MODEL_EXTERNAL=supra-title"
           # RAG embeddings via the dedicated llama.cpp embedding server on
           # this host (bge-m3 on CPU, modules/services/llama-swap
           # embeddingModel). RAG_OPENAI_API_BASE_URL must be set explicitly —
-          # it defaults to OPENAI_API_BASE_URL (the chat endpoint on
-          # son-of-anton), which would fail every embedding call.
+          # it defaults to OPENAI_API_BASE_URL (the litellm chat endpoint),
+          # which would fail every embedding call.
           "RAG_EMBEDDING_ENGINE=openai"
           "RAG_EMBEDDING_MODEL=bge-m3"
           "RAG_OPENAI_API_BASE_URL=http://127.0.0.1:8082/v1"

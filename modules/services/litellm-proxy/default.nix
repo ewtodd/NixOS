@@ -54,6 +54,9 @@
             "response_format"
           ];
           sonOfAnton = "http://10.0.0.5:8080/v1"; # 2x R9700 32GB + Strix Halo iGPU
+          # oracle's always-resident title model — the e-desktop gateway's
+          # session-title task routes to it through this proxy.
+          oracleSwap = "http://10.0.0.6:8080/v1";
 
           mkLocal = api_base: model: {
             inherit model api_base;
@@ -62,49 +65,11 @@
             timeout = 1800;
           };
           sampling = {
-            general = {
+            gemma = {
               temperature = 1.0;
               top_p = 0.95;
-              top_k = 20;
-              min_p = 0;
-              presence_penalty = 0;
+              top_k = 64;
             };
-            coding = {
-              temperature = 0.6;
-              top_p = 0.95;
-              top_k = 20;
-              min_p = 0;
-              presence_penalty = 0;
-            };
-            deterministic = {
-              temperature = 0.0;
-              top_p = 0.95;
-              top_k = 20;
-              min_p = 0;
-              presence_penalty = 0;
-            };
-            gemmaTool = {
-              temperature = 0.7;
-              top_p = 0.95;
-              top_k = 20;
-              min_p = 0;
-              repeat_penalty = 1.08;
-              frequency_penalty = 0.1;
-              presence_penalty = 0;
-              chat_template_kwargs = {
-                enable_thinking = false;
-              };
-            };
-            qwenLargeMoeTool = {
-              temperature = 0.5;
-              top_p = 0.95;
-              top_k = 20;
-              min_p = 0;
-              repeat_penalty = 1.08;
-              frequency_penalty = 0.15;
-              presence_penalty = 0;
-            };
-            # Qwen3.8 model card recommended sampling per use case.
             qwen38Thinking = {
               temperature = 1.0;
               top_p = 0.95;
@@ -150,6 +115,10 @@
 
               model_list = [
                 {
+                  model_name = "supra-title";
+                  litellm_params = mkLocal oracleSwap "openai/supra-title";
+                }
+                {
                   model_name = "qwen3.8-27b-coding";
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking;
                 }
@@ -158,25 +127,8 @@
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
                 }
                 {
-                  model_name = "gemma-4-31b";
-                  litellm_params = mkLocal sonOfAnton "openai/gemma-4-31b";
-                }
-                {
-                  model_name = "qwen3.6-27b-heretic-coding";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b-heretic" sampling.coding;
-                }
-                {
-                  model_name = "qwen3.6-27b-heretic-general";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.6-27b-heretic" sampling.general;
-                }
-                {
-                  model_name = "gemma-4-31b-heretic";
-                  litellm_params = mkLocal sonOfAnton "openai/gemma-4-31b-heretic";
-                }
-
-                {
-                  model_name = "qwen3.6-35b-a3b";
-                  litellm_params = mkLocal sonOfAnton "openai/qwen3.6-35b-a3b";
+                  model_name = "gemma-4-26B-A4B-it";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-26B-A4B-it" sampling.gemma;
                 }
                 {
                   model_name = "deepseek-v4-flash-full";

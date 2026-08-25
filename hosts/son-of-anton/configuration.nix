@@ -32,7 +32,6 @@ in
       lanExpose = true;
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
-      verboseLogging = true;
       models = {
         "deepseek-v4-flash-full" = {
           hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
@@ -96,22 +95,25 @@ in
           ];
         };
         "qwen3.8-27b" = {
-          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q8_K_XL";
-          ctxSize = 262144;
+          hf = "unsloth/Qwen3.8-27B-GGUF:Q8_0";
+          ctxSize = 524288;
           loadMode = "mlock";
           device = "ROCm0,ROCm1";
           splitMode = "tensor";
           reasoningPreserve = true;
           specType = "draft-mtp";
           specDraftNMax = 4;
-          batchSize = 4096;
-          ubatchSize = 4096;
-          kQuant = "f16";
-          vQuant = "f16";
+          specDraftDevice = "ROCm0";
+          parallel = 2;
+          batchSize = 3072;
+          ubatchSize = 3072;
+          kQuant = "q8_0";
+          vQuant = "q8_0";
           mmproj = pkgs.fetchurl {
             url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/mmproj-F16.gguf";
             hash = "sha256-y7hBqe4GNrLsFy9buN8uqN/rAekP58YSZYHWYqC05D4=";
           };
+          mmprojDevice = "ROCm1";
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
