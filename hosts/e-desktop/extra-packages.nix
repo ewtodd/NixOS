@@ -9,5 +9,6 @@
   ]
   ++ (with pkgs; [
     proton-pass
+    claude-code
   ]);
 }

@@ -54,8 +54,6 @@
             "response_format"
           ];
           sonOfAnton = "http://10.0.0.5:8080/v1"; # 2x R9700 32GB + Strix Halo iGPU
-          # oracle's always-resident title model — the e-desktop gateway's
-          # session-title task routes to it through this proxy.
           oracleSwap = "http://10.0.0.6:8080/v1";
 
           mkLocal = api_base: model: {
@@ -69,6 +67,9 @@
               temperature = 1.0;
               top_p = 0.95;
               top_k = 64;
+              chat_template_kwargs = {
+                enable_thinking = true;
+              };
             };
             qwen38Thinking = {
               temperature = 1.0;
