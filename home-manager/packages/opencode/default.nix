@@ -102,7 +102,7 @@ in
 
       agent = {
         compaction = {
-          model = "litellm/qwen3.6-35b-a3b";
+          model = "litellm/qwen3.5-122b-a10b";
         };
         build = {
           variant = "low";
@@ -114,9 +114,9 @@ in
           '';
         };
         plan = {
-          model = "litellm/qwen3.6-35b-a3b";
+          model = "litellm/qwen3.5-122b-a10b";
           variant = "high";
-          description = "Plans and designs before acting. Deep thinking model (qwen3.6-35b-a3b).";
+          description = "Plans and designs before acting. Deep thinking model (qwen3.5-122b-a10b).";
           permission = {
             edit = "deny";
           };
@@ -162,11 +162,11 @@ in
         general = {
           model =
             if osConfig.systemOptions.owner.v.enable then
-              "litellm/qwen3.6-35b-a3b"
+              "litellm/qwen3.5-122b-a10b"
             else
               "deepseek/deepseek-v4-flash";
           variant = "high";
-          description = "Runs self-contained multi-step tasks and returns a final report (qwen3.6-35b-a3b).";
+          description = "Runs self-contained multi-step tasks and returns a final report (qwen3.5-122b-a10b).";
           prompt = ''
             You are a worker subagent. You get one self-contained task; finish
             it with your tools and return a single final report. Do not ask the
@@ -257,11 +257,8 @@ in
               };
 
             };
-            "qwen3.6-27b-heretic-coding" = {
-              name = "Qwen3.6 27B Heretic";
-            };
-            "qwen3.6-35b-a3b" = {
-              name = "Qwen3.6 35B A3B";
+            "qwen3.5-122b-a10b" = {
+              name = "Qwen3.5 122B A10B";
               attachment = true;
               modalities = {
                 input = [

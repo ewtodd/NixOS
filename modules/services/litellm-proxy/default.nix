@@ -63,13 +63,13 @@
             timeout = 1800;
           };
           sampling = {
-            gemma = {
+            qwen35 = {
               temperature = 1.0;
               top_p = 0.95;
-              top_k = 64;
-              chat_template_kwargs = {
-                enable_thinking = true;
-              };
+              top_k = 20;
+              min_p = 0;
+              presence_penalty = 1.5;
+              repetition_penalty = 1.0;
             };
             qwen38Thinking = {
               temperature = 1.0;
@@ -128,8 +128,8 @@
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
                 }
                 {
-                  model_name = "gemma-4-26B-A4B-it";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/gemma-4-26B-A4B-it" sampling.gemma;
+                  model_name = "qwen3.5-122b-a10b";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.5-122b-a10b" sampling.qwen35;
                 }
                 {
                   model_name = "deepseek-v4-flash-full";

@@ -54,8 +54,8 @@ in
             "--top-p 0.95"
           ];
         };
-        "gemma-4-26B-A4B-it" = {
-          hf = "unsloth/gemma-4-26B-A4B-it-GGUF";
+        "qwen3.5-122b-a10b" = {
+          hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF";
           ctxSize = 524288;
           parallel = 2;
           loadMode = "mlock";
@@ -64,30 +64,10 @@ in
           kQuant = "f16";
           vQuant = "f16";
           mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/main/mmproj-F32.gguf";
-            hash = "sha256-7DFkCh9o/XiD4+9+8a/cmNi0KGf/SeoWZJoABEe88WM=";
+            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
           };
           mmprojDevice = "ROCm2";
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 64"
-          ];
-        };
-        "qwen3.6-35b-a3b" = {
-          hf = "unsloth/Qwen3.6-35B-A3B-GGUF:Q8_0";
-          ctxSize = 524288;
-          parallel = 2;
-          loadMode = "mlock";
-          device = "ROCm2";
-          flashAttn = "on";
-          kQuant = "f16";
-          vQuant = "f16";
-          reasoningPreserve = true;
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-iXHuTzMf8KTGCTdPMphLPU5twIbAqjXx1jf60YKeiH8=";
-          };
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
