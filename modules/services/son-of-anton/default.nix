@@ -7,89 +7,91 @@
 }:
 let
   cfg = config.systemOptions.services.son-of-anton;
+
+  # The account's CLI and its Signal service share one
+  # ~/.son-of-anton/config.yaml — that shared home is what makes a Signal
+  # conversation resumable from the terminal. So the per-surface model split
+  # comes out of one file: `model.default` is what the CLI opens with,
+  # `gateway.model` is what the service answers with.
+  # Shared settings, then what this instance derives, then its own overrides.
+  # Later wins at every level, so an instance can override one nested key
+  # (router.modes, say) without restating the rest.
+  settingsFor =
+    inst:
+    lib.foldl lib.recursiveUpdate cfg.settings [
+      {
+        terminal.cwd = inst.workingDirectory;
+      }
+      (lib.optionalAttrs (inst.model != "") {
+        gateway.model = inst.model;
+      })
+      inst.settings
+    ];
 in
 {
   imports = [ inputs.son-of-anton.nixosModules.default ];
 
   config = lib.mkIf cfg.enable {
-    services.son-of-anton = {
+    # Secret-access group only. The instances run as their own accounts and do
+    # not share a primary group; this exists so one agenix .env can be read by
+    # all of them at 0440 rather than being copied per account.
+    users.groups.son-of-anton = { };
+
+    services.son-of-anton.instances = lib.mapAttrs (name: inst: {
       enable = true;
-      workingDirectory = cfg.workingDirectory;
-      environmentFiles = cfg.environmentFiles;
-      environment = cfg.environment;
-      settings = cfg.settings;
-      extraPackages = cfg.extraPackages;
-      addToSystemPackages = cfg.addToSystemPackages;
-    };
+      inherit (inst)
+        user
+        createUser
+        managedAccount
+        son-of-antonHome
+        workingDirectory
+        protectedPaths
+        ;
+      group = "son-of-anton";
 
-    systemd.services.son-of-anton.serviceConfig.ReadWritePaths = [
-      "/home"
-      "/etc/nixos"
-    ];
+      # HOME for the unit. For a login account the module uses the account's
+      # own home and ignores this; for a CREATED account it defaults stateDir
+      # from the INSTANCE NAME, so an instance named `house` running as
+      # `soa-house` would get HOME=/var/lib/son-of-anton-house while its state
+      # lived under /var/lib/soa-house. Pin it to where the state actually is.
+      stateDir = if inst.stateDir != "" then inst.stateDir else "/var/lib/son-of-anton-${name}";
 
-    # Each profile works in its user's home. The home dir itself gets a
-    # traverse+list ACL (r-x) so the agent can enter and see top-level
-    # entries; only the dirs listed in the profile's allowedPaths get
-    # recursive rwx + default ACLs. Mode bits stay untouched, so sshd
-    # StrictModes keeps accepting the user's keys.
-    systemd.tmpfiles.rules = lib.mapAttrsToList (
-      _: profile: "a+ ${profile.workingDirectory} - - - - u:son-of-anton:r-x"
-    ) cfg.profiles;
+      # Not addToSystemPackages: that sets environment.variables globally, so
+      # ONE instance's home would leak into every account's shell — including
+      # accounts whose own home is elsewhere. (That exact leak is why an e-play
+      # shell was seen carrying SON_OF_ANTON_HOME=/home/e-work/.son-of-anton.)
+      # The CLI is installed unconditionally below instead.
+      addToSystemPackages = false;
 
-    # Provision each profile: its own SON_OF_ANTON_HOME under the gateway
-    # home's profiles/ dir, a config.yaml (the shared settings + the
-    # profile's terminal.cwd), and its own .env (same secrets as the
-    # default profile).
-    system.activationScripts."son-of-anton-profiles" =
-      lib.stringAfter
-        (
-          [ "son-of-anton-setup" ]
-          ++ lib.optional (config.system.activationScripts ? setupSecrets) "setupSecrets"
-        )
-        (
-          lib.concatMapStringsSep "\n" (
-            name:
-            let
-              profile = cfg.profiles.${name};
-              profileDir = "/var/lib/son-of-anton/.son-of-anton/profiles/${name}";
-              profileConfig = (pkgs.formats.yaml { }).generate "profile-${name}-config.yaml" (
-                lib.recursiveUpdate cfg.settings { terminal.cwd = profile.workingDirectory; }
-              );
-            in
-            ''
-              mkdir -p ${profileDir}
-              cp ${profileConfig} ${profileDir}/config.yaml
-              : > ${profileDir}/.env
-              ${
-                lib.concatMapStringsSep " " (f: "cat ${f}") cfg.environmentFiles
-              } >> ${profileDir}/.env 2>/dev/null || true
-              ${lib.concatStringsSep "\n" (
-                lib.mapAttrsToList (k: v: "echo '${k}=${v}' >> ${profileDir}/.env") cfg.environment
-              )}
-              chown -R son-of-anton:son-of-anton ${profileDir}
-              chmod 640 ${profileDir}/config.yaml
-              chmod 600 ${profileDir}/.env
+      # Shared secrets first, then this instance's own. Order is the mechanism:
+      # mkEnvScript cats them into .env in sequence and the dotenv reader takes
+      # the LAST assignment, so an instance's file overrides a shared value.
+      # That is how house widens SIGNAL_ALLOWED_USERS to two people without
+      # authorizing the second one on work and play.
+      environmentFiles = cfg.environmentFiles ++ inst.environmentFiles;
+      environment = cfg.environment // {
+        # DMs carry no group id, so they cannot be routed to one instance.
+        # Left on, a single DM would produce one agent turn and one reply per
+        # running service. Dropped at intake, before any session or tokens.
+        SIGNAL_DM_MODE = "ignore";
+      };
+      settings = settingsFor inst;
+      extraPackages = cfg.extraPackages ++ inst.extraPackages;
+    }) cfg.instances;
 
-              # Scoped home access. One-time cleanup: strip any pre-existing
-              # recursive ACLs (the earlier broad grant), then apply r-x on
-              # the home and recursive rwx + default ACLs on allowedPaths
-              # only. The marker skips the O(n) strip on later activations.
-              _acl_marker=/var/lib/son-of-anton/.son-of-anton/.acl-scoped
-              if [ ! -f "$_acl_marker" ]; then
-                find ${profile.workingDirectory} -xdev -print0 \
-                  | xargs -0 -r ${pkgs.acl}/bin/setfacl -b 2>/dev/null || true
-                touch "$_acl_marker"
-                chown son-of-anton:son-of-anton "$_acl_marker"
-              fi
-              ${pkgs.acl}/bin/setfacl -m u:son-of-anton:r-x ${profile.workingDirectory} 2>/dev/null || true
-              ${lib.concatMapStringsSep "\n" (p: ''
-                find ${p} -xdev -print0 \
-                  | xargs -0 -r ${pkgs.acl}/bin/setfacl -m u:son-of-anton:rwx 2>/dev/null || true
-                find ${p} -xdev -type d -print0 \
-                  | xargs -0 -r ${pkgs.acl}/bin/setfacl -d -m u:son-of-anton:rwx 2>/dev/null || true
-              '') profile.allowedPaths}
-            ''
-          ) (builtins.attrNames cfg.profiles)
-        );
+    # One CLI for every account. No SON_OF_ANTON_HOME is exported: unset, the
+    # CLI resolves ~/.son-of-anton, which for e-work and e-play IS their
+    # service's home. That default is what makes `son-of-anton` in a terminal
+    # land in the same session store as Signal, with nothing to keep in sync.
+    environment.systemPackages = [ inputs.son-of-anton.packages.${pkgs.system}.default ];
+
+    # The instances write into their own homes (ReadWritePaths is set per
+    # instance by the repo module) and read the flake they are built from.
+    systemd.services = lib.mapAttrs' (
+      name: _:
+      lib.nameValuePair "son-of-anton-${name}" {
+        serviceConfig.ReadWritePaths = [ "/etc/nixos" ];
+      }
+    ) cfg.instances;
   };
 }

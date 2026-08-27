@@ -101,11 +101,43 @@
     })
     # Son of Anton gateway secrets (content: SIGNAL_ACCOUNT=..., plus
     # optional DISCORD_BOT_TOKEN / SLACK_BOT_TOKEN / SLACK_APP_TOKEN).
+    #
+    # One file, read by every instance: they share a Signal account, so they
+    # need the same SIGNAL_ACCOUNT. Group-readable rather than owned by one
+    # account — the instances run as separate users (e-work, e-play,
+    # soa-house) and `son-of-anton` is now only the group that grants this
+    # read. 0440, never 0444: the group is the boundary.
     (lib.mkIf config.systemOptions.services.son-of-anton.enable {
       son-of-anton-env = {
         file = ../../secrets/son-of-anton-env.age;
-        owner = "son-of-anton";
-        mode = "0400";
+        group = "son-of-anton";
+        mode = "0440";
+      };
+
+      # Per-instance routing. Every service sees every Signal event (signal-cli
+      # broadcasts over SSE) and keeps only its own group, so
+      # SIGNAL_GROUP_ALLOWED_USERS is what makes one of them answer and the
+      # others stay silent. Encrypted rather than written in Nix because this
+      # repo is public and a group id names a real chat.
+      #
+      # Appended AFTER son-of-anton-env, so a re-declared key here wins.
+      son-of-anton-work-env = {
+        file = ../../secrets/son-of-anton-work-env.age;
+        group = "son-of-anton";
+        mode = "0440";
+      };
+      son-of-anton-play-env = {
+        file = ../../secrets/son-of-anton-play-env.age;
+        group = "son-of-anton";
+        mode = "0440";
+      };
+      # Also re-declares SIGNAL_ALLOWED_USERS with the household members. The
+      # shared secret keeps the single-owner allowlist, so widening it here
+      # cannot widen work or play.
+      son-of-anton-house-env = {
+        file = ../../secrets/son-of-anton-house-env.age;
+        group = "son-of-anton";
+        mode = "0440";
       };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {

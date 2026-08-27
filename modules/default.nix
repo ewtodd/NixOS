@@ -541,62 +541,135 @@ with lib;
         '';
       };
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
+      # One system service per account (the temple design). Each instance runs
+      # AS its account with SON_OF_ANTON_HOME=~/.son-of-anton, so a Signal
+      # session and that account's own CLI session are the SAME session —
+      # one state.db, one config.yaml, one writer.
+      #
+      # All instances share one Signal number and are separated by group id:
+      # signal-cli broadcasts every event over SSE, and each instance drops
+      # groups that are not its own before any session or agent work.
       services.son-of-anton = {
-        enable = mkEnableOption "son-of-anton gateway daemon (successor to the temple daemon)";
-        workingDirectory = mkOption {
-          type = types.str;
-          default = "/var/lib/son-of-anton/workspace";
-          description = "The default profile's terminal.cwd — where the gateway's agent runs commands.";
-        };
-        profiles = mkOption {
+        enable = mkEnableOption "son-of-anton gateway services (successor to the temple daemon)";
+        instances = mkOption {
           type = types.attrsOf (
             types.submodule {
-              options.workingDirectory = mkOption {
-                type = types.str;
-                description = "terminal.cwd for this profile's agent (the user's home).";
-              };
-              options.allowedPaths = mkOption {
-                type = types.listOf types.str;
-                default = [ ];
-                description = "Directories under the working directory the agent may read/write (recursive + default ACLs). Everything else in the home stays private.";
+              options = {
+                user = mkOption {
+                  type = types.str;
+                  description = "Account this instance runs as.";
+                };
+                createUser = mkOption {
+                  type = types.bool;
+                  default = false;
+                  description = "Create the account. False for pre-existing login accounts.";
+                };
+                managedAccount = mkOption {
+                  type = types.bool;
+                  default = true;
+                  description = ''
+                    The account is a pre-existing HUMAN login account, so the
+                    module touches only SON_OF_ANTON_HOME and never chmods the
+                    parent home (which would break sshd StrictModes) or the
+                    working directory.
+                  '';
+                };
+                stateDir = mkOption {
+                  type = types.str;
+                  default = "";
+                  description = ''
+                    HOME for the unit, for a created (non-login) account.
+                    Empty means the account is a login account and its own home
+                    is used. Set it wherever son-of-antonHome lives, or the unit
+                    gets a HOME unrelated to its SON_OF_ANTON_HOME.
+                  '';
+                };
+                son-of-antonHome = mkOption {
+                  type = types.str;
+                  description = "SON_OF_ANTON_HOME: config, skills, memory, sessions.";
+                };
+                workingDirectory = mkOption {
+                  type = types.str;
+                  description = "terminal.cwd — where this instance's agent runs commands.";
+                };
+                environmentFiles = mkOption {
+                  type = types.listOf types.str;
+                  default = [ ];
+                  description = ''
+                    Secret files for THIS instance, appended to the shared ones
+                    and therefore overriding them (later .env lines win).
+
+                    This is where the routing lives. SIGNAL_GROUP_ALLOWED_USERS
+                    is the group id this instance answers and the only thing
+                    that routes a message here rather than to a sibling;
+                    SIGNAL_ALLOWED_USERS is the default-deny sender allowlist,
+                    enforced on group messages too. Both identify real people
+                    and real chats, and this repo is public, so neither may be
+                    written in Nix.
+                  '';
+                };
+                model = mkOption {
+                  type = types.str;
+                  default = "";
+                  description = ''
+                    Model this instance answers with over Signal, written as
+                    `gateway.model`. Empty inherits settings.model.default,
+                    which is what this account's CLI opens with.
+                  '';
+                };
+                protectedPaths = mkOption {
+                  type = types.listOf types.str;
+                  default = [ ];
+                  description = "Extra credential paths made inaccessible to the unit.";
+                };
+                settings = mkOption {
+                  type = types.attrs;
+                  default = { };
+                  description = ''
+                    config.yaml overrides for THIS instance, deep-merged over
+                    the shared `settings`. Use it for anything an instance
+                    should differ on, e.g. `router.modes = [ "standard" ]` to
+                    keep the physics and research loops off a gateway that has
+                    no use for them.
+                  '';
+                };
+                extraPackages = mkOption {
+                  type = types.listOf types.package;
+                  default = [ ];
+                  description = ''
+                    Tools on THIS instance's PATH, on top of the shared ones.
+                    The agent can run them from its terminal tool.
+
+                    Per-instance because capability is per-account: the house
+                    agent acts for whoever speaks in a shared group, so it gets
+                    only what that group needs.
+                  '';
+                };
               };
             }
           );
           default = { };
-          description = "Named gateway profiles, each with its own SON_OF_ANTON_HOME + config.yaml. Switchable per chat via /profile <name>.";
+          description = "Gateway instances, one system service per account.";
         };
         environmentFiles = mkOption {
           type = types.listOf types.str;
           default = [ ];
-          description = "Secret files whose contents land in ~/.son-of-anton/.env (agenix paths).";
+          description = "Secret files whose contents land in each instance's .env (agenix paths).";
         };
         environment = mkOption {
           type = types.attrsOf types.str;
           default = { };
-          description = "Non-secret environment variables written to ~/.son-of-anton/.env.";
+          description = "Non-secret environment variables written to each instance's .env.";
         };
         settings = mkOption {
           type = types.attrs;
           default = { };
-          description = "config.yaml settings (deep-merged with runtime edits).";
+          description = "config.yaml settings shared by every instance (and by each account's CLI).";
         };
         extraPackages = mkOption {
           type = types.listOf types.package;
           default = [ ];
-          description = "Extra packages for the son-of-anton user profile.";
-        };
-        addToSystemPackages = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Add the CLI to systemPackages and share SON_OF_ANTON_HOME system-wide.";
-        };
-        interactive = {
-          enable = mkEnableOption "per-user interactive CLI state (home-manager merges settings into each account's ~/.son-of-anton/config.yaml + .env and exports a per-user SON_OF_ANTON_HOME, so the CLI works without `son-of-anton setup`)";
-          settings = mkOption {
-            type = types.attrs;
-            default = { };
-            description = "config.yaml overrides deep-merged over `settings` for interactive accounts (e.g. a per-surface default model).";
-          };
+          description = "Extra packages available to every instance.";
         };
       };
       services.signal-cli.enable = mkEnableOption "signal-cli JSON-RPC daemon in HTTP mode (Signal bot backend for son-of-anton)";

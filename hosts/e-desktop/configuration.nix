@@ -11,6 +11,36 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPvp7uwfajl11rFuFbS9TaWGVQ1de5vaaKATv7z76nsi ethan-laptop-ework"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
   ];
+  # md -> pdf for the household agent, as ONE command with no flags.
+  #
+  # pandoc's typst template renders `font: <mainfont>`, and typst rejects an
+  # empty font list outright ("font fallback list must not be empty"), so a
+  # bare `pandoc in.md -o out.pdf` fails. A systemd unit also has no
+  # fontconfig, so typst finds no fonts at all unless TYPST_FONT_PATHS points
+  # at some. Both are invocation details the agent would have to remember on
+  # every call and would eventually get wrong — bake them in instead.
+  #
+  # typst rather than a TeX engine: self-contained and ~50 MB against several
+  # GB for texlive, and this only needs to render documents.
+  md2pdf = pkgs.writeShellApplication {
+    name = "md2pdf";
+    runtimeInputs = [
+      pkgs.pandoc
+      pkgs.typst
+    ];
+    text = ''
+      if [ $# -lt 1 ]; then
+        echo "usage: md2pdf <input.md> [output.pdf]" >&2
+        exit 2
+      fi
+      out="''${2:-''${1%.*}.pdf}"
+      TYPST_FONT_PATHS=${pkgs.dejavu_fonts}/share/fonts \
+        pandoc "$1" -o "$out" \
+          --pdf-engine=typst \
+          -V mainfont="DejaVu Sans"
+      echo "$out"
+    '';
+  };
 in
 {
   imports = [
@@ -35,10 +65,6 @@ in
     services.suspend-then-hibernate.enable = true;
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
-    # WireView Pro II GPU power monitor: Prometheus exporter + safety
-    # watchdog (power off on sustained fault / over-temperature). The
-    # WireView fault output is also wired to the mains switch as the
-    # primary cut; this is software redundancy.
     services.wireview-monitor.enable = true;
     services.wireview-safety.enable = true;
     apps.docker.enable = true;
@@ -46,123 +72,117 @@ in
     owner.e.enable = true;
     services.son-of-anton = {
       enable = true;
-      # Interactive accounts: home-manager imports the repo's HM module,
-      # deep-merging `settings` into each user's ~/.son-of-anton/config.yaml,
-      # filling .env from the users-group litellm secret, and exporting a
-      # per-user SON_OF_ANTON_HOME — so the CLI/TUI work with no manual setup.
-      # addToSystemPackages stays false so the system-wide export does not
-      # force everyone onto the gateway state.
-      interactive.enable = true;
-      # One shared gateway under its own service account. Everything
-      # model-related lives on son-of-anton (llama-swap) via litellm on
-      # oracle. Gateway multiplexing: one Signal sender owns both profiles
-      # and switches per chat with /profile play|work.
       environmentFiles = [ config.age.secrets.son-of-anton-env.path ];
       environment = {
-        # signal-cli HTTP daemon on mu (shared bot number).
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
-        # SearXNG on oracle.
         SEARXNG_URL = "http://10.0.0.6:8888/search";
-        # Native read receipts replace the 👀/✅ reaction set on messages.
         SIGNAL_REACTIONS = "false";
       };
-      profiles = {
-        play = {
-          workingDirectory = "/home/e-play";
-          allowedPaths = [
-            "/home/e-play/AppImages"
-            "/home/e-play/Downloads"
-            "/home/e-play/Games"
-            "/home/e-play/go"
-            "/home/e-play/llama.cpp"
-            "/home/e-play/org"
-            "/home/e-play/Pictures"
-            "/home/e-play/ric"
-            "/home/e-play/Software"
-            "/home/e-play/TAKEOUT"
-            "/home/e-play/Writing"
-          ];
-        };
+      # One service per account, all on the one Signal number, separated by
+      # Signal group id. The group ids and the sender allowlists live in the
+      # per-instance agenix secrets below, NOT here: this repo is public and
+      # both identify real people and real chats.
+      #
+      # Each secret carries, at minimum:
+      #   SIGNAL_GROUP_ALLOWED_USERS=<that instance's group id>
+      # and, where it must differ from the shared default:
+      #   SIGNAL_ALLOWED_USERS=<comma-separated numbers>
+      instances = {
         work = {
+          user = "e-work";
+          son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
-          allowedPaths = [
-            "/home/e-work/Analysis-Utilities"
-            "/home/e-work/Curriculum-Vitae"
-            "/home/e-work/Dissertation"
-            "/home/e-work/Downloads"
-            "/home/e-work/Geant4"
-            "/home/e-work/Jobs"
-            "/home/e-work/LabData"
-            "/home/e-work/MUSIC"
-            "/home/e-work/Papers"
-            "/home/e-work/ProposalsAndApplications"
-            "/home/e-work/Remix-MUSIC-Sim"
-            "/home/e-work/Software-Miscellaneous"
-            "/home/e-work/Taxes"
-            "/home/e-work/Teaching"
-            "/home/e-work/UM-ANSG"
+          environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
+          model = "qwen3.5-122b-a10b";
+        };
+        play = {
+          user = "e-play";
+          son-of-antonHome = "/home/e-play/.son-of-anton";
+          workingDirectory = "/home/e-play";
+          environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
+          model = "qwen3.5-122b-a10b";
+          # Physics and research live on the work account. Off here so their
+          # keywords cannot pull a casual message into a one-shot loop.
+          settings.router.modes = [ "standard" ];
+        };
+        # Multi-human group, so it gets its own service account rather than a
+        # personal one: the agent acts for whoever speaks, and running it as
+        # e-play would hand the other members e-play's home, keys, and git
+        # identity. Its working directory is the only thing it can reach.
+        #
+        # Its secret also RE-DECLARES SIGNAL_ALLOWED_USERS with both people.
+        # That override is scoped to this instance by file order, so the second
+        # person is never authorized on work or play.
+        house = {
+          user = "soa-house";
+          createUser = true;
+          managedAccount = false;
+          stateDir = "/var/lib/soa-house";
+          son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
+          workingDirectory = "/srv/household";
+          environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
+          model = "qwen3.5-122b-a10b";
+          # Only this instance gets them: capability is per-account, and the
+          # household agent acts for whoever speaks in a shared group.
+          extraPackages = [
+            md2pdf
+            pkgs.pandoc
+            pkgs.typst
           ];
+          settings.router.modes = [ "standard" ];
         };
       };
+
       settings = {
+        # The CLI's default. Each instance pins its own Signal model through
+        # a channel_overrides entry on its group (see instances.*.model), so
+        # one config.yaml per account serves both surfaces.
         model = {
-          default = "gemma-4-26B-A4B-it";
+          default = "qwen3.8-27b-coding";
           provider = "custom";
         };
-        # Route everything through litellm on oracle (10.0.0.6:4000), which
-        # fronts llama-swap on son-of-anton and holds the master key.
         custom_providers.custom = {
           base_url = "http://10.0.0.6:4000/v1";
           key_env = "LITELLM_MASTER_KEY";
-          # Mirror litellm's model_list (the oracle-side module) so the
-          # model pickers show the full catalog without a live /v1/models
-          # probe. deepseek-v4-flash/-pro route through litellm to the
-          # direct DeepSeek API.
-          models = [
-            "qwen3.8-27b-coding"
-            "qwen3.8-27b-instruct"
-            "gemma-4-26B-A4B-it"
-            "qwen3.6-35b-a3b"
-            "deepseek-v4-flash-full"
-            "deepseek-v4-flash"
-            "deepseek-v4-pro"
-          ];
+          models = {
+            "qwen3.8-27b-coding" = {
+              context_length = 262144;
+            };
+            "qwen3.8-27b-instruct" = {
+              context_length = 262144;
+            };
+            "qwen3.5-122b-a10b" = {
+              context_length = 262144;
+            };
+            "deepseek-v4-flash-full" = { };
+            "deepseek-v4-flash" = { };
+            "deepseek-v4-pro" = { };
+          };
         };
         physics = {
-          model = "qwen3.6-35b-a3b";
+          model = "deepseek-v4-flash-full";
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";
         };
         router = {
           enabled = true;
           simple_model = "qwen3.8-27b-instruct";
-          default_model = "gemma-4-26B-A4B-it";
+          default_model = "qwen3.5-122b-a10b";
           planner_model = "qwen3.8-27b-coding";
           executor_model = "qwen3.8-27b-coding";
-          reviewer_model = "qwen3.6-35b-a3b";
+          reviewer_model = "deepseek-v4-pro";
           researcher_model = "qwen3.8-27b-instruct";
         };
         web.backend = "searxng";
-        gateway.multiplex_profiles = true;
-        # Session titles come from the tiny always-resident supra-title model
-        # on oracle, reached through litellm — never the main model.
         auxiliary.title_generation = {
           provider = "custom";
           model = "supra-title";
           base_url = "http://10.0.0.6:4000/v1";
           key_env = "LITELLM_MASTER_KEY";
+          prompt_style = "completion";
         };
-        # Read receipts on the shared daemon replace typing indicators.
-        platforms.signal.typing_indicator = false;
-        # In a profile, subprocess HOME = the profile's working directory,
-        # so `~` means the user's home inside terminal commands.
+        platforms.signal.typing_indicator = true;
         terminal.home_mode = "cwd";
-      };
-      # Interactive accounts default to the coding model; the gateway above
-      # defaults to gemma.
-      interactive.settings = {
-        model.default = "qwen3.8-27b-coding";
-        router.default_model = "qwen3.8-27b-coding";
       };
     };
   };

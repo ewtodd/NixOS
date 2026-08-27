@@ -40,8 +40,8 @@ Hosts:
 - **nu** - Router, AdGuard, reverse proxy, dynamic DNS
 - **mu** - SSH bastion, Nextcloud, Minecraft
 - **anton** - headless server (no inference role)
-- **son-of-anton** - llama-swap inference (ROCm, 2x R9700 Pro + Strix Halo iGPU): full-precision deepseek-v4-flash + dense models + heretic variants
-- **oracle** - MCP gateway, SearXNG, Open WebUI (ai.ethanwtodd.com), temple-server (aarch64)
+- **son-of-anton** - llama-swap inference (ROCm, 2x R9700 Pro + Strix Halo iGPU): full-precision deepseek-v4-flash + qwen3.8-27b + qwen3.5-122b-a10b
+- **oracle** - MCP gateway, LiteLLM, SearXNG, Open WebUI (ai.ethanwtodd.com) (aarch64)
 ```
 ## Important Notes
 ### `systemOptions`
@@ -117,12 +117,13 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
-- **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU 128GB): llama-swap with ROCm backend. deepseek-v4-flash in two quants (IQ3_XXS on the iGPU, full-precision UD-Q8_K_XL spanning every device as a solo model), plus dense models pinned one-per-GPU (qwen3.6-27b, gemma-4-31b and heretic variants)
-- **oracle** (aarch64) hosts the gateway and tooling:
+- **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU 128GB): llama-swap with ROCm backend. deepseek-v4-flash in full precision (UD-Q8_K_XL spanning every device as a solo model), qwen3.8-27b tensor-split across the two R9700s, and qwen3.5-122b-a10b on the iGPU
+- **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton), successor to temple-server: one system service per account on a shared Signal number, and each account's CLI shares its service's session state
+- **oracle** (aarch64) hosts the model router and tooling:
   - **MCP gateway** aggregating stdio servers: `fetch` (URL retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
+  - **LiteLLM** proxy (:4000): routes son-of-anton, opencode, and Open WebUI to llama-swap on son-of-anton/oracle and the hosted DeepSeek API
   - **SearXNG** metasearch, localhost-only, backing the searxng MCP
-  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via llama-swap on son-of-anton)
-  - **temple-server** (renco agent)
+  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via litellm)
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
 The hive (`colmena` / `colmenaHive` flake outputs) reuses each host's NixOS

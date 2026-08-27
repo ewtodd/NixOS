@@ -45,7 +45,24 @@ in
   "litellm-master-key.age".publicKeys =
     personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
   "litellm-deepseek-key.age".publicKeys = personal ++ [ server-oracle ];
+  # Shared by every son-of-anton instance: SIGNAL_ACCOUNT, the single-owner
+  # SIGNAL_ALLOWED_USERS, and any platform tokens.
   "son-of-anton-env.age".publicKeys = personal ++ [
+    server-e-desktop
+  ];
+  # Per-instance routing (SIGNAL_GROUP_ALLOWED_USERS), appended after the
+  # shared file so a re-declared key here wins. Not in Nix: this repo is
+  # public and a group id names a real chat.
+  "son-of-anton-work-env.age".publicKeys = personal ++ [
+    server-e-desktop
+  ];
+  "son-of-anton-play-env.age".publicKeys = personal ++ [
+    server-e-desktop
+  ];
+  # Also re-declares SIGNAL_ALLOWED_USERS with the household members, scoped
+  # to this instance by file order. Recipients are the operator and the host
+  # that runs the service — the other group members never decrypt this.
+  "son-of-anton-house-env.age".publicKeys = personal ++ [
     server-e-desktop
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
