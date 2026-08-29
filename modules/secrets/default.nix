@@ -139,6 +139,24 @@
         group = "son-of-anton";
         mode = "0440";
       };
+
+      # The two project instances, one friend each. Same shape as house: the
+      # group id that routes a message here, and a SIGNAL_ALLOWED_USERS that
+      # re-declares the allowlist as the owner plus that one friend -- scoped
+      # to this instance by file order, so neither friend is ever authorized
+      # on work, play, house, or each other's instance.
+      son-of-anton-ricky-env = {
+        file = ../../secrets/son-of-anton-ricky-env.age;
+        group = "son-of-anton";
+        mode = "0440";
+      };
+      # Also carries DATABENTO_API_KEY for the Trump project (its flake's
+      # shellHook expects it in the environment, and the key is rotated).
+      son-of-anton-markets-env = {
+        file = ../../secrets/son-of-anton-markets-env.age;
+        group = "son-of-anton";
+        mode = "0440";
+      };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
       # Read by the opencode wrapper script (runs as e-work / e-play),

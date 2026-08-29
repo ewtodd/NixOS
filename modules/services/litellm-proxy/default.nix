@@ -41,6 +41,15 @@
           ...
         }:
         let
+          # The two MCP servers that are not just a nixpkgs binary. Both are
+          # spawned as stdio subprocesses of the proxy, inside this container.
+          searxngMcpPython = pkgs.python3.withPackages (ps: [
+            ps.mcp
+            ps.httpx
+          ]);
+          arxiv-mcp-server = pkgs.callPackage ./pkgs/arxiv-mcp-server.nix {
+            src = inputs.arxiv-mcp-server-src;
+          };
           nativeOpenaiParams = [
             "reasoning_effort"
             "thinking"
@@ -53,7 +62,8 @@
             "frequency_penalty"
             "response_format"
           ];
-          sonOfAnton = "http://10.0.0.5:8080/v1"; # 2x R9700 32GB + Strix Halo iGPU
+          sonOfAnton = "http://10.0.0.5:8080/v1"; # llama-swap on Strix (device 2)
+          sonOfAntonVllm = "http://10.0.0.5:8100/v1"; # vLLM on R9700s (TP=2)
           oracleSwap = "http://10.0.0.6:8080/v1";
 
           mkLocal = api_base: model: {
@@ -114,6 +124,38 @@
                 request_timeout = 1800;
               };
 
+              mcp_servers = {
+                fetch = {
+                  transport = "stdio";
+                  command = lib.getExe pkgs.mcp-server-fetch;
+                  args = [ ];
+                };
+                searxng = {
+                  transport = "stdio";
+                  command = "${searxngMcpPython}/bin/python";
+                  args = [ "/etc/litellm/searxng_mcp.py" ];
+                  env.SEARXNG_URL = "http://127.0.0.1:8888";
+                };
+                nixos = {
+                  transport = "stdio";
+                  command = lib.getExe pkgs.mcp-nixos;
+                  args = [ ];
+                };
+                arxiv = {
+                  transport = "stdio";
+                  command = lib.getExe arxiv-mcp-server;
+                  args = [
+                    "--storage-path"
+                    "/var/lib/litellm/arxiv-papers"
+                  ];
+                };
+                context7 = {
+                  transport = "stdio";
+                  command = lib.getExe pkgs.context7-mcp;
+                  args = [ ];
+                };
+              };
+
               model_list = [
                 {
                   model_name = "supra-title";
@@ -124,8 +166,28 @@
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking;
                 }
                 {
+                  model_name = "qwen3.8-27b-coding";
+                  litellm_params =
+                    mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
+                      sampling.qwen38Thinking;
+                }
+                {
                   model_name = "qwen3.8-27b-instruct";
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
+                }
+                {
+                  model_name = "qwen3.8-27b-instruct";
+                  litellm_params =
+                    mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
+                      sampling.qwen38Instruct;
+                }
+                {
+                  model_name = "qwen3.8-flash-next";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-flash-next" sampling.qwen38Thinking;
+                }
+                {
+                  model_name = "qwen3.8-flash-next-instruct";
+                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-flash-next" sampling.qwen38Instruct;
                 }
                 {
                   model_name = "qwen3.5-122b-a10b";
@@ -162,6 +224,12 @@
           environment.etc."litellm/config.yaml".source =
             (pkgs.formats.yaml { }).generate "litellm-config.yaml"
               config.services.litellm.settings;
+          environment.etc."litellm/searxng_mcp.py".source = ./searxng_mcp.py;
+          # LiteLLM refuses to spawn a stdio MCP command that is not on this
+          # allowlist. Names, not paths: it matches on the basename of the
+          # configured command.
+          systemd.services.litellm.environment.LITELLM_MCP_STDIO_EXTRA_COMMANDS =
+            "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp";
           systemd.services.litellm.serviceConfig.ExecStart = lib.mkForce (
             lib.concatStringsSep " " [
               (lib.getExe config.services.litellm.package)

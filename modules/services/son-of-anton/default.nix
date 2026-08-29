@@ -86,11 +86,40 @@ in
     environment.systemPackages = [ inputs.son-of-anton.packages.${pkgs.system}.default ];
 
     # The instances write into their own homes (ReadWritePaths is set per
-    # instance by the repo module) and read the flake they are built from.
+    # instance by the upstream module) and read the flake they are built from.
     systemd.services = lib.mapAttrs' (
       name: _:
       lib.nameValuePair "son-of-anton-${name}" {
-        serviceConfig.ReadWritePaths = [ "/etc/nixos" ];
+        serviceConfig = {
+          ReadWritePaths = [ "/etc/nixos" ];
+
+          # Every unit runs with group son-of-anton and the upstream module
+          # creates each working directory 2770 <user>:son-of-anton, so DAC
+          # alone lets any instance READ every other instance's project tree
+          # and session store. Writes are already refused — ProtectSystem=strict
+          # makes everything outside that instance's own ReadWritePaths
+          # read-only — but a read is enough to hand one group's agent another
+          # group's code, memories, and transcripts.
+          #
+          # Two instances now answer to people who are not the owner, so the
+          # separation is made structural instead of resting on a mode bit that
+          # tmpfiles reasserts on every activation: every OTHER instance's
+          # state, home, and working directory becomes an empty, unreadable
+          # mount inside this unit's namespace.
+          #
+          # "-" prefixed: a path that does not exist yet — a new instance whose
+          # tmpfiles rules have not run — must not fail the unit.
+          InaccessiblePaths = map (p: "-${p}") (
+            lib.concatMap (
+              other:
+              [
+                other.workingDirectory
+                other.son-of-antonHome
+              ]
+              ++ lib.optional (other.stateDir != "") other.stateDir
+            ) (lib.attrValues (lib.filterAttrs (n: _: n != name) cfg.instances))
+          );
+        };
       }
     ) cfg.instances;
   };

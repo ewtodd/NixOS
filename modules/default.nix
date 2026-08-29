@@ -41,7 +41,6 @@ with lib;
 
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
-      services.tailscale.enable = mkEnableOption "Literally just tailscale...";
       services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve, exposed through Caddy on nu";
       services.binaryCache.consume = mkEnableOption "Use the e-desktop binary cache as a substituter";
       services.router.enable = mkEnableOption "Act as a NAT router (WAN DHCP, LAN static, dnsmasq DHCP+DNS)";
@@ -49,6 +48,22 @@ with lib;
       services.reverseProxy.enable = mkEnableOption "Caddy reverse proxy with auto-TLS";
       services.dyndns.enable = mkEnableOption "Namecheap dynamic DNS updater for ethanwtodd.com subdomains";
       services.bastion.enable = mkEnableOption "SSH bastion: hardened sshd + fail2ban + WoL helpers for inner hosts";
+      services.bastion.wakeCalendar = mkOption {
+        type = types.str;
+        default = "";
+        example = "Sun,Wed *-*-* 05:10:00";
+        description = ''
+          OnCalendar expression for waking and unlocking e-desktop from here.
+          Empty disables it.
+
+          This is the other half of e-desktop's scheduled poweroff: the
+          machine shuts down on its own schedule, and this brings it back a
+          few minutes later over WoL, pushing the LUKS passphrase into its
+          initrd exactly as the relay does. Together they are an unattended
+          reboot for a host that cannot reboot unattended, since nothing on
+          e-desktop itself can unlock its own root volume.
+        '';
+      };
       services.wakeable.enable = mkEnableOption "Wake-on-LAN + initrd-SSH for remote unlock";
       services.nextcloud.enable = mkEnableOption "Nextcloud personal cloud (cloud.ethanwtodd.com)";
       services.prometheus.enable = mkEnableOption "Prometheus metrics server (scrapes node_exporters)";
@@ -540,6 +555,94 @@ with lib;
           must never be evicted. Serves Open WebUI RAG (e.g. bge-m3).
         '';
       };
+      services.vllm = {
+        enable = mkEnableOption "vLLM ROCm inference server (pip venv in FHS env)";
+        lanExpose = mkEnableOption "expose vLLM on the LAN (bind 0.0.0.0 + open firewall)";
+        model = mkOption {
+          type = types.str;
+          example = "Qwen/Qwen3.8-27B-FP8";
+          description = "HuggingFace model ID to serve.";
+        };
+        port = mkOption {
+          type = types.port;
+          default = 8100;
+        };
+        devices = mkOption {
+          type = types.str;
+          default = "0,1";
+          description = "HIP_VISIBLE_DEVICES — comma-separated GPU indices.";
+        };
+        tensorParallelSize = mkOption {
+          type = types.ints.positive;
+          default = 2;
+        };
+        maxModelLen = mkOption {
+          type = types.ints.positive;
+          default = 163840;
+        };
+        kvCacheDtype = mkOption {
+          type = types.str;
+          default = "fp8";
+          description = "KV cache data type (fp8, auto).";
+        };
+        maxNumSeqs = mkOption {
+          type = types.ints.positive;
+          default = 8;
+        };
+        gpuMemoryUtilization = mkOption {
+          type = types.float;
+          default = 0.95;
+        };
+        enforceEager = mkOption {
+          type = types.bool;
+          default = true;
+          description = "Disable CUDA graphs (required for some ROCm targets).";
+        };
+        mtp = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Enable MTP speculative decoding.";
+        };
+        mtpTokens = mkOption {
+          type = types.ints.positive;
+          default = 3;
+        };
+        venvPath = mkOption {
+          type = types.str;
+          default = "/scratch/vllm-venv";
+          description = "Path to the vLLM pip virtualenv (manually installed).";
+        };
+        modelCache = mkOption {
+          type = types.str;
+          default = "/scratch/vllm-models";
+          description = "HF_HOME / HF_HUB_CACHE for model downloads.";
+        };
+        gfxLibs = mkOption {
+          type = types.str;
+          default = "gfx120X_all";
+          description = "ROCm arch-specific library wheel name.";
+        };
+        user = mkOption {
+          type = types.str;
+          default = "son-of-anton";
+        };
+        toolCallParser = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "qwen3_xml";
+          description = "vLLM tool-call parser name; enables --enable-auto-tool-choice when set.";
+        };
+        reasoningParser = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "qwen3";
+          description = "vLLM reasoning parser name; splits thinking into reasoning_content.";
+        };
+        extraFlags = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+        };
+      };
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
       # One system service per account (the temple design). Each instance runs
       # AS its account with SON_OF_ANTON_HOME=~/.son-of-anton, so a Signal
@@ -708,6 +811,22 @@ with lib;
         default = "*-*-* 04:00:00";
         example = "*-*-* 04:30:00";
         description = "systemd OnCalendar expression for the scheduled reboot (time zone follows time.timeZone).";
+      };
+      services.scheduledReboot.action = mkOption {
+        type = types.enum [
+          "reboot"
+          "poweroff"
+        ];
+        default = "reboot";
+        description = ''
+          What the timer does. `poweroff` is for a machine that cannot come
+          back on its own: e-desktop's root and home are both LUKS volumes
+          unlocked from the bastion's wake-and-relay script, which only runs
+          when someone connects through it. Rebooting would leave the machine
+          sitting in initrd until then; powering off means the next connection
+          wakes it over WoL and unlocks it, which is the path that already
+          exists.
+        '';
       };
       services.rgbLoad.enable = mkEnableOption "load-reactive RGB lighting (drives color from max of CPU/GPU utilization)";
       services.rgbLoad.backend = mkOption {

@@ -69,7 +69,7 @@
     };
     llama-cpp = {
       url = "github:ggml-org/llama.cpp";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
     arxiv-mcp-server-src = {
       url = "github:blazickjp/arxiv-mcp-server";
@@ -251,7 +251,7 @@
         oracle = {
           targetHost = "deploy-oracle";
           targetUser = "deploy";
-          buildOnTarget = true;
+          buildOnTarget = false;
           tags = [ "server" ];
         };
       };

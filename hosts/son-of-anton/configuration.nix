@@ -26,82 +26,73 @@ in
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
-    services.scheduledReboot.calendar = "*-*-* 05:00:00";
+    services.scheduledReboot.calendar = "Sun *-*-* 05:00:00";
+    # vLLM on R9700s (TP=2): Qwen3.8-27B-FP8 with MTP
+    services.vllm = {
+      enable = true;
+      lanExpose = true;
+      model = "Qwen/Qwen3.8-27B-FP8";
+      devices = "0,1";
+      tensorParallelSize = 2;
+      kvCacheDtype = "fp8";
+      maxNumSeqs = 8;
+      gpuMemoryUtilization = 0.95;
+      enforceEager = true;
+      mtp = true;
+      mtpTokens = 3;
+      port = 8100;
+      toolCallParser = "qwen3_xml";
+      reasoningParser = "qwen3";
+    };
+    # llama.cpp on Strix (device 2): Qwen3.8-27B Q5 with MTP
     services.llamaSwap = {
       enable = true;
       lanExpose = true;
       backend = "rocm";
       cacheDir = "/scratch/llama-cache";
       models = {
-        "deepseek-v4-flash-full" = {
-          hf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:UD-Q8_K_XL";
-          ctxSize = 1048576;
-          loadMode = "auto";
-          batchSize = 2048;
-          ubatchSize = 1024;
-          solo = true;
-          kQuant = "f16";
-          vQuant = "f16";
-          parallel = 2;
-          flashAttn = "auto";
-          device = "ROCm0,ROCm1,ROCm2";
-          specType = "draft-dspark";
-          specDraftNMax = 6;
-          specDraftDevice = "ROCm2";
-          specDraftHf = "unsloth/DeepSeek-V4-Flash-0731-GGUF:BF16";
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-          ];
-        };
-        "qwen3.5-122b-a10b" = {
-          hf = "unsloth/Qwen3.5-122B-A10B-MTP-GGUF";
+        "qwen3.8-27b" = {
+          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q5_K_XL";
           ctxSize = 524288;
-          parallel = 2;
           loadMode = "mlock";
           device = "ROCm2";
+          parallel = 1;
+          batchSize = 1024;
+          ubatchSize = 512;
           flashAttn = "on";
           kQuant = "f16";
           vQuant = "f16";
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.5-122B-A10B-MTP-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-3kQFkw3G8ohUbidO5BlF9lH6NnOyrZBEwl/P/FuxxW0=";
-          };
-          mmprojDevice = "ROCm2";
+          specType = "draft-mtp";
+          specDraftNMax = 3;
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
-          ];
-        };
-        "qwen3.8-27b" = {
-          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q6_K_XL";
-          ctxSize = 524288;
-          loadMode = "mlock";
-          device = "ROCm0,ROCm1";
-          splitMode = "tensor";
-          reasoningPreserve = true;
-          parallel = 2;
-          batchSize = 3072;
-          ubatchSize = 3072;
-          kQuant = "f16";
-          vQuant = "f16";
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-y7hBqe4GNrLsFy9buN8uqN/rAekP58YSZYHWYqC05D4=";
-          };
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-            "--top-k 20"
-            "--min-p 0"
           ];
         };
       };
     };
     security.harden.enable = true;
   };
+
+  security.pam.loginLimits = [
+    {
+      domain = "son-of-anton";
+      type = "hard";
+      item = "memlock";
+      value = "unlimited";
+    }
+  ];
+  security.sudo-rs.extraRules = [
+    {
+      users = [ "son-of-anton" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/tee /proc/sys/vm/drop_caches";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 
   nixpkgs.config.rocmTargets = [
     "gfx1151"
@@ -117,6 +108,7 @@ in
       "wheel"
       "video"
       "render"
+      "llama-cache"
     ];
     openssh.authorizedKeys.keys = personalKeys;
   };

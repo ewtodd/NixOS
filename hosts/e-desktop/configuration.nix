@@ -2,6 +2,7 @@
   lib,
   pkgs,
   config,
+  inputs,
   ...
 }:
 let
@@ -11,17 +12,6 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPvp7uwfajl11rFuFbS9TaWGVQ1de5vaaKATv7z76nsi ethan-laptop-ework"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
   ];
-  # md -> pdf for the household agent, as ONE command with no flags.
-  #
-  # pandoc's typst template renders `font: <mainfont>`, and typst rejects an
-  # empty font list outright ("font fallback list must not be empty"), so a
-  # bare `pandoc in.md -o out.pdf` fails. A systemd unit also has no
-  # fontconfig, so typst finds no fonts at all unless TYPST_FONT_PATHS points
-  # at some. Both are invocation details the agent would have to remember on
-  # every call and would eventually get wrong — bake them in instead.
-  #
-  # typst rather than a TeX engine: self-contained and ~50 MB against several
-  # GB for texlive, and this only needs to render documents.
   md2pdf = pkgs.writeShellApplication {
     name = "md2pdf";
     runtimeInputs = [
@@ -41,6 +31,37 @@ let
       echo "$out"
     '';
   };
+
+  projectAgentTools = [
+    config.nix.package
+    pkgs.ripgrep
+    pkgs.fd
+    pkgs.jq
+    pkgs.gawk
+    pkgs.diffutils
+    pkgs.less
+    pkgs.curl
+    pkgs.gnutar
+    pkgs.gzip
+    pkgs.python3
+  ];
+  projectAgents = {
+    ricky = "soa-ricky";
+    markets = "soa-markets";
+  };
+
+  soaPkg = inputs.son-of-anton.packages.${pkgs.system}.default;
+  bridgeEnabled = true;
+
+  bridgePath = [
+    pkgs.bashInteractive
+    pkgs.coreutils
+    pkgs.git
+    pkgs.findutils
+    pkgs.gnugrep
+    pkgs.gnused
+  ]
+  ++ projectAgentTools;
 in
 {
   imports = [
@@ -63,6 +84,11 @@ in
     services.ssh.enable = true;
     services.binaryCache.serve = true;
     services.suspend-then-hibernate.enable = true;
+    services.scheduledReboot = {
+      enable = true;
+      action = "poweroff";
+      calendar = "Sun,Wed *-*-* 05:00:00";
+    };
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;
     services.wireview-monitor.enable = true;
@@ -78,22 +104,13 @@ in
         SEARXNG_URL = "http://10.0.0.6:8888/search";
         SIGNAL_REACTIONS = "false";
       };
-      # One service per account, all on the one Signal number, separated by
-      # Signal group id. The group ids and the sender allowlists live in the
-      # per-instance agenix secrets below, NOT here: this repo is public and
-      # both identify real people and real chats.
-      #
-      # Each secret carries, at minimum:
-      #   SIGNAL_GROUP_ALLOWED_USERS=<that instance's group id>
-      # and, where it must differ from the shared default:
-      #   SIGNAL_ALLOWED_USERS=<comma-separated numbers>
       instances = {
         work = {
           user = "e-work";
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "qwen3.5-122b-a10b";
+          model = "qwen3.8-27b-coding";
         };
         play = {
           user = "e-play";
@@ -101,18 +118,20 @@ in
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
           model = "qwen3.5-122b-a10b";
-          # Physics and research live on the work account. Off here so their
-          # keywords cannot pull a casual message into a one-shot loop.
-          settings.router.modes = [ "standard" ];
+          settings = {
+            router.modes = [ "standard" ];
+            platforms.signal.gateway_restart_notification = true;
+            mcp_servers = lib.mapAttrs (name: _: {
+              command = "${pkgs.socat}/bin/socat";
+              args = [
+                "STDIO"
+                "UNIX-CONNECT:/run/soa-${name}-mcp.sock"
+              ];
+              enabled = bridgeEnabled;
+            }) projectAgents;
+          };
         };
-        # Multi-human group, so it gets its own service account rather than a
-        # personal one: the agent acts for whoever speaks, and running it as
-        # e-play would hand the other members e-play's home, keys, and git
-        # identity. Its working directory is the only thing it can reach.
-        #
-        # Its secret also RE-DECLARES SIGNAL_ALLOWED_USERS with both people.
-        # That override is scoped to this instance by file order, so the second
-        # person is never authorized on work or play.
+
         house = {
           user = "soa-house";
           createUser = true;
@@ -122,8 +141,6 @@ in
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
           model = "qwen3.5-122b-a10b";
-          # Only this instance gets them: capability is per-account, and the
-          # household agent acts for whoever speaks in a shared group.
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -131,12 +148,62 @@ in
           ];
           settings.router.modes = [ "standard" ];
         };
+
+        ricky = {
+          user = "soa-ricky";
+          createUser = true;
+          managedAccount = false;
+          stateDir = "/var/lib/soa-ricky";
+          son-of-antonHome = "/var/lib/soa-ricky/.son-of-anton";
+          workingDirectory = "/srv/ricky";
+          environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
+          model = "qwen3.8-27b-coding";
+          settings = {
+            model.default = "qwen3.8-27b-coding";
+          };
+          extraPackages = projectAgentTools;
+          settings.router.modes = [ "standard" ];
+          # Shares the GPU with the working day: answers 8pm-7am, and
+          # outside that says so instead of taking a turn. The unit stays
+          # up, so history and slash commands keep working.
+          settings.gateway.active_hours = [
+            20
+            7
+          ];
+          settings.gateway.inactive_message =
+            "Off the clock until 8pm — the GPU is doing day-job work. "
+            + "Send this again tonight; it isn't queued.";
+        };
+
+        markets = {
+          user = "soa-markets";
+          createUser = true;
+          managedAccount = false;
+          stateDir = "/var/lib/soa-markets";
+          son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
+          workingDirectory = "/srv/markets";
+          environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
+          model = "qwen3.8-27b-coding";
+          settings = {
+            model.default = "qwen3.8-27b-coding";
+          };
+          extraPackages = projectAgentTools;
+          settings.router.modes = [ "standard" ];
+          settings.platforms.signal = {
+            require_mention = true;
+            history_backfill = true;
+          };
+          settings.gateway.active_hours = [
+            20
+            7
+          ];
+          settings.gateway.inactive_message =
+            "Off the clock until 8pm — the GPU is doing day-job work. "
+            + "Send this again tonight; it isn't queued.";
+        };
       };
 
       settings = {
-        # The CLI's default. Each instance pins its own Signal model through
-        # a channel_overrides entry on its group (see instances.*.model), so
-        # one config.yaml per account serves both surfaces.
         model = {
           default = "qwen3.8-27b-coding";
           provider = "custom";
@@ -174,6 +241,21 @@ in
           researcher_model = "qwen3.8-27b-instruct";
         };
         web.backend = "searxng";
+        # Oracle's LiteLLM aggregates fetch, searxng, nixos, arxiv, and
+        # context7 and re-exposes them as one MCP endpoint. Shared rather than
+        # per-instance: these are read-only research tools, and the alternative
+        # is five copies of the same five servers, one per account.
+        #
+        # ${LITELLM_MASTER_KEY} is interpolated from the instance's .env at
+        # read time -- the same key these instances already use for inference,
+        # so the gateway needs no credential of its own. `web.backend` stays
+        # searxng: that is the agent's own search path and does not go through
+        # here.
+        mcp_servers.oracle = {
+          url = "http://10.0.0.6:4000/mcp/";
+          headers.Authorization = "Bearer \${LITELLM_MASTER_KEY}";
+          enabled = true;
+        };
         auxiliary.title_generation = {
           provider = "custom";
           model = "supra-title";
@@ -182,10 +264,119 @@ in
           prompt_style = "completion";
         };
         platforms.signal.typing_indicator = true;
+        # Restart/startup notifications are operator-only: off for every
+        # instance, then re-enabled by instances.play.settings above.
+        platforms.signal.gateway_restart_notification = false;
+        # Self-improvement review once a day, overnight, instead of every
+        # N turns/tool-iterations (auxiliary.background_review.schedule).
+        auxiliary.background_review.schedule = "daily";
         terminal.home_mode = "cwd";
       };
     };
   };
+
+  # ── e-play reaching the project agents ───────────────────────────────
+  # `son-of-anton mcp serve` exposes one instance's conversations to another
+  # agent, but only over stdio: there is no port to connect to and no flag
+  # that gives it one. Crossing accounts therefore needs something that hands
+  # a connection to a process running as the OTHER user as its stdin and
+  # stdout, which is exactly socket activation with Accept=yes. sudo would be
+  # the obvious alternative and cannot work here at all: every gateway unit
+  # runs NoNewPrivileges=true, which refuses setuid outright.
+  #
+  # The hole is deliberate and one-way. Talking to one of these agents means
+  # asking it to take a turn, and its turns run commands in its own working
+  # directory -- so this grants e-play reach into ricky and markets, and
+  # grants ricky and markets no reach into e-play, house, or each other. They
+  # are never given the soa-bridge group, and each socket is 0660
+  # root:soa-bridge.
+  users.groups.soa-bridge = { };
+
+  systemd.sockets = lib.mapAttrs' (
+    name: _:
+    lib.nameValuePair "soa-${name}-mcp" {
+      description = "MCP bridge socket for the ${name} son-of-anton instance";
+      wantedBy = [ "sockets.target" ];
+      socketConfig = {
+        ListenStream = "/run/soa-${name}-mcp.sock";
+        SocketMode = "0660";
+        SocketGroup = "soa-bridge";
+        # One `mcp serve` per connection, with the connection as its stdio.
+        Accept = "yes";
+      };
+    }
+  ) projectAgents;
+
+  systemd.services = lib.mkMerge [
+    # Per-instance unit environment for the two project gateways.
+    # `services.son-of-anton.environment` is shared by every instance (it
+    # lands in each .env) and the per-instance escape hatch is an
+    # environmentFile, which is agenix-encrypted. Neither fits a non-secret
+    # value that must differ per instance, so it comes in through the unit.
+    #
+    # Git identity as env vars rather than a .gitconfig: git reads these
+    # directly, and there is no home to drop a config file in that the agent
+    # could not also rewrite. NIX_SSL_CERT_FILE because these two run
+    # `nix develop`, and a systemd unit gets none of the login profile that
+    # normally points nix at the CA bundle.
+    (lib.mapAttrs' (
+      name: user:
+      lib.nameValuePair "son-of-anton-${name}" {
+        environment = {
+          GIT_AUTHOR_NAME = "son-of-anton (${name})";
+          GIT_COMMITTER_NAME = "son-of-anton (${name})";
+          GIT_AUTHOR_EMAIL = "${user}@e-desktop.invalid";
+          GIT_COMMITTER_EMAIL = "${user}@e-desktop.invalid";
+          NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+        };
+      }
+    ) projectAgents)
+
+    # The far end of the bridge, one template unit per project agent: it runs
+    # as that instance's account, in that instance's SON_OF_ANTON_HOME, so a
+    # question arriving over the socket lands in the same session store and
+    # the same memory as the Signal group -- not in a fresh agent that merely
+    # shares the directory.
+    (lib.mapAttrs' (
+      name: user:
+      lib.nameValuePair "soa-${name}-mcp@" {
+        description = "MCP bridge for the ${name} son-of-anton instance (connection %i)";
+        path = bridgePath;
+        environment = {
+          HOME = "/var/lib/soa-${name}";
+          SON_OF_ANTON_HOME = "/var/lib/soa-${name}/.son-of-anton";
+          NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+        };
+        serviceConfig = {
+          User = user;
+          Group = "son-of-anton";
+          ExecStart = "${soaPkg}/bin/son-of-anton mcp serve";
+          StandardInput = "socket";
+          StandardOutput = "socket";
+          StandardError = "journal";
+          # The same reach as this instance's gateway and no more: its own
+          # state and its own working directory.
+          ProtectSystem = "strict";
+          ProtectHome = true;
+          PrivateTmp = true;
+          NoNewPrivileges = true;
+          UMask = "0007";
+          ReadWritePaths = [
+            "/var/lib/soa-${name}"
+            "/srv/${name}"
+          ];
+        };
+      }
+    ) projectAgents)
+
+    {
+      # The play gateway runs as e-play but with Group=son-of-anton, so it
+      # carries none of e-play's own groups. Without this it cannot open the
+      # 0660 root:soa-bridge sockets, and its two mcp_servers would sit there
+      # failing to connect.
+      son-of-anton-play.serviceConfig.SupplementaryGroups = [ "soa-bridge" ];
+    }
+  ];
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
@@ -205,6 +396,9 @@ in
     description = "ethan-play";
     extraGroups = [
       "nixconfig"
+      # Reaches the ricky and markets MCP bridge sockets from a terminal,
+      # the same way this account's gateway does through SupplementaryGroups.
+      "soa-bridge"
       "networkmanager"
       "wheel"
       "dialout"

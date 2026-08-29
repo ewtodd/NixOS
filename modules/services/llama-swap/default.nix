@@ -40,7 +40,7 @@ let
     pkg:
     (versionedLlama pkg).overrideAttrs (
       finalAttrs: oldAttrs: {
-        patches = (oldAttrs.patches or [ ]) ++ [ unused49Fix ];
+        #patches = (oldAttrs.patches or [ ]) ++ [ unused49Fix ];
         postInstall = (oldAttrs.postInstall or "") + ''
           mkdir -p $out/nix-support
           echo "${llamaCppVersion}" > $out/nix-support/llama-cpp-version
