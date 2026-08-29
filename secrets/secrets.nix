@@ -65,6 +65,15 @@ in
   "son-of-anton-house-env.age".publicKeys = personal ++ [
     server-e-desktop
   ];
+  # The two project instances. Recipients are the operator and the host that
+  # runs the service -- the friend on the other end of each Signal group never
+  # decrypts anything. markets also carries DATABENTO_API_KEY.
+  "son-of-anton-ricky-env.age".publicKeys = personal ++ [
+    server-e-desktop
+  ];
+  "son-of-anton-markets-env.age".publicKeys = personal ++ [
+    server-e-desktop
+  ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
   "proton-mail-bridge.age".publicKeys = personal;
 }

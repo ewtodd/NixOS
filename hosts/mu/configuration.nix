@@ -19,6 +19,9 @@ in
     services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.bastion.enable = true;
+    # e-desktop powers off Sun and Wed at 05:00 (plus up to 2 minutes of
+    # jitter); leave the shutdown room to finish, then wake it back up.
+    services.bastion.wakeCalendar = "Sun,Wed *-*-* 05:10:00";
     services.nextcloud.enable = true;
     services.minecraft.enable = true;
     services.nodeExporter.enable = true;

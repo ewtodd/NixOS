@@ -4,6 +4,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   hardware.asahi.enable = true;
+  hardware.asahi.pkgsSystem = "x86_64-linux";
   # The Asahi installer places peripheral firmware (Wi-Fi, webcam, ALS) at
   # /boot/vendorfw/firmware.cpio. Until the machine is provisioned and that
   # file exists, disable extraction so the config evaluates on the build

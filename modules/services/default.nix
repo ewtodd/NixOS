@@ -18,6 +18,7 @@ in
     ./grafana
     ./litellm-proxy
     ./llama-swap
+    ./vllm
     ./minecraft
     ./nextcloud
     ./node-exporter
@@ -76,16 +77,10 @@ in
         HibernateDelaySec = if (config.systemOptions.deviceType.laptop.enable) then "1800" else "3600";
       };
     })
-    (lib.mkIf (config.systemOptions.services.tailscale.enable) {
-      services.tailscale = {
-        enable = true;
-      };
-    })
 
     # Binary cache server (e-desktop). Public traffic terminates at Caddy on
     # the router (nu) and is forwarded over the trusted LAN, so we
-    # open the cache port on the firewall — the Tailscale funnel that used
-    # to front this is no longer needed.
+    # open the cache port on the firewall.
     (lib.mkIf (config.systemOptions.services.binaryCache.serve) {
       services.nix-serve = {
         enable = true;

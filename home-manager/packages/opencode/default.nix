@@ -268,6 +268,43 @@ in
                 output = [ "text" ];
               };
             };
+            "qwen3.8-flash-next" = {
+              name = "Qwen3.8 Flash Next";
+              attachment = true;
+              # The card documents xhigh / medium / low only. There is no
+              # `none` here on purpose: the non-thinking path is a different
+              # sampling profile (temp 0.7 / top_p 0.8 / presence 1.5), so the
+              # proxy exposes it as its own model rather than as a variant.
+              variants = {
+                xhigh = {
+                  reasoning_effort = "xhigh";
+                };
+                medium = {
+                  reasoning_effort = "medium";
+                };
+                low = {
+                  reasoning_effort = "low";
+                };
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
+            "qwen3.8-flash-next-instruct" = {
+              name = "Qwen3.8 Flash Next (instruct)";
+              attachment = true;
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
             "deepseek-v4-flash-full" = {
               name = "Deepseek V4 Flash (full precision)";
               variants = {

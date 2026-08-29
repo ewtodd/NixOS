@@ -12,7 +12,6 @@
     hardware.fingerprint.enable = true;
     hardware.frameworkLaptop.enable = true;
     services.suspend-then-hibernate.enable = true;
-    services.tailscale.enable = true;
     services.binaryCache.consume = true;
     owner.v.enable = true;
     apps.zoom.enable = true;

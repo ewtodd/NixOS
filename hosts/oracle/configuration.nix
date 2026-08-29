@@ -18,6 +18,7 @@ in
     deviceType.server.enable = true;
     services.ssh.enable = true;
     services.deploy.enable = true;
+    services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.litellmProxy.enable = true;
     services.searxng = {
@@ -64,17 +65,9 @@ in
   networking.hostName = "oracle";
   system.stateVersion = "26.11";
 
-  nix.distributedBuilds = true;
-  nix.buildMachines = [
-    {
-      hostName = "10.0.0.4";
-      system = "aarch64-linux";
-      sshUser = "deploy";
-      sshKey = "/etc/ssh/ssh_host_ed25519_key";
-      maxJobs = 8;
-      speedFactor = 10;
-      supportedFeatures = [ "big-parallel" ];
-    }
-  ];
-
+  # 8 cores, 7 GB: default max-jobs=auto x cores=0 thrashes swap.
+  nix.settings = {
+    max-jobs = 2;
+    cores = 4;
+  };
 }

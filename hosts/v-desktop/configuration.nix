@@ -16,7 +16,6 @@
     hardware.xbox.enable = true;
     deviceType.desktop.enable = true;
     services.ssh.enable = true;
-    services.tailscale.enable = true;
     services.binaryCache.consume = true;
     owner.v.enable = true;
     services.suspend-then-hibernate.enable = true;
