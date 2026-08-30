@@ -902,11 +902,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1788048738,
-        "narHash": "sha256-jPde83i0nTkNvpS8BHA/iWkA3G2OiFhG8BKZLiiRfsw=",
+        "lastModified": 1788051996,
+        "narHash": "sha256-gdXgb7XDqTP1lHX6NZvSD1jT/1TfN+1UL/lmFEv5c3k=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "0836fe88f6c485ececf4d5d8675e05590f4382ef",
+        "rev": "abad9565c724f35594e5de0ede308a13edc6f4c3",
         "type": "github"
       },
       "original": {

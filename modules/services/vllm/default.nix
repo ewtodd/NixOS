@@ -103,7 +103,7 @@ let
       --max-num-seqs ${toString cfg.maxNumSeqs} \
       --gpu-memory-utilization ${toString cfg.gpuMemoryUtilization} \
       --host 0.0.0.0 --port ${toString cfg.port} \
-      --language-model-only \
+      ${lib.optionalString cfg.languageModelOnly "--language-model-only"} \
       ${
         lib.optionalString (
           cfg.toolCallParser != null

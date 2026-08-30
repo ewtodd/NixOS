@@ -147,6 +147,9 @@ in
             pkgs.typst
           ];
           settings.router.modes = [ "standard" ];
+          settings.gateway = {
+            group_sessions_per_user = false;
+          };
         };
 
         ricky = {
@@ -163,16 +166,16 @@ in
           };
           extraPackages = projectAgentTools;
           settings.router.modes = [ "standard" ];
-          # Shares the GPU with the working day: answers 8pm-7am, and
-          # outside that says so instead of taking a turn. The unit stays
-          # up, so history and slash commands keep working.
-          settings.gateway.active_hours = [
-            20
-            7
-          ];
-          settings.gateway.inactive_message =
-            "Off the clock until 8pm — the GPU is doing day-job work. "
-            + "Send this again tonight; it isn't queued.";
+          settings.gateway = {
+            group_sessions_per_user = false;
+            active_hours = [
+              20
+              7
+            ];
+            inactive_message =
+              "Off the clock until 8pm - son-of-anton is doing real work!"
+              + "Your message is saved; I'll ask about it tonight.";
+          };
         };
 
         markets = {
@@ -193,13 +196,16 @@ in
             require_mention = true;
             history_backfill = true;
           };
-          settings.gateway.active_hours = [
-            20
-            7
-          ];
-          settings.gateway.inactive_message =
-            "Off the clock until 8pm — the GPU is doing day-job work. "
-            + "Send this again tonight; it isn't queued.";
+          settings.gateway = {
+            group_sessions_per_user = false;
+            active_hours = [
+              20
+              7
+            ];
+            inactive_message =
+              "Off the clock until 8pm - son-of-anton is doing real work!"
+              + "Your message is saved; I'll ask about it tonight.";
+          };
         };
       };
 
