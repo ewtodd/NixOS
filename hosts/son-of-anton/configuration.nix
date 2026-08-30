@@ -34,9 +34,10 @@ in
       model = "Qwen/Qwen3.8-27B-FP8";
       devices = "0,1";
       tensorParallelSize = 2;
+      maxModelLen = 262144;
       kvCacheDtype = "fp8";
-      maxNumSeqs = 8;
-      gpuMemoryUtilization = 0.95;
+      maxNumSeqs = 4;
+      gpuMemoryUtilization = 0.90;
       enforceEager = true;
       mtp = true;
       mtpTokens = 3;
@@ -56,7 +57,7 @@ in
           ctxSize = 524288;
           loadMode = "mlock";
           device = "ROCm2";
-          parallel = 1;
+          parallel = 2;
           batchSize = 1024;
           ubatchSize = 512;
           flashAttn = "on";
