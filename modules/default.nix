@@ -638,6 +638,11 @@ with lib;
           example = "qwen3";
           description = "vLLM reasoning parser name; splits thinking into reasoning_content.";
         };
+        languageModelOnly = mkOption {
+          type = types.bool;
+          default = true;
+          description = "Pass --language-model-only, which zeroes every multimodal limit.";
+        };
         extraFlags = mkOption {
           type = types.listOf types.str;
           default = [ ];

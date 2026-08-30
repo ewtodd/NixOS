@@ -44,6 +44,7 @@ in
       port = 8100;
       toolCallParser = "qwen3_xml";
       reasoningParser = "qwen3";
+      languageModelOnly = false;
     };
     # llama.cpp on Strix (device 2): Qwen3.8-27B Q5 with MTP
     services.llamaSwap = {
@@ -65,6 +66,11 @@ in
           vQuant = "f16";
           specType = "draft-mtp";
           specDraftNMax = 3;
+          mmproj = pkgs.fetchurl {
+            url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/mmproj-F16.gguf";
+            hash = "sha256-y7hBqe4GNrLsFy9buN8uqN/rAekP58YSZYHWYqC05D4=";
+          };
+          mmprojDevice = "ROCm2";
           extraFlags = [
             "--temp 1.0"
             "--top-p 0.95"
