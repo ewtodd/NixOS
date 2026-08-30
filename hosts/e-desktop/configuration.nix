@@ -117,7 +117,7 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
-          model = "qwen3.5-122b-a10b";
+          model = "qwen3.8-27b-coding";
           settings = {
             router.modes = [ "standard" ];
             platforms.signal.gateway_restart_notification = true;
@@ -140,7 +140,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "qwen3.5-122b-a10b";
+          model = "qwen3.8-27b-coding";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -218,23 +218,19 @@ in
             "qwen3.8-27b-instruct" = {
               context_length = 262144;
             };
-            "qwen3.5-122b-a10b" = {
-              context_length = 262144;
-            };
-            "deepseek-v4-flash-full" = { };
             "deepseek-v4-flash" = { };
             "deepseek-v4-pro" = { };
           };
         };
         physics = {
-          model = "deepseek-v4-flash-full";
+          model = "deepseek-v4-flash";
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";
         };
         router = {
           enabled = true;
           simple_model = "qwen3.8-27b-instruct";
-          default_model = "qwen3.5-122b-a10b";
+          default_model = "qwen3.8-27b-coding";
           planner_model = "qwen3.8-27b-coding";
           executor_model = "qwen3.8-27b-coding";
           reviewer_model = "deepseek-v4-pro";

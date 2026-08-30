@@ -102,6 +102,20 @@
           mkLocalSampled =
             api_base: model: profile:
             (mkLocal api_base model) // profile;
+          vllmSlots = 4;
+          llamaSlots = 2;
+          mkPool =
+            name: vllmParams: llamaParams:
+            builtins.genList (i: {
+              model_name = name;
+              litellm_params = vllmParams;
+              model_info.id = "${name}-vllm-${toString i}";
+            }) vllmSlots
+            ++ builtins.genList (i: {
+              model_name = name;
+              litellm_params = llamaParams;
+              model_info.id = "${name}-llama-${toString i}";
+            }) llamaSlots;
         in
         {
           services.litellm = {
@@ -110,11 +124,7 @@
             port = 4000;
             environmentFile = "/run/agenix/litellm-master-key";
 
-            # litellm 1.97 in nixos-unstable fails to start (`Missing
-            # dependency No module named 'expression'`). Pin the package
-            # from the last-known-working nixpkgs rev until upstream
-            # packages expression.
-            package = inputs.nixpkgs-litellm.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
+            package = inputs.nixpkgs-good.legacyPackages.${pkgs.stdenv.hostPlatform.system}.litellm;
 
             settings = {
               general_settings.master_key = "os.environ/LITELLM_MASTER_KEY";
@@ -122,6 +132,9 @@
               litellm_settings = {
                 drop_params = false;
                 request_timeout = 1800;
+              };
+              router_settings = {
+                routing_strategy = "least-busy";
               };
 
               mcp_servers = {
@@ -162,26 +175,6 @@
                   litellm_params = mkLocal oracleSwap "openai/supra-title";
                 }
                 {
-                  model_name = "qwen3.8-27b-coding";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking;
-                }
-                {
-                  model_name = "qwen3.8-27b-coding";
-                  litellm_params =
-                    mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
-                      sampling.qwen38Thinking;
-                }
-                {
-                  model_name = "qwen3.8-27b-instruct";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct;
-                }
-                {
-                  model_name = "qwen3.8-27b-instruct";
-                  litellm_params =
-                    mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
-                      sampling.qwen38Instruct;
-                }
-                {
                   model_name = "qwen3.8-flash-next";
                   litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-flash-next" sampling.qwen38Thinking;
                 }
@@ -217,7 +210,13 @@
                     cache_read_input_token_cost_float = 0.000000022; # $0.022 / 1M
                   };
                 }
-              ];
+              ]
+              ++ mkPool "qwen3.8-27b-coding" (mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
+                sampling.qwen38Thinking
+              ) (mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking)
+              ++ mkPool "qwen3.8-27b-instruct" (mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
+                sampling.qwen38Instruct
+              ) (mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct);
             };
           };
 

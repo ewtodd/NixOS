@@ -9,8 +9,10 @@ let
   profile = config.Profile;
   lisepp = inputs.lisepp.packages.${pkgs.stdenv.hostPlatform.system}.default;
   SRIM = inputs.SRIM.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  package = inputs.nixpkgs-good.legacyPackages.${pkgs.stdenv.hostPlatform.system}.root;
+
   rootbrowse_bin = pkgs.writeShellScriptBin "rootbrowse_bin" ''
-    exec ${pkgs.root}/bin/root --web=off -e 'new TBrowser();'  
+    exec ${package}/bin/root --web=off -e 'new TBrowser();'  
   '';
   rootbrowse_desktop = pkgs.makeDesktopItem {
     name = "rootbrowse";
