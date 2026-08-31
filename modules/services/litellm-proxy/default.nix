@@ -41,8 +41,6 @@
           ...
         }:
         let
-          # The two MCP servers that are not just a nixpkgs binary. Both are
-          # spawned as stdio subprocesses of the proxy, inside this container.
           searxngMcpPython = pkgs.python3.withPackages (ps: [
             ps.mcp
             ps.httpx
@@ -62,8 +60,8 @@
             "frequency_penalty"
             "response_format"
           ];
-          sonOfAnton = "http://10.0.0.5:8080/v1"; # llama-swap on Strix (device 2)
           sonOfAntonVllm = "http://10.0.0.5:8100/v1"; # vLLM on R9700s (TP=2)
+          sonOfAntonDs4 = "http://10.0.0.5:8050/v1"; # ds4 DeepSeek-V4 on Strix
           oracleSwap = "http://10.0.0.6:8080/v1";
 
           mkLocal = api_base: model: {
@@ -73,14 +71,6 @@
             timeout = 1800;
           };
           sampling = {
-            qwen35 = {
-              temperature = 1.0;
-              top_p = 0.95;
-              top_k = 20;
-              min_p = 0;
-              presence_penalty = 1.5;
-              repetition_penalty = 1.0;
-            };
             qwen38Thinking = {
               temperature = 1.0;
               top_p = 0.95;
@@ -103,19 +93,13 @@
             api_base: model: profile:
             (mkLocal api_base model) // profile;
           vllmSlots = 4;
-          llamaSlots = 2;
           mkPool =
-            name: vllmParams: llamaParams:
+            name: vllmParams:
             builtins.genList (i: {
               model_name = name;
               litellm_params = vllmParams;
               model_info.id = "${name}-vllm-${toString i}";
-            }) vllmSlots
-            ++ builtins.genList (i: {
-              model_name = name;
-              litellm_params = llamaParams;
-              model_info.id = "${name}-llama-${toString i}";
-            }) llamaSlots;
+            }) vllmSlots;
         in
         {
           services.litellm = {
@@ -175,48 +159,23 @@
                   litellm_params = mkLocal oracleSwap "openai/supra-title";
                 }
                 {
-                  model_name = "qwen3.8-flash-next";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-flash-next" sampling.qwen38Thinking;
+                  model_name = "deepseek-v4-flash-local";
+                  litellm_params = mkLocal sonOfAntonDs4 "openai/deepseek-v4-flash";
                 }
                 {
-                  model_name = "qwen3.8-flash-next-instruct";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.8-flash-next" sampling.qwen38Instruct;
-                }
-                {
-                  model_name = "qwen3.5-122b-a10b";
-                  litellm_params = mkLocalSampled sonOfAnton "openai/qwen3.5-122b-a10b" sampling.qwen35;
-                }
-                {
-                  model_name = "deepseek-v4-flash-full";
-                  litellm_params = mkLocal sonOfAnton "openai/deepseek-v4-flash-full";
-                }
-                {
-                  model_name = "deepseek-v4-flash";
+                  model_name = "deepseek-v4-api";
                   litellm_params = {
-                    model = "deepseek/deepseek-v4-flash";
+                    model = "deepseek/deepseek-v4-flash-vision-exp";
                     api_key = "os.environ/DEEPSEEK_API_KEY";
-                    input_cost_per_token_float = 0.00000022; # $0.22 / 1M
-                    output_cost_per_token_float = 0.00000066; # $0.66 / 1M
-                    cache_read_input_token_cost_float = 0.000000007; # $0.007 / 1M
-                  };
-                }
-                {
-                  model_name = "deepseek-v4-pro";
-                  litellm_params = {
-                    model = "deepseek/deepseek-v4-pro";
-                    api_key = "os.environ/DEEPSEEK_API_KEY";
-                    input_cost_per_token_float = 0.00000066; # $0.66 / 1M
-                    output_cost_per_token_float = 0.00000198; # $1.98 / 1M
-                    cache_read_input_token_cost_float = 0.000000022; # $0.022 / 1M
                   };
                 }
               ]
-              ++ mkPool "qwen3.8-27b-coding" (mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
-                sampling.qwen38Thinking
-              ) (mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Thinking)
-              ++ mkPool "qwen3.8-27b-instruct" (mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8"
-                sampling.qwen38Instruct
-              ) (mkLocalSampled sonOfAnton "openai/qwen3.8-27b" sampling.qwen38Instruct);
+              ++ mkPool "qwen3.8-27b-coding" (
+                mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8" sampling.qwen38Thinking
+              )
+              ++ mkPool "qwen3.8-27b-instruct" (
+                mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8" sampling.qwen38Instruct
+              );
             };
           };
 

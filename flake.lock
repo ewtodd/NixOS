@@ -206,6 +206,22 @@
         "type": "github"
       }
     },
+    "ds4": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787952307,
+        "narHash": "sha256-n0r4zxPKa1mKEHEMy0UjR871OPmbBZ/BBOva4WFmaWc=",
+        "owner": "antirez",
+        "repo": "ds4",
+        "rev": "8db89fe083ae4d17c9a2428ccd29803d3ae8f577",
+        "type": "github"
+      },
+      "original": {
+        "owner": "antirez",
+        "repo": "ds4",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -873,6 +889,7 @@
         "dank-material-shell": "dank-material-shell",
         "danksearch": "danksearch",
         "dms-plugin-registry": "dms-plugin-registry",
+        "ds4": "ds4",
         "home-manager": "home-manager_2",
         "lisepp": "lisepp",
         "llama-cpp": "llama-cpp",

@@ -67,6 +67,10 @@
       url = "github:ggml-org/llama.cpp";
       # inputs.nixpkgs.follows = "nixpkgs";
     };
+    ds4 = {
+      url = "github:antirez/ds4";
+      flake = false;
+    };
     arxiv-mcp-server-src = {
       url = "github:blazickjp/arxiv-mcp-server";
       flake = false;
@@ -279,6 +283,15 @@
 
       packages.x86_64-linux = {
         neovim = mkNeovim;
+        ds4 =
+          (import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          }).callPackage
+            ./modules/services/ds4/pkgs/ds4.nix
+            {
+              src = inputs.ds4;
+            };
       };
 
       nixosConfigurations = builtins.mapAttrs (

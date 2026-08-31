@@ -27,7 +27,6 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:00:00";
-    # vLLM on R9700s (TP=2): Qwen3.8-27B-FP8 with MTP
     services.vllm = {
       enable = true;
       lanExpose = true;
@@ -46,37 +45,19 @@ in
       reasoningParser = "qwen3";
       languageModelOnly = false;
     };
-    # llama.cpp on Strix (device 2): Qwen3.8-27B Q5 with MTP
-    services.llamaSwap = {
+    services.ds4 = {
       enable = true;
       lanExpose = true;
+      model = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/86bb38ce2ba7a98ab0e550359fec5f48859dc723/DeepSeek-V4-Flash-Layers37-42Q4KExperts-OtherExpertLayersIQ2XXSGateUp-Q2KDown-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-fixed-0731.gguf";
+      port = 8050;
+      ctxSize = 131072;
+      tokens = 4096;
+      threads = 32;
+      prefillChunk = 1024;
+      batchedSession = 3;
+      kvDiskDir = "/scratch/ds4-kv";
+      kvDiskSpaceMb = 65536;
       backend = "rocm";
-      cacheDir = "/scratch/llama-cache";
-      models = {
-        "qwen3.8-27b" = {
-          hf = "unsloth/Qwen3.8-27B-GGUF:UD-Q5_K_XL";
-          ctxSize = 524288;
-          loadMode = "mlock";
-          device = "ROCm2";
-          parallel = 2;
-          batchSize = 1024;
-          ubatchSize = 512;
-          flashAttn = "on";
-          kQuant = "f16";
-          vQuant = "f16";
-          specType = "draft-mtp";
-          specDraftNMax = 3;
-          mmproj = pkgs.fetchurl {
-            url = "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/main/mmproj-F16.gguf";
-            hash = "sha256-y7hBqe4GNrLsFy9buN8uqN/rAekP58YSZYHWYqC05D4=";
-          };
-          mmprojDevice = "ROCm2";
-          extraFlags = [
-            "--temp 1.0"
-            "--top-p 0.95"
-          ];
-        };
-      };
     };
     security.harden.enable = true;
   };
@@ -89,6 +70,7 @@ in
       value = "unlimited";
     }
   ];
+
   security.sudo-rs.extraRules = [
     {
       users = [ "son-of-anton" ];

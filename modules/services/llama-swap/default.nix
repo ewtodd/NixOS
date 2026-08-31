@@ -156,6 +156,15 @@ let
         ++ lib.optionals (m.cacheReuse != null) [
           "--cache-reuse ${toString m.cacheReuse}"
         ]
+        ++ lib.optionals (m.cacheRam != null) [
+          "--cache-ram ${toString m.cacheRam}"
+        ]
+        ++ lib.optionals (m.ctxCheckpoints != null) [
+          "--ctx-checkpoints ${toString m.ctxCheckpoints}"
+        ]
+        ++ lib.optionals (m.checkpointMinStep != null) [
+          "--checkpoint-min-step ${toString m.checkpointMinStep}"
+        ]
       )
       ++ [ "--ctx-size ${toString m.ctxSize}" ]
       ++ lib.optionals (m.parallel != null) [ "--parallel ${toString m.parallel}" ]
