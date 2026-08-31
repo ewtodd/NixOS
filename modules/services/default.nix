@@ -18,6 +18,7 @@ in
     ./grafana
     ./litellm-proxy
     ./llama-swap
+    ./ds4
     ./vllm
     ./minecraft
     ./nextcloud

@@ -224,12 +224,14 @@ in
             "qwen3.8-27b-instruct" = {
               context_length = 262144;
             };
-            "deepseek-v4-flash" = { };
-            "deepseek-v4-pro" = { };
+            "deepseek-v4-flash-local" = {
+              context_length = 131072;
+            };
+            "deepseek-v4-api" = { };
           };
         };
         physics = {
-          model = "deepseek-v4-flash";
+          model = "deepseek-v4-api";
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";
         };
@@ -239,8 +241,8 @@ in
           default_model = "qwen3.8-27b-coding";
           planner_model = "qwen3.8-27b-coding";
           executor_model = "qwen3.8-27b-coding";
-          reviewer_model = "deepseek-v4-pro";
-          researcher_model = "qwen3.8-27b-instruct";
+          reviewer_model = "deepseek-v4-flash-local";
+          researcher_model = "deepseek-v4-flash-local";
         };
         web.backend = "searxng";
         # Oracle's LiteLLM aggregates fetch, searxng, nixos, arxiv, and
