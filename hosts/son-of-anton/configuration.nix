@@ -30,6 +30,15 @@ in
     services.vllm = {
       enable = true;
       lanExpose = true;
+      # RCCL watchdog fires at 600s by default -- that is 10 minutes of dead
+      # server before Restart=always can act. 90s fails fast instead.
+      extraFlags = [ "--distributed-timeout-seconds 90" ];
+      extraEnv = {
+        # Both machine losses on 2026-08-31 ended mid "preparing to dump debug
+        # info": the watchdog dump tears down wedged GPU workers and takes the
+        # box with it. Skip the dump; the stack watchdog already captures more.
+        TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
+      };
       model = "Qwen/Qwen3.8-27B-FP8";
       devices = "0,1";
       tensorParallelSize = 2;

@@ -88,7 +88,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     son-of-anton = {
-      url = "github:ewtodd/son-of-anton";
+      url = "/home/e-work/son-of-anton";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri-utilities = {
