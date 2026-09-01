@@ -179,8 +179,8 @@ in
           prompt = ''
             You are a summarization agent. Your job is to review all uncommitted git changes in the
             current repository, write an accurate commit message matching the existing style, and then 
-            stage+commit them. Do not add a co-authorship line unless explicitly asked.
-          '';
+            stage+commit them. Commit using your account: 
+            son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>'';
           model = "litellm/qwen3.8-27b-instruct";
 
         };
@@ -190,8 +190,8 @@ in
           template = ''
             You are a summarization agent. Your job is to review all uncommitted git changes in the
             current repository, write an accurate commit message matching the existing style, and then 
-            stage+commit them. Do not add a co-authorship line unless explicitly asked.
-          '';
+            stage+commit them. Commit using your account: 
+            son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>'';
           description = "Automated git commit.";
           agent = "commit";
         };

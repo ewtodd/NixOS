@@ -51,6 +51,7 @@ let
   };
 
   soaPkg = inputs.son-of-anton.packages.${pkgs.system}.default;
+  soaPhysicsPython = inputs.son-of-anton.packages.${pkgs.system}.physics-runtime;
   bridgeEnabled = true;
 
   bridgePath = [
@@ -111,6 +112,10 @@ in
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
           model = "qwen3.8-27b-coding";
+          settings.physics = {
+            data_dirs = [ "/home/e-work/LabData/ANSG/YAP-Final" ];
+            workspace_root = "/home/e-work/workspace-soa/runs";
+          };
         };
         play = {
           user = "e-play";
@@ -231,9 +236,75 @@ in
           };
         };
         physics = {
-          model = "deepseek-v4-api";
+          # Both roles on Qwen3.8-27B, which the vLLM pool serves under two
+          # sampling profiles of the same weights — so switching between them
+          # costs nothing.
+          #
+          # `-coding` is the THINKING profile (temperature 1.0, no
+          # enable_thinking=false); `-instruct` sets enable_thinking=false. That
+          # is the right way round for these two jobs and was previously the
+          # wrong way round: the reasoning role ran on deepseek-v4-flash-local,
+          # whose rounds took ~15 minutes each, while the script writers ran on
+          # the thinking profile and spent 40-55k output tokens and nine to
+          # twenty minutes reasoning before emitting a 19 KB script.
+          model = "qwen3.8-27b-coding";
+          coder_model = "qwen3.8-27b-instruct";
+          # Qwen3.8's default effort is "xhigh". Measured on a script-writing
+          # prompt with a 24k budget: xhigh spent 628 s and 80,366 characters
+          # reasoning and emitted no script at all; medium took 120 s and
+          # produced one; low took 93 s. Medium keeps the reasoning that the
+          # Manager's judgment work is for without the default's collapse.
+          #
+          # Safe to set globally even though coder_model has thinking
+          # disabled: measured against qwen3.8-27b-instruct at low, medium and
+          # xhigh, its reasoning channel stays empty — enable_thinking=false
+          # wins, and the parameter is inert.
+          reasoning_effort = "medium";
+          # Per-role overrides beat both. The critic is exactly where a slow,
+          # knowledgeable model belongs: one call per iteration against a
+          # Manager that spends five or six rounds and several sub-agent
+          # dispatches, so ds4's latency is a rounding error — and judging
+          # whether a calibration anchor is quenched or a classifier is
+          # training on the label is world knowledge, not code.
+          agent_models = {
+            critic = "deepseek-v4-flash-local";
+          };
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";
+          python = "${soaPhysicsPython}/bin/python3";
+          sandbox = "bwrap";
+          # Seconds one model-authored script may run for. The 60 s default
+          # came from a scaffold built for symbolic work, where a script that
+          # runs a minute is stuck. Here the files are multi-GB and a full
+          # load_tree_data does not finish in a minute — and the agent reads a
+          # timeout as "wrong approach", so it retries the same script rather
+          # than the smaller read that would have worked.
+          script_timeout = 900;
+          # Physics mode has no wall-clock or cost gate, so this is the only
+          # ceiling on an unattended run.
+          max_iterations = 20;
+          mcp = {
+            server = "oracle";
+            # Per role, and named tools rather than a server prefix: "arxiv"
+            # matches all nineteen tools that server exposes, including topic
+            # watches, alert checks, a reindexer and four LaTeX-source readers
+            # — a human's library workflow, and nineteen schemas in front of an
+            # agent whose budget is fifteen calls an iteration.
+            roles = {
+              # Reading tools only: find, triage, fetch, read, search within.
+              # No context7 — the Manager writes the brief, not the code.
+              manager = [
+                "arxiv-search_papers"
+                "arxiv-get_abstract"
+                "arxiv-download_paper"
+                "arxiv-read_paper"
+                "arxiv-search_paper_text"
+              ];
+              # The one that writes the script gets the API docs, and nothing
+              # else. Guessing at PyROOT is this loop's dominant failure.
+              subagent = [ "context7" ];
+            };
+          };
         };
         router = {
           enabled = true;
@@ -245,16 +316,6 @@ in
           researcher_model = "deepseek-v4-flash-local";
         };
         web.backend = "searxng";
-        # Oracle's LiteLLM aggregates fetch, searxng, nixos, arxiv, and
-        # context7 and re-exposes them as one MCP endpoint. Shared rather than
-        # per-instance: these are read-only research tools, and the alternative
-        # is five copies of the same five servers, one per account.
-        #
-        # ${LITELLM_MASTER_KEY} is interpolated from the instance's .env at
-        # read time -- the same key these instances already use for inference,
-        # so the gateway needs no credential of its own. `web.backend` stays
-        # searxng: that is the agent's own search path and does not go through
-        # here.
         mcp_servers.oracle = {
           url = "http://10.0.0.6:4000/mcp/";
           headers.Authorization = "Bearer \${LITELLM_MASTER_KEY}";
@@ -268,32 +329,12 @@ in
           prompt_style = "completion";
         };
         platforms.signal.typing_indicator = true;
-        # Restart/startup notifications are operator-only: off for every
-        # instance, then re-enabled by instances.play.settings above.
         platforms.signal.gateway_restart_notification = false;
-        # Self-improvement review once a day, overnight, instead of every
-        # N turns/tool-iterations (auxiliary.background_review.schedule).
         auxiliary.background_review.schedule = "daily";
         terminal.home_mode = "cwd";
       };
     };
   };
-
-  # ── e-play reaching the project agents ───────────────────────────────
-  # `son-of-anton mcp serve` exposes one instance's conversations to another
-  # agent, but only over stdio: there is no port to connect to and no flag
-  # that gives it one. Crossing accounts therefore needs something that hands
-  # a connection to a process running as the OTHER user as its stdin and
-  # stdout, which is exactly socket activation with Accept=yes. sudo would be
-  # the obvious alternative and cannot work here at all: every gateway unit
-  # runs NoNewPrivileges=true, which refuses setuid outright.
-  #
-  # The hole is deliberate and one-way. Talking to one of these agents means
-  # asking it to take a turn, and its turns run commands in its own working
-  # directory -- so this grants e-play reach into ricky and markets, and
-  # grants ricky and markets no reach into e-play, house, or each other. They
-  # are never given the soa-bridge group, and each socket is 0660
-  # root:soa-bridge.
   users.groups.soa-bridge = { };
 
   systemd.sockets = lib.mapAttrs' (
@@ -312,17 +353,6 @@ in
   ) projectAgents;
 
   systemd.services = lib.mkMerge [
-    # Per-instance unit environment for the two project gateways.
-    # `services.son-of-anton.environment` is shared by every instance (it
-    # lands in each .env) and the per-instance escape hatch is an
-    # environmentFile, which is agenix-encrypted. Neither fits a non-secret
-    # value that must differ per instance, so it comes in through the unit.
-    #
-    # Git identity as env vars rather than a .gitconfig: git reads these
-    # directly, and there is no home to drop a config file in that the agent
-    # could not also rewrite. NIX_SSL_CERT_FILE because these two run
-    # `nix develop`, and a systemd unit gets none of the login profile that
-    # normally points nix at the CA bundle.
     (lib.mapAttrs' (
       name: user:
       lib.nameValuePair "son-of-anton-${name}" {
@@ -336,11 +366,6 @@ in
       }
     ) projectAgents)
 
-    # The far end of the bridge, one template unit per project agent: it runs
-    # as that instance's account, in that instance's SON_OF_ANTON_HOME, so a
-    # question arriving over the socket lands in the same session store and
-    # the same memory as the Signal group -- not in a fresh agent that merely
-    # shares the directory.
     (lib.mapAttrs' (
       name: user:
       lib.nameValuePair "soa-${name}-mcp@" {
@@ -358,8 +383,6 @@ in
           StandardInput = "socket";
           StandardOutput = "socket";
           StandardError = "journal";
-          # The same reach as this instance's gateway and no more: its own
-          # state and its own working directory.
           ProtectSystem = "strict";
           ProtectHome = true;
           PrivateTmp = true;
@@ -374,10 +397,6 @@ in
     ) projectAgents)
 
     {
-      # The play gateway runs as e-play but with Group=son-of-anton, so it
-      # carries none of e-play's own groups. Without this it cannot open the
-      # 0660 root:soa-bridge sockets, and its two mcp_servers would sit there
-      # failing to connect.
       son-of-anton-play.serviceConfig.SupplementaryGroups = [ "soa-bridge" ];
     }
   ];
@@ -400,8 +419,6 @@ in
     description = "ethan-play";
     extraGroups = [
       "nixconfig"
-      # Reaches the ricky and markets MCP bridge sockets from a terminal,
-      # the same way this account's gateway does through SupplementaryGroups.
       "soa-bridge"
       "networkmanager"
       "wheel"
@@ -442,7 +459,6 @@ in
 
   services.protonmail-bridge = {
     enable = true;
-    # Secret-service backends for Proton Bridge's headless credential storage.
     path = with pkgs; [
       pass
       gnome-keyring
