@@ -76,6 +76,7 @@ let
     rpathFlags
     "-lhipblas"
     "-lhipblaslt"
+    "-lrocblas"
   ];
 
   coreObjs = lib.concatStringsSep " " [

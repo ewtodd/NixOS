@@ -232,7 +232,9 @@ in
             "deepseek-v4-flash-local" = {
               context_length = 131072;
             };
-            "deepseek-v4-api" = { };
+            "deepseek-v4-api" = {
+              context_length = 1048576;
+            };
           };
         };
         physics = {
