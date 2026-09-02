@@ -116,6 +116,10 @@ in
             data_dirs = [ "/home/e-work/LabData/ANSG/YAP-Final" ];
             workspace_root = "/home/e-work/workspace-soa/runs";
           };
+          settings.git = {
+            author_name = "son-of-anton-bot";
+            author_email = "307402699+son-of-anton-bot@users.noreply.github.com";
+          };
         };
         play = {
           user = "e-play";
@@ -134,6 +138,10 @@ in
               ];
               enabled = bridgeEnabled;
             }) projectAgents;
+          };
+          settings.git = {
+            author_name = "son-of-anton-bot";
+            author_email = "307402699+son-of-anton-bot@users.noreply.github.com";
           };
         };
 
@@ -238,36 +246,9 @@ in
           };
         };
         physics = {
-          # Both roles on Qwen3.8-27B, which the vLLM pool serves under two
-          # sampling profiles of the same weights — so switching between them
-          # costs nothing.
-          #
-          # `-coding` is the THINKING profile (temperature 1.0, no
-          # enable_thinking=false); `-instruct` sets enable_thinking=false. That
-          # is the right way round for these two jobs and was previously the
-          # wrong way round: the reasoning role ran on deepseek-v4-flash-local,
-          # whose rounds took ~15 minutes each, while the script writers ran on
-          # the thinking profile and spent 40-55k output tokens and nine to
-          # twenty minutes reasoning before emitting a 19 KB script.
           model = "qwen3.8-27b-coding";
           coder_model = "qwen3.8-27b-instruct";
-          # Qwen3.8's default effort is "xhigh". Measured on a script-writing
-          # prompt with a 24k budget: xhigh spent 628 s and 80,366 characters
-          # reasoning and emitted no script at all; medium took 120 s and
-          # produced one; low took 93 s. Medium keeps the reasoning that the
-          # Manager's judgment work is for without the default's collapse.
-          #
-          # Safe to set globally even though coder_model has thinking
-          # disabled: measured against qwen3.8-27b-instruct at low, medium and
-          # xhigh, its reasoning channel stays empty — enable_thinking=false
-          # wins, and the parameter is inert.
           reasoning_effort = "medium";
-          # Per-role overrides beat both. The critic is exactly where a slow,
-          # knowledgeable model belongs: one call per iteration against a
-          # Manager that spends five or six rounds and several sub-agent
-          # dispatches, so ds4's latency is a rounding error — and judging
-          # whether a calibration anchor is quenched or a classifier is
-          # training on the label is world knowledge, not code.
           agent_models = {
             critic = "deepseek-v4-flash-local";
           };
@@ -275,26 +256,11 @@ in
           api_key_env = "LITELLM_MASTER_KEY";
           python = "${soaPhysicsPython}/bin/python3";
           sandbox = "bwrap";
-          # Seconds one model-authored script may run for. The 60 s default
-          # came from a scaffold built for symbolic work, where a script that
-          # runs a minute is stuck. Here the files are multi-GB and a full
-          # load_tree_data does not finish in a minute — and the agent reads a
-          # timeout as "wrong approach", so it retries the same script rather
-          # than the smaller read that would have worked.
           script_timeout = 900;
-          # Physics mode has no wall-clock or cost gate, so this is the only
-          # ceiling on an unattended run.
           max_iterations = 20;
           mcp = {
             server = "oracle";
-            # Per role, and named tools rather than a server prefix: "arxiv"
-            # matches all nineteen tools that server exposes, including topic
-            # watches, alert checks, a reindexer and four LaTeX-source readers
-            # — a human's library workflow, and nineteen schemas in front of an
-            # agent whose budget is fifteen calls an iteration.
             roles = {
-              # Reading tools only: find, triage, fetch, read, search within.
-              # No context7 — the Manager writes the brief, not the code.
               manager = [
                 "arxiv-search_papers"
                 "arxiv-get_abstract"
@@ -302,8 +268,6 @@ in
                 "arxiv-read_paper"
                 "arxiv-search_paper_text"
               ];
-              # The one that writes the script gets the API docs, and nothing
-              # else. Guessing at PyROOT is this loop's dominant failure.
               subagent = [ "context7" ];
             };
           };
@@ -348,7 +312,6 @@ in
         ListenStream = "/run/soa-${name}-mcp.sock";
         SocketMode = "0660";
         SocketGroup = "soa-bridge";
-        # One `mcp serve` per connection, with the connection as its stdio.
         Accept = "yes";
       };
     }

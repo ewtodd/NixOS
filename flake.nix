@@ -65,7 +65,6 @@
     };
     llama-cpp = {
       url = "github:ggml-org/llama.cpp";
-      # inputs.nixpkgs.follows = "nixpkgs";
     };
     ds4 = {
       url = "github:antirez/ds4";
@@ -91,7 +90,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     son-of-anton = {
-      url = "/home/e-work/son-of-anton";
+      url = "github:ewtodd/son-of-anton";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri-utilities = {
