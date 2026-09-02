@@ -71,6 +71,9 @@
       url = "github:antirez/ds4";
       flake = false;
     };
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+    };
     arxiv-mcp-server-src = {
       url = "github:blazickjp/arxiv-mcp-server";
       flake = false;

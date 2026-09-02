@@ -57,40 +57,21 @@ in
     services.ds4 = {
       enable = true;
       lanExpose = true;
-      model = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/86bb38ce2ba7a98ab0e550359fec5f48859dc723/DeepSeek-V4-Flash-Layers37-42Q4KExperts-OtherExpertLayersIQ2XXSGateUp-Q2KDown-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-fixed-0731.gguf";
+      model = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8.gguf";
+      draftModel = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-DSpark-support.gguf";
+      visionModel = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Encoder.gguf";
       port = 8050;
-      ctxSize = 131072;
-      tokens = 4096;
+      ctxSize = 524288;
+      tokens = 3584;
       threads = 32;
-      prefillChunk = 1024;
-      batchedSession = 3;
+      prefillChunk = 3584;
+      batchedSession = 1;
       kvDiskDir = "/scratch/ds4-kv";
       kvDiskSpaceMb = 65536;
       backend = "rocm";
     };
     security.harden.enable = true;
   };
-
-  security.pam.loginLimits = [
-    {
-      domain = "son-of-anton";
-      type = "hard";
-      item = "memlock";
-      value = "unlimited";
-    }
-  ];
-
-  security.sudo-rs.extraRules = [
-    {
-      users = [ "son-of-anton" ];
-      commands = [
-        {
-          command = "/run/current-system/sw/bin/tee /proc/sys/vm/drop_caches";
-          options = [ "NOPASSWD" ];
-        }
-      ];
-    }
-  ];
 
   nixpkgs.config.rocmTargets = [
     "gfx1151"

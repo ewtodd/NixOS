@@ -13,3 +13,6 @@ result-*
 
 # Security audit reports
 SECURITY_AUDIT_*.md
+
+# Python bytecode
+__pycache__/

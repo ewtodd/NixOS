@@ -260,6 +260,13 @@ in
                     enable_thinking = false;
                   };
                 };
+                modalities = {
+                  input = [
+                    "text"
+                    "image"
+                  ];
+                  output = [ "text" ];
+                };
               };
             };
 
