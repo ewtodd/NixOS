@@ -55,16 +55,16 @@ in
       languageModelOnly = false;
     };
     services.ds4 = {
-      enable = true;
+      enable = false;
       lanExpose = true;
       model = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8.gguf";
       draftModel = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-DSpark-support.gguf";
       visionModel = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Encoder.gguf";
       port = 8050;
       ctxSize = 524288;
-      tokens = 3584;
+      tokens = 3072;
       threads = 32;
-      prefillChunk = 3584;
+      prefillChunk = 3072;
       batchedSession = 1;
       kvDiskDir = "/scratch/ds4-kv";
       kvDiskSpaceMb = 65536;

@@ -31,7 +31,11 @@ let
   server = pkgs.writeShellScriptBin "ds4-server" ''
     export LD_LIBRARY_PATH=${ldLibs}:''${LD_LIBRARY_PATH:-}
     ${lib.optionalString (cfg.kvDiskDir != null) "mkdir -p ${cfg.kvDiskDir}"}
-    exec ${ds4}/bin/ds4-server --model ${cfg.model} --dspark --mtp-model ${cfg.draftModel} --vision ${cfg.visionModel} --backend ${cfg.backend} --ctx ${toString cfg.ctxSize}  --tokens ${toString cfg.tokens} --threads ${toString cfg.threads} --power ${toString cfg.power} --prefill-chunk ${toString cfg.prefillChunk} --batched-session ${toString cfg.batchedSession} --host ${
+    exec ${ds4}/bin/ds4-server --model ${cfg.model} ${
+      lib.optionalString (cfg.draftModel != null) "--dspark --mtp-model ${cfg.draftModel}"
+    } ${
+      lib.optionalString (cfg.visionModel != null) "--vision ${cfg.visionModel}"
+    } --backend ${cfg.backend} --ctx ${toString cfg.ctxSize}  --tokens ${toString cfg.tokens} --threads ${toString cfg.threads} --power ${toString cfg.power} --prefill-chunk ${toString cfg.prefillChunk} --batched-session ${toString cfg.batchedSession} --host ${
       if cfg.lanExpose then "0.0.0.0" else "127.0.0.1"
     } --port ${toString cfg.port} ${
       lib.optionalString (

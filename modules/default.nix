@@ -741,12 +741,14 @@ with lib;
           description = "Absolute path to the DSV4 GGUF.";
         };
         draftModel = mkOption {
-          type = types.str;
+          type = types.nullOr types.str;
+          default = null;
           example = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/blobs/659e22fb...gguf";
           description = "Absolute path to the DSV4 draft (mtp/dspark) GGUF.";
         };
         visionModel = mkOption {
-          type = types.str;
+          type = types.nullOr types.str;
+          default = null;
           example = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/blobs/659e22fb...gguf";
           description = "Absolute path to the DSV4 vision encoder GGUF.";
         };

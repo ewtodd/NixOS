@@ -1067,14 +1067,17 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1788297952,
-        "narHash": "sha256-p8lEVNUwHHSDJV4kbgpcv1S5XYveqNWneXJtRXv9ez4=",
-        "path": "/home/e-work/son-of-anton",
-        "type": "path"
+        "lastModified": 1788372727,
+        "narHash": "sha256-0J3zp5Q7gobjGBWqlBQQE6vn2140H+BoKkoCFcCmIaQ=",
+        "owner": "ewtodd",
+        "repo": "son-of-anton",
+        "rev": "c4635dacdbc9b1daa02016886659443ac07d509c",
+        "type": "github"
       },
       "original": {
-        "path": "/home/e-work/son-of-anton",
-        "type": "path"
+        "owner": "ewtodd",
+        "repo": "son-of-anton",
+        "type": "github"
       }
     },
     "split-nvim-src": {
