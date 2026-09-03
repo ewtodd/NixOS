@@ -1,11 +1,25 @@
 {
   pkgs,
   lib,
+  config,
   osConfig,
   inputs,
   ...
 }:
 let
+  dms-idle-inhibit = pkgs.writeShellScript "dms-idle-inhibit" ''
+    dms() { ${config.programs.dank-material-shell.package}/bin/dms "$@"; }
+    i=0
+    while [ $i -lt 60 ]; do
+      if dms ipc call inhibit status 2>/dev/null | ${pkgs.gnugrep}/bin/grep -q enabled; then
+        exit 0
+      fi
+      dms ipc call inhibit enable >/dev/null 2>&1
+      sleep 1
+      i=$((i + 1))
+    done
+    exit 1
+  '';
   niri-utilities = inputs.niri-utilities.packages.${pkgs.stdenv.hostPlatform.system}.niri-utilities;
   niri-tile-to-n = pkgs.writers.writePython3Bin "niri-tile-to-n" { doCheck = false; } (
     builtins.readFile ./scripts/niri_tile_to_n.py
@@ -117,6 +131,36 @@ in
           Service = {
             ExecStart = "${niri-tile-to-n-daemon}";
             Restart = "on-failure";
+            RestartSec = 3;
+          };
+          Install.WantedBy = [ "graphical-session.target" ];
+        };
+    systemd.user.services.dms-idle-inhibit =
+      lib.mkIf (osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.desktop.enable)
+        {
+          Unit = {
+            Description = "Enable DMS idle inhibit";
+            After = [ "dms.service" ];
+            PartOf = [ "dms.service" ];
+          };
+          Service = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStart = "${dms-idle-inhibit}";
+          };
+          Install.WantedBy = [ "dms.service" ];
+        };
+    systemd.user.services.wlinhibit =
+      lib.mkIf (osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.desktop.enable)
+        {
+          Unit = {
+            Description = "Wayland idle inhibitor";
+            After = [ "graphical-session.target" ];
+            PartOf = [ "graphical-session.target" ];
+          };
+          Service = {
+            ExecStart = "${pkgs.wlinhibit}/bin/wlinhibit";
+            Restart = "always";
             RestartSec = 3;
           };
           Install.WantedBy = [ "graphical-session.target" ];
