@@ -155,8 +155,26 @@
 
               model_list = [
                 {
-                  model_name = "supra-title";
-                  litellm_params = mkLocal oracleSwap "openai/supra-title";
+                  model_name = "little-titles";
+                  litellm_params = mkLocal oracleSwap "openai/little-titles";
+                }
+                {
+                  model_name = "little-titles-json";
+                  litellm_params = (mkLocal oracleSwap "openai/little-titles") // {
+                    response_format = {
+                      type = "json_schema";
+                      json_schema = {
+                        name = "title";
+                        strict = true;
+                        schema = {
+                          type = "object";
+                          properties.title.type = "string";
+                          required = [ "title" ];
+                          additionalProperties = false;
+                        };
+                      };
+                    };
+                  };
                 }
                 {
                   model_name = "deepseek-v4-flash-local";
