@@ -3,7 +3,7 @@
 # and lands here on oracle (:8081; 8080 is already llama-swap). Models come
 # from litellm on this host (127.0.0.1:4000), the same router opencode and
 # the son-of-anton gateway use: llama-swap on son-of-anton (10.0.0.5),
-# oracle's always-resident supra-title, and the hosted DeepSeek models.
+# oracle's always-resident little-titles, and the hosted DeepSeek models.
 {
   config,
   lib,
@@ -79,7 +79,7 @@ in
           "WEBUI_AUTH_COOKIE_SECURE=true"
           # OpenAI connection: litellm on this host, key injected by the
           # wrapper above. TASK_MODEL_EXTERNAL routes session-title
-          # generation to the tiny always-resident supra-title model (via
+          # generation to the small always-resident little-titles model (via
           # litellm → oracle's llama-swap) instead of the chat's own model.
           # Caveat: connections and the task model are seeded into the DB
           # from these env vars on first run only (Config.seed_defaults
@@ -87,7 +87,7 @@ in
           # admin sets them once in Settings > Connections / Settings >
           # Tasks.
           "OPENAI_API_BASE_URL=http://127.0.0.1:4000/v1"
-          "TASK_MODEL_EXTERNAL=supra-title"
+          "TASK_MODEL_EXTERNAL=little-titles-json"
           # RAG embeddings via the dedicated llama.cpp embedding server on
           # this host (bge-m3 on CPU, modules/services/llama-swap
           # embeddingModel). RAG_OPENAI_API_BASE_URL must be set explicitly —

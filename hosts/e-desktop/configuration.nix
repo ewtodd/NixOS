@@ -225,6 +225,7 @@ in
       settings = {
         model = {
           default = "qwen3.8-27b-coding";
+          reasoning_effort = "medium";
           provider = "custom";
         };
         custom_providers.custom = {
@@ -289,10 +290,10 @@ in
         };
         auxiliary.title_generation = {
           provider = "custom";
-          model = "supra-title";
+          model = "little-titles";
           base_url = "http://10.0.0.6:4000/v1";
           key_env = "LITELLM_MASTER_KEY";
-          prompt_style = "completion";
+          prompt_style = "chat";
         };
         platforms.signal.typing_indicator = true;
         platforms.signal.gateway_restart_notification = false;

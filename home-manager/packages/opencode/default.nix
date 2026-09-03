@@ -86,7 +86,7 @@ in
 
     settings = {
       model = "litellm/qwen3.8-27b-coding";
-      small_model = "litellm/supra-title";
+      small_model = "litellm/little-titles";
       default_agent = "build";
 
       agent = {
@@ -205,8 +205,8 @@ in
             apiKey = "{env:LITELLM_MASTER_KEY}";
           };
           models = {
-            "supra-title" = {
-              name = "Supra Title";
+            "little-titles" = {
+              name = "Little Titles";
               tool_call = false;
             };
 

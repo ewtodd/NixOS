@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
@@ -40,10 +40,23 @@ in
         port = 8082;
       };
       models = {
-        "supra-title" = {
-          hf = "SupraLabs/supra-title-50M-pre-gguf:Q8_0";
+        "little-titles" = {
+          hf = "acon96/Little-Titles-GGUF:Q8_0";
           alwaysResident = true;
           ctxSize = 4096;
+          chatTemplateFile = pkgs.writeText "little-titles.jinja" ''
+            {%- set ns = namespace(system="Generate a short title describing the following user request.", user="") -%}
+            {%- for m in messages -%}
+              {%- if m.role == "system" -%}
+                {%- set ns.system = m.content -%}
+              {%- elif m.role == "user" -%}
+                {%- set ns.user = ns.user + ("\n" if ns.user else "") + m.content -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{- "<|im_start|>system\n" + ns.system + "<|im_end|>\n" -}}
+            {{- "<|im_start|>user\n" + ns.user + "<|im_end|>\n" -}}
+            {%- if add_generation_prompt -%}{{- "<|im_start|>assistant\n" -}}{%- endif -%}
+          '';
         };
       };
     };
