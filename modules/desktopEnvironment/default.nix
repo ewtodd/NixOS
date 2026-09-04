@@ -39,8 +39,6 @@ in
           package = pkgs.dms-shell;
           compositor.name = "niri";
           compositor.customConfig = lib.optionalString config.systemOptions.owner.e.enable eDesktopGreeterNiriConfig;
-          configHome = "${homeDirectory}";
-          logs.save = true;
         };
 
         programs.niri = {
