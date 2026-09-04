@@ -1059,6 +1059,8 @@ with lib;
 
       powerManagement.enable = true;
 
+      boot.tmp.cleanOnBoot = true;
+
       nix.settings = {
         auto-optimise-store = true;
         download-buffer-size = 524288000;

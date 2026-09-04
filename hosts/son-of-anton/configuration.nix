@@ -45,7 +45,7 @@ in
       maxModelLen = 262144;
       kvCacheDtype = "fp8";
       maxNumSeqs = 4;
-      gpuMemoryUtilization = 0.95;
+      gpuMemoryUtilization = 0.92;
       enforceEager = true;
       mtp = true;
       mtpTokens = 3;
