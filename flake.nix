@@ -67,7 +67,7 @@
       url = "github:ggml-org/llama.cpp";
     };
     ds4 = {
-      url = "github:antirez/ds4";
+      url = "github:antirez/ds4/110afdd8886586f18fc9b28bc5533152dd10e728";
       flake = false;
     };
     llm-agents = {
