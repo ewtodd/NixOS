@@ -128,7 +128,6 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
           model = "qwen3.8-27b-coding";
           settings = {
-            router.modes = [ "standard" ];
             platforms.signal.gateway_restart_notification = true;
             mcp_servers = lib.mapAttrs (name: _: {
               command = "${pkgs.socat}/bin/socat";
@@ -159,7 +158,6 @@ in
             pkgs.pandoc
             pkgs.typst
           ];
-          settings.router.modes = [ "standard" ];
           settings.gateway = {
             group_sessions_per_user = false;
           };
@@ -178,7 +176,6 @@ in
             model.default = "qwen3.8-27b-coding";
           };
           extraPackages = projectAgentTools;
-          settings.router.modes = [ "standard" ];
           settings.gateway = {
             group_sessions_per_user = false;
             active_hours = [
@@ -204,7 +201,6 @@ in
             model.default = "qwen3.8-27b-coding";
           };
           extraPackages = projectAgentTools;
-          settings.router.modes = [ "standard" ];
           settings.platforms.signal = {
             require_mention = true;
             history_backfill = true;
@@ -247,11 +243,11 @@ in
           };
         };
         physics = {
-          model = "qwen3.8-27b-coding";
-          coder_model = "qwen3.8-27b-instruct";
+          model = "deepseek-v4-api";
+          coder_model = "qwen3.8-27b-coding";
           reasoning_effort = "medium";
           agent_models = {
-            critic = "deepseek-v4-flash-local";
+            critic = "deepseek-v4-api";
           };
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";
@@ -272,15 +268,6 @@ in
               subagent = [ "context7" ];
             };
           };
-        };
-        router = {
-          enabled = true;
-          simple_model = "qwen3.8-27b-instruct";
-          default_model = "qwen3.8-27b-coding";
-          planner_model = "qwen3.8-27b-coding";
-          executor_model = "qwen3.8-27b-coding";
-          reviewer_model = "deepseek-v4-flash-local";
-          researcher_model = "deepseek-v4-flash-local";
         };
         web.backend = "searxng";
         mcp_servers.oracle = {

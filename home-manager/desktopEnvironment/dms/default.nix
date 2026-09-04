@@ -24,7 +24,6 @@ in
   programs.dank-material-shell = {
     enable = true;
     package = pkgs.dms-shell;
-    dgop.package = pkgs.dgop;
     quickshell.package = pkgs.quickshell;
     enableDynamicTheming = false;
     enableAudioWavelength = false;
