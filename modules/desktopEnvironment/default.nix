@@ -34,7 +34,7 @@ in
     lib.mkIf
       (config.systemOptions.deviceType.desktop.enable || config.systemOptions.deviceType.laptop.enable)
       {
-        programs.dank-material-shell.greeter = {
+        services.displayManager.dms-greeter = {
           enable = true;
           package = pkgs.dms-shell;
           compositor.name = "niri";

@@ -135,7 +135,6 @@
         [
           ./modules
           inputs.home-manager.nixosModules.home-manager
-          inputs.dank-material-shell.nixosModules.greeter
           inputs.banshee-ucm-conf.nixosModules.default
           {
             nixpkgs = {
