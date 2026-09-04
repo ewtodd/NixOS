@@ -30,14 +30,10 @@ in
     services.vllm = {
       enable = true;
       lanExpose = true;
-      # RCCL watchdog fires at 600s by default -- that is 10 minutes of dead
-      # server before Restart=always can act. 90s fails fast instead.
       extraFlags = [ "--distributed-timeout-seconds 90" ];
       extraEnv = {
-        # Both machine losses on 2026-08-31 ended mid "preparing to dump debug
-        # info": the watchdog dump tears down wedged GPU workers and takes the
-        # box with it. Skip the dump; the stack watchdog already captures more.
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
+        VLLM_SLEEP_WHEN_IDLE = "1";
       };
       model = "Qwen/Qwen3.8-27B-FP8";
       devices = "0,1";
@@ -55,11 +51,9 @@ in
       languageModelOnly = false;
     };
     services.ds4 = {
-      enable = false;
+      enable = true;
       lanExpose = true;
       model = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8.gguf";
-      draftModel = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-DSpark-support.gguf";
-      visionModel = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Encoder.gguf";
       port = 8050;
       ctxSize = 524288;
       tokens = 3072;
