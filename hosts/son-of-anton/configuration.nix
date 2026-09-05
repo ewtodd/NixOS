@@ -61,7 +61,7 @@ in
       prefillChunk = 3072;
       batchedSession = 1;
       kvDiskDir = "/scratch/ds4-kv";
-      kvDiskSpaceMb = 65536;
+      kvDiskSpaceMb = 524288;
       backend = "rocm";
     };
     security.harden.enable = true;
