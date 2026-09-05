@@ -17,10 +17,12 @@
           rocmPackages.clr.icd
         ];
       };
+      services.lact.enable = true;
 
       environment.systemPackages = with pkgs; [
         rocmPackages.rocminfo
         rocmPackages.rocm-smi
+        rocmPackages.amdsmi
         nvtopPackages.amd
         lm_sensors
       ];
