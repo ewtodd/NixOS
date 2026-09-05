@@ -235,7 +235,7 @@ in
               context_length = 262144;
             };
             "deepseek-v4-flash-local" = {
-              context_length = 131072;
+              context_length = 524288;
             };
             "deepseek-v4-api" = {
               context_length = 1048576;

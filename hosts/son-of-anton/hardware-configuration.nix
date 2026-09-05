@@ -22,6 +22,24 @@
     powertop.enable = false;
   };
 
+  services.lact.settings = {
+    version = 7;
+    daemon = {
+      log_level = "info";
+      admin_group = "wheel";
+      disable_clocks_cleanup = false;
+    };
+    apply_settings_timer = 5;
+    gpus."1002:7551-F111:000A-0000:c7:00.0" = {
+      fan_control_enabled = false;
+      power_cap = 230.0;
+    };
+    gpus."1002:7551-F111:000A-0000:c3:00.0" = {
+      fan_control_enabled = false;
+      power_cap = 230.0;
+    };
+  };
+
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"
