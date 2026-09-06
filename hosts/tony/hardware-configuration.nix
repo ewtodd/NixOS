@@ -7,9 +7,6 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  # Comet Lake-U (GPU 8086:9bca, PCH 8086:02c8). The CPU reports as
-  # "Genuine Intel(R) CPU 0000" -- an engineering sample, which is normal in
-  # cheap mini PCs; 4C/8T at 1.6 GHz base matches an i5-10210U.
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "ahci"
@@ -18,12 +15,11 @@
     "usbhid"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ ];
+
+  boot.initrd.kernelModules = [ "i915" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  # Root is the retired Kingston SNV3S1000G (serial 50026B7283998003) from
-  # e-desktop. UUIDs are filled in by the installer -- see hosts/tv/README.
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
     fsType = "ext4";
@@ -38,8 +34,6 @@
     ];
   };
 
-  # No swap partition: 8 GB is plenty for a kiosk browser, and zram is both
-  # faster and kinder to the SSD.
   swapDevices = [ ];
 
   zramSwap = {

@@ -139,6 +139,18 @@ in
         User = "deploy";
         ProxyJump = "bastion";
       };
+      "deploy-tony" = {
+        Hostname = "10.0.0.8";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
+      "tony" = {
+        Hostname = "10.0.0.8";
+        Port = 2222;
+        User = "tony";
+        ProxyJump = "bastion";
+      };
     };
   };
 

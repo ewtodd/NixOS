@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -11,20 +12,30 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
   ];
 
-  # cage runs exactly one program, so the browser has to be its own wrapper.
+  # change to @ 60 when get new cable
+  outputName = "HDMI-A-2";
+  outputMode = "3840x2160@30";
+
   kiosk = pkgs.writeShellApplication {
     name = "tony-kiosk";
-    runtimeInputs = [ pkgs.firefox ];
+    runtimeInputs = [
+      config.home-manager.users.tony.programs.firefox.finalPackage
+      pkgs.wlr-randr
+    ];
     text = ''
       export MOZ_ENABLE_WAYLAND=1
-      # VAAPI decoding happens in the RDD process, whose sandbox blocks the
-      # render node on some setups; without this Firefox falls back to software
-      # and this 15 W part cannot keep up with 4K.
-      export MOZ_DISABLE_RDD_SANDBOX=1
+            export MOZ_DISABLE_RDD_SANDBOX=1
       export LIBVA_DRIVER_NAME=iHD
-      # Homepage is set declaratively in home.nix; --kiosk hides all chrome and
-      # Alt+Home returns here.
-      exec firefox --kiosk
+
+            runtime="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+      for _ in $(seq 1 300); do
+        if [ -S "$runtime/pulse/native" ]; then break; fi
+        sleep 0.1
+      done
+
+            wlr-randr --output ${outputName} --mode ${outputMode} || true
+
+            exec firefox --kiosk
     '';
   };
 in
@@ -35,8 +46,6 @@ in
   ];
 
   systemOptions = {
-    # Deliberately no deviceType: desktop/laptop would drag in the whole niri
-    # session, and server strips the audio stack this needs.
     graphics.intel.enable = true;
     services.ssh.enable = true;
     services.deploy.enable = true;
@@ -45,29 +54,35 @@ in
     security.harden.enable = true;
   };
 
-  # Pinned on purpose. The e-desktop migration lost every service account's
-  # state because uids were allocated fresh by the installer and the restored
-  # files kept their old numeric owners.
   users.users.tony = {
     isNormalUser = true;
     uid = 1000;
     description = "living room";
     extraGroups = [
+      "wheel"
       "video"
       "audio"
       "render"
+      "input"
       "networkmanager"
     ];
     openssh.authorizedKeys.keys = personalKeys;
   };
 
-  # Single-app Wayland compositor: no WM to fight, nothing to fall out to, and
-  # it brings its own autologin.
+  services.openssh.settings.AllowUsers = [ "tony" ];
+
   services.cage = {
     enable = true;
     user = "tony";
     program = lib.getExe kiosk;
   };
+
+  systemd.services.cage-tty1.serviceConfig = {
+    Restart = "on-failure";
+    RestartSec = "10s";
+  };
+
+  systemd.services.cage-tty1.unitConfig.StartLimitIntervalSec = 0;
 
   networking.hostName = "tony";
   networking.networkmanager.enable = true;
