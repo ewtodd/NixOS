@@ -113,7 +113,7 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
           model = "qwen3.8-27b-coding";
           settings.physics = {
-            data_dirs = [ "/home/e-work/LabData/ANSG/YAP-Final" ];
+            data_dirs = [ "/labdata/ANSG/YAP-Final" ];
             workspace_root = "/home/e-work/workspace-soa/runs";
           };
           settings.git = {
@@ -369,6 +369,7 @@ in
 
   users.users.e-play = {
     isNormalUser = true;
+    uid = 1003;
     description = "ethan-play";
     extraGroups = [
       "nixconfig"
@@ -387,6 +388,7 @@ in
 
   users.users.e-work = {
     isNormalUser = true;
+    uid = 1001;
     description = "ethan-work";
     extraGroups = [
       "nixconfig"
