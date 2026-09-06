@@ -53,9 +53,6 @@
     "nvme"
     "usbhid"
     "thunderbolt"
-    # ahci is what reaches the two Micron SATA SSDs holding the homes; both are
-    # unlocked in the initrd, so it has to be here and not just in kernelModules.
-    "sd_mod"
   ];
 
   boot.initrd.kernelModules = [
@@ -108,29 +105,21 @@
     "vm.watermark_scale_factor" = 200; # start reclaim earlier
   };
 
-  # ── Storage layout ─────────────────────────────────────────────────────────
-  # 2TB NVMe (was three 1TB Kingstons):
-  #   p1 ESP -> /boot, p2 LUKS ext4 -> /, p3 LUKS btrfs -> /analysis
-  # Two Micron 1100 SATA SSDs, one per user, each LUKS + btrfs.
-  # 4TB WD SN5100 is unchanged: /games and /labdata, both via pam_mount.
-  #
-  # cryptroot, home-play and home-work share one passphrase on purpose:
-  # systemd-cryptsetup caches the first one entered and retries it on the
-  # others, so boot still asks exactly once (and the mu bastion's stored
-  # passphrase keeps working for remote unlock).
-
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/7e487738-412c-4308-8cf0-3140ef0bd47e";
+    device = "/dev/disk/by-uuid/23f3ce0e-1ec6-4c43-99c5-e3168f00f08f";
     fsType = "ext4";
   };
 
-  boot.initrd.luks.devices."cryptroot" = {
-    device = "/dev/disk/by-uuid/ad6bb757-9b3f-4843-9414-05eb72b51b55";
+  boot.initrd.luks.devices."luks-5cffe834-ffb7-4243-ae39-551518815d10".device =
+    "/dev/disk/by-uuid/5cffe834-ffb7-4243-ae39-551518815d10";
+
+  boot.initrd.luks.devices."home" = {
+    device = "/dev/disk/by-uuid/bfbb0513-7cd7-4d1e-9cb5-315208156e57";
     allowDiscards = true;
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/3522-5CAC";
+    device = "/dev/disk/by-uuid/12CE-A600";
     fsType = "vfat";
     options = [
       "fmask=0077"
@@ -138,34 +127,15 @@
     ];
   };
 
-  boot.initrd.luks.devices."home-play" = {
-    device = "/dev/disk/by-uuid/2b1daffa-6dfa-456c-b5a2-7c05caa7d619";
-    allowDiscards = true;
-  };
-
-  fileSystems."/home/e-play" = {
-    device = "/dev/disk/by-uuid/e10f805e-bb6c-45dc-956d-1c149586d0c0";
+  fileSystems."/home" = {
+    device = "/dev/mapper/home";
     fsType = "btrfs";
     options = [
       "compress=zstd"
       "noatime"
-      "subvol=@play"
+      "subvol=@home"
     ];
-  };
-
-  boot.initrd.luks.devices."home-work" = {
-    device = "/dev/disk/by-uuid/2b3fd31d-3690-40a7-8455-310752e9bb19";
-    allowDiscards = true;
-  };
-
-  fileSystems."/home/e-work" = {
-    device = "/dev/disk/by-uuid/81e5b703-a185-4728-8621-039dc4a13214";
-    fsType = "btrfs";
-    options = [
-      "compress=zstd"
-      "noatime"
-      "subvol=@work"
-    ];
+    depends = [ "/dev/mapper/home" ];
   };
 
   networking.useDHCP = lib.mkDefault true;

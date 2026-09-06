@@ -113,7 +113,7 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
           model = "qwen3.8-27b-coding";
           settings.physics = {
-            data_dirs = [ "/labdata/ANSG/YAP-Final" ];
+            data_dirs = [ "/home/e-work/LabData/ANSG/YAP-Final" ];
             workspace_root = "/home/e-work/workspace-soa/runs";
           };
           settings.git = {
