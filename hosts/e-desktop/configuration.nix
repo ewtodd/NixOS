@@ -405,7 +405,7 @@ in
   };
 
   systemOptions.services.wakeable = {
-    wiredInterface = "enp16s0";
+    wiredInterface = "enp14s0";
     initrdNicModule = "r8169";
     initrdAuthorizedKeys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOzNCr4bzaMgmGGlYuFvkt7yRi8xgQ1kaSwxvJCiSMf bastion-initrd-unlock"
