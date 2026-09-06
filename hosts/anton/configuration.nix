@@ -11,6 +11,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ./environment.nix
+    ./storage.nix
   ];
 
   systemOptions = {
@@ -21,8 +22,11 @@ in
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
-    # reboot daily, for as long as it is not ZFS
-    services.scheduledReboot.calendar = "*-*-* 05:15:00";
+    # Was daily "for as long as it is not ZFS". The pool exists now, so weekly:
+    # still picks up kernel/closure updates, without interrupting a scrub or a
+    # resilver every single night. Both resume across a reboot, so this is about
+    # not being pointlessly disruptive on a file server rather than about risk.
+    services.scheduledReboot.calendar = "Sun *-*-* 05:15:00";
     security.harden.enable = true;
   };
 
