@@ -26,6 +26,13 @@
         mode = "0400";
       };
     })
+    (lib.mkIf config.systemOptions.services.backup.client.enable {
+      # Borg passphrase; client-side encryption, so the server stores ciphertext.
+      borg-passphrase = {
+        file = ../../secrets/borg-passphrase.age;
+        mode = "0400";
+      };
+    })
     (lib.mkIf config.systemOptions.services.dyndns.enable {
       namecheap-ddns = {
         file = ../../secrets/namecheap-ddns.age;

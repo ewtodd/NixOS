@@ -32,6 +32,19 @@
     ZED_SCRUB_AFTER_RESILVER = true;
   };
 
+  # Snapshots of the backup repos, in lieu of an append-only repo: that only
+  # defers deletion -- `borg compact` needs the passphrase server-side, which
+  # would put the encryption key on anton.
+  # Needs once per dataset: zfs set com.sun:auto-snapshot=true tank/backups
+  services.zfs.autoSnapshot = {
+    enable = true;
+    frequent = 0;
+    hourly = 0;
+    daily = 7;
+    weekly = 4;
+    monthly = 3;
+  };
+
   # Used drives, so watch them: short test nightly at 02:00, long test on the
   # 1st of each month at 03:00. Long tests are a full surface read and are what
   # surface latent bad sectors before a resilver has to find them the hard way.

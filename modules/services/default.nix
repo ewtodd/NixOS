@@ -12,6 +12,7 @@ in
 {
   imports = [
     ./adguard
+    ./backup
     ./bastion
     ./deploy
     ./dyndns
@@ -35,6 +36,7 @@ in
     ./wakeable
     ./wireview-monitor
     ./wireview-safety
+    ./zfs-metrics
   ];
 
   config = lib.mkMerge [
