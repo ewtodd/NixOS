@@ -97,6 +97,36 @@ in
     apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
+    services.backup.client = {
+      enable = true;
+      # ssh:// form: the shorthand cannot carry a port, and sshd here runs on 2222.
+      repo = "ssh://borg@10.0.0.3:2222/tank/backups/e-desktop";
+      passphraseFile = config.age.secrets.borg-passphrase.path;
+      # /games excluded on purpose: 1.2 TiB of re-downloadable Steam content.
+      paths = [
+        "/home/e-play"
+        "/home/e-work"
+        "/labdata"
+        "/var/lib"
+        "/etc/nixos"
+      ];
+      # Boot-unlocked LUKS, always present; the guard stays because archiving
+      # an empty mountpoint records the tree as deleted and ages out history.
+      requiresMounts = [
+        "/home/e-play"
+        "/home/e-work"
+        "/labdata"
+      ];
+      exclude = [
+        "/home/*/.cache"
+        "/home/*/.local/share/Trash"
+        "/home/*/.local/share/Steam/steamapps/shadercache"
+        "/home/*/.nv/ComputeCache"
+        "/var/lib/systemd/coredump"
+        # Symlinks into /labdata stay links, so their trees are captured once
+        # via the /labdata path, not twice.
+      ];
+    };
     services.son-of-anton = {
       enable = true;
       environmentFiles = [ config.age.secrets.son-of-anton-env.path ];

@@ -21,13 +21,15 @@ in
     services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
+    services.zfsMetrics.enable = true;
     services.scheduledReboot.enable = true;
-    # Was daily "for as long as it is not ZFS". The pool exists now, so weekly:
-    # still picks up kernel/closure updates, without interrupting a scrub or a
-    # resilver every single night. Both resume across a reboot, so this is about
-    # not being pointlessly disruptive on a file server rather than about risk.
     services.scheduledReboot.calendar = "Sun *-*-* 05:15:00";
     security.harden.enable = true;
+    services.backup.server = {
+      enable = true;
+      clients."e-desktop".publicKey =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOIu7XnByPHkBJU+kEQ9EHwbgdqV7vlbHhdNQzaWFLc+ borg@e-desktop";
+    };
   };
 
   nixpkgs.config.rocmTargets = [

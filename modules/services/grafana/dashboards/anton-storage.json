@@ -1,0 +1,130 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "mappings": [ { "type": "value", "options": { "0": { "text": "ONLINE", "color": "green", "index": 0 }, "1": { "text": "DEGRADED", "color": "orange", "index": 1 }, "2": { "text": "FAULTED", "color": "red", "index": 2 }, "3": { "text": "OFFLINE", "color": "red", "index": 3 }, "4": { "text": "UNAVAIL", "color": "red", "index": 4 }, "5": { "text": "REMOVED", "color": "red", "index": 5 }, "6": { "text": "UNKNOWN", "color": "purple", "index": 6 } } } ], "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "colorMode": "background", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" },
+      "pluginVersion": "11.0.0",
+      "title": "Pool health (tank)",
+      "type": "stat",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_pool_health{pool=\"tank\"}", "instant": true, "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "orange", "value": 1099511627776 }, { "color": "green", "value": 2199023255552 } ] }, "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" },
+      "pluginVersion": "11.0.0",
+      "title": "Usable free",
+      "type": "stat",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_dataset_available_bytes{dataset=\"tank\"}", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 0.8 }, { "color": "red", "value": 0.9 } ] }, "max": 1, "min": 0, "unit": "percentunit" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "id": 3,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" },
+      "pluginVersion": "11.0.0",
+      "title": "Pool used (of usable)",
+      "type": "stat",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_dataset_used_bytes{dataset=\"tank\"} / (zfs_dataset_used_bytes{dataset=\"tank\"} + zfs_dataset_available_bytes{dataset=\"tank\"})", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 3024000 }, { "color": "red", "value": 5184000 } ] }, "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
+      "options": { "colorMode": "value", "graphMode": "none", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" },
+      "pluginVersion": "11.0.0",
+      "title": "Since last scrub",
+      "type": "stat",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_pool_scrub_age_seconds{pool=\"tank\"}", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 15, "gradientMode": "none", "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" } }, "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "id": 5,
+      "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "title": "Usable capacity (used vs free)",
+      "type": "timeseries",
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_dataset_used_bytes{dataset=\"tank\"}", "legendFormat": "used", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_dataset_available_bytes{dataset=\"tank\"}", "legendFormat": "free", "refId": "B" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" } }, "unit": "bytes" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "id": 6,
+      "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "title": "Per-dataset usage",
+      "type": "timeseries",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_dataset_used_bytes{dataset!=\"tank\"}", "legendFormat": "{{dataset}}", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 0, "gradientMode": "none", "lineInterpolation": "linear", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" } }, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 45 }, { "color": "red", "value": 55 } ] }, "unit": "celsius" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "id": 7,
+      "options": { "legend": { "calcs": [ "lastNotNull", "max" ], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "title": "Drive temperatures",
+      "type": "timeseries",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "smart_temperature_celsius{instance=\"anton\"}", "legendFormat": "{{device}} {{serial}}", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "lineInterpolation": "stepAfter", "lineWidth": 2, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" } }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "id": 8,
+      "options": { "legend": { "calcs": [ "lastNotNull", "max" ], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "title": "vdev errors (any non-zero needs attention)",
+      "type": "timeseries",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "zfs_vdev_errors{pool=\"tank\",vdev=~\"ata-.*\"}", "legendFormat": "{{vdev}} {{type}}", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] }, "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 20 },
+      "id": 9,
+      "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "showUnfilled": true },
+      "pluginVersion": "11.0.0",
+      "title": "SMART: reallocated / pending / uncorrectable / CRC",
+      "type": "bargauge",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "smart_attribute_raw{instance=\"anton\"}", "legendFormat": "{{device}} {{name}}", "refId": "A" } ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "continuous-GrYlRd" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }, "unit": "h" }, "overrides": [] },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 20 },
+      "id": 10,
+      "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false }, "orientation": "horizontal", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "showUnfilled": true },
+      "pluginVersion": "11.0.0",
+      "title": "Drive age (power-on hours)",
+      "type": "bargauge",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "smart_power_on_hours{instance=\"anton\"}", "legendFormat": "{{device}} {{serial}}", "refId": "A" } ]
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "tags": [ "storage", "zfs", "anton" ],
+  "templating": { "list": [] },
+  "time": { "from": "now-7d", "to": "now" },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Anton Storage",
+  "uid": "anton-storage",
+  "version": 1,
+  "weekStart": ""
+}
