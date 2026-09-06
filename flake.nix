@@ -202,6 +202,9 @@
         anton = {
           headless = true;
         };
+        tony = {
+          headless = false;
+        };
         son-of-anton = {
           headless = true;
         };
@@ -242,6 +245,12 @@
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [ "server" ];
+        };
+        tony = {
+          targetHost = "deploy-tony";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [ "appliance" ];
         };
         son-of-anton = {
           targetHost = "deploy-son-of-anton";
