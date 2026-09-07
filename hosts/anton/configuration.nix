@@ -22,6 +22,7 @@ in
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
     services.zfsMetrics.enable = true;
+    services.jellyfin.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:15:00";
     security.harden.enable = true;

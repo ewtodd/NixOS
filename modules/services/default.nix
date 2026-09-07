@@ -17,6 +17,7 @@ in
     ./deploy
     ./dyndns
     ./grafana
+    ./jellyfin
     ./litellm-proxy
     ./llama-swap
     ./ds4
