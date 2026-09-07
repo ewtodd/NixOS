@@ -10,6 +10,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2vmin;
+    /* Three tiles: two across, the third spanning the row beneath. */
+    grid-auto-rows: 1fr;
     padding: 2vmin;
     font: 600 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
@@ -42,6 +44,10 @@
     box-shadow: 0 0 0 1.2vmin rgba(77,163,255,.20);
   }
 
+  /* Three tiles in a two-column grid: the last spans the row beneath rather
+     than leaving a hole. Adding a fourth later just fills the grid normally. */
+  a.tile:last-of-type:nth-of-type(odd) { grid-column: 1 / -1; }
+
   .name {
     font-size: 11vmin;
     letter-spacing: -0.01em;
@@ -51,6 +57,8 @@
 
 <a class="tile" href="https://play.max.com/"><span class="name">Max</span></a>
 <a class="tile" href="https://www.youtube.com/"><span class="name">YouTube</span></a>
+<a class="tile" href="http://10.0.0.3:8096/"><span class="name">Jellyfin</span></a>
+<a class="tile" href="https://sportsurge.net/"><span class="name">Sports</span></a>
 
 <script>
   // Focus the first tile so a remote or keyboard can move immediately, without

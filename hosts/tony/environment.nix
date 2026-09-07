@@ -27,6 +27,7 @@
   environment.systemPackages = with pkgs; [
     libva-utils
     intel-gpu-tools
+    bibata-cursors
   ];
 
   hardware.enableAllFirmware = true;

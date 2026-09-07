@@ -75,6 +75,17 @@ in
     enable = true;
     user = "tony";
     program = lib.getExe kiosk;
+    # The compositor draws the cursor, so this has to be cage's own
+    # environment -- exporting it in the kiosk wrapper would be too late.
+    #
+    # 240 is 10x the 24px default. At 3840x2160 viewed from a sofa the default
+    # is a few millimetres of screen and effectively invisible. Bibata ships
+    # large bitmaps (its left_ptr is 173 KB of multiple sizes), so this stays
+    # sharp instead of scaling up a 48px source into mush.
+    environment = {
+      XCURSOR_THEME = "Bibata-Modern-Classic";
+      XCURSOR_SIZE = "240";
+    };
   };
 
   systemd.services.cage-tty1.serviceConfig = {
@@ -83,6 +94,26 @@ in
   };
 
   systemd.services.cage-tty1.unitConfig.StartLimitIntervalSec = 0;
+
+  # Session cookies only die when the browser process does, and a kiosk browser
+  # never exits on its own -- so nothing above would ever take effect. A nightly
+  # restart is what actually clears YouTube, and it doubles as cheap hygiene for
+  # a long-running compositor. 04:00 so it is never mid-film.
+  systemd.services.tony-nightly-restart = {
+    description = "Restart the kiosk session (drops YouTube session cookies)";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl restart cage-tty1.service";
+    };
+  };
+  systemd.timers.tony-nightly-restart = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 04:00:00";
+      Persistent = false;
+      RandomizedDelaySec = "5m";
+    };
+  };
 
   networking.hostName = "tony";
   networking.networkmanager.enable = true;
