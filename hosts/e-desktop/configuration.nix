@@ -273,11 +273,11 @@ in
           };
         };
         physics = {
-          model = "deepseek-v4-api";
+          model = "qwen3.8-27b-coding";
           coder_model = "qwen3.8-27b-coding";
           reasoning_effort = "medium";
           agent_models = {
-            critic = "deepseek-v4-api";
+            critic = "deepseek-v4-flash-local";
           };
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";

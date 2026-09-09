@@ -50,11 +50,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1787925488,
-        "narHash": "sha256-6IsrYleMCJgfV9At998JBaE4f8T3BkzdrRxwMQuc5Eo=",
+        "lastModified": 1788886851,
+        "narHash": "sha256-zxQjjnp6hEjkq6rkzWJ5J2394TFIDRAHUXV0t9OivxE=",
         "owner": "ewtodd",
         "repo": "Analysis-Utilities",
-        "rev": "46ffcb033a1f22680843c59cce304eee80711080",
+        "rev": "bdde0264537580672f7049dad176c3c232161fb2",
         "type": "github"
       },
       "original": {
@@ -1085,11 +1085,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1788472919,
-        "narHash": "sha256-LBubkDpDn4mdSj3S5rpHQH5mpXzdmIxmEZI7juUH2JM=",
+        "lastModified": 1788887766,
+        "narHash": "sha256-8B0aKA4QqACQkp4KpUaRYwj3idrHi0zPybq2j1k5Uy0=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "c0eccd9fe206f12505984ea00d62a92564eba68a",
+        "rev": "31d1a5adb6ba2b15ea47f8507b5c60234d378ea0",
         "type": "github"
       },
       "original": {
