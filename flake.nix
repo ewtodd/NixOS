@@ -37,6 +37,13 @@
       url = "github:AvengeMedia/danksearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Deliberately does NOT follow nixpkgs: overriding it changes the
+    # derivation hash and forces a local rebuild of the CUDA-overlaid ROOT that
+    # cache.ethanwtodd.com cannot then satisfy. Already present transitively via
+    # son-of-anton with the same ref, so this dedupes to one lock node.
+    analysis-utilities = {
+      url = "github:ewtodd/Analysis-Utilities";
+    };
     SRIM = {
       url = "github:ewtodd/SRIM-nix";
       inputs.nixpkgs.follows = "nixpkgs";

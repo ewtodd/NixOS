@@ -1,6 +1,8 @@
 {
   config,
   lib,
+  inputs,
+  system,
   ...
 }:
 let
@@ -21,6 +23,25 @@ in
       '';
       virtualHosts."office.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.2:9980
+      '';
+
+      # Static generated documentation — no backend, so caddy serves the store
+      # paths itself. Doxygen emits only relative links, which is what lets the
+      # generated site live under a path prefix. Bare / is a hand-written index
+      # of what is published; add a handle_path block and a card in
+      # docs-index/index.html together when a project joins.
+      virtualHosts."docs.ethanwtodd.com".extraConfig = ''
+        encode zstd gzip
+
+        handle_path /analysis-utilities/* {
+          root * ${inputs.analysis-utilities.packages.${system}.docs}
+          file_server
+        }
+
+        handle {
+          root * ${./docs-index}
+          file_server
+        }
       '';
 
       virtualHosts."status.ethanwtodd.com".extraConfig = ''
