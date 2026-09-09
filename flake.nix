@@ -44,6 +44,12 @@
     analysis-utilities = {
       url = "github:ewtodd/Analysis-Utilities";
     };
+    # Same reasoning: its nixpkgs follows analysis-utilities' pin, so leaving it
+    # alone keeps one nixpkgs across the whole documentation set and keeps the
+    # CUDA-overlaid ROOT substitutable from cache.ethanwtodd.com.
+    music = {
+      url = "github:ewtodd/MUSIC";
+    };
     SRIM = {
       url = "github:ewtodd/SRIM-nix";
       inputs.nixpkgs.follows = "nixpkgs";

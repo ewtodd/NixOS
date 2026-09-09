@@ -38,6 +38,11 @@ in
           file_server
         }
 
+        handle_path /music/* {
+          root * ${inputs.music.packages.${system}.docs}
+          file_server
+        }
+
         handle {
           root * ${./docs-index}
           file_server
