@@ -1018,6 +1018,45 @@ with lib;
         description = "Lighting backend: the OpenRGB SDK server, or `framework_tool --rgbkbd`.";
       };
 
+      services.rgbStatic.enable = mkEnableOption ''
+        fixed OpenRGB colours, applied at boot and after resume. The
+        alternative to services.rgbLoad for a machine that just wants its
+        lighting to sit on one colour and stay there'';
+      services.rgbStatic.defaultColor = mkOption {
+        type = types.str;
+        default = "FF00FF";
+        example = "F600C9";
+        description = "Hex RGB colour applied to every device without a `deviceColors` entry.";
+      };
+      services.rgbStatic.deviceColors = mkOption {
+        type = types.attrsOf types.str;
+        default = { };
+        example = {
+          "MSI MPG" = "FF0B71";
+        };
+        description = ''
+          Per-device overrides, keyed by a case-insensitive substring of the
+          OpenRGB device name (`openrgb --list-devices`). Panels and diffusers
+          differ enough that one hex does not read as the same colour across
+          RAM, a GPU shroud and an ARGB strip, so these are the values matched
+          by eye. Applied per device; zones within a device share a colour.
+        '';
+      };
+      services.rgbStatic.expectedDevices = mkOption {
+        type = types.ints.unsigned;
+        default = 0;
+        example = 4;
+        description = ''
+          How many controllers `openrgb --list-devices` reports on this host.
+          The SDK server starts listening part-way through enumeration, so a
+          client that connects at boot sees a partial list and silently leaves
+          the late arrivals dark; this is the count to wait for. 0 falls back to
+          waiting for the list to stop growing, which is only a timing guess.
+          The unit fails (having coloured whatever it did find) if the count is
+          never reached, so a hardware change shows up instead of going quiet.
+        '';
+      };
+
       security.harden.enable = mkEnableOption "Try to reasonably harden NixOS";
       owner.e.enable = mkEnableOption "Whether this is an e-device";
       owner.v.enable = mkEnableOption "Whether this is a v-device";

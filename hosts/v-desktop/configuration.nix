@@ -8,9 +8,18 @@
 
   systemOptions = {
     graphics.amd.enable = true;
-    services.rgbLoad = {
+    services.rgbStatic = {
       enable = true;
-      backend = "openrgb";
+      # Hand-matched by eye so the board headers read as the same pink as the
+      # RAM and the GPU shroud; recovered from the "pink!!!" OpenRGB profile.
+      defaultColor = "F600C9";
+      deviceColors = {
+        "MSI MPG" = "FF0B71";
+      };
+      # Two DIMMs, the GPU and the board. The DIMMs are found straight away and
+      # the other two take a few seconds, so without this the case fans get
+      # left dark.
+      expectedDevices = 4;
     };
     hardware.openRGB.enable = true;
     hardware.xbox.enable = true;
