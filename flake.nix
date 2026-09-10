@@ -37,23 +37,19 @@
       url = "github:AvengeMedia/danksearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Deliberately does NOT follow nixpkgs: overriding it changes the
-    # derivation hash and forces a local rebuild of the CUDA-overlaid ROOT that
-    # cache.ethanwtodd.com cannot then satisfy. Already present transitively via
-    # son-of-anton with the same ref, so this dedupes to one lock node.
-    analysis-utilities = {
-      url = "github:ewtodd/Analysis-Utilities";
-    };
-    # Same reasoning: its nixpkgs follows analysis-utilities' pin, so leaving it
-    # alone keeps one nixpkgs across the whole documentation set and keeps the
-    # CUDA-overlaid ROOT substitutable from cache.ethanwtodd.com.
-    music = {
-      url = "github:ewtodd/MUSIC";
-    };
-    # Unlike the two above, this one DOES follow our nixpkgs. It builds with
-    # hugo and nothing else — there is no CUDA-overlaid ROOT whose derivation
-    # hash has to stay substitutable from cache.ethanwtodd.com — so following
-    # keeps a second nixpkgs out of the lock at no cost.
+    # The whole public web surface: ethanwtodd.com from `packages.default`, and
+    # docs.ethanwtodd.com — the index plus both generated API references — from
+    # `packages.docs`. Analysis-Utilities and MUSIC are inputs of that flake
+    # rather than of this one, so the site, the index that lists them and the
+    # references themselves are versioned together, and this configuration only
+    # has to track one repository.
+    #
+    # Following nixpkgs is safe and cheap here: the site builds with hugo, and
+    # the two documentation sets need only doxygen and graphviz. The override
+    # reaches website's own nixpkgs and not the pins inside those two inputs, so
+    # the CUDA-overlaid ROOT that cache.ethanwtodd.com serves is untouched, and
+    # son-of-anton still brings Analysis-Utilities in un-overridden for the
+    # physics runtime.
     website = {
       url = "github:ewtodd/website";
       inputs.nixpkgs.follows = "nixpkgs";
