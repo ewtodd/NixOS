@@ -33,10 +33,18 @@
     fsType = "ext4";
   };
 
-  boot.initrd.luks.devices."luks-917fb515-b4b7-4788-ad5b-3757f63a792d".device =
-    "/dev/disk/by-uuid/917fb515-b4b7-4788-ad5b-3757f63a792d";
-  boot.initrd.luks.devices."luks-243582c8-3a2d-4b29-a02e-7f1d06a1862e".device =
-    "/dev/disk/by-uuid/243582c8-3a2d-4b29-a02e-7f1d06a1862e";
+  # allowDiscards passes TRIM through dm-crypt to the NVMe. Without it the drive's
+  # FTL never learns which blocks are free: garbage collection starves and mixed
+  # read/write load stalls for 100-300ms at a time. Tradeoff is that an attacker
+  # with access to the disk can see which blocks are unused.
+  boot.initrd.luks.devices."luks-917fb515-b4b7-4788-ad5b-3757f63a792d" = {
+    device = "/dev/disk/by-uuid/917fb515-b4b7-4788-ad5b-3757f63a792d";
+    allowDiscards = true;
+  };
+  boot.initrd.luks.devices."luks-243582c8-3a2d-4b29-a02e-7f1d06a1862e" = {
+    device = "/dev/disk/by-uuid/243582c8-3a2d-4b29-a02e-7f1d06a1862e";
+    allowDiscards = true;
+  };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/90F5-6F70";

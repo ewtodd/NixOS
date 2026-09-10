@@ -87,6 +87,24 @@ def make_openrgb_emitter():
 
     client = OpenRGBClient()
 
+    # A device only honours per-LED colour writes while it is in a software
+    # mode. Anything left in a hardware effect (the MSI board boots into
+    # "Rainbow wave", the Gigabyte GPU into "Static") ignores the updates and
+    # keeps running its own animation, so put every device into Direct first.
+    # Sent unconditionally, never skipped because the cached mode already looks
+    # right: a mode command the hardware drops still updates OpenRGB's model, so
+    # the server can report Direct for a board that is really still running its
+    # BIOS effect and ignoring every colour we write.
+    for dev in client.devices:
+        modes = {mode.name.lower(): mode.name for mode in dev.modes}
+        name = modes.get("direct") or modes.get("static")
+        if name is None:
+            continue
+        try:
+            dev.set_mode(name)
+        except Exception as exc:  # a device we cannot switch is not fatal
+            print(f"rgb-load: {dev.name}: cannot set mode {name}: {exc}", flush=True)
+
     def emit(color):
         rgb = RGBColor(*color)
         for dev in client.devices:

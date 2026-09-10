@@ -29,6 +29,7 @@ in
     ./prometheus
     ./reverse-proxy
     ./rgb-load
+    ./rgb-static
     ./router
     ./scheduled-reboot
     ./searxng
