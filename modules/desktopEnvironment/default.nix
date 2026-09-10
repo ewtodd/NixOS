@@ -7,8 +7,6 @@
 }:
 let
   inherit (inputs.niri-nix.lib) mkNiriKDL;
-  homeDirectory = if (config.systemOptions.owner.e.enable) then "/home/e-play" else "/home/v-play";
-
   eDesktopGreeterNiriConfig = mkNiriKDL {
     output = [
       {
