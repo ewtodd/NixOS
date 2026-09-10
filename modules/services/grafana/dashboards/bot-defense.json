@@ -30,14 +30,14 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "purple", "value": null } ] }, "unit": "short" }, "overrides": [] },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ { "color": "purple", "value": null } ] }, "unit": "short", "decimals": 0 }, "overrides": [] },
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
       "id": 3,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" },
       "pluginVersion": "11.0.0",
-      "title": "Total bots trapped (all-time)",
+      "title": "Bots trapped (selected range)",
       "type": "stat",
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(endlessh_client_open_count_total)", "refId": "A" } ]
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(increase(endlessh_client_open_count_total[$__range]))", "refId": "A" } ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
@@ -46,9 +46,9 @@
       "id": 4,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false }, "textMode": "auto" },
       "pluginVersion": "11.0.0",
-      "title": "Total bot time wasted",
+      "title": "Bot time wasted (selected range)",
       "type": "stat",
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(endlessh_trapped_time_seconds_total)", "refId": "A" } ]
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(increase(endlessh_trapped_time_seconds_total[$__range]))", "refId": "A" } ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
@@ -68,7 +68,7 @@
       "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "single", "sort": "none" } },
       "title": "New bans / hour (fail2ban)",
       "type": "timeseries",
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(increase(f2b_jail_banned_total[1h]))", "legendFormat": "bans/hr", "refId": "A" } ]
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(rate(f2b_jail_banned_total[$__rate_interval])) * 3600", "legendFormat": "bans/hr", "refId": "A" } ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
@@ -76,22 +76,22 @@
       "gridPos": { "h": 9, "w": 12, "x": 0, "y": 13 },
       "id": 7,
       "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "single", "sort": "none" } },
-      "title": "Bots trapped over time (endlessh)",
+      "title": "Bots trapped per hour (endlessh)",
       "type": "timeseries",
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(endlessh_client_open_count_total)", "legendFormat": "trapped (cumulative)", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(rate(endlessh_client_open_count_total[$__rate_interval])) * 3600", "legendFormat": "trapped/hr", "refId": "A" },
         { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(endlessh_client_open_count)", "legendFormat": "currently trapped", "refId": "B" }
       ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 25, "gradientMode": "none", "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" } }, "unit": "s" }, "overrides": [] },
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "seconds wasted per hour", "axisPlacement": "auto", "drawStyle": "line", "fillOpacity": 25, "gradientMode": "none", "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" } }, "unit": "s" }, "overrides": [] },
       "gridPos": { "h": 9, "w": 12, "x": 12, "y": 13 },
       "id": 8,
       "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "single", "sort": "none" } },
-      "title": "Bot time wasted (endlessh, cumulative)",
+      "title": "Bot time wasted per hour (endlessh)",
       "type": "timeseries",
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(endlessh_trapped_time_seconds_total)", "legendFormat": "wasted seconds", "refId": "A" } ]
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "prometheus" }, "expr": "sum(rate(endlessh_trapped_time_seconds_total[$__rate_interval])) * 3600", "legendFormat": "wasted/hr", "refId": "A" } ]
     }
   ],
   "refresh": "30s",
@@ -103,6 +103,6 @@
   "timezone": "",
   "title": "Bot Defense",
   "uid": "bot-defense",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

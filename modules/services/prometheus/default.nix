@@ -11,7 +11,9 @@
 
       listenAddress = "127.0.0.1";
 
-      retentionTime = "15d";
+      retentionTime = "1y";
+
+      extraFlags = [ "--storage.tsdb.retention.size=20GB" ];
 
       scrapeConfigs = [
         {
