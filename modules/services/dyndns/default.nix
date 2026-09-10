@@ -7,6 +7,8 @@
 let
   domain = "ethanwtodd.com";
   subdomains = [
+    # "@" is Namecheap dynamic DNS host for the apex record, ethanwtodd.com.
+    "@"
     "ai"
     "cache"
     "cloud"
@@ -16,6 +18,7 @@ let
     "office"
     "ssh"
     "status"
+    "www"
   ];
 in
 {

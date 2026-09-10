@@ -15,6 +15,21 @@ in
     services.caddy = {
       enable = true;
 
+      # The apex: a static hugo site, served straight out of the store like the
+      # documentation. Its root-absolute asset paths are correct here because it
+      # is served at / rather than under a prefix.
+      virtualHosts."ethanwtodd.com".extraConfig = ''
+        encode zstd gzip
+        root * ${inputs.website.packages.${system}.default}
+        file_server
+      '';
+
+      # One canonical hostname, so links and search results do not split across
+      # the two. Needs its own Namecheap record; see the dyndns subdomain list.
+      virtualHosts."www.ethanwtodd.com".extraConfig = ''
+        redir https://ethanwtodd.com{uri} permanent
+      '';
+
       virtualHosts."cache.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.4:5000
       '';
