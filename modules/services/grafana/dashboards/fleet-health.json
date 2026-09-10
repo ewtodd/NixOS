@@ -3,7 +3,7 @@
   "title": "Fleet health",
   "tags": ["nixos", "node"],
   "schemaVersion": 39,
-  "version": 2,
+  "version": 3,
   "editable": true,
   "time": { "from": "now-6h", "to": "now" },
   "timezone": "browser",
@@ -38,89 +38,157 @@
     },
     {
       "id": 2,
-      "type": "stat",
-      "title": "Host status",
-      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 1 },
+      "type": "table",
+      "title": "Host status & uptime",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 1 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
           "refId": "A",
           "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "up{job=\"node\"}",
-          "legendFormat": "{{instance}}",
+          "expr": "max by (instance) (up{job=\"node\",instance=~\"$instance\"})",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "max by (instance) (node_time_seconds{instance=~\"$instance\"} - node_boot_time_seconds)",
+          "format": "table",
           "instant": true
         }
       ],
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": { "byField": "instance", "mode": "outer" }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": { "exclude": { "pattern": "^Time.*" } }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "renameByName": {
+              "instance": "Host",
+              "Value #A": "Status",
+              "Value #B": "Uptime",
+              "Value": "Status",
+              "Value 1": "Uptime"
+            },
+            "indexByName": { "instance": 0, "Value #A": 1, "Value #B": 2 }
+          }
+        }
+      ],
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "orientation": "horizontal",
-        "colorMode": "background",
-        "textMode": "value_and_name",
-        "graphMode": "none"
+        "showHeader": true,
+        "cellHeight": "md",
+        "footer": {
+          "show": false,
+          "reducer": ["sum"],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [{ "displayName": "Status", "desc": false }]
       },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": { "text": "DOWN", "index": 0 },
-                "1": { "text": "UP", "index": 1 }
-              }
-            }
-          ],
+          "custom": {
+            "align": "left",
+            "cellOptions": { "type": "auto" },
+            "filterable": false
+          },
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              { "color": "red", "value": null },
-              { "color": "green", "value": 1 }
-            ]
+            "steps": [{ "color": "text", "value": null }]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Host" },
+            "properties": [{ "id": "custom.width", "value": 220 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Status" },
+            "properties": [
+              { "id": "custom.width", "value": 140 },
+              { "id": "custom.align", "value": "center" },
+              {
+                "id": "custom.cellOptions",
+                "value": { "type": "color-background", "mode": "basic" }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": { "text": "DOWN", "color": "red", "index": 0 },
+                      "1": { "text": "UP", "color": "green", "index": 1 }
+                    }
+                  },
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": { "text": "NO DATA", "color": "red", "index": 2 }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Uptime" },
+            "properties": [
+              { "id": "unit", "value": "s" },
+              { "id": "decimals", "value": 1 },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "special",
+                    "options": {
+                      "match": "null",
+                      "result": { "text": "—", "color": "text", "index": 0 }
+                    }
+                  }
+                ]
+              },
+              { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+              { "id": "color", "value": { "mode": "thresholds" } },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "orange", "value": null },
+                    { "color": "text", "value": 900 }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
       }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Uptime",
-      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 1 },
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "expr": "node_time_seconds - node_boot_time_seconds",
-          "legendFormat": "{{instance}}",
-          "instant": true
-        }
-      ],
-      "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "orientation": "horizontal",
-        "colorMode": "none",
-        "textMode": "value_and_name",
-        "graphMode": "none"
-      },
-      "fieldConfig": {
-        "defaults": { "unit": "s", "color": { "mode": "fixed", "fixedColor": "text" } },
-        "overrides": []
-      }
-    },
+    }
+,
     {
       "id": 4,
       "type": "row",
       "title": "Resource trends",
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 7 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 10 },
       "panels": []
     },
     {
       "id": 5,
       "type": "timeseries",
       "title": "CPU % busy",
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 8 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 11 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -148,7 +216,7 @@
       "id": 6,
       "type": "timeseries",
       "title": "Memory % used",
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 8 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 11 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -176,7 +244,7 @@
       "id": 7,
       "type": "timeseries",
       "title": "Root filesystem % used",
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 17 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 20 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -204,7 +272,7 @@
       "id": 8,
       "type": "timeseries",
       "title": "Network I/O (rx +, tx -)",
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 17 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 20 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -237,14 +305,14 @@
       "type": "row",
       "title": "WireView — e-desktop",
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 },
       "panels": []
     },
     {
       "id": 10,
       "type": "stat",
       "title": "Total power",
-      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 27 },
+      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 30 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -281,7 +349,7 @@
       "id": 11,
       "type": "stat",
       "title": "Total current",
-      "gridPos": { "h": 6, "w": 4, "x": 4, "y": 27 },
+      "gridPos": { "h": 6, "w": 4, "x": 4, "y": 30 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -318,7 +386,7 @@
       "id": 12,
       "type": "stat",
       "title": "Max temperature",
-      "gridPos": { "h": 6, "w": 4, "x": 8, "y": 27 },
+      "gridPos": { "h": 6, "w": 4, "x": 8, "y": 30 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -355,7 +423,7 @@
       "id": 13,
       "type": "stat",
       "title": "Faults",
-      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 27 },
+      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 30 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -399,7 +467,7 @@
       "id": 14,
       "type": "stat",
       "title": "Fan duty",
-      "gridPos": { "h": 6, "w": 4, "x": 16, "y": 27 },
+      "gridPos": { "h": 6, "w": 4, "x": 16, "y": 30 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -438,7 +506,7 @@
       "id": 15,
       "type": "stat",
       "title": "PSU capability",
-      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 27 },
+      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 30 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -467,7 +535,7 @@
       "id": 16,
       "type": "timeseries",
       "title": "Power",
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 33 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 36 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -505,7 +573,7 @@
       "id": 17,
       "type": "timeseries",
       "title": "Current per pin",
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 33 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 36 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -537,7 +605,7 @@
       "id": 18,
       "type": "timeseries",
       "title": "Voltage per pin",
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 42 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 45 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
@@ -563,7 +631,7 @@
       "id": 19,
       "type": "timeseries",
       "title": "Temperature",
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 42 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 45 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         {
