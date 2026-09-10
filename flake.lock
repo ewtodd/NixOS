@@ -1621,11 +1621,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789001506,
-        "narHash": "sha256-BmHpIO8NDLGQNI8T/Ls8VBQby0LPTyH0CwTyDU/ytRk=",
+        "lastModified": 1789002960,
+        "narHash": "sha256-lTBCzU451t4TWoMauslvt+LE6w1Xrum9OSl/3HjADSA=",
         "owner": "ewtodd",
         "repo": "website",
-        "rev": "55d89fb1471133834b0ec3bdef358a935c7aeaa8",
+        "rev": "ac39229b9f447637d8e2addbc93f575a7b53618f",
         "type": "github"
       },
       "original": {
