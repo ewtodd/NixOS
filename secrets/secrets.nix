@@ -5,6 +5,8 @@ let
   ethan-laptop-eplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA";
   val-laptop-vwork = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMhKUIc/JCW80ZOcEnL4mTFx35bp/AyRYVtJXpdamnDB";
   val-laptop-vplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILO1NgdbMcu5dL8bw6MGINcRLZFq1okTXepZsXuYYnlU";
+  val-desktop-vwork = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiOyjqM9GXsn0D7pPOJlaAgjOCESlPrVZc2O+jCU3ml v-desktop-vwork";
+  val-desktop-vplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxd8dbNShz1+NhK71DgHpqQZn8fq0Acy4qL2C9kzw0s v-play@v-desktop";
   nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@nu";
   mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@mu";
   server-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIfWKNZTYdp80kKGSoTdI/tc1CNLsZT07I/YtBGC5bjN root@anton";
@@ -20,6 +22,8 @@ let
   val = [
     val-laptop-vwork
     val-laptop-vplay
+    val-desktop-vwork
+    val-desktop-vplay
   ];
 in
 {

@@ -56,7 +56,7 @@ let
       mode = "1920x1080@144.002";
     }
     {
-      _args = [ "DP-4" ];
+      _args = [ "DP-3" ];
       transform = "normal";
       position._props = {
         x = -1920;
