@@ -50,6 +50,14 @@
     music = {
       url = "github:ewtodd/MUSIC";
     };
+    # Unlike the two above, this one DOES follow our nixpkgs. It builds with
+    # hugo and nothing else — there is no CUDA-overlaid ROOT whose derivation
+    # hash has to stay substitutable from cache.ethanwtodd.com — so following
+    # keeps a second nixpkgs out of the lock at no cost.
+    website = {
+      url = "github:ewtodd/website";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     SRIM = {
       url = "github:ewtodd/SRIM-nix";
       inputs.nixpkgs.follows = "nixpkgs";
