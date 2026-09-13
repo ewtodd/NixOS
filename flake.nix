@@ -45,19 +45,6 @@
       url = "github:AvengeMedia/danksearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # The whole public web surface: ethanwtodd.com from `packages.default`, and
-    # docs.ethanwtodd.com — the index plus both generated API references — from
-    # `packages.docs`. Analysis-Utilities and MUSIC are inputs of that flake
-    # rather than of this one, so the site, the index that lists them and the
-    # references themselves are versioned together, and this configuration only
-    # has to track one repository.
-    #
-    # Following nixpkgs is safe and cheap here: the site builds with hugo, and
-    # the two documentation sets need only doxygen and graphviz. The override
-    # reaches website's own nixpkgs and not the pins inside those two inputs, so
-    # the CUDA-overlaid ROOT that cache.ethanwtodd.com serves is untouched, and
-    # son-of-anton still brings Analysis-Utilities in un-overridden for the
-    # physics runtime.
     website = {
       url = "github:ewtodd/website";
       inputs.nixpkgs.follows = "nixpkgs";
