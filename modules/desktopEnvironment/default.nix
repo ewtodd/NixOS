@@ -34,7 +34,6 @@ in
       {
         services.displayManager.dms-greeter = {
           enable = true;
-          package = pkgs.dms-shell;
           compositor.name = "niri";
           compositor.customConfig = lib.optionalString config.systemOptions.owner.e.enable eDesktopGreeterNiriConfig;
         };
