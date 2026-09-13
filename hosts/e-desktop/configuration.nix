@@ -265,21 +265,18 @@ in
             "qwen3.8-27b-instruct" = {
               context_length = 262144;
             };
-            "qwen3.8-flash-next-local" = {
-              context_length = 262144;
+            "qwen3.8-flash-next" = {
+              context_length = 524288;
               reasoning_effort = "medium";
-            };
-            "deepseek-v4-api" = {
-              context_length = 1048576;
             };
           };
         };
         physics = {
           model = "qwen3.8-27b";
-          coder_model = "qwen3.8-27b";
+          coder_model = "qwen3.8-27b-instruct";
           reasoning_effort = "medium";
           agent_models = {
-            critic = "qwen3.8-flash-next-local";
+            critic = "qwen3.8-flash-next";
           };
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";
