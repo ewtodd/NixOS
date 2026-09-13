@@ -163,7 +163,7 @@ in
           '';
         };
         reviewer = {
-          model = "litellm/qwen3.8-flash-next-local";
+          model = "litellm/qwen3.8-flash-next";
           variant = "max";
           description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU; rare, heavy.";
           prompt = ''
@@ -246,7 +246,7 @@ in
               };
             };
 
-            "qwen3.8-flash-next-local" = {
+            "qwen3.8-flash-next" = {
               name = "Qwen3.8 Flash Next (Local)";
               variants = {
                 max = {
@@ -261,7 +261,10 @@ in
                   };
                 };
                 modalities = {
-                  input = [ "text" ];
+                  input = [
+                    "image"
+                    "text"
+                  ];
                   output = [ "text" ];
                 };
               };

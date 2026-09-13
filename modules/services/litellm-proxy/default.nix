@@ -188,7 +188,7 @@
                   };
                 }
                 {
-                  model_name = "qwen3.8-flash-next-local";
+                  model_name = "qwen3.8-flash-next";
                   litellm_params = mkLocalSampled sonOfAntonStrix "openai/qwen3.8-flash-next" sampling.qwen38Thinking;
                 }
                 {

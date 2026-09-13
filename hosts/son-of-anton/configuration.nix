@@ -63,19 +63,14 @@ in
       enable = true;
       lanExpose = true;
       model = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/Qwen3.8-Flash-Next-IQ4_NL-PROJFIX-00001-of-00009.gguf";
-      # MTP speculative decoding is off: on this branch the delta-net recurrent
-      # state is not rewound on rejected drafts (llama-memory-recurrent.cpp warns
-      # "non-consecutive token position" on every step), and measured NLL of
-      # MTP-generated text under the clean model drifts from equal to ~+0.18
-      # nats/token over 1500 tokens — long generations degenerate into loops.
-      # Costs decode (~29 -> ~20 t/s); prefill is unaffected (1.2k t/s at 44k).
-      # draftModel = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
       port = 8050;
-      # One slot at the native 262144 (qwen4exp.context_length). Anything larger,
-      # or a second slot, OOMs the 128 GB alongside the ~66 GB of resident weights
-      # (the pp compute buffer for -ub 16384 scales with context). The server also
-      # caps each slot at n_ctx_train, so a bigger -c would only waste memory.
-      ctxSize = 262144;
+      parallel = 1;
+      ctxSize = 524288;
+      ropeScaling = "yarn";
+      ropeScale = 2;
+      yarnOrigCtx = 262144;
+      ctxTrainOverride = 524288;
+      mmproj = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mmproj-Qwen3.8-Flash-Next-bf16.gguf";
     };
     security.harden.enable = true;
   };

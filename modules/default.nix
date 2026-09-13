@@ -777,6 +777,12 @@ with lib;
           example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
           description = "Absolute path to the MTP draft GGUF (--spec-type draft-mtp). Null disables speculative decoding.";
         };
+        mmproj = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mmproj-Qwen3.8-Flash-Next-bf16.gguf";
+          description = "Multimodal projector GGUF (--mmproj, placed on ROCm0). Null serves text only.";
+        };
         alias = mkOption {
           type = types.str;
           default = "qwen3.8-flash-next";
@@ -808,6 +814,49 @@ with lib;
           type = types.ints.positive;
           default = 1;
           description = "Concurrent slots (--parallel).";
+        };
+        # separate options to allow for asymmetric quant (as llamaSwap.models)
+        kQuant = mkOption {
+          type = types.enum [
+            "f32"
+            "f16"
+            "bf16"
+            "q8_0"
+            "q4_0"
+            "q4_1"
+            "iq4_nl"
+            "q5_0"
+            "q5_1"
+          ];
+          default = "f16";
+          description = "i.e. --cache-type-k f16 (the branch's direct-indices sparse path asserts f16 K/V)";
+        };
+        vQuant = mkOption {
+          type = types.enum [
+            "f32"
+            "f16"
+            "bf16"
+            "q8_0"
+            "q4_0"
+            "q4_1"
+            "iq4_nl"
+            "q5_0"
+            "q5_1"
+          ];
+          default = "f16";
+          description = "i.e. --cache-type-v f16 (the branch's direct-indices sparse path asserts f16 K/V)";
+        };
+        kvUnified = mkOption {
+          type = types.bool;
+          default = false;
+          description = ''
+            One KV pool shared by all slots (--kv-unified) instead of one stream per
+            slot. On this branch every sparse-attention memory bound (512-query
+            strips, block selection) requires a single stream, so this is the only
+            way to run more than one slot without the prompt-processing scratch
+            buffer growing to n_kv x ubatch x slots f32 (tens of GB). Per-slot
+            context is then min(ctxSize, n_ctx_train / ctxTrainOverride).
+          '';
         };
         draftNMax = mkOption {
           type = types.ints.positive;

@@ -94,12 +94,20 @@ let
     "-fit off"
     "--load-mode none"
     "--lazy-mode on-direct"
-    "-ctk f16 -ctv f16"
+    "--cache-type-k ${cfg.kQuant}"
+    "--cache-type-v ${cfg.vQuant}"
     "-c ${toString cfg.ctxSize}"
     "-b ${toString cfg.batchSize}"
     "-ub ${toString cfg.ubatchSize}"
     "--parallel ${toString cfg.parallel}"
+  ]
+  ++ lib.optionals cfg.kvUnified [ "--kv-unified" ]
+  ++ [
     "--jinja"
+  ]
+  ++ lib.optionals (cfg.mmproj != null) [
+    "--mmproj ${cfg.mmproj}"
+    "--mmproj-device ROCm0"
   ]
   ++ lib.optionals (cfg.ropeScaling != null) [ "--rope-scaling ${cfg.ropeScaling}" ]
   ++ lib.optionals (cfg.ropeScale != null) [ "--rope-scale ${toString cfg.ropeScale}" ]
