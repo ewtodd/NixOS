@@ -30,12 +30,17 @@ in
     services.vllm = {
       enable = true;
       lanExpose = true;
-      extraFlags = [ "--distributed-timeout-seconds 90" ];
+      extraFlags = [
+        "--distributed-timeout-seconds 90"
+        "--served-model-name Qwen/Qwen3.8-27B-FP8"
+      ];
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
         VLLM_SLEEP_WHEN_IDLE = "1";
       };
-      model = "Qwen/Qwen3.8-27B-FP8";
+      # llmfan46/Qwen3.8-27B-Ultra-Uncensored-Heretic-Native-MTP-Preserved, cast to
+      # Qwen's block-fp8 layout with bf16_to_qwen_fp8.py (tensor-identical to Qwen/Qwen3.8-27B-FP8).
+      model = "/scratch/models/Qwen3.8-27B-Heretic-FP8";
       devices = "0,1";
       tensorParallelSize = 2;
       maxModelLen = 262144;
@@ -50,19 +55,27 @@ in
       reasoningParser = "qwen3";
       languageModelOnly = false;
     };
-    services.ds4 = {
+    # Qwen3.8-Next-Flash on the Strix Halo iGPU via pwilkin's llama.cpp
+    # strix-halo branch (replaces antirez/ds4 DeepSeek-V4). Weights are the
+    # ilintar/qwen3.8-flash-next-gguf-strix-halo IQ4_NL PROJFIX shards plus the
+    # shared-embedding MTP draft, downloaded with `hf download --local-dir`.
+    services.llamaStrix = {
       enable = true;
       lanExpose = true;
-      model = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/snapshots/f71f23d552d664e523b422157b2befbf74040380/DeepSeek-V4-Flash-Vision-Exp-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8.gguf";
+      model = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/Qwen3.8-Flash-Next-IQ4_NL-PROJFIX-00001-of-00009.gguf";
+      # MTP speculative decoding is off: on this branch the delta-net recurrent
+      # state is not rewound on rejected drafts (llama-memory-recurrent.cpp warns
+      # "non-consecutive token position" on every step), and measured NLL of
+      # MTP-generated text under the clean model drifts from equal to ~+0.18
+      # nats/token over 1500 tokens — long generations degenerate into loops.
+      # Costs decode (~29 -> ~20 t/s); prefill is unaffected (1.2k t/s at 44k).
+      # draftModel = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
       port = 8050;
-      ctxSize = 524288;
-      tokens = 3072;
-      threads = 32;
-      prefillChunk = 3072;
-      batchedSession = 1;
-      kvDiskDir = "/scratch/ds4-kv";
-      kvDiskSpaceMb = 524288;
-      backend = "rocm";
+      # One slot at the native 262144 (qwen4exp.context_length). Anything larger,
+      # or a second slot, OOMs the 128 GB alongside the ~66 GB of resident weights
+      # (the pp compute buffer for -ub 16384 scales with context). The server also
+      # caps each slot at n_ctx_train, so a bigger -c would only waste memory.
+      ctxSize = 262144;
     };
     security.harden.enable = true;
   };

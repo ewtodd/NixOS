@@ -129,6 +129,37 @@ with lib;
           description = "Log the trigger without acting (safe for testing the watchdog).";
         };
       };
+      services.catsExporter = {
+        enable = mkEnableOption "cats smart pet device exporter (PetLibro + Litter-Robot to Prometheus)";
+        port = mkOption {
+          type = types.port;
+          default = 9878;
+          description = "TCP port for the Prometheus /metrics and /devices endpoints.";
+        };
+        listenAddress = mkOption {
+          type = types.str;
+          default = "0.0.0.0";
+          description = ''
+            Address the exporter binds. 0.0.0.0 so the LiteLLM cats MCP
+            server on oracle can read /devices over the LAN.
+          '';
+        };
+        pollIntervalSeconds = mkOption {
+          type = types.ints.positive;
+          default = 300;
+          description = "Seconds between polls of the PetLibro and Whisker clouds.";
+        };
+        environmentFile = mkOption {
+          type = types.str;
+          default = "/run/agenix/cats-env";
+          description = ''
+            systemd EnvironmentFile holding PETLIBRO_EMAIL/PASSWORD and
+            LITTER_ROBOT_USERNAME/PASSWORD. The unit tolerates the file being
+            absent, so the exporter can be deployed before the agenix secret
+            is created (it then reports the brands as unconfigured).
+          '';
+        };
+      };
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
 
       services.openWebUI.enable = mkEnableOption "Open WebUI web interface (ai.ethanwtodd.com, behind Anubis on nu)";
@@ -732,25 +763,24 @@ with lib;
           default = [ ];
         };
       };
-      services.ds4 = {
-        enable = mkEnableOption "antirez/ds4 DwarfStar DeepSeek-V4 inference server (Strix)";
-        lanExpose = mkEnableOption "expose the ds4 server on the LAN (bind 0.0.0.0 + open firewall)";
+      services.llamaStrix = {
+        enable = mkEnableOption "llama.cpp (pwilkin strix-halo branch) server on the Strix Halo iGPU";
+        lanExpose = mkEnableOption "expose the llama-strix server on the LAN (bind 0.0.0.0 + open firewall)";
         model = mkOption {
           type = types.str;
-          example = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/blobs/659e22fb...gguf";
-          description = "Absolute path to the DSV4 GGUF.";
+          example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/Qwen3.8-Flash-Next-IQ4_NL-PROJFIX-00001-of-00009.gguf";
+          description = "Absolute path to the main GGUF (first shard for split models).";
         };
         draftModel = mkOption {
           type = types.nullOr types.str;
           default = null;
-          example = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/blobs/659e22fb...gguf";
-          description = "Absolute path to the DSV4 draft (mtp/dspark) GGUF.";
+          example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
+          description = "Absolute path to the MTP draft GGUF (--spec-type draft-mtp). Null disables speculative decoding.";
         };
-        visionModel = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          example = "/scratch/llama-cache/models--antirez--deepseek-v4-gguf/blobs/659e22fb...gguf";
-          description = "Absolute path to the DSV4 vision encoder GGUF.";
+        alias = mkOption {
+          type = types.str;
+          default = "qwen3.8-flash-next";
+          description = "Model name reported on /v1/models (--alias); what litellm addresses.";
         };
         port = mkOption {
           type = types.port;
@@ -758,52 +788,82 @@ with lib;
         };
         ctxSize = mkOption {
           type = types.ints.positive;
-          default = 100000;
-          description = "Allocated context tokens (--ctx).";
+          default = 65536;
+          description = "Context size (-c). The upstream launcher default.";
         };
-        tokens = mkOption {
+        batchSize = mkOption {
           type = types.ints.positive;
-          default = 4096;
-          description = "Default max output tokens when a client omits a limit (--tokens).";
+          default = 16384;
+          description = "Logical batch (-b). 16384 sends a whole prompt as one batch, which is the tuned prefill path.";
         };
-        threads = mkOption {
+        ubatchSize = mkOption {
           type = types.ints.positive;
-          default = 32;
-          description = "CPU helper threads (--threads).";
+          default = 16384;
+          description = ''
+            Physical batch (-ub). 24576 measures the same within error but reserves
+            ~8 GB more compute buffer, which on a unified-memory part competes with weights.
+          '';
         };
-        power = mkOption {
-          type = types.ints.between 1 100;
-          default = 100;
-          description = "GPU duty-cycle target 1..100 (--power).";
-        };
-        prefillChunk = mkOption {
-          type = types.ints.positive;
-          default = 4096;
-          description = "Graph prefill chunk size (--prefill-chunk).";
-        };
-        batchedSession = mkOption {
+        parallel = mkOption {
           type = types.ints.positive;
           default = 1;
-          description = "Keep N resident sessions and batch decode-ready requests (--batched-session).";
+          description = "Concurrent slots (--parallel).";
         };
-        kvDiskDir = mkOption {
-          type = types.nullOr types.str;
-          default = "/scratch/ds4-kv";
-          description = "Disk KV checkpoint directory (--kv-disk-dir). Null disables disk checkpoints.";
-        };
-        kvDiskSpaceMb = mkOption {
+        draftNMax = mkOption {
           type = types.ints.positive;
-          default = 8192;
-          description = "Disk KV checkpoint budget in MiB (--kv-disk-space-mb).";
+          default = 2;
+          description = "Max MTP draft tokens per step (--spec-draft-n-max).";
         };
-        backend = mkOption {
-          type = types.enum [
-            "rocm"
-            "metal"
-            "cpu"
-          ];
-          default = "rocm";
-          description = "ds4 backend (--backend).";
+        ropeScaling = mkOption {
+          type = types.nullOr (
+            types.enum [
+              "none"
+              "linear"
+              "yarn"
+            ]
+          );
+          default = null;
+          description = "RoPE frequency scaling method (--rope-scaling). Null leaves the model default.";
+        };
+        ropeScale = mkOption {
+          type = types.nullOr types.numbers.positive;
+          default = null;
+          example = 2;
+          description = "RoPE context scaling factor (--rope-scale); 1/freq-scale. E.g. 2 takes a 262144-native model to 524288.";
+        };
+        yarnOrigCtx = mkOption {
+          type = types.nullOr types.ints.positive;
+          default = null;
+          example = 262144;
+          description = "YaRN original (native) context size (--yarn-orig-ctx). Null lets llama.cpp read it from the model.";
+        };
+        modelArch = mkOption {
+          type = types.str;
+          default = "qwen4exp";
+          description = "GGUF architecture prefix of the model (general.architecture); used to address its metadata keys.";
+        };
+        ctxTrainOverride = mkOption {
+          type = types.nullOr types.ints.positive;
+          default = null;
+          example = 524288;
+          description = ''
+            Override the model's declared training context
+            (--override-kv <modelArch>.context_length=int:N). The server caps every
+            slot at n_ctx_train (tools/server: n_ctx_slot = min(n_ctx_seq, n_ctx_train)),
+            so a YaRN-extended context is silently unusable without this. Set
+            yarnOrigCtx explicitly alongside it, since YaRN's default original
+            context is the (now overridden) n_ctx_train.
+          '';
+        };
+        retainedPm4 = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            ENABLE_RETAINED_PM4 in the upstream launcher: run HIP graphs on the
+            retained-PM4 ROCr/HIP runtime (pwilkin/rocm-systems). Off mirrors the
+            launcher's fallback and disables ggml graphs entirely
+            (GGML_CUDA_DISABLE_GRAPHS=1). Per the author this only affects decode.
+          '';
         };
         user = mkOption {
           type = types.str;
@@ -813,10 +873,15 @@ with lib;
           type = types.str;
           default = "2";
           description = ''
-            HIP_VISIBLE_DEVICES — ROCm device ordinals for ds4. On son-of-anton
-            the two R9700s are 0,1 (owned by vLLM) and the Strix Halo iGPU
-            (gfx1151, needed by ds4) is 2.
+            HIP_VISIBLE_DEVICES. On son-of-anton the two R9700s are 0,1 (owned by
+            vLLM) and the Strix Halo iGPU (gfx1151) is 2; with only it visible the
+            server addresses it as ROCm0.
           '';
+        };
+        extraEnv = mkOption {
+          type = types.attrsOf types.str;
+          default = { };
+          description = "Extra environment for llama-server; overrides the branch's kernel gates if keys collide.";
         };
         extraFlags = mkOption {
           type = types.listOf types.str;

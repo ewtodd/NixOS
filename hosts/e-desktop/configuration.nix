@@ -141,7 +141,7 @@ in
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "qwen3.8-27b-coding";
+          model = "qwen3.8-27b";
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
             workspace_root = "/home/e-work/workspace-soa/runs";
@@ -156,7 +156,7 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
-          model = "qwen3.8-27b-coding";
+          model = "qwen3.8-27b";
           settings = {
             platforms.signal.gateway_restart_notification = true;
             mcp_servers = lib.mapAttrs (name: _: {
@@ -182,7 +182,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "qwen3.8-27b-coding";
+          model = "qwen3.8-27b";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -201,9 +201,9 @@ in
           son-of-antonHome = "/var/lib/soa-ricky/.son-of-anton";
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
-          model = "qwen3.8-27b-coding";
+          model = "qwen3.8-27b";
           settings = {
-            model.default = "qwen3.8-27b-coding";
+            model.default = "qwen3.8-27b";
           };
           extraPackages = projectAgentTools;
           settings.gateway = {
@@ -226,9 +226,9 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          model = "qwen3.8-27b-coding";
+          model = "qwen3.8-27b";
           settings = {
-            model.default = "qwen3.8-27b-coding";
+            model.default = "qwen3.8-27b";
           };
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
@@ -250,7 +250,7 @@ in
 
       settings = {
         model = {
-          default = "qwen3.8-27b-coding";
+          default = "qwen3.8-27b";
           reasoning_effort = "medium";
           provider = "custom";
         };
@@ -258,14 +258,16 @@ in
           base_url = "http://10.0.0.6:4000/v1";
           key_env = "LITELLM_MASTER_KEY";
           models = {
-            "qwen3.8-27b-coding" = {
+            "qwen3.8-27b" = {
               context_length = 262144;
+              reasoning_effort = "medium";
             };
             "qwen3.8-27b-instruct" = {
               context_length = 262144;
             };
-            "deepseek-v4-flash-local" = {
-              context_length = 524288;
+            "qwen3.8-flash-next-local" = {
+              context_length = 262144;
+              reasoning_effort = "medium";
             };
             "deepseek-v4-api" = {
               context_length = 1048576;
@@ -273,11 +275,11 @@ in
           };
         };
         physics = {
-          model = "qwen3.8-27b-coding";
-          coder_model = "qwen3.8-27b-coding";
+          model = "qwen3.8-27b";
+          coder_model = "qwen3.8-27b";
           reasoning_effort = "medium";
           agent_models = {
-            critic = "deepseek-v4-flash-local";
+            critic = "qwen3.8-flash-next-local";
           };
           base_url = "http://10.0.0.6:4000/v1";
           api_key_env = "LITELLM_MASTER_KEY";

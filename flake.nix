@@ -8,6 +8,14 @@
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Smart pet device monitoring: the cats exporter (PetLibro + Litter-Robot
+    # -> Prometheus) and the read-only cats MCP server. A path input only
+    # evaluates on hosts that have the checkout (the build host, e-desktop);
+    # switch it to github:ewtodd/cats once the repository is pushed.
+    cats = {
+      url = "path:/home/e-play/Software/cats";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -83,8 +91,16 @@
     llama-cpp = {
       url = "github:ggml-org/llama.cpp";
     };
-    ds4 = {
-      url = "github:antirez/ds4/110afdd8886586f18fc9b28bc5533152dd10e728";
+    # pwilkin/llama.cpp `strix-halo` integration branch, pinned to the commit
+    # https://pwilkin.github.io/strix-halo/ install.sh pins (llama_repo_commit).
+    llama-cpp-strix-halo = {
+      url = "github:pwilkin/llama.cpp/f5daaa3cfa6358e5dd398911ec741813745a5440";
+      flake = false;
+    };
+    # pwilkin/rocm-systems `ilintar-experiments`: retained-PM4 command lists for
+    # HIP graphs (ROCr + CLR), pinned to install.sh's rocm_repo_commit.
+    rocm-systems-strix-halo = {
+      url = "github:pwilkin/rocm-systems/7dda3ac6cfe6bbe0b7f08c23a67cfa118d8641a1";
       flake = false;
     };
     llm-agents = {
@@ -310,15 +326,21 @@
 
       packages.x86_64-linux = {
         neovim = mkNeovim;
-        ds4 =
-          (import nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          }).callPackage
-            ./modules/services/ds4/pkgs/ds4.nix
-            {
-              src = inputs.ds4;
+        inherit
+          (import ./modules/services/llama-strix/pkgs {
+            pkgs = import nixpkgs {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
             };
+            llamaCppSrc = inputs.llama-cpp-strix-halo;
+            rocmSystemsSrc = inputs.rocm-systems-strix-halo;
+          })
+          rocmSdk
+          rocrRuntime
+          hipClr
+          llamaCpp
+          runtimeCheck
+          ;
       };
 
       nixosConfigurations = builtins.mapAttrs (

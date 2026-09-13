@@ -55,13 +55,13 @@
             "chat_template_kwargs"
             "min_p"
             "top_k"
-            "repeat_penalty"
+            "repetition_penalty"
             "presence_penalty"
             "frequency_penalty"
             "response_format"
           ];
           sonOfAntonVllm = "http://10.0.0.5:8100/v1"; # vLLM on R9700s (TP=2)
-          sonOfAntonDs4 = "http://10.0.0.5:8050/v1"; # ds4 DeepSeek-V4 on Strix
+          sonOfAntonStrix = "http://10.0.0.5:8050/v1"; # llama.cpp strix-halo branch, Qwen3.8-Flash-Next on the iGPU
           oracleSwap = "http://10.0.0.6:8080/v1";
 
           mkLocal = api_base: model: {
@@ -77,6 +77,7 @@
               top_k = 20;
               min_p = 0;
               presence_penalty = 0;
+              repetition_penalty = 1.0;
             };
             qwen38Instruct = {
               temperature = 0.7;
@@ -84,6 +85,7 @@
               top_k = 20;
               min_p = 0;
               presence_penalty = 1.5;
+              repetition_penalty = 1.0;
               chat_template_kwargs = {
                 enable_thinking = false;
               };
@@ -133,6 +135,15 @@
                   args = [ "/etc/litellm/searxng_mcp.py" ];
                   env.SEARXNG_URL = "http://127.0.0.1:8888";
                 };
+                cats = {
+                  transport = "stdio";
+                  command = "${inputs.cats.packages.${pkgs.system}.cats}/bin/cats-mcp";
+                  args = [ ];
+                  # The exporter runs on nu (10.0.0.7) and owns the cloud
+                  # credentials; this read-only server just fetches its
+                  # /devices snapshot over the LAN.
+                  env.CATS_EXPORTER_URL = "http://10.0.0.7:9878";
+                };
                 nixos = {
                   transport = "stdio";
                   command = lib.getExe pkgs.mcp-nixos;
@@ -177,8 +188,8 @@
                   };
                 }
                 {
-                  model_name = "deepseek-v4-flash-local";
-                  litellm_params = mkLocal sonOfAntonDs4 "openai/deepseek-v4-flash";
+                  model_name = "qwen3.8-flash-next-local";
+                  litellm_params = mkLocalSampled sonOfAntonStrix "openai/qwen3.8-flash-next" sampling.qwen38Thinking;
                 }
                 {
                   model_name = "deepseek-v4-api";
@@ -188,7 +199,7 @@
                   };
                 }
               ]
-              ++ mkPool "qwen3.8-27b-coding" (
+              ++ mkPool "qwen3.8-27b" (
                 mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8" sampling.qwen38Thinking
               )
               ++ mkPool "qwen3.8-27b-instruct" (
@@ -205,7 +216,7 @@
           # allowlist. Names, not paths: it matches on the basename of the
           # configured command.
           systemd.services.litellm.environment.LITELLM_MCP_STDIO_EXTRA_COMMANDS =
-            "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp";
+            "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp,cats-mcp";
           systemd.services.litellm.serviceConfig.ExecStart = lib.mkForce (
             lib.concatStringsSep " " [
               (lib.getExe config.services.litellm.package)
