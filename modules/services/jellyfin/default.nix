@@ -55,10 +55,9 @@ in
       "render"
     ];
 
-    # The media directory may not exist yet; create the mount point so Jellyfin
-    # has something to point a library at once the drive is in.
-    systemd.tmpfiles.rules = [
-      "d ${cfg.mediaDir} 0755 jellyfin jellyfin - -"
-    ];
+    # No tmpfiles rule for mediaDir on purpose. It is a ZFS dataset mountpoint,
+    # and a `d` rule re-applies ownership on every activation -- so it would
+    # chown the mounted dataset root out from under whoever writes the rips.
+    # The storage layer owns that path; this module only reads it.
   };
 }

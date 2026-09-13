@@ -16,6 +16,20 @@
   # Not encrypted, deliberately: on a headless box native encryption needs either
   # a manual unlock every boot or a key on the same machine's unencrypted root,
   # which defends against very little. Shred drives at disposal instead.
+  #
+  # The 14 TB SAS drive (archive pool) is NOT configured here: its HBA died.
+  # The card worked on the bench, then hung mid-option-ROM after the machine was
+  # racked, then stopped appearing on the PCI bus entirely -- surviving a clean
+  # and reseat, and with both empty root ports enumerating fine, so slot, lanes,
+  # cable and drive were all eliminated. Listing the pool cost 2m17s of a
+  # headless NAS being unreachable on every boot, to import something absent.
+  #
+  # To restore once a replacement HBA (LSI 9211-8i / 9300-8i, IT mode) is in:
+  #   - add "archive" back to extraPools and autoScrub.pools below
+  #   - `zpool import archive` -- the pool is keyed on wwn-0x5000cca2587032c8,
+  #     so it does not care which controller the drive appears behind
+  #   - point Jellyfin's library at /archive/video
+  # anton-zfs/02-add-archive-pool.sh is kept for a from-scratch rebuild.
   boot.zfs.extraPools = [ "tank" ];
 
   # A scrub reads every allocated block and repairs anything raidz2 can
