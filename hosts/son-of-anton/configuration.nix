@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 let
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
