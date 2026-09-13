@@ -85,13 +85,13 @@ in
     '';
 
     settings = {
-      model = "litellm/qwen3.8-27b-coding";
+      model = "litellm/qwen3.8-27b";
       small_model = "litellm/little-titles";
       default_agent = "build";
 
       agent = {
         compaction = {
-          model = "litellm/qwen3.8-27b-coding";
+          model = "litellm/qwen3.8-27b";
         };
         build = {
           variant = "low";
@@ -103,9 +103,9 @@ in
           '';
         };
         plan = {
-          model = "litellm/qwen3.8-27b-coding";
+          model = "litellm/qwen3.8-27b";
           variant = "xhigh";
-          description = "Plans and designs before acting. Deep thinking model (qwen3.8-27b-coding).";
+          description = "Plans and designs before acting. Deep thinking model (qwen3.8-27b).";
           permission = {
             edit = "deny";
           };
@@ -119,7 +119,7 @@ in
           '';
         };
         execute = {
-          model = "litellm/qwen3.8-27b-coding";
+          model = "litellm/qwen3.8-27b";
           variant = "low";
           description = "Executes a plan or task with the fast model (qwen3.8).";
           prompt = ''
@@ -151,11 +151,11 @@ in
         general = {
           model =
             if osConfig.systemOptions.owner.v.enable then
-              "litellm/qwen3.8-27b-coding"
+              "litellm/qwen3.8-27b"
             else
               "deepseek/deepseek-v4-flash";
           variant = "medium";
-          description = "Runs self-contained multi-step tasks and returns a final report (qwen3.8-27b-coding).";
+          description = "Runs self-contained multi-step tasks and returns a final report (qwen3.8-27b).";
           prompt = ''
             You are a worker subagent. You get one self-contained task; finish
             it with your tools and return a single final report. Do not ask the
@@ -163,9 +163,9 @@ in
           '';
         };
         reviewer = {
-          model = "litellm/deepseek-v4-flash-local";
+          model = "litellm/qwen3.8-flash-next-local";
           variant = "max";
-          description = "Reviews diffs and code for problems, fixes what it finds. Full-precision deepseek; rare, heavy.";
+          description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU; rare, heavy.";
           prompt = ''
             You are a code reviewer. Read the change and its surroundings.
             Report problems by severity, each with file:line: correctness,
@@ -221,8 +221,8 @@ in
               };
             };
 
-            "qwen3.8-27b-coding" = {
-              name = "Qwen3.8 27B Coding";
+            "qwen3.8-27b" = {
+              name = "Qwen3.8 27B";
               variants = {
                 xhigh = {
                   reasoning_effort = "xhigh";
@@ -246,8 +246,8 @@ in
               };
             };
 
-            "deepseek-v4-flash-local" = {
-              name = "Deepseek V4 Flash (Local)";
+            "qwen3.8-flash-next-local" = {
+              name = "Qwen3.8 Flash Next (Local)";
               variants = {
                 max = {
                   reasoning_effort = "max";
@@ -261,10 +261,7 @@ in
                   };
                 };
                 modalities = {
-                  input = [
-                    "text"
-                    "image"
-                  ];
+                  input = [ "text" ];
                   output = [ "text" ];
                 };
               };

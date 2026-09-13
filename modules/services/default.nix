@@ -14,13 +14,14 @@ in
     ./adguard
     ./backup
     ./bastion
+    ./cats-exporter
     ./deploy
     ./dyndns
     ./grafana
     ./jellyfin
     ./litellm-proxy
     ./llama-swap
-    ./ds4
+    ./llama-strix
     ./vllm
     ./minecraft
     ./nextcloud
