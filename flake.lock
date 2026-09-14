@@ -1269,11 +1269,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1789354150,
-        "narHash": "sha256-qEy4u/nNolPo4sJKuFojtdbkFacCsn87m7DGk9/me+Y=",
+        "lastModified": 1789393735,
+        "narHash": "sha256-aK7qGHqT0/8KE8QbhPNh4MjRlNB3jISTcQqbFYuMLfg=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "91309edd970a5ea8b9372ae1f4e2202d8d2d3e28",
+        "rev": "333dc706456fab2b60510e0a2d8780fe02ad290e",
         "type": "github"
       },
       "original": {
