@@ -41,7 +41,9 @@ in
        ## In all languages
        - Prefer slightly verbose, self-explanatory code over terse code that needs
          comments to be understood.
-       - Keep comments to only what explains something non-obvious.
+       - Keep comments to only what explains something non-obvious. Two lines at 
+         the maximum.
+       - Never build/run code unless explicitly asked.
        - Never embed a literal `\n` inside a string or print argument. A line break
          is always its own explicit statement. In C++/ROOT, use
          `std::cout << ... << std::endl;`. In Python, split output into separate
@@ -164,7 +166,7 @@ in
         };
         reviewer = {
           model = "litellm/qwen3.8-flash-next";
-          variant = "max";
+          variant = "xhigh";
           description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU; rare, heavy.";
           prompt = ''
             You are a code reviewer. Read the change and its surroundings.
@@ -249,35 +251,14 @@ in
             "qwen3.8-flash-next" = {
               name = "Qwen3.8 Flash Next (Local)";
               variants = {
-                max = {
-                  reasoning_effort = "max";
+                xhigh = {
+                  reasoning_effort = "xhigh";
                 };
-                high = {
-                  reasoning_effort = "high";
+                medium = {
+                  reasoning_effort = "medium";
                 };
-                none = {
-                  chat_template_kwargs = {
-                    enable_thinking = false;
-                  };
-                };
-                modalities = {
-                  input = [
-                    "image"
-                    "text"
-                  ];
-                  output = [ "text" ];
-                };
-              };
-            };
-
-            "deepseek-v4-api" = lib.mkIf (osConfig.systemOptions.owner.v.enable) {
-              name = "DeepSeek V4 (API)";
-              variants = {
-                max = {
-                  reasoning_effort = "max";
-                };
-                high = {
-                  reasoning_effort = "high";
+                low = {
+                  reasoning_effort = "low";
                 };
                 none = {
                   chat_template_kwargs = {
@@ -287,12 +268,13 @@ in
               };
               modalities = {
                 input = [
-                  "text"
                   "image"
+                  "text"
                 ];
                 output = [ "text" ];
               };
             };
+
           };
         };
       };
