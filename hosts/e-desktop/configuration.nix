@@ -259,16 +259,39 @@ in
           base_url = "http://10.0.0.6:4000/v1";
           key_env = "LITELLM_MASTER_KEY";
           models = {
+            # Accepted reasoning_effort vocabulary for the Qwen3.8 models on
+            # this LiteLLM route (verified live: none/low/medium/xhigh are
+            # honoured; minimal/high/max/ultra 400). The custom provider
+            # clamps any resolved effort to this set so a stronger request
+            # never 400s; without it the widest OpenAI-compat set is assumed.
             "qwen3.8-27b" = {
               context_length = 262144;
               reasoning_effort = "medium";
+              reasoning_efforts = [
+                "none"
+                "low"
+                "medium"
+                "xhigh"
+              ];
             };
             "qwen3.8-27b-instruct" = {
               context_length = 262144;
+              reasoning_efforts = [
+                "none"
+                "low"
+                "medium"
+                "xhigh"
+              ];
             };
             "qwen3.8-flash-next" = {
               context_length = 524288;
               reasoning_effort = "medium";
+              reasoning_efforts = [
+                "none"
+                "low"
+                "medium"
+                "xhigh"
+              ];
             };
           };
         };
