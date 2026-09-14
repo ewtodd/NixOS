@@ -129,37 +129,6 @@ with lib;
           description = "Log the trigger without acting (safe for testing the watchdog).";
         };
       };
-      services.catsExporter = {
-        enable = mkEnableOption "cats smart pet device exporter (PetLibro + Litter-Robot to Prometheus)";
-        port = mkOption {
-          type = types.port;
-          default = 9878;
-          description = "TCP port for the Prometheus /metrics and /devices endpoints.";
-        };
-        listenAddress = mkOption {
-          type = types.str;
-          default = "0.0.0.0";
-          description = ''
-            Address the exporter binds. 0.0.0.0 so the LiteLLM cats MCP
-            server on oracle can read /devices over the LAN.
-          '';
-        };
-        pollIntervalSeconds = mkOption {
-          type = types.ints.positive;
-          default = 300;
-          description = "Seconds between polls of the PetLibro and Whisker clouds.";
-        };
-        environmentFile = mkOption {
-          type = types.str;
-          default = "/run/agenix/cats-env";
-          description = ''
-            systemd EnvironmentFile holding PETLIBRO_EMAIL/PASSWORD and
-            LITTER_ROBOT_USERNAME/PASSWORD. The unit tolerates the file being
-            absent, so the exporter can be deployed before the agenix secret
-            is created (it then reports the brands as unconfigured).
-          '';
-        };
-      };
       services.minecraft.enable = mkEnableOption "Public PaperMC Minecraft server (mc.ethanwtodd.com:25565)";
 
       services.openWebUI.enable = mkEnableOption "Open WebUI web interface (ai.ethanwtodd.com, behind Anubis on nu)";
@@ -938,14 +907,10 @@ with lib;
         };
       };
       services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
-      # One system service per account (the temple design). Each instance runs
-      # AS its account with SON_OF_ANTON_HOME=~/.son-of-anton, so a Signal
-      # session and that account's own CLI session are the SAME session —
-      # one state.db, one config.yaml, one writer.
-      #
-      # All instances share one Signal number and are separated by group id:
-      # signal-cli broadcasts every event over SSE, and each instance drops
-      # groups that are not its own before any session or agent work.
+      # One system service per account (the temple design): each instance runs AS its account with
+      # SON_OF_ANTON_HOME=~/.son-of-anton, so Signal and CLI sessions share one state.db/config.yaml/writer.
+      # All instances share one Signal number, separated by group id: signal-cli broadcasts every event over
+      # SSE and each instance drops foreign groups before any session or agent work.
       services.son-of-anton = {
         enable = mkEnableOption "son-of-anton gateway services (successor to the temple daemon)";
         instances = mkOption {
@@ -1018,6 +983,17 @@ with lib;
                   type = types.listOf types.str;
                   default = [ ];
                   description = "Extra credential paths made inaccessible to the unit.";
+                };
+                git = mkOption {
+                  type = types.attrs;
+                  default = { };
+                  description = ''
+                    Git credentials for THIS instance. `git.github` is a
+                    runtime path to a *private* SSH key (OpenSSH format) whose
+                    public half is on GitHub; the son-of-anton module installs it
+                    and a routing ssh config into the instance HOME so the agent
+                    can clone and push over ssh.
+                  '';
                 };
                 settings = mkOption {
                   type = types.attrs;
@@ -1249,11 +1225,9 @@ with lib;
         nrs = "nh os switch /etc/nixos";
         nrb = "nh os boot /etc/nixos";
 
-        # Own the tree as the invoking user (not root) so editors that restore
-        # file mode after writing -- e.g. qwen-code's chmod-after-write -- don't
-        # hit EPERM: chmod() is owner-only, and group-write (2775) lets the
-        # nixconfig group edit *contents* but never chmod. $(id -un) keeps this
-        # fleet-safe (each host's human owner fixes to themselves).
+        # Own the tree as the invoking user (not root): chmod() is owner-only, so tools that restore file mode
+        # after writing (qwen-code) hit EPERM otherwise; 2775 lets nixconfig edit contents but never chmod.
+        # $(id -un) keeps this fleet-safe (each host's human owner fixes to themselves).
         fix-nixos-git = "sudo chown -R $(id -un):nixconfig /etc/nixos && sudo chmod -R 2775 /etc/nixos && git config --global --add safe.directory /etc/nixos && git -C /etc/nixos config core.fileMode false";
       };
 

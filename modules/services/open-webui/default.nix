@@ -1,9 +1,5 @@
-# Open WebUI — self-hosted LLM web interface, served at ai.ethanwtodd.com.
-# Public traffic terminates at Caddy on nu, passes Anubis proof-of-work,
-# and lands here on oracle (:8081; 8080 is already llama-swap). Models come
-# from litellm on this host (127.0.0.1:4000), the same router opencode and
-# the son-of-anton gateway use: llama-swap on son-of-anton (10.0.0.5),
-# oracle's always-resident little-titles, and the hosted DeepSeek models.
+# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> oracle :8081 (8080 is llama-swap).
+# Models from litellm on this host (127.0.0.1:4000), the same router opencode and son-of-anton use.
 {
   config,
   lib,
@@ -12,11 +8,8 @@
 }:
 let
   cfg = config.systemOptions.services.openWebUI;
-  # The litellm master key lives in an agenix secret as LITELLM_MASTER_KEY=
-  # KEY=VALUE lines. Sourcing it and re-exporting as OPENAI_API_KEYS (the
-  # env Open WebUI's OpenAI connection seeds from) keeps the key out of the
-  # nix store — same pattern as the opencode wrapper. Requires the secret
-  # to be group-readable by open-webui (see modules/secrets/default.nix).
+  # Sources the agenix litellm-master-key secret and re-exports it as OPENAI_API_KEYS (what Open WebUI's
+  # OpenAI connection seeds from) -- key stays out of the nix store. Secret must be group-readable (see secrets).
   openWebUIWrapped = pkgs.writeShellScriptBin "open-webui" ''
     if [ -r /run/agenix/litellm-master-key ]; then
       set -a
@@ -77,22 +70,14 @@ in
           "WEBUI_URL=https://ai.ethanwtodd.com"
           "ENABLE_SIGNUP=false"
           "WEBUI_AUTH_COOKIE_SECURE=true"
-          # OpenAI connection: litellm on this host, key injected by the
-          # wrapper above. TASK_MODEL_EXTERNAL routes session-title
-          # generation to the small always-resident little-titles model (via
-          # litellm → oracle's llama-swap) instead of the chat's own model.
-          # Caveat: connections and the task model are seeded into the DB
-          # from these env vars on first run only (Config.seed_defaults
-          # skips existing keys), so on an already-initialized install the
-          # admin sets them once in Settings > Connections / Settings >
-          # Tasks.
+          # OpenAI connection: litellm on this host, key injected by the wrapper. TASK_MODEL_EXTERNAL routes
+          # session-title generation to the always-resident little-titles model (via litellm).
+          # Caveat: connections/task model seed into the DB on first run only (Config.seed_defaults skips existing
+          # keys) -- on an initialized install the admin sets them in Settings > Connections / Tasks.
           "OPENAI_API_BASE_URL=http://127.0.0.1:4000/v1"
           "TASK_MODEL_EXTERNAL=little-titles-json"
-          # RAG embeddings via the dedicated llama.cpp embedding server on
-          # this host (bge-m3 on CPU, modules/services/llama-swap
-          # embeddingModel). RAG_OPENAI_API_BASE_URL must be set explicitly —
-          # it defaults to OPENAI_API_BASE_URL (the litellm chat endpoint),
-          # which would fail every embedding call.
+          # RAG embeddings via the dedicated embedding server on this host (:8082, bge-m3 on CPU).
+          # RAG_OPENAI_API_BASE_URL must be set explicitly: it defaults to the litellm chat endpoint, failing every call.
           "RAG_EMBEDDING_ENGINE=openai"
           "RAG_EMBEDDING_MODEL=bge-m3"
           "RAG_OPENAI_API_BASE_URL=http://127.0.0.1:8082/v1"

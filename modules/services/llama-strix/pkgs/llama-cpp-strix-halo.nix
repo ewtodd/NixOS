@@ -1,12 +1,6 @@
-# llama.cpp from pwilkin's `strix-halo` integration branch, built for the
-# Strix Halo iGPU (gfx1151) against the TheRock ROCm SDK — the same
-# "system ROCm" install.sh compiles against — and configured with that
-# script's cmake flags.
-#
-# The branch ships upstream's .devops/nix/package.nix, so this is a thin
-# callPackage wrapper around it: a synthetic `rocmPackages` set points every
-# ROCm dependency at the single SDK prefix, and the compiler at the wrapped
-# SDK clang.
+# llama.cpp from pwilkin's `strix-halo` branch, built for the gfx1151 iGPU against the TheRock ROCm SDK
+# with that script's cmake flags. The branch ships upstream's .devops/nix/package.nix, so this is a thin
+# callPackage wrapper: a synthetic `rocmPackages` set points every ROCm dep at the SDK prefix.
 {
   lib,
   callPackage,

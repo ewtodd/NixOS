@@ -1,19 +1,8 @@
-# AMD's ROCm Core SDK as shipped by TheRock (stable channel), per-family
-# tarball for gfx1151. This is the "system ROCm SDK" that
-# pwilkin/strix-halo install.sh builds the custom ROCr/HIP and llama.cpp
-# against; 10.0.0 is the version the published Strix Halo numbers use.
-#
-# The dist is relocatable: every object links through $ORIGIN runpaths
-# ($ORIGIN, $ORIGIN/rocm_sysdeps/lib, ...) and bundles its own
-# libdrm/libnuma/zstd/... under lib/rocm_sysdeps. The only things it expects
-# from the host are glibc, libstdc++ and libgcc_s. So on NixOS:
-#   * libraries are left byte-for-byte untouched — patchelf (0.15 and 0.18)
-#     mangles the program headers of several of the lld-linked ones
-#     (libhipblaslt, librocblas, ...) and the loader segfaults on them;
-#   * libstdc++/libgcc_s are symlinked into the dirs the runpaths already
-#     search; glibc comes from the loader's own default path;
-#   * executables get only their PT_INTERP pointed at the nix loader, and
-#     each one is checked to still load afterwards.
+# TheRock ROCm Core SDK (stable channel), gfx1151 per-family tarball -- the "system ROCm" that
+# pwilkin/strix-halo install.sh builds the custom ROCr/HIP and llama.cpp against.
+# Relocatable dist ($ORIGIN runpaths, bundled sysdeps): on NixOS the libs stay byte-for-byte untouched
+# (patchelf mangles the lld-linked ones and the loader segfaults); libstdc++/libgcc_s are symlinked into
+# the runpath dirs, and executables only get PT_INTERP pointed at the nix loader.
 {
   lib,
   stdenv,
@@ -63,11 +52,9 @@ stdenv.mkDerivation (finalAttrs: {
       patchelf --set-interpreter ${stdenv.cc.bintools.dynamicLinker} "$f"
     done < <(find $out -type f -perm -u+x -not -name '*.so*')
 
-    # The tools the ROCr/CLR/llama.cpp builds and the service actually run
-    # must still load after that (a patchelf-mangled binary fails here, not
-    # later). Test programs, profilers, flang and hipify in the dist do not
-    # resolve on their own runpaths (they expect /opt/rocm/lib on
-    # LD_LIBRARY_PATH) and are not checked.
+    # The tools the ROCr/CLR/llama.cpp builds and the service run must still load after the interpreter
+    # patch (a mangled binary fails here, not later). Test programs/profilers/flang/hipify are not checked:
+    # they don't resolve on their own runpaths (expect /opt/rocm/lib).
     for f in bin/hipcc bin/hipconfig bin/rocminfo \
              lib/llvm/bin/clang-23 lib/llvm/bin/lld lib/llvm/bin/llvm-mc \
              lib/llvm/bin/llvm-objcopy lib/llvm/bin/clang-offload-bundler \

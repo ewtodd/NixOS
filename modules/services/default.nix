@@ -14,7 +14,6 @@ in
     ./adguard
     ./backup
     ./bastion
-    ./cats-exporter
     ./deploy
     ./dyndns
     ./grafana

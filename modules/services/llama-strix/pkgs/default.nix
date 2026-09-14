@@ -1,13 +1,6 @@
-# The Strix Halo inference stack that pwilkin/strix-halo install.sh
-# assembles, as nix packages:
-#
-#   rocmSdk      TheRock ROCm Core SDK (the script's "system ROCm SDK")
-#   rocmSdkCc    its clang/hipcc, wrapped for nix builds
-#   rocrRuntime  ROCr from pwilkin/rocm-systems (retained PM4)
-#   hipClr       HIP/CLR from pwilkin/rocm-systems (retained PM4)
-#   llamaCpp     llama.cpp strix-halo branch built against rocmSdk
-#   runtimeLibs  LD_LIBRARY_PATH the script's launcher exports, in its order
-#                (custom HIP, custom ROCr, then the SDK)
+# The Strix Halo inference stack that pwilkin/strix-halo install.sh assembles, as nix packages:
+# rocmSdk (TheRock SDK) | rocmSdkCc (its nix-wrapped clang/hipcc) | rocrRuntime, hipClr (pwilkin/rocm-systems,
+# retained PM4) | llamaCpp (strix-halo branch vs rocmSdk) | runtimeLibs (launcher LD_LIBRARY_PATH order).
 {
   pkgs,
   llamaCppSrc,

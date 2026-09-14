@@ -36,6 +36,7 @@ in
         son-of-antonHome
         workingDirectory
         protectedPaths
+        git
         ;
       group = "son-of-anton";
 

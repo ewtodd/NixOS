@@ -26,12 +26,9 @@
           deck
           richdocuments
           ;
-
-        # Google Synchronization (import Drive/Calendar/Contacts from Google).
-        # Not in the packaged app set, so fetched from upstream releases.
-        # NOTE: v4.1.0 declares max-version="32"; we force-bump it to 33 so
-        # `occ app:enable` accepts it on nextcloud33. This is unsupported by
-        # upstream — re-check compatibility before the next Nextcloud upgrade.
+        # Google Synchronization (import Drive/Calendar/Contacts): not in the packaged app set, fetched from
+        # upstream releases. NOTE: v4.1.0 declares max-version="32", force-bumped to 33 -- unsupported by
+        # upstream, re-check compatibility before the next Nextcloud upgrade.
         google_synchronization =
           let
             raw = pkgs.fetchNextcloudApp {

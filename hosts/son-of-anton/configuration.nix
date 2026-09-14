@@ -38,9 +38,7 @@ in
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
         VLLM_SLEEP_WHEN_IDLE = "1";
       };
-      # llmfan46/Qwen3.8-27B-Ultra-Uncensored-Heretic-Native-MTP-Preserved, cast to
-      # Qwen's block-fp8 layout with bf16_to_qwen_fp8.py (tensor-identical to Qwen/Qwen3.8-27B-FP8).
-      model = "/scratch/models/Qwen3.8-27B-Heretic-FP8";
+      model = "/scratch/vllm-models/models--Qwen--Qwen3.8-27B-FP8/snapshots/017b9c7af6b5689d5dd426a76e0bc077eb5ca20a/";
       devices = "0,1";
       tensorParallelSize = 2;
       maxModelLen = 262144;

@@ -29,16 +29,9 @@
               installation_mode = "force_installed";
               private_browsing = true;
             };
-            # Per-site cookie jars in a single window, which is what suits a
-            # single-window compositor -- private windows would need a second
-            # toplevel cage cannot manage.
-            #
-            # NOTE: which sites map to which container lives in the extension's
-            # own storage, not in prefs or policy, so it cannot be set from
-            # here. One-time setup in the browser: assign play.max.com to a
-            # named container, leave everything else on Temporary Containers'
-            # automatic mode. Until that is done the cookie rules below are
-            # what is actually isolating things.
+            # Per-site cookie jars in one window (private windows would need a second toplevel cage cannot manage).
+            # NOTE: site->container mapping lives in the extension's own storage, not prefs/policy -- assign
+            # play.max.com to a named container once in the browser; the cookie rules below isolate until then.
             "@testpilot-containers" = {
               install_url = "https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi";
               installation_mode = "force_installed";
@@ -62,19 +55,12 @@
             Locked = true;
           };
 
-          # Three different lifetimes, one per site.
-          #
-          # Firefox's cookie permission governs DOM storage as well as cookies,
-          # so a Blocked origin gets no localStorage or sessionStorage either --
-          # which is most of what a private window would have given us, without
-          # needing a second toplevel that cage cannot manage.
+          # Three different lifetimes, one per site. Firefox's cookie permission governs DOM storage too, so a
+          # Blocked origin gets no localStorage/sessionStorage either -- most of a private window's value, no cage.
           Cookies = {
             Allow = [ "https://play.max.com" ];
-            # AllowSession, not Block: with cookies blocked outright YouTube shows
-            # its consent interstitial on every single load and forgets quality
-            # and volume. Session cookies give normal behaviour inside a
-            # session and are dropped when the browser exits -- which the 04:00
-            # restart makes happen nightly.
+            # AllowSession, not Block: blocked outright, YouTube shows its consent interstitial every load and
+            # forgets quality/volume. Session cookies behave normally and die on exit -- the 04:00 restart does that.
             AllowSession = [ "https://www.youtube.com" ];
             # Sportsurge gets nothing: no login, no settings worth keeping, and
             # aggregator sites are exactly what you do not want persisting.

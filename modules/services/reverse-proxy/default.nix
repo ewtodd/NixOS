@@ -39,13 +39,9 @@ in
       virtualHosts."office.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.2:9980
       '';
-
-      # Static generated documentation — no backend, so caddy serves the store
-      # path itself. The website flake assembles the whole tree: the index at /,
-      # and each project's doxygen output under its own prefix (doxygen emits
-      # only relative links, which is what lets it live under one). A project
-      # joins by gaining a `docs` URL in its page front matter there; nothing
-      # here changes.
+      # Static generated docs -- no backend, caddy serves the store path itself. The website flake assembles
+      # the tree (index at /, each project's doxygen output under its own prefix; doxygen emits only relative
+      # links). A project joins by gaining a `docs` URL in its front matter there; nothing here changes.
       virtualHosts."docs.ethanwtodd.com".extraConfig = ''
         encode zstd gzip
         root * ${inputs.website.packages.${system}.docs}

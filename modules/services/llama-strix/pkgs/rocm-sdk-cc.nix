@@ -1,18 +1,9 @@
-# The TheRock SDK's clang/hipcc, made usable inside nix builds.
-#
-# The SDK's clang has no idea where NixOS keeps libstdc++ and glibc headers
-# (there is no /usr/include), so every host-side or `-x hip` compile fails on
-# <cstdlib>. This mirrors what nixpkgs' cc-wrapper does for its own ROCm
-# clang: point at the gcc toolchain, add glibc headers *after* libstdc++'s
-# (`-idirafter`, so `#include_next` still works), and link against the nix
-# glibc/libgcc with the right dynamic loader.
-#
-# Output layout:
-#   bin/{clang,clang++,hipcc}  wrappers
-#   llvm/                      mirror of the SDK's lib/llvm with bin/clang and
-#                              bin/clang++ replaced by the wrappers, so a
-#                              build that wants an LLVM_ROOT (CLR's PCH step)
-#                              can be pointed here.
+# TheRock SDK's clang/hipcc, wrapped for nix builds: the SDK clang can't find NixOS libstdc++/glibc
+# headers (no /usr/include), so every host-side or `-x hip` compile fails on <cstdlib>. Mirrors nixpkgs'
+# cc-wrapper: point at the gcc toolchain, glibc headers -idirafter after libstdc++ (#include_next works),
+# link nix glibc/libgcc with the right dynamic loader.
+# Output: bin/{clang,clang++,hipcc} wrappers; llvm/ mirrors SDK lib/llvm with the wrappers swapped in
+# for LLVM_ROOT consumers (CLR's PCH step).
 {
   lib,
   stdenv,

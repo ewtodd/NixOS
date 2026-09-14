@@ -33,12 +33,9 @@ let
     "hybrid-sleep.target"
     "suspend-then-hibernate.target"
   ];
-
-  # Deliberately not Type=oneshot: this waits for device detection and then
-  # re-applies over the following seconds, and a oneshot would hold up
-  # multi-user.target (and so the login screen) for all of it. Type=simple is
-  # considered started immediately and the passes finish in the background;
-  # RemainAfterExit keeps the unit readable in `systemctl status` afterwards.
+  # Deliberately not Type=oneshot: this waits for device detection and re-applies over the following
+  # seconds; a oneshot would hold up multi-user.target (the login screen). Type=simple starts immediately
+  # and the passes finish in the background; RemainAfterExit keeps the unit readable in `systemctl status`.
   unit = {
     Type = "simple";
     RemainAfterExit = true;

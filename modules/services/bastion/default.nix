@@ -133,14 +133,9 @@ in
       wakeAndRelay
       wakeAndUnlock
     ];
-
-    # The return half of e-desktop's scheduled poweroff. It shuts down on its
-    # own timer; this brings it back a few minutes later, so the pair adds up
-    # to an unattended reboot for a machine that cannot reboot unattended.
-    #
-    # Not Persistent: if this host was itself down at the scheduled minute,
-    # waking e-desktop hours later serves nobody, and the next connection
-    # through the relay wakes it anyway.
+    # The return half of e-desktop's scheduled poweroff: it shuts down on its own timer, this wakes it a few
+    # minutes later -- together an unattended reboot for a machine that cannot reboot unattended.
+    # Not Persistent: waking e-desktop hours late serves nobody, and the next relay connection wakes it anyway.
     systemd.services.wake-e-desktop = lib.mkIf (cfg.wakeCalendar != "") {
       description = "Wake and unlock e-desktop";
       serviceConfig = {

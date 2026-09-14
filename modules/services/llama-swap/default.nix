@@ -23,13 +23,9 @@ let
     pkg.override {
       llamaVersion = llamaCppVersion;
     };
-
-  # Pending llama.cpp PR #27311 (scheduler UMA ring buffer, supersedes
-  # #25863): without it, Gemma 4 on the Strix Halo iGPU (gfx1151) hangs onto
-  # the ROCm_Host compute path, corrupts long prompts and loops on
-  # `<unused49>` for the rest of the session. The diff applies cleanly to the
-  # pinned llama-cpp rev; remove this patch once the PR merges upstream and
-  # the flake input is updated (the sha256 mismatch will fail loudly).
+  # Pending llama.cpp PR #27311 (scheduler UMA ring buffer, supersedes #25863): without it, Gemma 4 on the
+  # Strix Halo iGPU hangs onto the ROCm_Host compute path, corrupts long prompts and loops on <unused49>.
+  # Applies cleanly to the pinned rev; remove once merged upstream and the input is updated (sha256 fails loudly).
   unused49Fix = pkgs.fetchpatch {
     url = "https://patch-diff.githubusercontent.com/raw/ggml-org/llama.cpp/pull/27311.diff";
     sha256 = "sha256-3CBIiFPyC4C6+qXPkcTIqaR/W9An4JMDA4VA6+NiecE=";
@@ -212,14 +208,9 @@ let
   isResident = name: cfg.models.${name}.alwaysResident;
 
   residentNames = builtins.filter isResident modelNames;
-
-  # Only the explicit `solo` flag makes a model solo. Everything else may
-  # co-reside freely: llama-swap has no device awareness beyond each
-  # llama-server's --device flag, and VRAM pressure at load time — not the
-  # matrix — decides when a swap actually happens. Grouping same-device
-  # models as "alternatives" would forbid valid co-residency (e.g. two
-  # models that both fit one GPU, or a tensor split sharing cards with
-  # other models' devices).
+  # Only the explicit `solo` flag makes a model solo. llama-swap has no device awareness beyond each
+  # llama-server's --device flag and load-time VRAM decides swaps, so grouping same-device models as
+  # "alternatives" would forbid valid co-residency.
   isSolo = name: cfg.models.${name}.solo;
 
   soloNames = builtins.filter isSolo modelNames;

@@ -8,14 +8,6 @@
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Smart pet device monitoring: the cats exporter (PetLibro + Litter-Robot
-    # -> Prometheus) and the read-only cats MCP server. A path input only
-    # evaluates on hosts that have the checkout (the build host, e-desktop);
-    # switch it to github:ewtodd/cats once the repository is pushed.
-    cats = {
-      url = "path:/home/e-play/Software/cats";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

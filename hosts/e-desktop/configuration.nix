@@ -201,6 +201,7 @@ in
           son-of-antonHome = "/var/lib/soa-ricky/.son-of-anton";
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
+          git.github = config.age.secrets.soa-ricky-github-key.path;
           model = "qwen3.8-27b";
           settings = {
             model.default = "qwen3.8-27b";

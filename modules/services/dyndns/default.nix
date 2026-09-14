@@ -31,13 +31,10 @@ in
         Type = "oneshot";
         LoadCredential = "pw:${config.age.secrets.namecheap-ddns.path}";
       };
-      # NixOS prepends `set -e` to script blocks, so this turns it back off
-      # explicitly rather than relying on every failure path here happening to
-      # sit in an errexit-exempt context. A single unresolvable host must not
-      # abort the loop: Namecheap's API only updates records that already exist,
-      # so a subdomain added here before its "A + Dynamic DNS Record" exists in
-      # the panel would otherwise starve every host after it in this list until
-      # someone noticed. Failures are collected and still fail the unit.
+      # NixOS prepends `set -e` to script blocks; turned back off explicitly. A single unresolvable host must
+      # not abort the loop -- Namecheap only updates existing records, so a subdomain added here before its
+      # "A + Dynamic DNS Record" exists in the panel would starve every host after it. Failures are still
+      # collected and fail the unit.
       script = ''
         set +e
         set -u

@@ -1,20 +1,8 @@
-# signal-cli daemon module.
-# Runs signal-cli in HTTP JSON-RPC daemon mode as a systemd service —
-# the interface the son-of-anton Signal platform adapter speaks
-# (SSE receive stream + JSON-RPC 2.0 over HTTP).
-#
-# One-time registration (before enabling the service):
-#   1. Get a phone number for the bot (VoIP or spare SIM)
-#   2. Run as the signal-cli user:
-#        sudo -u signal-cli signal-cli -u +NUMBER --data-dir /var/lib/signal-cli/data register
-#      (receives SMS with verification code)
-#   3. Verify:
-#        sudo -u signal-cli signal-cli -u +NUMBER --data-dir /var/lib/signal-cli/data verify CODE
-#   4. Create an agenix secret with SIGNAL_PHONE=+NUMBER and point
-#      environmentFile at it, then enable this service.
-#
-# Alternatively, link as a secondary device to your existing Signal account
-# using `signal-cli -u +NUMBER link -n "renco"` and scanning the QR code.
+# signal-cli HTTP JSON-RPC daemon (SSE receive stream): the interface the son-of-anton Signal adapter speaks.
+# One-time registration before enabling (as the signal-cli user; VoIP or spare SIM number):
+#   signal-cli -u +NUMBER --data-dir /var/lib/signal-cli/data register && ... verify CODE
+# then put SIGNAL_PHONE=+NUMBER in an agenix secret pointed at environmentFile.
+# Alternative: link as secondary device -- signal-cli -u +NUMBER link -n "renco" (scan QR).
 {
   config,
   lib,
