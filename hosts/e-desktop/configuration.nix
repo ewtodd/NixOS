@@ -142,6 +142,7 @@ in
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
           model = "qwen3.8-27b";
+          settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
             workspace_root = "/home/e-work/workspace-soa/runs";
@@ -157,6 +158,7 @@ in
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
           model = "qwen3.8-27b";
+          settings.gateway.single_user = true;
           settings = {
             platforms.signal.gateway_restart_notification = true;
             mcp_servers = lib.mapAttrs (name: _: {
@@ -328,15 +330,28 @@ in
           headers.Authorization = "Bearer \${LITELLM_MASTER_KEY}";
           enabled = true;
         };
-        auxiliary.title_generation = {
-          provider = "custom";
-          model = "little-titles";
-          base_url = "http://10.0.0.6:4000/v1";
-          key_env = "LITELLM_MASTER_KEY";
-          prompt_style = "chat";
+        auxiliary = {
+          title_generation = {
+            provider = "custom";
+            model = "little-titles";
+            base_url = "http://10.0.0.6:4000/v1";
+            key_env = "LITELLM_MASTER_KEY";
+            prompt_style = "chat";
+          };
+          compaction = {
+            provider = "custom";
+            model = "qwen3.8-flash-next"; # 524K window, the largest route you have
+            base_url = "http://10.0.0.6:4000/v1";
+            key_env = "LITELLM_MASTER_KEY";
+            reasoning_effort = "none"; # extraction, not reasoning; qwen route accepts none/low/medium/xhigh
+            timeout = 300; # local model over a large prompt; 120s default is tight
+          };
         };
-        platforms.signal.typing_indicator = true;
-        platforms.signal.gateway_restart_notification = false;
+
+        platforms.signal = {
+          typing_indicator = true;
+          gateway_restart_notification = false;
+        };
         auxiliary.background_review.schedule = "daily";
         terminal.home_mode = "cwd";
       };
