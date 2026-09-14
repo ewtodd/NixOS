@@ -1,8 +1,5 @@
-# llama-server from pwilkin's llama.cpp `strix-halo` branch, pinned to the
-# revision and launcher configuration published at
-# https://pwilkin.github.io/strix-halo/ (Qwen3.8-Next-Flash profile:
-# 1204 t/s pp16384 on a Radeon 8060S). Runs on the Strix Halo iGPU of
-# son-of-anton; the R9700s stay with vLLM.
+# llama-server from pwilkin's llama.cpp `strix-halo` branch, pinned per https://pwilkin.github.io/strix-halo/
+# (Qwen3.8-Next-Flash profile: 1204 t/s pp16384 on a Radeon 8060S). Runs on son-of-anton's Strix Halo iGPU.
 {
   config,
   lib,
@@ -62,14 +59,10 @@ let
     LLAMA_MTP_QSA = "1";
     LLAMA_MTP_QSA_MIN_T = "128";
   };
-
-  # The launcher install.sh writes (llama-server-strix-halo), as environment:
-  # the custom HIP/ROCr ahead of the SDK on the library path, and
-  # ENABLE_RETAINED_PM4 choosing between retained-PM4 HIP graphs
-  # (DEBUG_HIP_GRAPH_PM4=1) and no graphs at all (GGML_CUDA_DISABLE_GRAPHS=1).
-  # Deliberately not copied: HSA_OVERRIDE_GFX_VERSION=11.5.1. It is a no-op on
-  # a real gfx1151, and with this runtime it is applied to the two gfx1201
-  # R9700s too, after which HIP refuses to initialize any device at all.
+  # The launcher install.sh writes (llama-server-strix-halo) as env: custom HIP/ROCr ahead of the SDK, and
+  # ENABLE_RETAINED_PM4 choosing retained-PM4 HIP graphs vs no graphs. Deliberately NOT copied:
+  # HSA_OVERRIDE_GFX_VERSION=11.5.1 -- a no-op on gfx1151, but it reaches the gfx1201 R9700s too and
+  # HIP then refuses to initialize any device.
   runtimeEnv = {
     LD_LIBRARY_PATH = runtimeLibs;
     HIP_VISIBLE_DEVICES = cfg.devices;
@@ -79,12 +72,9 @@ let
   // (if cfg.retainedPm4 then { DEBUG_HIP_GRAPH_PM4 = "1"; } else { GGML_CUDA_DISABLE_GRAPHS = "1"; })
   // branchKernelGates
   // cfg.extraEnv;
-
-  # --load-mode none + --lazy-mode on-direct keep the 27.5 GB per-layer
-  # embedding table out of the resident set (rows are pread() on demand
-  # instead of faulted in through an mmap that would hold a second copy of
-  # every weight during load). -b/-ub 16384 is what makes the whole prompt
-  # go through as one batch, which is where the prefill number comes from.
+  # --load-mode none + --lazy-mode on-direct keep the 27.5 GB embedding table out of the resident set
+  # (pread on demand, no mmap double-copy of every weight during load). -b/-ub 16384 sends the whole
+  # prompt as one batch -- the source of the prefill number.
   serverArgs = [
     "-m ${cfg.model}"
     "--alias ${cfg.alias}"

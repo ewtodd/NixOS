@@ -135,15 +135,6 @@
                   args = [ "/etc/litellm/searxng_mcp.py" ];
                   env.SEARXNG_URL = "http://127.0.0.1:8888";
                 };
-                cats = {
-                  transport = "stdio";
-                  command = "${inputs.cats.packages.${pkgs.system}.cats}/bin/cats-mcp";
-                  args = [ ];
-                  # The exporter runs on nu (10.0.0.7) and owns the cloud
-                  # credentials; this read-only server just fetches its
-                  # /devices snapshot over the LAN.
-                  env.CATS_EXPORTER_URL = "http://10.0.0.7:9878";
-                };
                 nixos = {
                   transport = "stdio";
                   command = lib.getExe pkgs.mcp-nixos;
@@ -216,7 +207,7 @@
           # allowlist. Names, not paths: it matches on the basename of the
           # configured command.
           systemd.services.litellm.environment.LITELLM_MCP_STDIO_EXTRA_COMMANDS =
-            "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp,cats-mcp";
+            "mcp-server-fetch,mcp-nixos,arxiv-mcp-server,context7-mcp";
           systemd.services.litellm.serviceConfig.ExecStart = lib.mkForce (
             lib.concatStringsSep " " [
               (lib.getExe config.services.litellm.package)

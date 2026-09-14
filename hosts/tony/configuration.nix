@@ -75,13 +75,9 @@ in
     enable = true;
     user = "tony";
     program = lib.getExe kiosk;
-    # The compositor draws the cursor, so this has to be cage's own
-    # environment -- exporting it in the kiosk wrapper would be too late.
-    #
-    # 240 is 10x the 24px default. At 3840x2160 viewed from a sofa the default
-    # is a few millimetres of screen and effectively invisible. Bibata ships
-    # large bitmaps (its left_ptr is 173 KB of multiple sizes), so this stays
-    # sharp instead of scaling up a 48px source into mush.
+    # The compositor draws the cursor, so this must be cage's own environment -- exporting it in the kiosk
+    # wrapper would be too late. 240 is 10x the 24px default (invisible at 4K from a sofa); Bibata ships
+    # large bitmaps, so it stays sharp instead of scaling a 48px source into mush.
     environment = {
       XCURSOR_THEME = "Bibata-Modern-Classic";
       XCURSOR_SIZE = "240";

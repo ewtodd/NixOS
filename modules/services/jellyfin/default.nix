@@ -35,14 +35,9 @@ in
     };
 
     networking.firewall.allowedTCPPorts = [ cfg.port ];
-
-    # Intel QSV for transcoding. This box is an i3-12100T (Alder Lake, UHD 730),
-    # which unlike tony's Comet Lake does have AV1 decode and a much stronger
-    # media engine -- so transcoding belongs here, not on the TV client.
-    #
-    # It matters more than it looks: DVD rips are MPEG-2, which no browser can
-    # decode, so the Jellyfin web UI will transcode every one of them. Without
-    # hardware acceleration that is pure CPU.
+    # Intel QSV (i3-12100T Alder Lake, UHD 730 -- AV1 decode, unlike tony's Comet Lake): transcoding belongs
+    # here, not on the TV client. DVD rips are MPEG-2, which no browser decodes, so the web UI transcodes
+    # every one of them; without hardware acceleration that is pure CPU.
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [

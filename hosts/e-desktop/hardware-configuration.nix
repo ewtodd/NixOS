@@ -108,16 +108,10 @@
     "vm.watermark_scale_factor" = 200; # start reclaim earlier
   };
 
-  # ── Storage layout ─────────────────────────────────────────────────────────
-  # 2TB NVMe (was three 1TB Kingstons):
-  #   p1 ESP -> /boot, p2 LUKS ext4 -> /, p3 LUKS btrfs -> /analysis
-  # Two Micron 1100 SATA SSDs, one per user, each LUKS + btrfs.
-  # 4TB WD SN5100 is unchanged: /games and /labdata, both via pam_mount.
-  #
-  # cryptroot, home-play and home-work share one passphrase on purpose:
-  # systemd-cryptsetup caches the first one entered and retries it on the
-  # others, so boot still asks exactly once (and the mu bastion's stored
-  # passphrase keeps working for remote unlock).
+  # Storage: 2TB NVMe (p1 ESP -> /boot, p2 LUKS ext4 -> /, p3 LUKS btrfs -> /analysis); two Micron 1100 SATA
+  # SSDs, one per user (LUKS + btrfs); 4TB WD SN5100 unchanged (/games, /labdata via pam_mount).
+  # cryptroot/home-play/home-work share one passphrase on purpose: systemd-cryptsetup retries it on the
+  # others so boot asks exactly once (and the mu bastion's stored passphrase keeps working remotely).
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/7e487738-412c-4308-8cf0-3140ef0bd47e";

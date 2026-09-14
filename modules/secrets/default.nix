@@ -104,27 +104,17 @@
         mode = "0400";
       };
     })
-    # Son of Anton gateway secrets (content: SIGNAL_ACCOUNT=..., plus
-    # optional DISCORD_BOT_TOKEN / SLACK_BOT_TOKEN / SLACK_APP_TOKEN).
-    #
-    # One file, read by every instance: they share a Signal account, so they
-    # need the same SIGNAL_ACCOUNT. Group-readable rather than owned by one
-    # account — the instances run as separate users (e-work, e-play,
-    # soa-house) and `son-of-anton` is now only the group that grants this
-    # read. 0440, never 0444: the group is the boundary.
+    # Gateway env (SIGNAL_ACCOUNT=..., optional DISCORD/SLACK tokens). One file, read by every instance --
+    # they share a Signal account. 0440 group-readable by 'son-of-anton' (instances are separate users);
+    # never 0444: the group is the boundary.
     (lib.mkIf config.systemOptions.services.son-of-anton.enable {
       son-of-anton-env = {
         file = ../../secrets/son-of-anton-env.age;
         group = "son-of-anton";
         mode = "0440";
       };
-
-      # Per-instance routing. Every service sees every Signal event (signal-cli
-      # broadcasts over SSE) and keeps only its own group, so
-      # SIGNAL_GROUP_ALLOWED_USERS is what makes one of them answer and the
-      # others stay silent. Encrypted rather than written in Nix because this
-      # repo is public and a group id names a real chat.
-      #
+      # Per-instance routing: every service sees every Signal event; SIGNAL_GROUP_ALLOWED_USERS decides which
+      # instance answers. Encrypted because the repo is public and a group id names a real chat.
       # Appended AFTER son-of-anton-env, so a re-declared key here wins.
       son-of-anton-work-env = {
         file = ../../secrets/son-of-anton-work-env.age;
@@ -144,16 +134,23 @@
         group = "son-of-anton";
         mode = "0440";
       };
-
-      # The two project instances, one friend each. Same shape as house: the
-      # group id that routes a message here, and a SIGNAL_ALLOWED_USERS that
-      # re-declares the allowlist as the owner plus that one friend -- scoped
-      # to this instance by file order, so neither friend is ever authorized
+      # The two project instances, one friend each. Same shape as house: own group id plus a
+      # SIGNAL_ALLOWED_USERS of owner + that one friend, scoped by file order -- no friend is ever authorized
       # on work, play, house, or each other's instance.
       son-of-anton-ricky-env = {
         file = ../../secrets/son-of-anton-ricky-env.age;
         group = "son-of-anton";
         mode = "0440";
+      };
+      # GitHub SSH *private* deploy key for the ricky instance (the public
+      # half goes on GitHub). Encrypted because the repo is public; recipients
+      # mirror the instance envs: the human devices plus the server that must
+      # decrypt it. The son-of-anton module installs it and a routing ssh
+      # config into ricky HOME (git.github) so the agent can clone and push.
+      soa-ricky-github-key = {
+        file = ../../secrets/soa-ricky-github-key.age;
+        owner = "soa-ricky";
+        mode = "0400";
       };
       # Also carries DATABENTO_API_KEY for the Trump project (its flake's
       # shellHook expects it in the environment, and the key is rotated).
