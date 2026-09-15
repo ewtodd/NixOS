@@ -31,7 +31,8 @@
             };
             # Per-site cookie jars in one window (private windows would need a second toplevel cage cannot manage).
             # NOTE: site->container mapping lives in the extension's own storage, not prefs/policy -- assign
-            # play.max.com to a named container once in the browser; the cookie rules below isolate until then.
+            # play.max.com and www.amazon.com to named containers once in the browser; the cookie rules below
+            # isolate until then.
             "@testpilot-containers" = {
               install_url = "https://addons.mozilla.org/firefox/downloads/latest/multi-account-containers/latest.xpi";
               installation_mode = "force_installed";
@@ -58,12 +59,20 @@
           # Three different lifetimes, one per site. Firefox's cookie permission governs DOM storage too, so a
           # Blocked origin gets no localStorage/sessionStorage either -- most of a private window's value, no cage.
           Cookies = {
-            Allow = [ "https://play.max.com" ];
+            # Prime Video (US) lives on amazon.com: the storefront, the login and the
+            # playback session cookies all sit under www.amazon.com, so that is the
+            # origin to keep. primevideo.com only redirects there for a US account.
+            Allow = [
+              "https://play.max.com"
+              "https://www.amazon.com"
+            ];
             # AllowSession, not Block: blocked outright, YouTube shows its consent interstitial every load and
             # forgets quality/volume. Session cookies behave normally and die on exit -- the 04:00 restart does that.
             AllowSession = [ "https://www.youtube.com" ];
             # Sportsurge gets nothing: no login, no settings worth keeping, and
-            # aggregator sites are exactly what you do not want persisting.
+            # aggregator sites are exactly what you do not want persisting. Its tile
+            # is off the landing page for now (Prime took the slot); the rule stays
+            # so bringing it back is only the tile.
             Block = [ "https://sportsurge.net" ];
             Locked = true;
           };
