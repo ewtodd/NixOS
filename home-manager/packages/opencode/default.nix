@@ -27,7 +27,7 @@ let
       . /run/agenix/litellm-master-key
       set +a
     fi
-    exec ${lib.getExe pkgs.opencode} "$@"
+    exec ${lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode} "$@"
   '';
 in
 {
