@@ -8,7 +8,7 @@
   config = lib.mkIf config.systemOptions.services.nextcloud.enable {
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud33;
+      package = pkgs.nextcloud34;
 
       hostName = "cloud.ethanwtodd.com";
       home = "/var/lib/nextcloud";
@@ -37,11 +37,11 @@
               license = "agpl3Plus";
             };
           in
-          pkgs.runCommandLocal "google_synchronization-nc33" { } ''
+          pkgs.runCommandLocal "google_synchronization-nc34" { } ''
             cp -r ${raw} $out
             chmod -R u+w $out
             substituteInPlace $out/appinfo/info.xml \
-              --replace 'max-version="32"' 'max-version="33"'
+              --replace 'max-version="32"' 'max-version="34"'
           '';
       };
       extraAppsEnable = true;
