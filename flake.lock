@@ -69,11 +69,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1788992823,
-        "narHash": "sha256-+3Rb/JLgyrpulvVV0q8SzfVIOMe2ckNd82VmjLCjppY=",
+        "lastModified": 1789002981,
+        "narHash": "sha256-1VP4bCfmq+YTS+Ju61YHWgKh1wkPWaSsJc/kqu8PThc=",
         "owner": "ewtodd",
         "repo": "Analysis-Utilities",
-        "rev": "1dd9d840ce14a7b7dd4576fc7112b12840280fe1",
+        "rev": "764e41db37c9abd8b0acdc6b34e9957e1044d765",
         "type": "github"
       },
       "original": {
@@ -821,11 +821,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1788992927,
-        "narHash": "sha256-/eHCHHh3zztaYi4WSozI5AY+cRfzpD/dD50q/UrboYE=",
+        "lastModified": 1789703392,
+        "narHash": "sha256-0M5zG6eXSlBleXGnsWaP0ueFwcdbeh9vTy4uGrOFpik=",
         "owner": "ewtodd",
         "repo": "MUSIC",
-        "rev": "7f3eb79eb811b4aa2788441afb5558fa192be782",
+        "rev": "dc82c1c5094c8deb40fb7fa315f6e2ac7618ff05",
         "type": "github"
       },
       "original": {
@@ -1639,11 +1639,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789002960,
-        "narHash": "sha256-lTBCzU451t4TWoMauslvt+LE6w1Xrum9OSl/3HjADSA=",
+        "lastModified": 1789703432,
+        "narHash": "sha256-ibMl6dxzti72T3W/Vr2z0YNjSRw0w1asgLiTkbZFG6o=",
         "owner": "ewtodd",
         "repo": "website",
-        "rev": "ac39229b9f447637d8e2addbc93f575a7b53618f",
+        "rev": "d0d6d26ce3b1a3f9c873deafe06432355a71e6de",
         "type": "github"
       },
       "original": {
