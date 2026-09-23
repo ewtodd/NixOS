@@ -41,13 +41,24 @@ in
       model = "/scratch/vllm-models/models--Qwen--Qwen3.8-27B-FP8/snapshots/017b9c7af6b5689d5dd426a76e0bc077eb5ca20a/";
       devices = "0,1";
       tensorParallelSize = 2;
-      maxModelLen = 262144;
+      maxModelLen = 300000;
+      hfOverrides.text_config.rope_parameters = {
+        rope_type = "yarn";
+        factor = 1.15;
+        original_max_position_embeddings = 262144;
+        mrope_interleaved = true;
+        mrope_section = [
+          11
+          11
+          10
+        ];
+        partial_rotary_factor = 0.25;
+        rope_theta = 10000000;
+      };
       kvCacheDtype = "fp8";
       maxNumSeqs = 4;
-      gpuMemoryUtilization = 0.92;
-      enforceEager = true;
+      gpuMemoryUtilization = 0.95;
       mtp = true;
-      mtpTokens = 3;
       port = 8100;
       toolCallParser = "qwen3_xml";
       reasoningParser = "qwen3";
