@@ -7,8 +7,8 @@
   rocmSystemsSrc,
 }:
 let
-  rocmSdk = pkgs.callPackage ./rocm-sdk-therock.nix { };
-  rocmSdkCc = pkgs.callPackage ./rocm-sdk-cc.nix { inherit rocmSdk; };
+  rocmSdk = pkgs.callPackage ../../../pkgs/rocm-sdk-therock.nix { };
+  rocmSdkCc = pkgs.callPackage ../../../pkgs/rocm-sdk-cc.nix { inherit rocmSdk; };
   rocrRuntime = pkgs.callPackage ./rocr-runtime-strix-halo.nix {
     inherit rocmSdk;
     src = rocmSystemsSrc;

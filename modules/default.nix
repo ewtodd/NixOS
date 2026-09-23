@@ -588,7 +588,7 @@ with lib;
         '';
       };
       services.vllm = {
-        enable = mkEnableOption "vLLM ROCm inference server (pip venv in FHS env)";
+        enable = mkEnableOption "vLLM ROCm inference server (nix-built, TheRock SDK, libr4d)";
         lanExpose = mkEnableOption "expose vLLM on the LAN (bind 0.0.0.0 + open firewall)";
         model = mkOption {
           type = types.str;
@@ -627,8 +627,41 @@ with lib;
         };
         enforceEager = mkOption {
           type = types.bool;
+          default = false;
+          description = "Disable HIP graphs.";
+        };
+        attentionBackend = mkOption {
+          type = types.str;
+          default = "R4D";
+          description = "Attention backend; ROCM_AITER_UNIFIED_ATTN is the measured fallback.";
+        };
+        maxNumBatchedTokens = mkOption {
+          type = types.ints.positive;
+          default = 4096;
+        };
+        prefixCaching = mkOption {
+          type = types.bool;
           default = true;
-          description = "Disable CUDA graphs (required for some ROCm targets).";
+          description = "--enable-prefix-caching with --mamba-cache-mode align (GDN hybrids need both).";
+        };
+        quantization = mkOption {
+          type = types.nullOr types.str;
+          default = "fp8";
+        };
+        fastDraft = mkOption {
+          type = types.bool;
+          default = false;
+          description = "RADIANCE_FAST_DRAFT: INT2 draft head with exact rerank.";
+        };
+        chatTemplate = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "Path to a chat template; null uses the checkpoint template.";
+        };
+        hfOverrides = mkOption {
+          type = types.attrs;
+          default = { };
+          description = "JSON passed as --hf-overrides (e.g. YaRN rope_parameters for long context).";
         };
         mtp = mkOption {
           type = types.bool;
@@ -637,61 +670,18 @@ with lib;
         };
         mtpTokens = mkOption {
           type = types.ints.positive;
-          default = 3;
-        };
-        venvPath = mkOption {
-          type = types.str;
-          default = "/scratch/vllm-venv";
-          description = "Path to the vLLM virtualenv, provisioned by vllm-provision.service.";
+          default = 8;
+          description = "Draft depth ceiling; the dynamic draft controller may go shallower.";
         };
         modelCache = mkOption {
           type = types.str;
           default = "/scratch/vllm-models";
           description = "HF_HOME / HF_HUB_CACHE for model downloads.";
         };
-        vllmVersion = mkOption {
+        cacheDir = mkOption {
           type = types.str;
-          default = "0.28.0+rocm723";
-          description = "Pinned vLLM wheel version. Changing this reprovisions the venv.";
-        };
-        flashAttnVersion = mkOption {
-          type = types.str;
-          default = "2.8.3";
-          description = "Pinned flash-attn wheel version.";
-        };
-        rocmSdkVersion = mkOption {
-          type = types.str;
-          default = "7.13.0";
-          description = "Pinned rocm-sdk-* wheel version.";
-        };
-        gfxTargets = mkOption {
-          type = types.listOf types.str;
-          default = [
-            "gfx120X-all"
-            "gfx1151"
-          ];
-          description = ''
-            GPU architectures to provision ROCm library wheels for. Each arch ships
-            its own librocblas with Tensile kernels for that arch ONLY, so every GPU
-            in the host must be listed or it fails at runtime with a missing
-            TensileLibrary.dat. Enumerate with:
-              rocminfo | grep -o 'gfx[0-9a-f]*' | sort -u
-          '';
-        };
-        wheelIndex = mkOption {
-          type = types.str;
-          default = "https://wheels.vllm.ai/rocm";
-          description = "Base URL for the vLLM/torch ROCm wheel index.";
-        };
-        rocmIndex = mkOption {
-          type = types.str;
-          default = "https://repo.amd.com/rocm/whl";
-          description = "Base URL for AMD's per-arch rocm-sdk wheel indexes.";
-        };
-        fastapiConstraint = mkOption {
-          type = types.str;
-          default = "fastapi[standard]<0.137";
-          description = "Pin for fastapi, which vLLM does not constrain tightly enough.";
+          default = "/scratch/vllm-cache";
+          description = "Root for the aiter JIT, triton, inductor and vLLM compile caches.";
         };
         extraEnv = mkOption {
           type = types.attrsOf types.str;
@@ -699,12 +689,7 @@ with lib;
           example = {
             VLLM_ATTENTION_BACKEND = "TRITON_ATTN";
           };
-          description = "Extra environment variables exported into the vLLM env script.";
-        };
-        gfxLibs = mkOption {
-          type = types.str;
-          default = "gfx120X_all";
-          description = "ROCm arch-specific library wheel name.";
+          description = "Extra environment variables for the vLLM service; merged last, so they override the built-in ROCm/RADIANCE sets.";
         };
         user = mkOption {
           type = types.str;

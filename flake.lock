@@ -731,6 +731,23 @@
         "type": "github"
       }
     },
+    "libr4d-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787681852,
+        "narHash": "sha256-MmyasGvJ+6Et8HSbi+qibuq/iulKfP/sX2m4OfN3ui4=",
+        "ref": "refs/heads/main",
+        "rev": "e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7",
+        "revCount": 6,
+        "type": "git",
+        "url": "https://codeberg.org/StillDeadcode/libr4d"
+      },
+      "original": {
+        "rev": "e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7",
+        "type": "git",
+        "url": "https://codeberg.org/StillDeadcode/libr4d"
+      }
+    },
     "lisepp": {
       "inputs": {
         "flake-utils": "flake-utils_3",
@@ -1236,6 +1253,7 @@
         "danksearch": "danksearch",
         "dms-plugin-registry": "dms-plugin-registry",
         "home-manager": "home-manager_2",
+        "libr4d-src": "libr4d-src",
         "lisepp": "lisepp",
         "llama-cpp": "llama-cpp",
         "llama-cpp-strix-halo": "llama-cpp-strix-halo",
@@ -1252,6 +1270,7 @@
         "rocm-systems-strix-halo": "rocm-systems-strix-halo",
         "son-of-anton": "son-of-anton",
         "split-nvim-src": "split-nvim-src",
+        "vllm-radiance-src": "vllm-radiance-src",
         "website": "website",
         "wireview-linux": "wireview-linux"
       }
@@ -1625,6 +1644,23 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "uv2nix",
+        "type": "github"
+      }
+    },
+    "vllm-radiance-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789659302,
+        "narHash": "sha256-jNIxjoBqPwef8IulSB++ahIFBhdF96JvjDM+w2UR02w=",
+        "owner": "magiccodingman",
+        "repo": "vllm-radiance",
+        "rev": "285ac78e7f19bc1e1b5b09b25f865aea0c6d9754",
+        "type": "github"
+      },
+      "original": {
+        "owner": "magiccodingman",
+        "repo": "vllm-radiance",
+        "rev": "285ac78e7f19bc1e1b5b09b25f865aea0c6d9754",
         "type": "github"
       }
     },

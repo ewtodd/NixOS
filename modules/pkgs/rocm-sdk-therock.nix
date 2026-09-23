@@ -1,4 +1,4 @@
-# TheRock ROCm Core SDK (stable channel), gfx1151 per-family tarball -- the "system ROCm" that
+# TheRock ROCm Core SDK (stable channel), per-family tarball -- the "system ROCm" that
 # pwilkin/strix-halo install.sh builds the custom ROCr/HIP and llama.cpp against.
 # Relocatable dist ($ORIGIN runpaths, bundled sysdeps): on NixOS the libs stay byte-for-byte untouched
 # (patchelf mangles the lld-linked ones and the loader segfaults); libstdc++/libgcc_s are symlinked into
@@ -9,15 +9,22 @@
   fetchurl,
   gcc-unwrapped,
   glibc,
+  family ? "gfx1151",
 }:
 
+let
+  hashes = {
+    gfx1151 = "sha256-T+q9ny2nI1LfN/bXFKVIR9P+kTwDQfviplQsEWQCS68=";
+    gfx120X-all = "sha256-65nbQ0oXOP2DsMO5MxRs23ZBjzX89GR3Q/vf73boxx8=";
+  };
+in
 stdenv.mkDerivation (finalAttrs: {
-  pname = "rocm-sdk-therock-gfx1151";
+  pname = "rocm-sdk-therock-${family}";
   version = "10.0.0";
 
   src = fetchurl {
-    url = "https://stable.repo.amd.com/rocm/core/tarball/therock-dist-linux-gfx1151-${finalAttrs.version}.tar.gz";
-    hash = "sha256-T+q9ny2nI1LfN/bXFKVIR9P+kTwDQfviplQsEWQCS68=";
+    url = "https://stable.repo.amd.com/rocm/core/tarball/therock-dist-linux-${family}-${finalAttrs.version}.tar.gz";
+    hash = hashes.${family};
   };
   sourceRoot = ".";
 
@@ -65,8 +72,12 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
+  passthru = {
+    inherit family;
+  };
+
   meta = {
-    description = "ROCm Core SDK ${finalAttrs.version} (TheRock dist, gfx1151)";
+    description = "ROCm Core SDK ${finalAttrs.version} (TheRock dist, ${family})";
     homepage = "https://github.com/ROCm/TheRock";
     license = lib.licenses.unfree;
     platforms = [ "x86_64-linux" ];

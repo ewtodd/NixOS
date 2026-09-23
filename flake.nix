@@ -82,6 +82,14 @@
       url = "github:pwilkin/rocm-systems/7dda3ac6cfe6bbe0b7f08c23a67cfa118d8641a1";
       flake = false;
     };
+    libr4d-src = {
+      url = "git+https://codeberg.org/StillDeadcode/libr4d?rev=e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7";
+      flake = false;
+    };
+    vllm-radiance-src = {
+      url = "github:magiccodingman/vllm-radiance/285ac78e7f19bc1e1b5b09b25f865aea0c6d9754";
+      flake = false;
+    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
     };
@@ -303,24 +311,41 @@
         inherit mkNeovim;
       };
 
-      packages.x86_64-linux = {
-        neovim = mkNeovim;
-        inherit
-          (import ./modules/services/llama-strix/pkgs {
+      packages.x86_64-linux =
+        let
+          vllmStack = import ./modules/services/vllm/pkgs {
             pkgs = import nixpkgs {
               system = "x86_64-linux";
               config.allowUnfree = true;
             };
-            llamaCppSrc = inputs.llama-cpp-strix-halo;
-            rocmSystemsSrc = inputs.rocm-systems-strix-halo;
-          })
-          rocmSdk
-          rocrRuntime
-          hipClr
-          llamaCpp
-          runtimeCheck
-          ;
-      };
+            r4dSrc = inputs.libr4d-src;
+            radianceSrc = inputs.vllm-radiance-src;
+          };
+        in
+        {
+          neovim = mkNeovim;
+          inherit
+            (import ./modules/services/llama-strix/pkgs {
+              pkgs = import nixpkgs {
+                system = "x86_64-linux";
+                config.allowUnfree = true;
+              };
+              llamaCppSrc = inputs.llama-cpp-strix-halo;
+              rocmSystemsSrc = inputs.rocm-systems-strix-halo;
+            })
+            rocmSdk
+            rocrRuntime
+            hipClr
+            llamaCpp
+            runtimeCheck
+            ;
+          vllm-torch = vllmStack.torch;
+          vllm-aiter = vllmStack.aiter;
+          vllm-libr4d = vllmStack.libr4d;
+          vllm-engine = vllmStack.vllm;
+          vllm-env = vllmStack.pythonEnv;
+          rocm-sdk-gfx120X = vllmStack.rocmSdk;
+        };
 
       nixosConfigurations = builtins.mapAttrs (
         hostname: h:
