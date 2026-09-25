@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   osConfig,
+  config,
   ...
 }:
 let
@@ -87,6 +88,12 @@ in
     '';
 
     settings = {
+      experimental.openTelemetry = false;
+      enabled_providers = [
+        "litellm"
+        "deepseek"
+      ];
+
       model = "litellm/qwen3.8-27b";
       small_model = "litellm/little-titles";
       default_agent = "build";
@@ -134,11 +141,7 @@ in
           '';
         };
         explore = {
-          model =
-            if osConfig.systemOptions.owner.v.enable then
-              "litellm/qwen3.8-27b-instruct"
-            else
-              "deepseek/deepseek-v4-flash";
+          model = "litellm/qwen3.8-27b-instruct";
           description = "Finds and reads code. Fast no-think qwen; returns file:line evidence.";
           permission = {
             edit = "deny";
@@ -151,11 +154,7 @@ in
           '';
         };
         general = {
-          model =
-            if osConfig.systemOptions.owner.v.enable then
-              "litellm/qwen3.8-27b"
-            else
-              "deepseek/deepseek-v4-flash";
+          model = "litellm/qwen3.8-flash-next";
           variant = "medium";
           description = "Runs self-contained multi-step tasks and returns a final report (qwen3.8-27b).";
           prompt = ''
@@ -167,7 +166,7 @@ in
         reviewer = {
           model = "litellm/qwen3.8-flash-next";
           variant = "xhigh";
-          description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU; rare, heavy.";
+          description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU.";
           prompt = ''
             You are a code reviewer. Read the change and its surroundings.
             Report problems by severity, each with file:line: correctness,
@@ -208,7 +207,7 @@ in
           };
           models = {
             "little-titles" = {
-              name = "Little Titles";
+              name = "Little Titles (do not select!)";
               tool_call = false;
             };
 
@@ -236,7 +235,9 @@ in
                   reasoning_effort = "low";
                 };
                 none = {
-                  reasoning_effort = "none";
+                  chat_template_kwargs = {
+                    enable_thinking = false;
+                  };
                 };
               };
               modalities = {
@@ -279,11 +280,19 @@ in
         };
       };
       mcp = {
-        proton = {
-          type = "local";
-          command = [ "${proton-mcp-wrapper}/bin/proton-mcp" ];
-          enabled = true;
-        };
+        proton =
+          # surely there's a better way to do this!
+          lib.mkIf
+            (
+              osConfig.systemOptions.owner.e.enable
+              && osConfig.systemOptions.deviceType.desktop.enable
+              && config.Profile == "play"
+            )
+            {
+              type = "local";
+              command = [ "${proton-mcp-wrapper}/bin/proton-mcp" ];
+              enabled = true;
+            };
       };
       permission = {
         edit = "ask";
