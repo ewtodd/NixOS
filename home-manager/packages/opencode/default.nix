@@ -8,10 +8,10 @@
 let
   protonMCP = pkgs.buildNpmPackage {
     pname = "proton-mcp";
-    version = "1.0.0";
+    version = "5.0.0";
     src = inputs.proton-mcp-src;
     nodejs = pkgs.nodejs;
-    npmDepsHash = "sha256-c6iNdB2Z84sOWETluJJhZdhPicWR9esL9SPi50CA7zo=";
+    npmDepsHash = "sha256-KG/Nt0lY2w8VHGp6sOW1W0hkP89cuGnwzuhL8Db9dEQ=";
     dontNpmBuild = true;
   };
   entry = "${protonMCP}/lib/node_modules/proton-mcp/index.js";
