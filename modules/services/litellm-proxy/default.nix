@@ -180,7 +180,7 @@
                 }
               ]
               ++ mkPool "qwen3.8-27b" (
-                mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8" sampling.qwen38Thinking
+                mkLocalSampled sonOfAntonVllm "openai/Qwen3.8-27B" sampling.qwen38Thinking
               );
             };
           };

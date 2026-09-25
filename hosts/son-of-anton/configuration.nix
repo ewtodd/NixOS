@@ -32,13 +32,15 @@ in
       lanExpose = true;
       extraFlags = [
         "--distributed-timeout-seconds 90"
-        "--served-model-name Qwen/Qwen3.8-27B-FP8"
+        "--served-model-name Qwen3.8-27B"
       ];
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
         VLLM_SLEEP_WHEN_IDLE = "1";
       };
-      model = "/scratch/vllm-models/models--Qwen--Qwen3.8-27B-FP8/snapshots/017b9c7af6b5689d5dd426a76e0bc077eb5ca20a/";
+      model = "/scratch/vllm-models/Qwen3.8-27B-Quark-AWQ-MXFP4/";
+      # Quark metadata lives in the checkpoint; --quantization must not be passed.
+      quantization = null;
       devices = "0,1";
       tensorParallelSize = 2;
       maxModelLen = 524288;

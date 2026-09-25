@@ -44,7 +44,7 @@ Hosts:
   zfs-metrics, Jellyfin media server (Intel QSV transcoding, LAN only)
 - **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
-- **son-of-anton** - vLLM (Qwen3.8-27B-FP8, TP=2) + ds4 (DeepSeek-V4-Flash-Vision, ROCm)
+- **son-of-anton** - vLLM (Qwen3.8-27B, MXFP4/W4A8, TP=2) + llama.cpp Strix Halo (Qwen3.8-Flash-Next)
 - **oracle** - model router & tooling host (aarch64): llama-swap, LiteLLM MCP gateway,
   SearXNG, Open WebUI (ai.ethanwtodd.com)
 ```
@@ -122,12 +122,13 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
 - **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU):
-  - **vLLM** (:8100): Qwen3.8-27B-FP8, tensor-parallel across the two R9700s, MTP
-    speculative decoding, 300k context (YaRN), fp8 KV cache, prefix caching. Built
-    from source in Nix against the TheRock ROCm 10.0 SDK with libr4d + the
-    vllm-radiance gfx1201 patch set (no venv); see modules/services/vllm/pkgs
-  - **ds4** (:8050): DeepSeek-V4-Flash-Vision on the Strix Halo iGPU (ROCm),
-    512k context with 512 GB on-disk KV at /scratch
+  - **vLLM** (:8100): Qwen3.8-27B (Quark MXFP4/W4A8), tensor-parallel across the
+    two R9700s, MTP speculative decoding, 524k context (YaRN), fp8 KV cache,
+    prefix caching. Built from source in Nix against the TheRock ROCm 10.0 SDK
+    with libr4d + the vllm-radiance gfx1201 patch set (no venv); see
+    modules/services/vllm/pkgs
+  - **llama-strix** (:8050): Qwen3.8-Flash-Next (IQ4_NL) on the Strix Halo iGPU
+    (ROCm) with the MTP draft and vision projector, 524k context (YaRN)
 - **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
   successor to temple-server: one system service per account on a shared Signal
   number, and each account's CLI shares its service's session state
@@ -135,7 +136,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
   - **llama-swap** (Vulkan backend): little-titles (Little-Titles Q8_0, always
     resident — title generation for the son-of-anton accounts) + bge-m3 embeddings
   - **LiteLLM** proxy (:4000): routes son-of-anton, opencode, and Open WebUI to
-    vLLM and ds4 on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API
+    vLLM and llama-strix on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API
   - **MCP gateway** (mounted at /mcp) aggregating stdio servers: `fetch` (URL
     retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`,
     and `context7`
