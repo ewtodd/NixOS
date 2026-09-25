@@ -343,7 +343,6 @@ in
           typing_indicator = true;
           gateway_restart_notification = false;
         };
-        auxiliary.background_review.schedule = "daily";
         terminal.home_mode = "cwd";
       };
     };

@@ -70,6 +70,27 @@ let
     HIP_DEVICE_LIB_PATH = "${rocmSdk}/lib/llvm/amdgcn/bitcode";
   };
 
+  # radiance_mxfp4_fp8.hip -> radiance_mxfp4_fp8.so via the Dockerfile's hipcc
+  # command; the W4A8 path disables itself without this extension.
+  radianceMxfp4Ext =
+    pkgs.runCommand "radiance-mxfp4-fp8"
+      {
+        nativeBuildInputs = [
+          rocmSdkCc
+          (python.withPackages (ps: [ ps.pybind11 ]))
+        ];
+      }
+      ''
+        export ROCM_PATH=${rocmSdk}
+        export HIP_PATH=${rocmSdk}
+        export HIP_CLANG_PATH=${rocmSdkCc}/llvm/bin
+        export HIP_DEVICE_LIB_PATH=${rocmSdk}/lib/llvm/amdgcn/bitcode
+        mkdir -p $out
+        INC=$(python -m pybind11 --includes)
+        hipcc -O3 -std=c++17 -fPIC -shared --offload-arch=${gfxArch} -Wno-unused-result \
+          $INC ${radianceSrc}/radiance_mxfp4_fp8.hip -o $out/radiance_mxfp4_fp8.so
+      '';
+
   radiancePatches =
     pkgs.runCommand "radiance-patches"
       {
@@ -125,6 +146,8 @@ let
     "patch_topk_triton_rows"
     "patch_topk_composite"
     "patch_rocm_cudagraph_current_stream"
+    "patch_quark_mxfp4"
+    "patch_quark_bf16_mtp"
     "patch_ar_maxbytes"
     "patch_ar_geometry"
     "patch_kv_group_size"
@@ -271,7 +294,13 @@ let
         '';
         pythonRemoveDeps = [ "flydsl" ];
         env = old.env // hipEnv;
-        postInstall = (old.postInstall or "") + applyRadiancePatches aiterPatches;
+        postInstall =
+          (old.postInstall or "")
+          + applyRadiancePatches aiterPatches
+          + ''
+            mkdir -p $out/${python.sitePackages}/aiter/ops/triton/configs/gemm
+            cp -f ${radianceSrc}/mxfp4-configs/* $out/${python.sitePackages}/aiter/ops/triton/configs/gemm/
+          '';
       });
 
       vllm =
@@ -313,6 +342,7 @@ let
                   SP=$out/${python.sitePackages}
                   chmod -R u+w $SP
                   cp ${radianceSrc}/radiance_*.py ${radianceSrc}/radiance_amdsmi.pth $SP/
+                  cp ${radianceMxfp4Ext}/radiance_mxfp4_fp8.so $SP/
                   cp -f ${radianceSrc}/fp8-configs/* $SP/vllm/model_executor/layers/quantization/utils/configs/
                   cp -f ${radianceSrc}/moe-configs/* $SP/vllm/model_executor/layers/fused_moe/configs/
                   mkdir -p $out/share/vllm-radiance

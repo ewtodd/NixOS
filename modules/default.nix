@@ -592,7 +592,7 @@ with lib;
         lanExpose = mkEnableOption "expose vLLM on the LAN (bind 0.0.0.0 + open firewall)";
         model = mkOption {
           type = types.str;
-          example = "Qwen/Qwen3.8-27B-FP8";
+          example = "amd/Qwen3.8-27B-Quark-AWQ-MXFP4";
           description = "HuggingFace model ID to serve.";
         };
         port = mkOption {
