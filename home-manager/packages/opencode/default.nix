@@ -153,8 +153,9 @@ in
           '';
         };
         explore = {
-          model = "litellm/qwen3.8-27b-instruct";
-          description = "Finds and reads code. Fast no-think qwen; returns file:line evidence.";
+          model = "litellm/qwen3.8-27b";
+          variant = "low";
+          description = "Finds and reads code. Fast low-think qwen; returns file:line evidence.";
           permission = {
             edit = "deny";
           };
@@ -194,8 +195,8 @@ in
             current repository, write an accurate commit message matching the existing style, and then 
             stage+commit them. Commit using your account: 
             son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>'';
-          model = "litellm/qwen3.8-27b-instruct";
-
+          model = "litellm/qwen3.8-27b";
+          variant = "low";
         };
       };
       command = {
@@ -221,17 +222,6 @@ in
             "little-titles" = {
               name = "Little Titles (do not select!)";
               tool_call = false;
-            };
-
-            "qwen3.8-27b-instruct" = {
-              name = "Qwen3.8 27B Instruct";
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                ];
-                output = [ "text" ];
-              };
             };
 
             "qwen3.8-27b" = {

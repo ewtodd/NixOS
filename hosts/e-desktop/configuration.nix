@@ -276,15 +276,6 @@ in
                 "xhigh"
               ];
             };
-            "qwen3.8-27b-instruct" = {
-              context_length = 262144;
-              reasoning_efforts = [
-                "none"
-                "low"
-                "medium"
-                "xhigh"
-              ];
-            };
             "qwen3.8-flash-next" = {
               context_length = 524288;
               reasoning_effort = "medium";
@@ -299,7 +290,7 @@ in
         };
         physics = {
           model = "qwen3.8-27b";
-          coder_model = "qwen3.8-27b-instruct";
+          coder_model = "qwen3.8-27b";
           reasoning_effort = "medium";
           agent_models = {
             critic = "qwen3.8-flash-next";

@@ -72,8 +72,10 @@
     };
     # pwilkin/llama.cpp `strix-halo` integration branch, pinned to the commit
     # https://pwilkin.github.io/strix-halo/ install.sh pins (llama_repo_commit).
+    # b0f31f58 carries the MTP+vision QSA window fix and compiles the per-kernel
+    # LLAMA_* gates in; install.sh no longer exports them.
     llama-cpp-strix-halo = {
-      url = "github:pwilkin/llama.cpp/f5daaa3cfa6358e5dd398911ec741813745a5440";
+      url = "github:pwilkin/llama.cpp/b0f31f5876ef3856b55f5bb88072cc96e5effafe";
       flake = false;
     };
     # pwilkin/rocm-systems `ilintar-experiments`: retained-PM4 command lists for

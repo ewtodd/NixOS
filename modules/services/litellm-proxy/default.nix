@@ -79,17 +79,6 @@
               presence_penalty = 0;
               repetition_penalty = 1.0;
             };
-            qwen38Instruct = {
-              temperature = 0.7;
-              top_p = 0.8;
-              top_k = 20;
-              min_p = 0;
-              presence_penalty = 1.5;
-              repetition_penalty = 1.0;
-              chat_template_kwargs = {
-                enable_thinking = false;
-              };
-            };
           };
           mkLocalSampled =
             api_base: model: profile:
@@ -185,16 +174,13 @@
                 {
                   model_name = "deepseek-v4-api";
                   litellm_params = {
-                    model = "deepseek/deepseek-v4-flash-vision-exp";
+                    model = "deepseek/deepseek-v4.1-flash";
                     api_key = "os.environ/DEEPSEEK_API_KEY";
                   };
                 }
               ]
               ++ mkPool "qwen3.8-27b" (
                 mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8" sampling.qwen38Thinking
-              )
-              ++ mkPool "qwen3.8-27b-instruct" (
-                mkLocalSampled sonOfAntonVllm "openai/Qwen/Qwen3.8-27B-FP8" sampling.qwen38Instruct
               );
             };
           };
