@@ -22,12 +22,24 @@ let
     set +a
     exec ${pkgs.nodejs}/bin/node ${entry}
   '';
+  # The secret is an opencode config fragment merged with OPENCODE_CONFIG; it
+  # must carry the full enabled_providers list, since arrays are replaced.
+  workProviderEnabled =
+    osConfig.systemOptions.owner.e.enable
+    && osConfig.systemOptions.deviceType.desktop.enable
+    && config.Profile == "work";
+  workProviderConfigPath = "/run/agenix/opencode-work-provider";
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
     if [ -r /run/agenix/litellm-master-key ]; then
       set -a
       . /run/agenix/litellm-master-key
       set +a
     fi
+    ${lib.optionalString workProviderEnabled ''
+      if [ -r ${workProviderConfigPath} ]; then
+        export OPENCODE_CONFIG=${workProviderConfigPath}
+      fi
+    ''}
     exec ${lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode} "$@"
   '';
 in
