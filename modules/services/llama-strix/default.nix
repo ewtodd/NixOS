@@ -18,49 +18,31 @@ let
   };
   inherit (stack) llamaCpp runtimeLibs runtimeCheck;
 
-  # Env-gated kernels from the branch, verbatim from the flash-next launcher
-  # that install.sh writes (qwen3.8-strix-halo-server). Every one of these
-  # is a branch-only switch; upstream ignores them.
-  branchKernelGates = {
-    LLAMA_MMB = "1";
-    LLAMA_MMB_MIN_T = "512";
-    LLAMA_MMB_BF16W = "1";
-    LLAMA_MMB_GLU = "1";
-    LLAMA_MMB_TALL = "2";
-    LLAMA_MMB_CACHE = "4";
-    LLAMA_MMB_F32SPLIT = "2";
-    LLAMA_MMB_HC16 = "2";
-    LLAMA_MMB_SHADOW = "2";
-    LLAMA_MMB_DOWN16 = "1";
-    LLAMA_HC_CN_SHAPE = "1";
-    LLAMA_HC_GATEMIX = "1";
-    LLAMA_HC_MIX_FUSE = "1";
-    LLAMA_HC_BLK16 = "1";
-    LLAMA_HC_RES16 = "1";
-    LLAMA_HC_PACK_DI = "1";
-    LLAMA_NORM_GATED = "1";
-    LLAMA_NORM_ROWS = "1";
-    LLAMA_IDX_RELU_SUM = "1";
-    LLAMA_PLE_CONV = "1";
-    LLAMA_GDN_CONV = "1";
-    LLAMA_QSA_SPARSE = "1";
-    LLAMA_QSA_WHOLE_ATTN = "1";
-    LLAMA_QSA_BLOCK_SELECTION = "1";
-    LLAMA_QSA_COMPACT_METADATA = "1";
-    LLAMA_QSA_DENSE_SHORTCUT = "1";
-    LLAMA_QSA_DIRECT_INDICES = "1";
-    LLAMA_QSA_PACK_KEYS = "1";
-    LLAMA_QSA_PACK_VALUES = "1";
-    LLAMA_QSA_QUERY_STRIP = "512";
-    LLAMA_QSA_SCORE_BOUNDS = "1";
-    LLAMA_QSA_NO_DENSE_MASK = "1";
-    LLAMA_QSA_FA_V3 = "1";
-    LLAMA_QSA_FUSE_EXPAND = "1";
-    LLAMA_MTP_QSA = "1";
-    LLAMA_MTP_QSA_MIN_T = "128";
-  };
-  # The launcher install.sh writes (llama-server-strix-halo) as env: custom HIP/ROCr ahead of the SDK, and
-  # ENABLE_RETAINED_PM4 choosing retained-PM4 HIP graphs vs no graphs. Deliberately NOT copied:
+  # vLLM's warmup claims host memory for ~20-60 s; wait for its /health before
+  # loading, bounded so a dead vLLM never blocks llama (see the HSA faults 2026-09).
+  vllmCfg = config.systemOptions.services.vllm;
+  vllmHealthWait = pkgs.writeShellScript "llama-strix-wait-vllm" ''
+    set -u
+    url="http://127.0.0.1:${toString vllmCfg.port}/health"
+    deadline=$(( $(${pkgs.coreutils}/bin/date +%s) + 300 ))
+    while true; do
+      if ${pkgs.curl}/bin/curl -fsS --max-time 5 "$url" >/dev/null 2>&1; then
+        echo "vLLM /health is up; starting llama-strix"
+        exit 0
+      fi
+      if [ "$(${pkgs.coreutils}/bin/date +%s)" -ge "$deadline" ]; then
+        echo "vLLM /health not up after 300s; starting llama-strix anyway" >&2
+        exit 0
+      fi
+      ${pkgs.coreutils}/bin/sleep 5
+    done
+  '';
+
+  # Runtime env from the launcher install.sh writes (llama-server-strix-halo):
+  # custom HIP/ROCr ahead of the SDK, and ENABLE_RETAINED_PM4 choosing
+  # retained-PM4 HIP graphs vs no graphs. The per-kernel LLAMA_* gates that
+  # used to sit here were compiled into the branch in ac1ebb4e (2026-09-13)
+  # and install.sh no longer exports them. Deliberately NOT copied:
   # HSA_OVERRIDE_GFX_VERSION=11.5.1 -- a no-op on gfx1151, but it reaches the gfx1201 R9700s too and
   # HIP then refuses to initialize any device.
   runtimeEnv = {
@@ -70,7 +52,6 @@ let
     ENABLE_RETAINED_PM4 = if cfg.retainedPm4 then "1" else "0";
   }
   // (if cfg.retainedPm4 then { DEBUG_HIP_GRAPH_PM4 = "1"; } else { GGML_CUDA_DISABLE_GRAPHS = "1"; })
-  // branchKernelGates
   // cfg.extraEnv;
   # --load-mode none + --lazy-mode on-direct keep the 27.5 GB embedding table out of the resident set
   # (pread on demand, no mmap double-copy of every weight during load). -b/-ub 16384 sends the whole
@@ -126,7 +107,7 @@ in
 
     systemd.services.llama-strix = {
       description = "llama.cpp strix-halo branch server (${cfg.alias})";
-      after = [ "network.target" ];
+      after = [ "network.target" ] ++ lib.optionals vllmCfg.enable [ "vllm.service" ];
       wantedBy = [ "multi-user.target" ];
 
       environment = runtimeEnv;
@@ -137,7 +118,10 @@ in
         # Not run: referencing the check derivation makes the unit depend on
         # it, so a stack whose libggml-hip does not pick up the custom
         # HIP/ROCr fails at build time instead of silently running stock.
-        ExecStartPre = "${pkgs.coreutils}/bin/test -e ${runtimeCheck}";
+        ExecStartPre = [
+          "${pkgs.coreutils}/bin/test -e ${runtimeCheck}"
+        ]
+        ++ lib.optionals vllmCfg.enable [ "${vllmHealthWait}" ];
         Restart = "on-failure";
         RestartSec = 10;
         # Loading ~96 GB through on-demand pread() takes a while; do not let

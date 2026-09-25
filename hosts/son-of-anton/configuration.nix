@@ -41,10 +41,10 @@ in
       model = "/scratch/vllm-models/models--Qwen--Qwen3.8-27B-FP8/snapshots/017b9c7af6b5689d5dd426a76e0bc077eb5ca20a/";
       devices = "0,1";
       tensorParallelSize = 2;
-      maxModelLen = 300000;
+      maxModelLen = 524288;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
-        factor = 1.5;
+        factor = 2;
         original_max_position_embeddings = 262144;
         mrope_interleaved = true;
         mrope_section = [
@@ -66,12 +66,15 @@ in
     };
     # Qwen3.8-Next-Flash on the Strix Halo iGPU via pwilkin's llama.cpp
     # strix-halo branch (replaces antirez/ds4 DeepSeek-V4). Weights are the
-    # ilintar/qwen3.8-flash-next-gguf-strix-halo IQ4_NL PROJFIX shards plus the
-    # shared-embedding MTP draft, downloaded with `hf download --local-dir`.
+    # ilintar IQ4_NL PROJFIX shards plus the shared-embedding MTP draft. The
+    # Swift-1.5 set stays under /scratch/llama-cache/swift-1.5-flash-next-strix-halo
+    # (target, draft and mmproj) for a later retry.
     services.llamaStrix = {
       enable = true;
       lanExpose = true;
       model = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/Qwen3.8-Flash-Next-IQ4_NL-PROJFIX-00001-of-00009.gguf";
+      draftModel = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
+      draftNMax = 4;
       port = 8050;
       parallel = 1;
       ctxSize = 524288;

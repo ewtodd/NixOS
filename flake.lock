@@ -789,17 +789,17 @@
     "llama-cpp-strix-halo": {
       "flake": false,
       "locked": {
-        "lastModified": 1789231927,
-        "narHash": "sha256-9YrpYJ1K2FdDhqstcfdwWMjTl7UhBL0ZHBOP6+KbyoY=",
+        "lastModified": 1789554350,
+        "narHash": "sha256-xZcqZroS3rUid6w7bVeilixJxUUFDq5S1EeypWCiZBM=",
         "owner": "pwilkin",
         "repo": "llama.cpp",
-        "rev": "f5daaa3cfa6358e5dd398911ec741813745a5440",
+        "rev": "b0f31f5876ef3856b55f5bb88072cc96e5effafe",
         "type": "github"
       },
       "original": {
         "owner": "pwilkin",
         "repo": "llama.cpp",
-        "rev": "f5daaa3cfa6358e5dd398911ec741813745a5440",
+        "rev": "b0f31f5876ef3856b55f5bb88072cc96e5effafe",
         "type": "github"
       }
     },
