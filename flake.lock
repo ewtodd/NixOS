@@ -1140,11 +1140,11 @@
     "proton-mcp-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790300156,
-        "narHash": "sha256-s+dkWDDU4VthWwq3VE/7Ek+6/5aUbBHPTsU4v7tv9eg=",
+        "lastModified": 1790307417,
+        "narHash": "sha256-8EdnuMZdiDSqZcC9pnxWzy/i9io3gVin/cuWYk/t84g=",
         "owner": "ewtodd",
         "repo": "proton-mcp",
-        "rev": "7d5e1af689a86da64ccc3a3f5425dceca26fe653",
+        "rev": "36a6fd0b1ef725da5cd5cc59af43693c3bb7be0d",
         "type": "github"
       },
       "original": {
