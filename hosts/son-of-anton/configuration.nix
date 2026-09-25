@@ -44,7 +44,7 @@ in
       maxModelLen = 300000;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
-        factor = 1.15;
+        factor = 1.5;
         original_max_position_embeddings = 262144;
         mrope_interleaved = true;
         mrope_section = [
@@ -57,7 +57,7 @@ in
       };
       kvCacheDtype = "fp8";
       maxNumSeqs = 4;
-      gpuMemoryUtilization = 0.95;
+      gpuMemoryUtilization = 0.98;
       mtp = true;
       port = 8100;
       toolCallParser = "qwen3_xml";
