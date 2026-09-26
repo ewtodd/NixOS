@@ -267,7 +267,6 @@ in
             # clamps any resolved effort to this set so a stronger request
             # never 400s; without it the widest OpenAI-compat set is assumed.
             "qwen3.8-27b" = {
-              context_length = 262144;
               reasoning_effort = "medium";
               reasoning_efforts = [
                 "none"
@@ -277,7 +276,6 @@ in
               ];
             };
             "qwen3.8-flash-next" = {
-              context_length = 524288;
               reasoning_effort = "medium";
               reasoning_efforts = [
                 "none"
