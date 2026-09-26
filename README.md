@@ -122,11 +122,12 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
 - **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU):
-  - **vLLM** (:8100): Qwen3.8-27B (Quark MXFP4/W4A8), tensor-parallel across the
-    two R9700s, MTP speculative decoding, 524k context (YaRN), fp8 KV cache,
-    prefix caching. Built from source in Nix against the TheRock ROCm 10.0 SDK
-    with libr4d + the vllm-radiance gfx1201 patch set (no venv); see
-    modules/services/vllm/pkgs
+  - **vLLM** (:8100): Qwen3.8-27B (native 128x128 block FP8), tensor-parallel
+    across the two R9700s, DFlash2 K7 speculative decoding with the
+    tcclaviger/Qwen3.8-27B-DFlash2-FP8 drafter (runtime W4 fast draft),
+    450k context (YaRN), fp8 KV cache, prefix caching. Built from source in
+    Nix against the TheRock ROCm 10.0 SDK with libr4d + the vllm-radiance
+    gfx1201 patch set (no venv); see modules/services/vllm/pkgs
   - **llama-strix** (:8050): Qwen3.8-Flash-Next (IQ4_NL) on the Strix Halo iGPU
     (ROCm) with the MTP draft and vision projector, 524k context (YaRN)
 - **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),

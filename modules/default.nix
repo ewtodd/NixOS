@@ -648,10 +648,20 @@ with lib;
           type = types.nullOr types.str;
           default = "fp8";
         };
+        mxfp4 = mkOption {
+          type = types.bool;
+          default = false;
+          description = "RADIANCE_MXFP4: native Quark MXFP4/W4A8 routing for an AMD Quark checkpoint (gfx1201).";
+        };
         fastDraft = mkOption {
           type = types.bool;
           default = false;
-          description = "RADIANCE_FAST_DRAFT: INT2 draft head with exact rerank.";
+          description = "RADIANCE_FAST_DRAFT: INT2 draft head with exact rerank, plus runtime W4 DFlash draft linears.";
+        };
+        compilationConfig = mkOption {
+          type = types.nullOr types.attrs;
+          default = null;
+          description = "Attrs passed as --compilation-config JSON (DFlash2 uses { cudagraph_mode = \"PIECEWISE\"; }).";
         };
         chatTemplate = mkOption {
           type = types.nullOr types.str;
@@ -663,15 +673,43 @@ with lib;
           default = { };
           description = "JSON passed as --hf-overrides (e.g. YaRN rope_parameters for long context).";
         };
-        mtp = mkOption {
+        speculative = mkOption {
           type = types.bool;
           default = false;
-          description = "Enable MTP speculative decoding.";
+          description = "Enable speculative decoding (--speculative-config).";
         };
-        mtpTokens = mkOption {
+        speculativeMethod = mkOption {
+          type = types.enum [
+            "mtp"
+            "dflash"
+          ];
+          default = "mtp";
+          description = "mtp uses the in-checkpoint head; dflash uses a separate DFlash2 drafter.";
+        };
+        speculativeTokens = mkOption {
           type = types.ints.positive;
           default = 8;
-          description = "Draft depth ceiling; the dynamic draft controller may go shallower.";
+          description = "Draft depth ceiling (num_speculative_tokens); the dynamic draft controller may go shallower.";
+        };
+        draftModel = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "Drafter checkpoint path; required for speculativeMethod = \"dflash\".";
+        };
+        draftAttentionBackend = mkOption {
+          type = types.str;
+          default = "TRITON_ATTN";
+          description = "Drafter attention backend; the R4D target path stays on attentionBackend.";
+        };
+        draftTensorParallelSize = mkOption {
+          type = types.nullOr types.ints.positive;
+          default = null;
+          description = "Draft tensor-parallel size; null uses the target's tensorParallelSize.";
+        };
+        draftMaxModelLen = mkOption {
+          type = types.nullOr types.ints.positive;
+          default = null;
+          description = "Draft context ceiling; null lets vLLM clamp it to min(draft checkpoint, target maxModelLen).";
         };
         modelCache = mkOption {
           type = types.str;
