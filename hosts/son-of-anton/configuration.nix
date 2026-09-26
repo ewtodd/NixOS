@@ -61,6 +61,7 @@ in
       maxNumSeqs = 4;
       gpuMemoryUtilization = 0.98;
       mtp = true;
+      mtpTokens = 4;
       port = 8100;
       toolCallParser = "qwen3_xml";
       reasoningParser = "qwen3";
