@@ -141,6 +141,12 @@ let
     "patch_from_json_filter"
     "patch_conv1d_blockn"
     "patch_r4d"
+    # DFlash2 drafter support, in the upstream image's order. patch_dflash_base
+    # is omitted: v0.28.0 already has its sentinel/context/null-block fixes.
+    "patch_dflash_fused_kv_fp8"
+    "patch_dflash_logits_cache_stride"
+    "patch_dflash_w4"
+    "patch_dflash_selector_topk"
     "patch_gdn_metadata"
     "patch_gdn_shared_build"
     "patch_topk_triton_rows"

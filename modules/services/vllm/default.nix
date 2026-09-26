@@ -37,14 +37,7 @@ let
     RADIANCE_TOPK_TRITON_MIN_ROWS = "1";
     RADIANCE_TOPK_COMPOSITE = "1";
     RADIANCE_TOPK_COMPOSITE_KCAP = "64";
-    RADIANCE_MXFP4 = "1";
-    RADIANCE_MXFP4_W4A8 = "1";
-    RADIANCE_MXFP4_W4A8_MIN_M = "0";
-    RADIANCE_MXFP4_DECODE_MAX_M = "64";
-    RADIANCE_MXFP4_TN4_MIN_M = "2048";
-    RADIANCE_MXFP4_WPERM = "1";
-    RADIANCE_MXFP4_DECODE_NT = "1";
-    RADIANCE_QUARK_BF16_MTP = "1";
+    RADIANCE_MXFP4 = if cfg.mxfp4 then "1" else "0";
     RADIANCE_KV_GROUP_OPT = "1";
     RADIANCE_AR_QNT = "1024";
     RADIANCE_AR_QNB = "96";
@@ -61,6 +54,15 @@ let
     R4D_ATTN_FP8 = "0";
     RADIANCE_FAST_DRAFT = if cfg.fastDraft then "1" else "0";
     RADIANCE_RUN_BWTEST = "0";
+  }
+  // lib.optionalAttrs cfg.mxfp4 {
+    RADIANCE_MXFP4_W4A8 = "1";
+    RADIANCE_MXFP4_W4A8_MIN_M = "0";
+    RADIANCE_MXFP4_DECODE_MAX_M = "64";
+    RADIANCE_MXFP4_TN4_MIN_M = "2048";
+    RADIANCE_MXFP4_WPERM = "1";
+    RADIANCE_MXFP4_DECODE_NT = "1";
+    RADIANCE_QUARK_BF16_MTP = "1";
   };
 
   aiterEnv = {
@@ -101,18 +103,39 @@ let
     HF_HUB_CACHE = cfg.modelCache;
     AITER_JIT_DIR = "${cfg.cacheDir}/aiter-jit";
     TRITON_CACHE_DIR = "${cfg.cacheDir}/triton";
-    VLLM_CACHE_ROOT = "${cfg.cacheDir}/vllm";
-    TORCHINDUCTOR_CACHE_DIR = "${cfg.cacheDir}/inductor";
+    # The entrypoint isolates fast-draft graphs; a stale ordinary-draft graph
+    # would be reused against the packed W4 drafter weights and fail.
+    VLLM_CACHE_ROOT = "${cfg.cacheDir}/vllm" + lib.optionalString cfg.fastDraft "-fast-draft";
+    TORCHINDUCTOR_CACHE_DIR =
+      "${cfg.cacheDir}/inductor" + lib.optionalString cfg.fastDraft "-fast-draft";
   };
 
-  serviceEnv = rocmEnv // aiterEnv // radianceEnv // cfg.extraEnv;
-
-  specConfig = builtins.toJSON {
-    method = "mtp";
-    num_speculative_tokens = cfg.mtpTokens;
-    attention_backend = cfg.attentionBackend;
-    disable_padded_drafter_batch = true;
+  specEnv = lib.optionalAttrs (cfg.speculativeMethod == "dflash") {
+    VLLM_USE_V2_MODEL_RUNNER = "1";
   };
+
+  serviceEnv = rocmEnv // aiterEnv // radianceEnv // specEnv // cfg.extraEnv;
+
+  # DFlash2 keeps the R4D target attention and runs the drafter on TRITON_ATTN;
+  # MTP shares the target's backend as before.
+  specConfig = builtins.toJSON (
+    {
+      method = cfg.speculativeMethod;
+      num_speculative_tokens = cfg.speculativeTokens;
+      attention_backend =
+        if cfg.speculativeMethod == "dflash" then cfg.draftAttentionBackend else cfg.attentionBackend;
+      disable_padded_drafter_batch = true;
+    }
+    // lib.optionalAttrs (cfg.draftModel != null) {
+      model = cfg.draftModel;
+    }
+    // lib.optionalAttrs (cfg.draftTensorParallelSize != null) {
+      draft_tensor_parallel_size = cfg.draftTensorParallelSize;
+    }
+    // lib.optionalAttrs (cfg.draftMaxModelLen != null) {
+      max_model_len = cfg.draftMaxModelLen;
+    }
+  );
 
   serveArgs = [
     cfg.model
@@ -132,9 +155,12 @@ let
     "--enable-prefix-caching"
     "--mamba-cache-mode align"
   ]
-  ++ lib.optionals cfg.mtp [
+  ++ lib.optionals cfg.speculative [
     "--speculative-config ${lib.escapeShellArg specConfig}"
     "--no-async-scheduling"
+  ]
+  ++ lib.optionals (cfg.compilationConfig != null) [
+    "--compilation-config ${lib.escapeShellArg (builtins.toJSON cfg.compilationConfig)}"
   ]
   ++ lib.optionals cfg.enforceEager [ "--enforce-eager" ]
   ++ lib.optionals cfg.languageModelOnly [ "--language-model-only" ]
@@ -151,6 +177,13 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !cfg.speculative || cfg.speculativeMethod != "dflash" || cfg.draftModel != null;
+        message = "systemOptions.services.vllm: speculativeMethod = \"dflash\" needs draftModel.";
+      }
+    ];
+
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose [ cfg.port ];
 
     systemd.tmpfiles.rules = [
