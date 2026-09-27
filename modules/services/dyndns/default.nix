@@ -9,6 +9,7 @@ let
   subdomains = [
     # "@" is Namecheap dynamic DNS host for the apex record, ethanwtodd.com.
     "@"
+    "admin"
     "ai"
     "cache"
     "cloud"
