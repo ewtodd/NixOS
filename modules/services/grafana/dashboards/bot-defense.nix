@@ -791,8 +791,8 @@
             scaleDistribution = {
               type = "linear";
             };
-            showPoints = "never";
-            spanNulls = false;
+            showPoints = "auto";
+            spanNulls = true;
             stacking = {
               group = "A";
               mode = "none";
@@ -879,8 +879,8 @@
             scaleDistribution = {
               type = "linear";
             };
-            showPoints = "never";
-            spanNulls = false;
+            showPoints = "auto";
+            spanNulls = true;
             stacking = {
               group = "A";
               mode = "none";
