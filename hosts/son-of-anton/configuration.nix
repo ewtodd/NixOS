@@ -38,13 +38,12 @@ in
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
         VLLM_SLEEP_WHEN_IDLE = "1";
       };
-      model = "/scratch/vllm-models/models--Qwen--Qwen3.8-27B-FP8/snapshots/017b9c7af6b5689d5dd426a76e0bc077eb5ca20a/";
-      quantization = "fp8";
+      model = "/scratch/vllm-models/Qwen3.8-27B-Quark-AWQ-MXFP4";
+      mxfp4 = true;
+      quantization = null;
       devices = "0,1";
       tensorParallelSize = 2;
-      # 450k keeps headroom for the DFlash draft KV bucket below the 524288
-      # ceiling the YaRN rope_parameters allow.
-      maxModelLen = 460800;
+      maxModelLen = 524288;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
         factor = 2;
@@ -63,7 +62,7 @@ in
       gpuMemoryUtilization = 0.98;
       speculative = true;
       speculativeMethod = "dflash";
-      speculativeTokens = 7;
+      speculativeTokens = 4;
       # tcclaviger/Qwen3.8-27B-DFlash2-FP8. Its 262144 max_position_embeddings
       # is what vLLM clamps the draft context to.
       draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
