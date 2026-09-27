@@ -16,6 +16,13 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Upstream ships its own NixOS module and package derivations; see
+    # modules/services/bifrost. follow nixpkgs so their staging-next pin is
+    # never fetched.
+    bifrost = {
+      url = "github:maximhq/bifrost";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     base16 = {
       url = "github:SenchoPens/base16.nix";
     };

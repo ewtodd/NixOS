@@ -89,19 +89,21 @@
         mode = "0440";
       };
     })
-    # LiteLLM master key (file content: LITELLM_MASTER_KEY=sk-...).
-    (lib.mkIf config.systemOptions.services.litellmProxy.enable {
-      # Read by the litellm container (bind-mounted as root) and by the
-      # open-webui service (its wrapper exports OPENAI_API_KEYS from it).
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
+    (lib.mkIf config.systemOptions.services.bifrost.enable {
+      # Bifrost server env (file content: BIFROST_SPIKE_VK=..., admin
+      # username/password, BIFROST_ENCRYPTION_KEY=..., DEEPSEEK_API_KEY=...).
+      # Read by the bifrost systemd service as its EnvironmentFile.
+      bifrost-env = {
+        file = ../../secrets/bifrost-env.age;
+        mode = "0400";
+      };
+      # Per-consumer Bifrost virtual keys (BIFROST_OPENCODE_VK,
+      # BIFROST_OPENWEBUI_VK, BIFROST_SOA_VK, BIFROST_FRIEND_VK). Read by the
+      # bifrost service (root) and by the open-webui wrapper (group).
+      bifrost-keys = {
+        file = ../../secrets/bifrost-keys.age;
         group = "open-webui";
         mode = "0440";
-      };
-      # DeepSeek API key for the hosted models (file content: DEEPSEEK_API_KEY=sk-...).
-      litellm-deepseek-key = {
-        file = ../../secrets/litellm-deepseek-key.age;
-        mode = "0400";
       };
     })
     # Gateway env (SIGNAL_ACCOUNT=..., optional DISCORD/SLACK tokens). One file, read by every instance --
@@ -161,10 +163,10 @@
       };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
-      # Read by the opencode wrapper script (runs as e-work / e-play),
-      # which sources this file to provide $LITELLM_MASTER_KEY.
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
+      # Per-consumer Bifrost keys; opencode and the son-of-anton instances
+      # source this for BIFROST_OPENCODE_VK / BIFROST_SOA_VK.
+      bifrost-keys = {
+        file = ../../secrets/bifrost-keys.age;
         group = "users";
         mode = "0440";
       };
@@ -179,9 +181,9 @@
       };
     })
     (lib.mkIf config.systemOptions.owner.v.enable {
-      # Same as the e-device block, for v-work / v-play.
-      litellm-master-key = {
-        file = ../../secrets/litellm-master-key.age;
+      # The son-of-anton home module sources this for BIFROST_SOA_VK.
+      bifrost-keys = {
+        file = ../../secrets/bifrost-keys.age;
         group = "users";
         mode = "0440";
       };

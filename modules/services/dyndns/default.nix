@@ -13,7 +13,7 @@ let
     "cache"
     "cloud"
     "docs"
-    "litellm"
+    "llm"
     "mc"
     "office"
     "ssh"

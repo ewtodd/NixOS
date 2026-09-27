@@ -30,9 +30,9 @@ let
     && config.Profile == "work";
   workProviderConfigPath = "/run/agenix/opencode-work-provider";
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
-    if [ -r /run/agenix/litellm-master-key ]; then
+    if [ -r /run/agenix/bifrost-keys ]; then
       set -a
-      . /run/agenix/litellm-master-key
+      . /run/agenix/bifrost-keys
       set +a
     fi
     ${lib.optionalString workProviderEnabled ''
@@ -102,17 +102,17 @@ in
     settings = {
       experimental.openTelemetry = false;
       enabled_providers = [
-        "litellm"
+        "bifrost"
         "deepseek"
       ];
 
-      model = "litellm/qwen3.8-27b";
-      small_model = "litellm/little-titles";
+      model = "bifrost/qwen3.8-27b";
+      small_model = "bifrost/little-titles";
       default_agent = "build";
 
       agent = {
         compaction = {
-          model = "litellm/qwen3.8-27b";
+          model = "bifrost/qwen3.8-27b";
         };
         build = {
           variant = "low";
@@ -124,7 +124,7 @@ in
           '';
         };
         plan = {
-          model = "litellm/qwen3.8-27b";
+          model = "bifrost/qwen3.8-27b";
           variant = "xhigh";
           description = "Plans and designs before acting. Deep thinking model (qwen3.8-27b).";
           permission = {
@@ -140,7 +140,7 @@ in
           '';
         };
         execute = {
-          model = "litellm/qwen3.8-27b";
+          model = "bifrost/qwen3.8-27b";
           variant = "low";
           description = "Executes a plan or task with the fast model (qwen3.8).";
           prompt = ''
@@ -153,7 +153,7 @@ in
           '';
         };
         explore = {
-          model = "litellm/qwen3.8-27b";
+          model = "bifrost/qwen3.8-27b";
           variant = "low";
           description = "Finds and reads code. Fast low-think qwen; returns file:line evidence.";
           permission = {
@@ -167,7 +167,7 @@ in
           '';
         };
         general = {
-          model = "litellm/qwen3.8-flash-next";
+          model = "bifrost/qwen3.8-flash-next";
           variant = "medium";
           description = "Runs self-contained multi-step tasks and returns a final report (qwen3.8-27b).";
           prompt = ''
@@ -177,7 +177,7 @@ in
           '';
         };
         reviewer = {
-          model = "litellm/qwen3.8-flash-next";
+          model = "bifrost/qwen3.8-flash-next";
           variant = "xhigh";
           description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU.";
           prompt = ''
@@ -195,7 +195,7 @@ in
             current repository, write an accurate commit message matching the existing style, and then 
             stage+commit them. Commit using your account: 
             son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>'';
-          model = "litellm/qwen3.8-27b";
+          model = "bifrost/qwen3.8-27b";
           variant = "low";
         };
       };
@@ -211,12 +211,14 @@ in
         };
       };
       provider = {
-        litellm = {
+        # The encrypted work-profile fragment must reference this key and the
+        # bifrost/... model ids (arrays it carries replace the base ones).
+        bifrost = {
           npm = "@ai-sdk/openai-compatible";
-          name = "LiteLLM";
+          name = "Bifrost";
           options = {
-            baseURL = "https://litellm.ethanwtodd.com/v1";
-            apiKey = "{env:LITELLM_MASTER_KEY}";
+            baseURL = "https://llm.ethanwtodd.com/v1";
+            apiKey = "{env:BIFROST_OPENCODE_VK}";
           };
           models = {
             "little-titles" = {

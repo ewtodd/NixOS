@@ -136,6 +136,26 @@
         "type": "github"
       }
     },
+    "bifrost": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790503847,
+        "narHash": "sha256-4TsKLamTssIagd+RZ85MWE13Ml93BtuR5roPeKMGmPI=",
+        "owner": "maximhq",
+        "repo": "bifrost",
+        "rev": "ed40d135e4dceef2a25a943744999ce96c2baaef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "maximhq",
+        "repo": "bifrost",
+        "type": "github"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -1213,6 +1233,7 @@
         "arxiv-mcp-server-src": "arxiv-mcp-server-src",
         "banshee-ucm-conf": "banshee-ucm-conf",
         "base16": "base16",
+        "bifrost": "bifrost",
         "colmena": "colmena",
         "dank-material-shell": "dank-material-shell",
         "danksearch": "danksearch",

@@ -14,11 +14,11 @@ in
     ./adguard
     ./backup
     ./bastion
+    ./bifrost
     ./deploy
     ./dyndns
     ./grafana
     ./jellyfin
-    ./litellm-proxy
     ./llama-swap
     ./llama-strix
     ./vllm
