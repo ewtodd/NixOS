@@ -778,7 +778,7 @@ with lib;
         alias = mkOption {
           type = types.str;
           default = "qwen3.8-flash-next";
-          description = "Model name reported on /v1/models (--alias); what litellm addresses.";
+          description = "Model name reported on /v1/models (--alias); what the gateway addresses.";
         };
         port = mkOption {
           type = types.port;
@@ -929,7 +929,7 @@ with lib;
           default = [ ];
         };
       };
-      services.litellmProxy.enable = mkEnableOption "LiteLLM OpenAI-compatible proxy (model routing for OpenAI-compatible clients like opencode)";
+      services.bifrost.enable = mkEnableOption "Bifrost AI gateway (model routing, per-consumer virtual keys, MCP gateway)";
       # One system service per account (the temple design): each instance runs AS its account with
       # SON_OF_ANTON_HOME=~/.son-of-anton, so Signal and CLI sessions share one state.db/config.yaml/writer.
       # All instances share one Signal number, separated by group id: signal-cli broadcasts every event over

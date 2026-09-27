@@ -32,7 +32,7 @@ in
       lanExpose = true;
       extraFlags = [
         "--distributed-timeout-seconds 90"
-        "--served-model-name Qwen3.8-27B"
+        "--served-model-name Qwen3.8-27B qwen3.8-27b"
       ];
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";

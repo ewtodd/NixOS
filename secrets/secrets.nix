@@ -45,9 +45,8 @@ in
     server-son-of-anton
     server-oracle
   ];
-  "litellm-master-key.age".publicKeys =
-    personal ++ [ server-son-of-anton ] ++ val ++ [ server-oracle ];
-  "litellm-deepseek-key.age".publicKeys = personal ++ [ server-oracle ];
+  "bifrost-env.age".publicKeys = personal ++ [ server-oracle ];
+  "bifrost-keys.age".publicKeys = personal ++ val ++ [ server-oracle ];
   "borg-passphrase.age".publicKeys = personal ++ [ server-e-desktop ];
   "son-of-anton-env.age".publicKeys = personal ++ [
     server-e-desktop

@@ -20,7 +20,7 @@ in
     services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.nodeExporter.enable = true;
-    services.litellmProxy.enable = true;
+    services.bifrost.enable = true;
     services.searxng = {
       enable = true;
       listenAddress = "0.0.0.0";

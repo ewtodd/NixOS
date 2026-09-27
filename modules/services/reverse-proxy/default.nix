@@ -8,7 +8,29 @@
 let
   anubisAi = "127.0.0.1:9001";
   anubisStatus = "127.0.0.1:9002";
-  anubisLlm = "127.0.0.1:9003";
+
+  # WAN sees only the API surfaces: /v1 (master/client keys), /friend (friend
+  # key, scoped to qwen3.8-27b) and /mcp (virtual keys with MCP grants; the
+  # friend key has none). All terminate at Bifrost (:4002); handle_path strips
+  # the /friend prefix before the upstream sees it. The dashboard, /api and
+  # /assets are LAN-only: private source ranges hit Bifrost directly (admin
+  # auth still applies), everyone else gets 404.
+  llmRoutes = ''
+    handle_path /friend/* {
+      reverse_proxy http://10.0.0.6:4002
+    }
+    @api path /v1* /mcp*
+    handle @api {
+      reverse_proxy http://10.0.0.6:4002
+    }
+    @lan remote_ip 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+    handle @lan {
+      reverse_proxy http://10.0.0.6:4002
+    }
+    handle {
+      respond "Not Found" 404
+    }
+  '';
 in
 {
   config = lib.mkIf config.systemOptions.services.reverseProxy.enable {
@@ -60,27 +82,14 @@ in
         }
       '';
 
-      # OpenAI-compatible API paths (/v1) are API-key-protected by LiteLLM
-      # itself, so they bypass anubis (clients can't solve browser challenges).
-      # The LiteLLM dashboard at / goes through anubis.
-      virtualHosts."litellm.ethanwtodd.com".extraConfig = ''
-        @api path /v1*
-        reverse_proxy @api http://10.0.0.6:4000
-        reverse_proxy http://${anubisLlm} {
-          header_up X-Real-IP {remote_host}
-        }
-      '';
+      # Gateway hostname (Bifrost :4002).
+      virtualHosts."llm.ethanwtodd.com".extraConfig = llmRoutes;
     };
 
     services.anubis.instances = {
       ai.settings = {
         TARGET = "http://10.0.0.6:8081";
         BIND = anubisAi;
-        BIND_NETWORK = "tcp";
-      };
-      llm.settings = {
-        TARGET = "http://10.0.0.6:4000";
-        BIND = anubisLlm;
         BIND_NETWORK = "tcp";
       };
       status.settings = {

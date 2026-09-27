@@ -129,7 +129,10 @@ in
     };
     services.son-of-anton = {
       enable = true;
-      environmentFiles = [ config.age.secrets.son-of-anton-env.path ];
+      environmentFiles = [
+        config.age.secrets.son-of-anton-env.path
+        config.age.secrets.bifrost-keys.path
+      ];
       environment = {
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
         SEARXNG_URL = "http://10.0.0.6:8888/search";
@@ -258,11 +261,11 @@ in
           provider = "custom";
         };
         custom_providers.custom = {
-          base_url = "http://10.0.0.6:4000/v1";
-          key_env = "LITELLM_MASTER_KEY";
+          base_url = "http://10.0.0.6:4002/v1";
+          key_env = "BIFROST_SOA_VK";
           models = {
             # Accepted reasoning_effort vocabulary for the Qwen3.8 models on
-            # this LiteLLM route (verified live: none/low/medium/xhigh are
+            # this route (verified live: none/low/medium/xhigh are
             # honoured; minimal/high/max/ultra 400). The custom provider
             # clamps any resolved effort to this set so a stronger request
             # never 400s; without it the widest OpenAI-compat set is assumed.
@@ -293,8 +296,8 @@ in
           agent_models = {
             critic = "qwen3.8-flash-next";
           };
-          base_url = "http://10.0.0.6:4000/v1";
-          api_key_env = "LITELLM_MASTER_KEY";
+          base_url = "http://10.0.0.6:4002/v1";
+          api_key_env = "BIFROST_SOA_VK";
           python = "${soaPhysicsPython}/bin/python3";
           sandbox = "bwrap";
           script_timeout = 900;
@@ -315,23 +318,23 @@ in
         };
         web.backend = "searxng";
         mcp_servers.oracle = {
-          url = "http://10.0.0.6:4000/mcp/";
-          headers.Authorization = "Bearer \${LITELLM_MASTER_KEY}";
+          url = "http://10.0.0.6:4002/mcp";
+          headers.Authorization = "Bearer \${BIFROST_SOA_VK}";
           enabled = true;
         };
         auxiliary = {
           title_generation = {
             provider = "custom";
             model = "little-titles";
-            base_url = "http://10.0.0.6:4000/v1";
-            key_env = "LITELLM_MASTER_KEY";
+            base_url = "http://10.0.0.6:4002/v1";
+            key_env = "BIFROST_SOA_VK";
             prompt_style = "chat";
           };
           compaction = {
             provider = "custom";
             model = "qwen3.8-flash-next"; # 524K window, the largest route you have
-            base_url = "http://10.0.0.6:4000/v1";
-            key_env = "LITELLM_MASTER_KEY";
+            base_url = "http://10.0.0.6:4002/v1";
+            key_env = "BIFROST_SOA_VK";
             reasoning_effort = "none"; # extraction, not reasoning; qwen route accepts none/low/medium/xhigh
             timeout = 300; # local model over a large prompt; 120s default is tight
           };

@@ -45,7 +45,7 @@ Hosts:
 - **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
 - **son-of-anton** - vLLM (Qwen3.8-27B, MXFP4/W4A8, TP=2) + llama.cpp Strix Halo (Qwen3.8-Flash-Next)
-- **oracle** - model router & tooling host (aarch64): llama-swap, LiteLLM MCP gateway,
+- **oracle** - model router & tooling host (aarch64): llama-swap, Bifrost MCP gateway,
   SearXNG, Open WebUI (ai.ethanwtodd.com)
 ```
 ## Important Notes
@@ -136,13 +136,14 @@ The fleet distributes inference and gateway services across dedicated hosts:
 - **oracle** (aarch64, 8 cores / 7 GB) hosts the model router and tooling:
   - **llama-swap** (Vulkan backend): little-titles (Little-Titles Q8_0, always
     resident — title generation for the son-of-anton accounts) + bge-m3 embeddings
-  - **LiteLLM** proxy (:4000): routes son-of-anton, opencode, and Open WebUI to
-    vLLM and llama-strix on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API
+  - **Bifrost** gateway (:4002): routes son-of-anton, opencode, and Open WebUI to
+    vLLM and llama-strix on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API;
+    per-consumer virtual keys (plus a scoped friend key and rate limits) live in `config.json`
   - **MCP gateway** (mounted at /mcp) aggregating stdio servers: `fetch` (URL
     retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`,
     and `context7`
   - **SearXNG** metasearch, backing the searxng MCP
-  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via litellm)
+  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via Bifrost)
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
 The hive (`colmena` / `colmenaHive` flake outputs) reuses each host's NixOS
