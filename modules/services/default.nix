@@ -18,6 +18,7 @@ in
     ./deploy
     ./dyndns
     ./grafana
+    ./http-tarpit
     ./jellyfin
     ./llama-swap
     ./llama-strix

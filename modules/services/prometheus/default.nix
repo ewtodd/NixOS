@@ -78,6 +78,16 @@
             }
           ];
         }
+        {
+          # HTTP tarpit behind Anubis: trapped connections, bytes and wasted time.
+          job_name = "http-tarpit";
+          static_configs = [
+            {
+              targets = [ "127.0.0.1:2113" ];
+              labels.instance = "nu";
+            }
+          ];
+        }
       ]
       # WireView Pro II GPU power monitor; the exporter runs on e-desktop
       # and the target is configured per host (see

@@ -1,8 +1,24 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
+let
+  # Dashboards are Nix attrsets; pkgs.formats.json renders them at build time
+  # and the directory of generated files is what Grafana provisions from.
+  dashboards = {
+    anton-storage = import ./dashboards/anton-storage.nix;
+    bot-defense = import ./dashboards/bot-defense.nix;
+    fleet-health = import ./dashboards/fleet-health.nix;
+  };
+  dashboardDir = pkgs.linkFarm "grafana-dashboards" (
+    lib.mapAttrsToList (name: dashboard: {
+      name = "${name}.json";
+      path = (pkgs.formats.json { }).generate "${name}.json" dashboard;
+    }) dashboards
+  );
+in
 {
   config = lib.mkIf config.systemOptions.services.grafana.enable {
     services.grafana = {
@@ -25,7 +41,7 @@
         "auth.anonymous".enabled = false;
         analytics.reporting_enabled = false;
 
-        dashboards.default_home_dashboard_path = "${./dashboards}/fleet-health.json";
+        dashboards.default_home_dashboard_path = "${dashboardDir}/fleet-health.json";
       };
 
       provision = {
@@ -43,7 +59,7 @@
         dashboards.settings.providers = [
           {
             name = "nixos";
-            options.path = ./dashboards;
+            options.path = dashboardDir;
             options.foldersFromFilesStructure = false;
           }
         ];

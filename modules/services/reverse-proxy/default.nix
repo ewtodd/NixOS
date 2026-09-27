@@ -8,6 +8,7 @@
 let
   anubisAi = "127.0.0.1:9001";
   anubisStatus = "127.0.0.1:9002";
+  anubisLlm = "127.0.0.1:9003";
 
   # WAN sees only the API surfaces: /v1 (master/client keys), /friend (friend
   # key, scoped to qwen3.8-27b) and /mcp (virtual keys with MCP grants; the
@@ -27,8 +28,18 @@ let
     handle @lan {
       reverse_proxy http://10.0.0.6:4002
     }
+    # Scripted clients announce no browser engine in their User-Agent, so skip
+    # the challenge and trap them immediately; browser-like clients get the
+    # proof-of-work first and then the tarpit.
+    @browser header_regexp User-Agent "(?i)(mozilla|webkit|gecko|chrome|crios|firefox|safari|edg/|opr/)"
+    @scripted not header_regexp User-Agent "(?i)(mozilla|webkit|gecko|chrome|crios|firefox|safari|edg/|opr/)"
+    handle @scripted {
+      reverse_proxy http://127.0.0.1:9004
+    }
     handle {
-      respond "Not Found" 404
+      reverse_proxy http://${anubisLlm} {
+        header_up X-Real-IP {remote_host}
+      }
     }
   '';
 in
@@ -84,6 +95,12 @@ in
 
       # Gateway hostname (Bifrost :4002).
       virtualHosts."llm.ethanwtodd.com".extraConfig = llmRoutes;
+
+      # Pure honeypot: nothing legitimate uses this name, so every request is
+      # a bot. No Anubis; straight into the tarpit.
+      virtualHosts."admin.ethanwtodd.com".extraConfig = ''
+        reverse_proxy http://127.0.0.1:9005
+      '';
     };
 
     services.anubis.instances = {
@@ -91,6 +108,15 @@ in
         TARGET = "http://10.0.0.6:8081";
         BIND = anubisAi;
         BIND_NETWORK = "tcp";
+      };
+      # Only the WAN catch-all hits this; DIFFICULTY 5 is above the default 4,
+      # so every challenge costs a scanner noticeably more CPU. Solving it only
+      # leads into the HTTP tarpit, which never finishes its response.
+      llm.settings = {
+        TARGET = "http://127.0.0.1:9004";
+        BIND = anubisLlm;
+        BIND_NETWORK = "tcp";
+        DIFFICULTY = 5;
       };
       status.settings = {
         TARGET = "http://127.0.0.1:3001";

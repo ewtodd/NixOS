@@ -930,6 +930,7 @@ with lib;
         };
       };
       services.bifrost.enable = mkEnableOption "Bifrost AI gateway (model routing, per-consumer virtual keys, MCP gateway)";
+      services.httpTarpit.enable = mkEnableOption "HTTP tarpit (endless slow-drip responses for WAN scanners)";
       # One system service per account (the temple design): each instance runs AS its account with
       # SON_OF_ANTON_HOME=~/.son-of-anton, so Signal and CLI sessions share one state.db/config.yaml/writer.
       # All instances share one Signal number, separated by group id: signal-cli broadcasts every event over
