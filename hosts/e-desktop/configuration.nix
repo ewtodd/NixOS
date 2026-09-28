@@ -144,7 +144,7 @@ in
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "qwen3.8-27b";
+          model = "Qwen3.8-27B";
           settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
@@ -160,7 +160,7 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
-          model = "qwen3.8-27b";
+          model = "Qwen3.8-27B";
           settings.gateway.single_user = true;
           settings = {
             platforms.signal.gateway_restart_notification = true;
@@ -187,7 +187,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "qwen3.8-27b";
+          model = "Qwen3.8-27B";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -207,9 +207,13 @@ in
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           git.github = config.age.secrets.soa-ricky-github-key.path;
-          model = "qwen3.8-27b";
+          model = "Qwen3.8-27B";
           settings = {
-            model.default = "qwen3.8-27b";
+            model.default = "Qwen3.8-27B";
+          };
+          settings.platforms.signal = {
+            require_mention = true;
+            history_backfill = true;
           };
           extraPackages = projectAgentTools;
           settings.gateway = {
@@ -232,9 +236,9 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          model = "qwen3.8-27b";
+          model = "Qwen3.8-27B";
           settings = {
-            model.default = "qwen3.8-27b";
+            model.default = "Qwen3.8-27B";
           };
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
@@ -256,7 +260,7 @@ in
 
       settings = {
         model = {
-          default = "qwen3.8-27b";
+          default = "Qwen3.8-27B";
           reasoning_effort = "medium";
           provider = "custom";
         };
@@ -264,12 +268,7 @@ in
           base_url = "http://10.0.0.6:4002/v1";
           key_env = "BIFROST_SOA_VK";
           models = {
-            # Accepted reasoning_effort vocabulary for the Qwen3.8 models on
-            # this route (verified live: none/low/medium/xhigh are
-            # honoured; minimal/high/max/ultra 400). The custom provider
-            # clamps any resolved effort to this set so a stronger request
-            # never 400s; without it the widest OpenAI-compat set is assumed.
-            "qwen3.8-27b" = {
+            "Qwen3.8-27B" = {
               reasoning_effort = "medium";
               reasoning_efforts = [
                 "none"
@@ -278,7 +277,7 @@ in
                 "xhigh"
               ];
             };
-            "qwen3.8-flash-next" = {
+            "Qwen3.8-Flash-Next" = {
               reasoning_effort = "medium";
               reasoning_efforts = [
                 "none"
@@ -290,11 +289,11 @@ in
           };
         };
         physics = {
-          model = "qwen3.8-27b";
-          coder_model = "qwen3.8-27b";
+          model = "Qwen3.8-27B";
+          coder_model = "Qwen3.8-27B";
           reasoning_effort = "medium";
           agent_models = {
-            critic = "qwen3.8-flash-next";
+            critic = "Qwen3.8-Flash-Next";
           };
           base_url = "http://10.0.0.6:4002/v1";
           api_key_env = "BIFROST_SOA_VK";
@@ -332,7 +331,7 @@ in
           };
           compaction = {
             provider = "custom";
-            model = "qwen3.8-flash-next"; # 524K window, the largest route you have
+            model = "Qwen3.8-Flash-Next"; # 524K window, the largest route you have
             base_url = "http://10.0.0.6:4002/v1";
             key_env = "BIFROST_SOA_VK";
             reasoning_effort = "none"; # extraction, not reasoning; qwen route accepts none/low/medium/xhigh
