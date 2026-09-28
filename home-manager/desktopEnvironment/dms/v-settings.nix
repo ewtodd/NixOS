@@ -156,12 +156,12 @@ in
     acLockTimeout = 600;
     acSuspendTimeout = 3600;
     acSuspendBehavior = 0;
-    acProfileName = "";
     batteryMonitorTimeout = 600;
     batteryLockTimeout = 300;
     batterySuspendTimeout = 1200;
-    batterySuspendBehavior = 0;
-    batteryProfileName = "";
+    batteryCriticalThreshold = 5;
+    batteryNotifyLow = true;
+    batteryLowNotificationType = 1;
     lockBeforeSuspend = true;
     loginctlLockIntegration = true;
     fadeToLockEnabled = true;

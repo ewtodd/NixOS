@@ -63,6 +63,9 @@ in
     batteryMonitorTimeout = 600;
     batteryLockTimeout = 300;
     batterySuspendTimeout = 1200;
+    batteryCriticalThreshold = 5;
+    batteryNotifyLow = true;
+    batteryLowNotificationType = 1;
     lockBeforeSuspend = true;
     fadeToLockGracePeriod = 10;
     runDmsMatugenTemplates = false;
