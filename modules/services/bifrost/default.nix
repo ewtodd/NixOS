@@ -6,17 +6,6 @@
   ...
 }:
 let
-  # Upstream ships the packaging (nix/packages/*.nix) and a NixOS module
-  # (nix/modules/bifrost.nix). Import the module file directly and build their
-  # UI derivation with our pkgs: their flake pins staging-next and overlays Go
-  # from source, while our lock already has go_1_27. The HTTP derivation is
-  # adapted in-repo (pkgs/bifrost-http.nix) to pin our vendor hash.
-  #
-  # Same trick as hardware.asahi.pkgs on oracle: import nixpkgs as a cross set
-  # (localSystem x86_64, crossSystem aarch64) so the derivation's build system
-  # is x86_64 and e-desktop compiles it natively instead of emulating aarch64.
-  # The UI is platform-independent JS, built by the build-platform set; only
-  # the Go binary is cross-compiled.
   buildPkgs =
     if pkgs.stdenv.hostPlatform.system == "aarch64-linux" then
       import pkgs.path {
@@ -34,10 +23,6 @@ let
       version = bifrostVersion;
     }).overrideAttrs
       (old: {
-        # Upstream's npmDepsHash was computed against their staging-next npm; ours
-        # resolves the lockfile to a different tree. Override the deps derivation
-        # directly (npmDepsHash alone is inert here). A mismatch prints the
-        # expected hash, so paste it here when the UI or nixpkgs moves.
         npmDeps = buildPkgs.buildPackages.fetchNpmDeps {
           name = "bifrost-ui-${bifrostVersion}-npm-deps";
           src = inputs.bifrost;
@@ -109,11 +94,7 @@ in
         };
 
         providers = {
-          # Custom openai-based provider rather than the standard vllm one:
-          # the standard provider registers keys under vllm_key_config's
-          # model_name and ignores models/aliases, so the logical name clients
-          # use never resolves.
-          vllm27b = {
+          vllm = {
             custom_provider_config = {
               base_provider_type = "openai";
               is_key_less = true;
@@ -127,7 +108,7 @@ in
               {
                 name = "qwen38-27b";
                 value = "";
-                models = [ "qwen3.8-27b" ];
+                models = [ "Qwen3.8-27B" ];
                 weight = 1.0;
               }
             ];
@@ -147,13 +128,13 @@ in
               {
                 name = "qwen38-flash-next";
                 value = "";
-                models = [ "qwen3.8-flash-next" ];
+                models = [ "Qwen3.8-Flash-Next" ];
                 weight = 1.0;
               }
             ];
           };
 
-          llamaswap = {
+          oracle = {
             custom_provider_config = {
               base_provider_type = "openai";
               is_key_less = true;
@@ -186,8 +167,6 @@ in
           };
         };
 
-        # Stdio servers exposed through /mcp. They are only reachable through a
-        # virtual key that lists them (mcp_configs).
         mcp.client_configs = [
           {
             name = "fetch";
@@ -246,23 +225,14 @@ in
         ];
 
         governance = {
-          # Dashboard/management API login. Admin credentials are never
-          # required on /v1; inference is guarded by virtual keys.
           auth_config = {
             is_enabled = true;
             admin_username = "env.BIFROST_ADMIN_USERNAME";
             admin_password = "env.BIFROST_ADMIN_PASSWORD";
           };
 
-          # Explicitly empty: with source_of_truth=config.json a missing
-          # section leaves stored rows alone, and older deploys seeded CEL
-          # routing rules that cannot compile in this build.
           routing_rules = [ ];
 
-          # Bare model names resolve to the single provider whose key `models`
-          # lists them; custom (openai-based) providers forward the request
-          # name verbatim and ignore aliases, so the upstreams must serve the
-          # same names clients send (vLLM gets both spellings).
           virtual_keys = [
             {
               id = "opencode";
@@ -293,20 +263,7 @@ in
               rate_limit_id = "friend-rpm";
               provider_configs = [
                 {
-                  provider = "vllm27b";
-                  allowed_models = [ "qwen3.8-27b" ];
-                  key_ids = [ "*" ];
-                }
-              ];
-            }
-            {
-              # Kept for local smoke tests.
-              id = "spike";
-              name = "spike";
-              value = "env.BIFROST_SPIKE_VK";
-              provider_configs = [
-                {
-                  provider = "vllm27b";
+                  provider = "vllm";
                   allowed_models = [ "qwen3.8-27b" ];
                   key_ids = [ "*" ];
                 }
@@ -325,8 +282,6 @@ in
       };
     };
 
-    # Second EnvironmentFile for the per-consumer virtual keys, appended to the
-    # module's single environmentFile.
     systemd.services.bifrost.serviceConfig.EnvironmentFile = lib.mkAfter [
       config.age.secrets.bifrost-keys.path
     ];
