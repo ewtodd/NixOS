@@ -43,7 +43,7 @@ buildGoModule {
 
   modRoot = "transports";
   subPackages = [ "bifrost-http" ];
-  vendorHash = "sha256-ZFjT1gz8EhqM976sN0REpt1xscqZgdV8zhk/HRQ0cxo=";
+  vendorHash = "sha256-gHcX3U+C+zQfDHPQBOcYrRFZVJ+BDbqvVSRcqyPDgxw=";
 
   # Forward local servers' own window fields (vLLM max_model_len, llama.cpp
   # meta.n_ctx); the vendoring FOD inherits this, so vendorHash follows the diff.

@@ -108,7 +108,7 @@ in
               {
                 name = "qwen38-27b";
                 value = "";
-                models = [ "Qwen3.8-27B" ];
+                models = [ "qwen3.8-27b" ];
                 weight = 1.0;
               }
             ];
@@ -128,7 +128,7 @@ in
               {
                 name = "qwen38-flash-next";
                 value = "";
-                models = [ "Qwen3.8-Flash-Next" ];
+                models = [ "qwen3.8-flash-next" ];
                 weight = 1.0;
               }
             ];

@@ -32,7 +32,7 @@ in
       lanExpose = true;
       extraFlags = [
         "--distributed-timeout-seconds 90"
-        "--served-model-name Qwen3.8-27B"
+        "--served-model-name qwen3.8-27b"
       ];
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
@@ -63,8 +63,6 @@ in
       speculative = true;
       speculativeMethod = "dflash";
       speculativeTokens = 4;
-      # tcclaviger/Qwen3.8-27B-DFlash2-FP8. Its 262144 max_position_embeddings
-      # is what vLLM clamps the draft context to.
       draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
       draftAttentionBackend = "TRITON_ATTN";
       draftTensorParallelSize = 2;
@@ -77,11 +75,6 @@ in
       reasoningParser = "qwen3";
       languageModelOnly = false;
     };
-    # Qwen3.8-Next-Flash on the Strix Halo iGPU via pwilkin's llama.cpp
-    # strix-halo branch (replaces antirez/ds4 DeepSeek-V4). Weights are the
-    # ilintar IQ4_NL PROJFIX shards plus the shared-embedding MTP draft. The
-    # Swift-1.5 set stays under /scratch/llama-cache/swift-1.5-flash-next-strix-halo
-    # (target, draft and mmproj) for a later retry.
     services.llamaStrix = {
       enable = true;
       lanExpose = true;
