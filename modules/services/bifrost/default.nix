@@ -43,6 +43,33 @@ let
 
   streamIdleTimeout = 300;
 
+  # The friend key answers only during ricky's active hours
+  # (hosts/e-desktop, gateway.active_hours = [ 20 7 ]): 20:00-07:00
+  # America/Chicago, wrapping midnight. A timer keeps the key's is_active in
+  # step with the clock; the key's description is what the refusal says.
+  friendActiveHours = {
+    start = 20;
+    end = 7;
+    timezone = "America/Chicago";
+  };
+
+  friendKeyToggle = pkgs.writeShellScript "bifrost-friend-key-toggle" ''
+    set -eu
+    hour=$(TZ=${friendActiveHours.timezone} ${lib.getExe' pkgs.coreutils "date"} +%-H)
+    if [ "$hour" -ge ${toString friendActiveHours.start} ] || [ "$hour" -lt ${toString friendActiveHours.end} ]; then
+      is_active=true
+    else
+      is_active=false
+    fi
+    exec ${lib.getExe pkgs.curl} \
+      --fail --silent --show-error \
+      --user "$BIFROST_ADMIN_USERNAME:$BIFROST_ADMIN_PASSWORD" \
+      --request PUT \
+      --header "Content-Type: application/json" \
+      --data "{\"is_active\":$is_active}" \
+      http://127.0.0.1:4002/api/governance/virtual-keys/friend
+  '';
+
   arxiv-mcp-server = pkgs.callPackage ./pkgs/arxiv-mcp-server.nix {
     src = inputs.arxiv-mcp-server-src;
   };
@@ -52,7 +79,7 @@ let
   ]);
 
   # Owner and friend instances of the same gateway; the friend key is scoped to
-  # the 27B by provider allowlist and a request-rate limit.
+  # the 27B by provider allowlist, rate-limited, and off outside ricky's hours.
   mcpClients = [
     "fetch"
     "searxng"
@@ -265,6 +292,11 @@ in
               id = "friend";
               name = "friend";
               value = "env.BIFROST_FRIEND_VK";
+              # Ships off and is switched on by the timer below, so a dead
+              # timer fails closed. The description is surfaced verbatim as
+              # the 403; see the patched governance refusal.
+              description = "The friend key is only active 20:00-07:00 America/Chicago (8pm-7am).";
+              is_active = false;
               rate_limit_id = "friend-rpm";
               provider_configs = [
                 {
@@ -290,6 +322,40 @@ in
     systemd.services.bifrost.serviceConfig.EnvironmentFile = lib.mkAfter [
       config.age.secrets.bifrost-keys.path
     ];
+
+    # Bifrost has no time-of-day gating, so the friend window is enforced from
+    # outside. The key ships inactive (config.json is the source of truth), so
+    # a dead timer fails closed; the timer turns it on inside the window and
+    # re-asserts periodically because every Bifrost start resets it off.
+    systemd.services.bifrost-friend-key = {
+      description = "Set the Bifrost friend virtual key to match ricky's active hours";
+      after = [ "bifrost.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = friendKeyToggle;
+        EnvironmentFile = [ config.age.secrets.bifrost-env.path ];
+        NoNewPrivileges = true;
+        PrivateTmp = true;
+        ProtectHome = true;
+        ProtectSystem = "strict";
+      };
+    };
+
+    systemd.timers.bifrost-friend-key = {
+      description = "Timer for the Bifrost friend active-hours toggle";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        # Exact boundaries in the same zone the script computes in; the
+        # periodic elapse is the repair path for a mid-window service start.
+        OnCalendar = [
+          "*-*-* ${toString friendActiveHours.start}:00:00 ${friendActiveHours.timezone}"
+          "*-*-* ${toString friendActiveHours.end}:00:00 ${friendActiveHours.timezone}"
+        ];
+        OnBootSec = "1min";
+        OnUnitActiveSec = "5min";
+        Unit = "bifrost-friend-key.service";
+      };
+    };
 
     environment.etc."bifrost/searxng_mcp.py".source = ./searxng_mcp.py;
   };

@@ -1,0 +1,91 @@
+diff --git a/core/schemas/grant.go b/core/schemas/grant.go
+index 677acdc26..6efd33815 100644
+--- a/core/schemas/grant.go
++++ b/core/schemas/grant.go
+@@ -111,6 +111,10 @@ type Permit interface {
+ 	Name() string
+ 	IsActive() bool
+ 	IsExpired() bool
++	// InactiveReason is what a refusal says when the permit is inactive,
++	// replacing the generic "<kind> is inactive". Empty means the source has
++	// nothing to add; a virtual key fills it from its description.
++	InactiveReason() string
+ 
+ 	// ProviderPermits is every provider the permit allows, with what each allows.
+ 	ProviderPermits() []ProviderPermit
+diff --git a/framework/grant/permit.go b/framework/grant/permit.go
+index 753baa0b7..d8193892b 100644
+--- a/framework/grant/permit.go
++++ b/framework/grant/permit.go
+@@ -81,6 +81,9 @@ type Permit struct {
+ 	name       string
+ 	isActive   bool
+ 	isExpired  bool
++	// inactiveReason is the explanation a refusal gives when the permit is
++	// inactive. Empty keeps the generic "<kind> is inactive".
++	inactiveReason string
+ 
+ 	providerPermits   []schemas.ProviderPermit
+ 	mcpPermits        []schemas.MCPPermit
+@@ -99,6 +102,12 @@ func WithAllowAllProviders(allow bool) PermitOption {
+ 	return func(p *Permit) { p.allowAllProviders = allow }
+ }
+ 
++// WithInactiveReason sets what a refusal says when the permit is inactive, so a source that can
++// explain itself (a virtual key's description, say) replaces the generic "<kind> is inactive".
++func WithInactiveReason(reason string) PermitOption {
++	return func(p *Permit) { p.inactiveReason = reason }
++}
++
+ // NewPermit builds a Permit. See schemas.Permit for what each value means. The lists are deep
+ // copied, down to each entry's own slices and its Weight pointer, so a resolver that keeps its
+ // slices (or the value behind a Weight pointer) cannot alter what an attempt was admitted under.
+@@ -188,6 +197,14 @@ func (p *Permit) IsExpired() bool {
+ 	return p != nil && p.isExpired
+ }
+ 
++// InactiveReason implements schemas.Permit.
++func (p *Permit) InactiveReason() string {
++	if p == nil {
++		return ""
++	}
++	return p.inactiveReason
++}
++
+ // ProviderPermits implements schemas.Permit. A copy, not the permit's own slice: the permit is a
+ // snapshot for the whole attempt, read by every consumer that asks what it permits, and a caller
+ // mutating what it got back must not change what the next reader sees.
+diff --git a/plugins/governance/main.go b/plugins/governance/main.go
+index 726e5f3b1..014e47e07 100644
+--- a/plugins/governance/main.go
++++ b/plugins/governance/main.go
+@@ -864,9 +864,15 @@ func unusablePermit(access schemas.Access) *EvaluationResult {
+ 			continue
+ 		}
+ 		if !permit.IsActive() {
++			reason := fmt.Sprintf("%s is inactive", grant.PermitType(permit.Type()).PrettyString())
++			// A source may explain itself; a virtual key carries the note in
++			// its description so a switched-off key can give the reason.
++			if explanation := strings.TrimSpace(permit.InactiveReason()); explanation != "" {
++				reason = explanation
++			}
+ 			return &EvaluationResult{
+ 				Decision: DecisionAccessBlocked,
+-				Reason:   fmt.Sprintf("%s is inactive", grant.PermitType(permit.Type()).PrettyString()),
++				Reason:   reason,
+ 			}
+ 		}
+ 		if permit.IsExpired() {
+diff --git a/plugins/governance/store.go b/plugins/governance/store.go
+index f406b2d95..3a4ad8952 100644
+--- a/plugins/governance/store.go
++++ b/plugins/governance/store.go
+@@ -1494,7 +1494,7 @@ func (gs *LocalGovernanceStore) permitForVirtualKey(ctx context.Context, vk *con
+ 	mcpPermits := MCPPermitsFromAccumulator(acc, "virtual key", vk.Name, gs.mcpClientNames(), gs.logger)
+ 	mcpPermits = AppendMCPPermitsAllowedByDefault(mcpPermits, acc.ConfiguredClients(), allowedByDefaultClients)
+ 
+-	return grant.NewPermit(grant.PermitVirtualKey, vk.ID, vk.Name, vk.IsActiveValue(), vk.IsExpiredAt(time.Now().UTC()), providerPermits, mcpPermits, grant.WithAllowAllProviders(vk.AllowAllProviders))
++	return grant.NewPermit(grant.PermitVirtualKey, vk.ID, vk.Name, vk.IsActiveValue(), vk.IsExpiredAt(time.Now().UTC()), providerPermits, mcpPermits, grant.WithAllowAllProviders(vk.AllowAllProviders), grant.WithInactiveReason(vk.Description))
+ }
+ 
+ // virtualMCPByID returns a cached Virtual MCP definition, or nil if none is cached for the id.

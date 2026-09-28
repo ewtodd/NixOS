@@ -138,7 +138,8 @@ The fleet distributes inference and gateway services across dedicated hosts:
     resident — title generation for the son-of-anton accounts) + bge-m3 embeddings
   - **Bifrost** gateway (:4002): routes son-of-anton, opencode, and Open WebUI to
     vLLM and llama-strix on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API;
-    per-consumer virtual keys (plus a scoped friend key and rate limits) live in `config.json`
+    per-consumer virtual keys (plus a friend key scoped to the 27B and limited
+    to ricky's 20:00-07:00 hours) live in `config.json`
   - **MCP gateway** (mounted at /mcp) aggregating stdio servers: `fetch` (URL
     retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`,
     and `context7`
