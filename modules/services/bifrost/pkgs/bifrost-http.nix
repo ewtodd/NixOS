@@ -43,13 +43,10 @@ buildGoModule {
 
   modRoot = "transports";
   subPackages = [ "bifrost-http" ];
-  vendorHash = "sha256-GM3tV2hts0Xr+NKw/1Mu2o+4jjh6JDw0KTCqDDjv6JU=";
+  vendorHash = "sha256-ZFjT1gz8EhqM976sN0REpt1xscqZgdV8zhk/HRQ0cxo=";
 
-  # Teach the OpenAI provider to forward the context window from the field
-  # names local inference servers actually use (vLLM: max_model_len,
-  # llama.cpp: meta.n_ctx), so the client can self-discover the window
-  # without a per-endpoint upstream map. Applies to core/ (a replace-local,
-  # non-vendored module) so vendorHash is unaffected.
+  # Forward local servers' own window fields (vLLM max_model_len, llama.cpp
+  # meta.n_ctx); the vendoring FOD inherits this, so vendorHash follows the diff.
   patches = [ ./bifrost-http-context-window.diff ];
 
   doCheck = false;
