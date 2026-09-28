@@ -66,6 +66,8 @@ in
       draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
       draftAttentionBackend = "TRITON_ATTN";
       draftTensorParallelSize = 2;
+      # Draft accepts 524288 only with patch_dflash_draft_rope (see pkgs/).
+      draftMaxModelLen = 524288;
       compilationConfig = {
         cudagraph_mode = "PIECEWISE";
       };

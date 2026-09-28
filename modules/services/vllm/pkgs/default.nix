@@ -99,6 +99,7 @@ let
       ''
         mkdir -p $out
         cp $src/patch_*.py $src/install_radiance_hooks.py $src/_patchlib.py $out/
+        cp ${./patch_dflash_draft_rope.py} $out/patch_dflash_draft_rope.py
         chmod u+w $out/*.py
         for f in $out/*.py; do
           substituteInPlace $f --replace-quiet \
@@ -147,6 +148,9 @@ let
     "patch_dflash_logits_cache_stride"
     "patch_dflash_w4"
     "patch_dflash_selector_topk"
+    # Local addition (not from the upstream image): lift a DFlash draft's
+    # positional ceiling so its rope cache covers maxModelLen.
+    "patch_dflash_draft_rope"
     "patch_gdn_metadata"
     "patch_gdn_shared_build"
     "patch_topk_triton_rows"
