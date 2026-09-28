@@ -45,9 +45,17 @@ buildGoModule {
   subPackages = [ "bifrost-http" ];
   vendorHash = "sha256-gHcX3U+C+zQfDHPQBOcYrRFZVJ+BDbqvVSRcqyPDgxw=";
 
-  # Forward local servers' own window fields (vLLM max_model_len, llama.cpp
-  # meta.n_ctx); the vendoring FOD inherits this, so vendorHash follows the diff.
-  patches = [ ./bifrost-http-context-window.diff ];
+  # Both diffs land in the vendored tree (governance is a local replace), so
+  # the vendorHash above follows them and must be re-pinned when either changes:
+  #  - forward local servers' own window fields (vLLM max_model_len, llama.cpp
+  #    meta.n_ctx) so the context probe sees them;
+  #  - let a virtual key's description explain a refusal when the key is
+  #    inactive, which is how the friend key's active-hours message reaches
+  #    the client (the Bifrost module toggles its is_active on a timer).
+  patches = [
+    ./bifrost-http-context-window.diff
+    ./bifrost-vk-inactive-message.diff
+  ];
 
   doCheck = false;
 
