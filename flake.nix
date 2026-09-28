@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
-    nixpkgs-good.url = "github:NixOS/nixpkgs/ced43465ad23b2fdea055be721e79895cbf96c28";
     wireview-linux = {
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,9 +15,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Upstream ships its own NixOS module and package derivations; see
-    # modules/services/bifrost. follow nixpkgs so their staging-next pin is
-    # never fetched.
     bifrost = {
       url = "github:maximhq/bifrost";
       inputs.nixpkgs.follows = "nixpkgs";

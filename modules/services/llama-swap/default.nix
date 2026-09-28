@@ -23,20 +23,11 @@ let
     pkg.override {
       llamaVersion = llamaCppVersion;
     };
-  # Pending llama.cpp PR #27311 (scheduler UMA ring buffer, supersedes #25863): without it, Gemma 4 on the
-  # Strix Halo iGPU hangs onto the ROCm_Host compute path, corrupts long prompts and loops on <unused49>.
-  # Applies cleanly to the pinned rev; remove once merged upstream and the input is updated (sha256 fails loudly).
-  unused49Fix = pkgs.fetchpatch {
-    url = "https://patch-diff.githubusercontent.com/raw/ggml-org/llama.cpp/pull/27311.diff";
-    sha256 = "sha256-3CBIiFPyC4C6+qXPkcTIqaR/W9An4JMDA4VA6+NiecE=";
-    name = "gemma4-scheduler-uma-ring-pull-27311.patch";
-  };
 
   stampedLlama =
     pkg:
     (versionedLlama pkg).overrideAttrs (
       finalAttrs: oldAttrs: {
-        #patches = (oldAttrs.patches or [ ]) ++ [ unused49Fix ];
         postInstall = (oldAttrs.postInstall or "") + ''
           mkdir -p $out/nix-support
           echo "${llamaCppVersion}" > $out/nix-support/llama-cpp-version
@@ -118,6 +109,7 @@ let
           "--batch-size 2048"
           "--ubatch-size 512"
           "--n-gpu-layers ${toString embedding.gpuLayers}"
+          "--parallel 1"
           "--host 127.0.0.1 --port ${toString embedding.port}"
           "--no-webui"
         ]
