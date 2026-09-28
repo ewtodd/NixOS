@@ -107,7 +107,7 @@ let
           "--pooling ${embedding.pooling}"
           "--ctx-size ${toString embedding.ctxSize}"
           "--batch-size 2048"
-          "--ubatch-size 512"
+          "--ubatch-size 2048"
           "--n-gpu-layers ${toString embedding.gpuLayers}"
           "--parallel 1"
           "--host 127.0.0.1 --port ${toString embedding.port}"
