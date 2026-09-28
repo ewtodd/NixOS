@@ -41,6 +41,8 @@ let
   sonOfAntonStrix = "http://10.0.0.5:8050"; # llama.cpp strix-halo, Qwen3.8-Flash-Next on the iGPU
   oracleSwap = "http://10.0.0.6:8080"; # llama-swap on this host
 
+  streamIdleTimeout = 300;
+
   arxiv-mcp-server = pkgs.callPackage ./pkgs/arxiv-mcp-server.nix {
     src = inputs.arxiv-mcp-server-src;
   };
@@ -103,6 +105,7 @@ in
               base_url = sonOfAntonVllm;
               allow_private_network = true;
               default_request_timeout_in_seconds = 1800;
+              stream_idle_timeout_in_seconds = streamIdleTimeout;
             };
             keys = [
               {
@@ -123,6 +126,7 @@ in
               base_url = sonOfAntonStrix;
               allow_private_network = true;
               default_request_timeout_in_seconds = 1800;
+              stream_idle_timeout_in_seconds = streamIdleTimeout;
             };
             keys = [
               {
@@ -143,6 +147,7 @@ in
               base_url = oracleSwap;
               allow_private_network = true;
               default_request_timeout_in_seconds = 1800;
+              stream_idle_timeout_in_seconds = streamIdleTimeout;
             };
             keys = [
               {
