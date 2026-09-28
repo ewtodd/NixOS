@@ -78,7 +78,6 @@ in
   networking.hostName = "oracle";
   system.stateVersion = "26.11";
 
-  # 8 cores, 7 GB: default max-jobs=auto x cores=0 thrashes swap.
   nix.settings = {
     max-jobs = 2;
     cores = 4;

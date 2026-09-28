@@ -133,7 +133,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
 - **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
   successor to temple-server: one system service per account on a shared Signal
   number, and each account's CLI shares its service's session state
-- **oracle** (aarch64, 8 cores / 7 GB) hosts the model router and tooling:
+- **oracle** (aarch64, M2 Mac Mini 8 cores / 8 GB) hosts the model router and tooling:
   - **llama-swap** (Vulkan backend): little-titles (Little-Titles Q8_0, always
     resident — title generation for the son-of-anton accounts) + bge-m3 embeddings
   - **Bifrost** gateway (:4002): routes son-of-anton, opencode, and Open WebUI to
