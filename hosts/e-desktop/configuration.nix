@@ -263,20 +263,6 @@ in
           default = "Qwen3.8-27B";
           reasoning_effort = "medium";
           provider = "custom";
-          # Operator-declared routing table for the context probe. Bifrost
-          # (http://10.0.0.6:4002/v1) strips the upstream window from /v1/models
-          # for key-less custom providers, so the agent can't self-discover the
-          # context length. This maps each gateway model id / id-prefix to the
-          # inference server's own base URL, which DOES expose its window
-          # (vLLM: max_model_len; llama.cpp: meta.n_ctx). agent/model_metadata.py
-          # reads this from model.upstream_map on the context-resolution path.
-          # Values include /v1 because the probe appends /models and vLLM serves
-          # /v1/models only (root /models is 404).
-          upstream_map = {
-            "vllm/" = "http://10.0.0.5:8100/v1";
-            "strix/" = "http://10.0.0.5:8050/v1";
-            "oracle/" = "http://10.0.0.5:8080/v1";
-          };
         };
         custom_providers.custom = {
           base_url = "http://10.0.0.6:4002/v1";
