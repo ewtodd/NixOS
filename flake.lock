@@ -1274,11 +1274,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790560979,
-        "narHash": "sha256-5D5JTzM2l2gexpvT2e/Mh2vgoXjSdRVOm3rIjFNlrNo=",
+        "lastModified": 1790563011,
+        "narHash": "sha256-QoIU76F0Ik8uGl4lTJRX7QiUuPEvNZ5mzrVCIdOq+sE=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "a9aebaaeac0ab5d5216d0a5c00b82ac14224a17f",
+        "rev": "379774cda766f2b02a7d0904ab7684b956d4247f",
         "type": "github"
       },
       "original": {
