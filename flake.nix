@@ -73,19 +73,8 @@
     llama-cpp = {
       url = "github:ggml-org/llama.cpp";
     };
-    # pwilkin/llama.cpp `strix-halo` integration branch, pinned to the commit
-    # https://pwilkin.github.io/strix-halo/ install.sh pins (llama_repo_commit).
-    # b0f31f58 carries the MTP+vision QSA window fix and compiles the per-kernel
-    # LLAMA_* gates in; install.sh no longer exports them.
-    llama-cpp-strix-halo = {
-      url = "github:pwilkin/llama.cpp/b0f31f5876ef3856b55f5bb88072cc96e5effafe";
-      flake = false;
-    };
-    # pwilkin/rocm-systems `ilintar-experiments`: retained-PM4 command lists for
-    # HIP graphs (ROCr + CLR), pinned to install.sh's rocm_repo_commit.
-    rocm-systems-strix-halo = {
-      url = "github:pwilkin/rocm-systems/7dda3ac6cfe6bbe0b7f08c23a67cfa118d8641a1";
-      flake = false;
+    gufo = {
+      url = "github:gufo-org/gufo/eb915840ffb62a8ec4b5c1adb41b04b5c1c75892";
     };
     libr4d-src = {
       url = "git+https://codeberg.org/StillDeadcode/libr4d?rev=e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7";
@@ -329,21 +318,6 @@
         in
         {
           neovim = mkNeovim;
-          inherit
-            (import ./modules/services/llama-strix/pkgs {
-              pkgs = import nixpkgs {
-                system = "x86_64-linux";
-                config.allowUnfree = true;
-              };
-              llamaCppSrc = inputs.llama-cpp-strix-halo;
-              rocmSystemsSrc = inputs.rocm-systems-strix-halo;
-            })
-            rocmSdk
-            rocrRuntime
-            hipClr
-            llamaCpp
-            runtimeCheck
-            ;
           vllm-torch = vllmStack.torch;
           vllm-aiter = vllmStack.aiter;
           vllm-libr4d = vllmStack.libr4d;

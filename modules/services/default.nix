@@ -21,7 +21,7 @@ in
     ./http-tarpit
     ./jellyfin
     ./llama-swap
-    ./llama-strix
+    ./gufo-strix
     ./vllm
     ./minecraft
     ./nextcloud

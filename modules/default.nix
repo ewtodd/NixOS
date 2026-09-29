@@ -755,156 +755,67 @@ with lib;
           default = [ ];
         };
       };
-      services.llamaStrix = {
-        enable = mkEnableOption "llama.cpp (pwilkin strix-halo branch) server on the Strix Halo iGPU";
-        lanExpose = mkEnableOption "expose the llama-strix server on the LAN (bind 0.0.0.0 + open firewall)";
+      services.gufoStrix = {
+        enable = mkEnableOption "gufo Strix Halo inference server on the gfx1151 iGPU";
+        lanExpose = mkEnableOption "expose the gufo-strix server on the LAN (bind 0.0.0.0 + open firewall)";
         model = mkOption {
           type = types.str;
-          example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/Qwen3.8-Flash-Next-IQ4_NL-PROJFIX-00001-of-00009.gguf";
+          example = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
           description = "Absolute path to the main GGUF (first shard for split models).";
         };
-        draftModel = mkOption {
+        mtpModel = mkOption {
           type = types.nullOr types.str;
           default = null;
-          example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
-          description = "Absolute path to the MTP draft GGUF (--spec-type draft-mtp). Null disables speculative decoding.";
+          example = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
+          description = "MTP draft sidecar (--speculative mtp). Null disables speculative decoding.";
         };
         mmproj = mkOption {
           type = types.nullOr types.str;
           default = null;
-          example = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mmproj-Qwen3.8-Flash-Next-bf16.gguf";
-          description = "Multimodal projector GGUF (--mmproj, placed on ROCm0). Null serves text only.";
+          example = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
+          description = "Vision projector GGUF (--mmproj). Null serves text only.";
         };
         alias = mkOption {
           type = types.str;
           default = "qwen3.8-flash-next";
-          description = "Model name reported on /v1/models (--alias); what the gateway addresses.";
+          description = "Model name reported on /v1/models (--served-model-name).";
         };
         port = mkOption {
           type = types.port;
           default = 8050;
         };
-        ctxSize = mkOption {
+        sessions = mkOption {
           type = types.ints.positive;
-          default = 65536;
-          description = "Context size (-c). The upstream launcher default.";
-        };
-        batchSize = mkOption {
-          type = types.ints.positive;
-          default = 16384;
-          description = "Logical batch (-b). 16384 sends a whole prompt as one batch, which is the tuned prefill path.";
-        };
-        ubatchSize = mkOption {
-          type = types.ints.positive;
-          default = 16384;
+          default = 3;
           description = ''
-            Physical batch (-ub). 24576 measures the same within error but reserves
-            ~8 GB more compute buffer, which on a unified-memory part competes with weights.
+            Preallocated GPU request sessions (--sessions). Each session reserves its
+            full context up front; a 128 GiB Strix Halo fits three MTP sessions at
+            262144 or four AR sessions.
           '';
         };
-        parallel = mkOption {
+        context = mkOption {
           type = types.ints.positive;
-          default = 1;
-          description = "Concurrent slots (--parallel).";
-        };
-        # separate options to allow for asymmetric quant (as llamaSwap.models)
-        kQuant = mkOption {
-          type = types.enum [
-            "f32"
-            "f16"
-            "bf16"
-            "q8_0"
-            "q4_0"
-            "q4_1"
-            "iq4_nl"
-            "q5_0"
-            "q5_1"
-          ];
-          default = "f16";
-          description = "i.e. --cache-type-k f16 (the branch's direct-indices sparse path asserts f16 K/V)";
-        };
-        vQuant = mkOption {
-          type = types.enum [
-            "f32"
-            "f16"
-            "bf16"
-            "q8_0"
-            "q4_0"
-            "q4_1"
-            "iq4_nl"
-            "q5_0"
-            "q5_1"
-          ];
-          default = "f16";
-          description = "i.e. --cache-type-v f16 (the branch's direct-indices sparse path asserts f16 K/V)";
-        };
-        kvUnified = mkOption {
-          type = types.bool;
-          default = false;
+          default = 262144;
           description = ''
-            One KV pool shared by all slots (--kv-unified) instead of one stream per
-            slot. On this branch every sparse-attention memory bound (512-query
-            strips, block selection) requires a single stream, so this is the only
-            way to run more than one slot without the prompt-processing scratch
-            buffer growing to n_kv x ubatch x slots f32 (tens of GB). Per-slot
-            context is then min(ctxSize, n_ctx_train / ctxTrainOverride).
+            Context tokens per session (--context). Flash-Next's native context is
+            262144 and gufo rejects larger values (no YaRN support).
           '';
         };
-        draftNMax = mkOption {
-          type = types.ints.positive;
-          default = 2;
-          description = "Max MTP draft tokens per step (--spec-draft-n-max).";
-        };
-        ropeScaling = mkOption {
+        think = mkOption {
           type = types.nullOr (
             types.enum [
-              "none"
-              "linear"
-              "yarn"
+              "on"
+              "off"
+              "auto"
             ]
           );
           default = null;
-          description = "RoPE frequency scaling method (--rope-scaling). Null leaves the model default.";
+          description = "Reasoning mode (--think). Null keeps the model default.";
         };
-        ropeScale = mkOption {
-          type = types.nullOr types.numbers.positive;
-          default = null;
-          example = 2;
-          description = "RoPE context scaling factor (--rope-scale); 1/freq-scale. E.g. 2 takes a 262144-native model to 524288.";
-        };
-        yarnOrigCtx = mkOption {
-          type = types.nullOr types.ints.positive;
-          default = null;
-          example = 262144;
-          description = "YaRN original (native) context size (--yarn-orig-ctx). Null lets llama.cpp read it from the model.";
-        };
-        modelArch = mkOption {
-          type = types.str;
-          default = "qwen4exp";
-          description = "GGUF architecture prefix of the model (general.architecture); used to address its metadata keys.";
-        };
-        ctxTrainOverride = mkOption {
-          type = types.nullOr types.ints.positive;
-          default = null;
-          example = 524288;
-          description = ''
-            Override the model's declared training context
-            (--override-kv <modelArch>.context_length=int:N). The server caps every
-            slot at n_ctx_train (tools/server: n_ctx_slot = min(n_ctx_seq, n_ctx_train)),
-            so a YaRN-extended context is silently unusable without this. Set
-            yarnOrigCtx explicitly alongside it, since YaRN's default original
-            context is the (now overridden) n_ctx_train.
-          '';
-        };
-        retainedPm4 = mkOption {
-          type = types.bool;
-          default = true;
-          description = ''
-            ENABLE_RETAINED_PM4 in the upstream launcher: run HIP graphs on the
-            retained-PM4 ROCr/HIP runtime (pwilkin/rocm-systems). Off mirrors the
-            launcher's fallback and disables ggml graphs entirely
-            (GGML_CUDA_DISABLE_GRAPHS=1). Per the author this only affects decode.
-          '';
+        draftTokens = mkOption {
+          type = types.ints.positive;
+          default = 7;
+          description = "Maximum speculative MTP draft tokens evaluated per step (--draft-tokens).";
         };
         user = mkOption {
           type = types.str;
@@ -915,14 +826,13 @@ with lib;
           default = "2";
           description = ''
             HIP_VISIBLE_DEVICES. On son-of-anton the two R9700s are 0,1 (owned by
-            vLLM) and the Strix Halo iGPU (gfx1151) is 2; with only it visible the
-            server addresses it as ROCm0.
+            vLLM) and the Strix Halo iGPU (gfx1151) is 2.
           '';
         };
         extraEnv = mkOption {
           type = types.attrsOf types.str;
           default = { };
-          description = "Extra environment for llama-server; overrides the branch's kernel gates if keys collide.";
+          description = "Extra environment for gufo serve; merged last.";
         };
         extraFlags = mkOption {
           type = types.listOf types.str;
