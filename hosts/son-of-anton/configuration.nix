@@ -81,7 +81,7 @@ in
       model = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
       mtpModel = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
       mmproj = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
-      sessions = 3;
+      sessions = 2;
       context = 262144;
       port = 8050;
     };
