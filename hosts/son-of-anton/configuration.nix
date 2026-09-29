@@ -75,20 +75,15 @@ in
       reasoningParser = "qwen3";
       languageModelOnly = false;
     };
-    services.llamaStrix = {
+    services.gufoStrix = {
       enable = true;
       lanExpose = true;
-      model = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/Qwen3.8-Flash-Next-IQ4_NL-PROJFIX-00001-of-00009.gguf";
-      draftModel = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
-      draftNMax = 4;
+      model = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
+      mtpModel = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
+      mmproj = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
+      sessions = 3;
+      context = 262144;
       port = 8050;
-      parallel = 1;
-      ctxSize = 524288;
-      ropeScaling = "yarn";
-      ropeScale = 2;
-      yarnOrigCtx = 262144;
-      ctxTrainOverride = 524288;
-      mmproj = "/scratch/llama-cache/qwen3.8-flash-next-strix-halo/mmproj-Qwen3.8-Flash-Next-bf16.gguf";
     };
     security.harden.enable = true;
   };
@@ -97,6 +92,7 @@ in
     "gfx1151"
     "gfx1201"
   ];
+  users.groups.llama-cache = { };
 
   users.users.son-of-anton = {
     isNormalUser = true;

@@ -128,8 +128,9 @@ The fleet distributes inference and gateway services across dedicated hosts:
     450k context (YaRN), fp8 KV cache, prefix caching. Built from source in
     Nix against the TheRock ROCm 10.0 SDK with libr4d + the vllm-radiance
     gfx1201 patch set (no venv); see modules/services/vllm/pkgs
-  - **llama-strix** (:8050): Qwen3.8-Flash-Next (IQ4_NL) on the Strix Halo iGPU
-    (ROCm) with the MTP draft and vision projector, 524k context (YaRN)
+  - **[gufo](https://github.com/gufo-org/gufo)** (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL) on the Strix Halo iGPU
+    (self-contained ROCm 7.2.3) with the MTP draft and vision projector,
+    3 sessions at the 262k native context, continuous batching
 - **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
   successor to temple-server: one system service per account on a shared Signal
   number, and each account's CLI shares its service's session state
@@ -137,7 +138,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
   - **llama-swap** (Vulkan backend): little-titles (Little-Titles Q8_0, always
     resident — title generation for the son-of-anton accounts) + bge-m3 embeddings
   - **Bifrost** gateway (:4002): routes son-of-anton, opencode, and Open WebUI to
-    vLLM and llama-strix on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API;
+    vLLM and gufo on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API;
     per-consumer virtual keys (plus a friend key scoped to the 27B and limited
     to ricky's 20:00-07:00 hours) live in `config.json`
   - **MCP gateway** (mounted at /mcp) aggregating stdio servers: `fetch` (URL
