@@ -254,7 +254,7 @@ in
             };
 
             "qwen3.8-flash-next" = {
-              name = "Qwen3.8 Flash Next (Local)";
+              name = "Qwen3.8 Flash Next";
               variants = {
                 xhigh = {
                   reasoning_effort = "xhigh";
