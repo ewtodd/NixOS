@@ -96,6 +96,8 @@
           settings = {
             "browser.startup.homepage" = "file://${./landing}/index.html";
             "browser.startup.page" = 1;
+            "browser.newtab.url" = "file://${./landing}/index.html";
+            "browser.newtab.page-loaded-url" = "file://${./landing}/index.html";
 
             # Containers must be enabled at the pref level, or both extensions
             # install and silently do nothing.
