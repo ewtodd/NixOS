@@ -264,6 +264,17 @@ in
           reasoning_effort = "medium";
           provider = "custom";
         };
+        # Retrieval-augmented recall for every instance: embed session
+        # journals + the long-term notes through Bifrost (the bge-m3
+        # llama.cpp server on oracle) and inject the closest chunks per turn.
+        # Refresh with `son-of-anton rag index` (see a cron job).
+        memory.rag = {
+          enabled = true;
+          base_url = "http://10.0.0.6:4002/v1";
+          model = "bge-m3";
+          api_key_env = "BIFROST_SOA_VK";
+          top_k = 5;
+        };
         custom_providers.custom = {
           base_url = "http://10.0.0.6:4002/v1";
           key_env = "BIFROST_SOA_VK";
