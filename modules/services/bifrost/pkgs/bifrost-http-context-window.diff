@@ -15,7 +15,7 @@ diff --git a/core/providers/openai/types.go b/core/providers/openai/types.go
 index c259594..07f4e83 100644
 --- a/core/providers/openai/types.go
 +++ b/core/providers/openai/types.go
-@@ -1073,6 +1073,31 @@ type OpenAIModel struct {
+@@ -1073,6 +1073,37 @@ type OpenAIModel struct {
  	// GROQ specific fields
  	Active        *bool `json:"active,omitempty"`
  	ContextWindow *int  `json:"context_window,omitempty"`
@@ -23,22 +23,28 @@ index c259594..07f4e83 100644
 +	// Non-standard window shapes reported by inference servers, forwarded as
 +	// ContextWindow so the client can self-discover the model window without
 +	// a per-endpoint upstream map. vLLM reports it top-level as max_model_len;
-+	// llama.cpp nests it under meta.n_ctx.
-+	MaxModelLen *int `json:"max_model_len,omitempty"`
-+	Meta        struct {
++	// llama.cpp nests it under meta.n_ctx; gufo reports it top-level as
++	// context_length.
++	MaxModelLen   *int `json:"max_model_len,omitempty"`
++	ContextLength *int `json:"context_length,omitempty"`
++	Meta          struct {
 +		NCtx *int `json:"n_ctx,omitempty"`
 +	} `json:"meta,omitempty"`
 +}
 +
 +// ResolvedContextWindow returns the model's context window from whichever field
 +// the upstream actually populated, preferring the standard OpenAI context_window,
-+// then vLLM's max_model_len, then llama.cpp's meta.n_ctx.
++// then vLLM's max_model_len, then gufo's context_length, then llama.cpp's
++// meta.n_ctx.
 +func (m *OpenAIModel) ResolvedContextWindow() *int {
 +	if m.ContextWindow != nil {
 +		return m.ContextWindow
 +	}
 +	if m.MaxModelLen != nil {
 +		return m.MaxModelLen
++	}
++	if m.ContextLength != nil {
++		return m.ContextLength
 +	}
 +	if m.Meta.NCtx != nil {
 +		return m.Meta.NCtx

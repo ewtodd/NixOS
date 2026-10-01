@@ -22,24 +22,12 @@ let
     set +a
     exec ${pkgs.nodejs}/bin/node ${entry}
   '';
-  # The secret is an opencode config fragment merged with OPENCODE_CONFIG; it
-  # must carry the full enabled_providers list, since arrays are replaced.
-  workProviderEnabled =
-    osConfig.systemOptions.owner.e.enable
-    && osConfig.systemOptions.deviceType.desktop.enable
-    && config.Profile == "work";
-  workProviderConfigPath = "/run/agenix/opencode-work-provider";
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
     if [ -r /run/agenix/bifrost-keys ]; then
       set -a
       . /run/agenix/bifrost-keys
       set +a
     fi
-    ${lib.optionalString workProviderEnabled ''
-      if [ -r ${workProviderConfigPath} ]; then
-        export OPENCODE_CONFIG=${workProviderConfigPath}
-      fi
-    ''}
     exec ${lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode} "$@"
   '';
 in
@@ -211,8 +199,6 @@ in
         };
       };
       provider = {
-        # The encrypted work-profile fragment must reference this key and the
-        # bifrost/... model ids (arrays it carries replace the base ones).
         bifrost = {
           npm = "@ai-sdk/openai-compatible";
           name = "Bifrost";
