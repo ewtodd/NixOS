@@ -186,6 +186,30 @@ in
             ];
           };
 
+          # bge-m3 embeddings for RAG. The llama.cpp embedding server binds
+          # 127.0.0.1:8082 on oracle (see llamaSwap.embeddingModel), so it is
+          # reachable only from Bifrost on this host; clients use the normal
+          # virtual-key route with model "bge-m3".
+          embed = {
+            custom_provider_config = {
+              base_provider_type = "openai";
+              is_key_less = true;
+            };
+            network_config = {
+              base_url = "http://127.0.0.1:8082";
+              allow_private_network = true;
+              default_request_timeout_in_seconds = 120;
+            };
+            keys = [
+              {
+                name = "bge-m3";
+                value = "";
+                models = [ "bge-m3" ];
+                weight = 1.0;
+              }
+            ];
+          };
+
           deepseek = {
             keys = [
               {
