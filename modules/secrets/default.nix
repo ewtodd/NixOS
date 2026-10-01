@@ -171,15 +171,6 @@
         mode = "0440";
       };
     })
-    (lib.mkIf (config.systemOptions.owner.e.enable && config.systemOptions.deviceType.desktop.enable) {
-      # Whole opencode provider fragment for the work profile, injected at
-      # runtime via OPENCODE_CONFIG; e-play can never read it (0400).
-      opencode-work-provider = {
-        file = ../../secrets/opencode-work-provider.age;
-        owner = "e-work";
-        mode = "0400";
-      };
-    })
     (lib.mkIf config.systemOptions.owner.v.enable {
       # The son-of-anton home module sources this for BIFROST_SOA_VK.
       bifrost-keys = {

@@ -75,6 +75,4 @@ in
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
   "proton-mail-bridge.age".publicKeys = personal;
-  # Work-profile opencode provider fragment; only e-work on e-desktop reads it.
-  "opencode-work-provider.age".publicKeys = [ ethan-desktop-ework ];
 }
