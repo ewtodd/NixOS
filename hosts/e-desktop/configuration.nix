@@ -144,7 +144,7 @@ in
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "qwen3.8-27b";
+          model = "vllm/qwen3.8-27b";
           settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
@@ -160,7 +160,7 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
-          model = "qwen3.8-27b";
+          model = "vllm/qwen3.8-27b";
           settings.gateway.single_user = true;
           settings = {
             platforms.signal.gateway_restart_notification = true;
@@ -187,7 +187,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "qwen3.8-27b";
+          model = "vllm/qwen3.8-27b";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -207,9 +207,9 @@ in
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           git.github = config.age.secrets.soa-ricky-github-key.path;
-          model = "qwen3.8-27b";
+          model = "vllm/qwen3.8-27b";
           settings = {
-            model.default = "qwen3.8-27b";
+            model.default = "vllm/qwen3.8-27b";
           };
           settings.platforms.signal = {
             require_mention = true;
@@ -236,9 +236,9 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          model = "qwen3.8-27b";
+          model = "vllm/qwen3.8-27b";
           settings = {
-            model.default = "qwen3.8-27b";
+            model.default = "vllm/qwen3.8-27b";
           };
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
@@ -260,7 +260,7 @@ in
 
       settings = {
         model = {
-          default = "qwen3.8-27b";
+          default = "vllm/qwen3.8-27b";
           reasoning_effort = "medium";
           provider = "custom";
         };
@@ -279,7 +279,7 @@ in
           base_url = "http://10.0.0.6:4002/v1";
           key_env = "BIFROST_SOA_VK";
           models = {
-            "qwen3.8-27b" = {
+            "vllm/qwen3.8-27b" = {
               reasoning_effort = "medium";
               reasoning_efforts = [
                 "none"
@@ -288,7 +288,7 @@ in
                 "xhigh"
               ];
             };
-            "qwen3.8-flash-next" = {
+            "strix/qwen3.8-flash-next" = {
               reasoning_effort = "medium";
               reasoning_efforts = [
                 "none"
@@ -300,11 +300,11 @@ in
           };
         };
         physics = {
-          model = "qwen3.8-27b";
-          coder_model = "qwen3.8-27b";
+          model = "vllm/qwen3.8-27b";
+          coder_model = "vllm/qwen3.8-27b";
           reasoning_effort = "medium";
           agent_models = {
-            critic = "qwen3.8-flash-next";
+            critic = "strix/qwen3.8-flash-next";
           };
           base_url = "http://10.0.0.6:4002/v1";
           api_key_env = "BIFROST_SOA_VK";
@@ -342,7 +342,7 @@ in
           };
           compaction = {
             provider = "custom";
-            model = "qwen3.8-flash-next"; # 524K window, the largest route you have
+            model = "strix/qwen3.8-flash-next"; # 524K window, the largest route you have
             base_url = "http://10.0.0.6:4002/v1";
             key_env = "BIFROST_SOA_VK";
             reasoning_effort = "none"; # extraction, not reasoning; qwen route accepts none/low/medium/xhigh
