@@ -2,7 +2,7 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     wireview-linux = {
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -140,6 +140,68 @@
         }
       ];
 
+      # Fixes for the aarch64/open-webui closure. These live here, not in the
+      # open-webui module, because colmena's nodeNixpkgs replaces the node's
+      # package set and silently ignores module-level nixpkgs.overlays.
+      openWebUIOverlays = [
+        (_: prev: {
+          python314 = prev.python314.override {
+            packageOverrides = _: pythonPkgs: {
+              # pypdf's zlib recovery-path speed test asserts a hard 10 s budget
+              # and times out on the aarch64 builder; skip the suite.
+              pypdf = pythonPkgs.pypdf.overridePythonAttrs (_: {
+                doCheck = false;
+              });
+              # Its checks pull every optional dependency, including
+              # transformers' audio extra -> torchaudio, into the closure.
+              # None of that is needed to install or run it.
+              sentence-transformers = pythonPkgs.sentence-transformers.overridePythonAttrs (_: {
+                nativeCheckInputs = [ ];
+                doCheck = false;
+              });
+              # These two are runtime deps of open-webui, but their check
+              # inputs are the last things dragging torch/transformers in.
+              einops = pythonPkgs.einops.overridePythonAttrs (_: {
+                nativeCheckInputs = [ ];
+                doCheck = false;
+              });
+              ctranslate2 = pythonPkgs.ctranslate2.overridePythonAttrs (_: {
+                nativeCheckInputs = [ ];
+                doCheck = false;
+              });
+            };
+          };
+        })
+        # Second overlay so prev.open-webui is rebuilt against the python314
+        # above; overriding both in one overlay leaves it on the base python set.
+        (_: prev: {
+          # Local embedding/reranking, TTS and evaluation backends. This
+          # deployment sends chat to Bifrost and embeddings to the llama.cpp
+          # bge-m3 server, so transformers/sentence-transformers/colbert-ai
+          # and their accelerate->torch stack are dead weight; all their
+          # imports are lazy.
+          open-webui = prev.open-webui.overridePythonAttrs (old: {
+            dependencies = builtins.filter (
+              dep:
+              !(builtins.elem (dep.pname or "") [
+                "accelerate"
+                "sentence-transformers"
+                "transformers"
+                "colbert-ai"
+              ])
+            ) old.dependencies;
+            # The wheel still advertises those extras in Requires-Dist; strip
+            # them so the runtime deps check sees metadata matching the env.
+            pythonRemoveDeps = [
+              "accelerate"
+              "colbert-ai"
+              "sentence-transformers"
+              "transformers"
+            ];
+          });
+        })
+      ];
+
       mkSystemModules =
         {
           hostname,
@@ -148,6 +210,7 @@
         }:
         [
           ./modules
+          { nixpkgs.overlays = openWebUIOverlays; }
           inputs.home-manager.nixosModules.home-manager
           inputs.banshee-ucm-conf.nixosModules.default
           {
@@ -345,6 +408,7 @@
             oracle = import nixpkgs {
               system = "aarch64-linux";
               config.allowUnfree = true;
+              overlays = openWebUIOverlays;
             };
           };
           specialArgs = {

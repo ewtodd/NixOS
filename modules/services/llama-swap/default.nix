@@ -27,7 +27,7 @@ let
   stampedLlama =
     pkg:
     (versionedLlama pkg).overrideAttrs (
-      finalAttrs: oldAttrs: {
+      _: oldAttrs: {
         postInstall = (oldAttrs.postInstall or "") + ''
           mkdir -p $out/nix-support
           echo "${llamaCppVersion}" > $out/nix-support/llama-cpp-version
@@ -36,7 +36,7 @@ let
     );
 
   rocm = (stampedLlama llamaPkgs.rocm).overrideAttrs (
-    finalAttrs: oldAttrs: {
+    _: oldAttrs: {
       cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
         (pkgs.lib.cmakeFeature "CMAKE_HIP_ARCHITECTURES" "gfx1151;gfx1201")
         "-DGPU_TARGETS=gfx1151;gfx1201"
@@ -50,7 +50,7 @@ let
   );
 
   cuda = (stampedLlama llamaPkgs.cuda).overrideAttrs (
-    finalAttrs: oldAttrs: {
+    _: oldAttrs: {
       cmakeFlags = (oldAttrs.cmakeFlags or [ ]) ++ [
         "-DCMAKE_CUDA_ARCHITECTURES=89"
       ];

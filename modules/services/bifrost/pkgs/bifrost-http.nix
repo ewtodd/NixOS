@@ -30,7 +30,11 @@ let
     replace github.com/maximhq/bifrost/plugins/compat => ../plugins/compat
     replace github.com/maximhq/bifrost/plugins/logging => ../plugins/logging
     replace github.com/maximhq/bifrost/plugins/maxim => ../plugins/maxim
+    replace github.com/maximhq/bifrost/plugins/mocker => ../plugins/mocker
+    replace github.com/maximhq/bifrost/plugins/modelcatalogresolver => ../plugins/modelcatalogresolver
     replace github.com/maximhq/bifrost/plugins/otel => ../plugins/otel
+    replace github.com/maximhq/bifrost/plugins/prompts => ../plugins/prompts
+    replace github.com/maximhq/bifrost/plugins/routing => ../plugins/routing
     replace github.com/maximhq/bifrost/plugins/semanticcache => ../plugins/semanticcache
     replace github.com/maximhq/bifrost/plugins/telemetry => ../plugins/telemetry
     EOF
@@ -43,24 +47,28 @@ buildGoModule {
 
   modRoot = "transports";
   subPackages = [ "bifrost-http" ];
-  vendorHash = "sha256-2qcEK3FUDpGmeRtcM3wG+URLjyxDClAj9GJRdbEr+l0=";
+  vendorHash = "sha256-oog1D4MoaASfONkWUYrDu7NIqk8TMesMZCKt752Z4Ss=";
 
-  # Both diffs land in the vendored tree (governance is a local replace), so
-  # the vendorHash above follows them and must be re-pinned when either changes:
+  # All three diffs land in the vendored tree (local replaces), so
+  # the vendorHash above follows them and must be re-pinned when any changes:
   #  - forward local servers' own window fields (vLLM max_model_len, llama.cpp
   #    meta.n_ctx, gufo top-level context_length) so the context probe sees
   #    them;
   #  - let a virtual key's description explain a refusal when the key is
   #    inactive, which is how the friend key's active-hours message reaches
-  #    the client (the Bifrost module toggles its is_active on a timer).
+  #    the client (the Bifrost module toggles its is_active on a timer);
+  #  - forward captured extra params to custom providers, whose upstream may
+  #    accept fields Bifrost does not model (e.g. a vLLM chat_template_kwargs);
+  #    the x-bf-passthrough-extra-params header still gates normal providers.
   patches = [
     ./bifrost-http-context-window.diff
     ./bifrost-vk-inactive-message.diff
+    ./bifrost-custom-provider-extra-params.diff
   ];
 
   doCheck = false;
 
-  overrideModAttrs = final: prev: {
+  overrideModAttrs = _: prev: {
     postPatch = (prev.postPatch or "") + transportsLocalReplaces;
   };
 
