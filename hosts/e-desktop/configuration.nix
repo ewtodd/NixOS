@@ -311,7 +311,7 @@ in
         physics = {
           model = "vllm/qwen3.8-27b";
           coder_model = "vllm/qwen3.8-27b";
-          reasoning_effort = "medium";
+          reasoning_effort = "xhigh";
           agent_models = {
             critic = "strix/qwen3.8-flash-next";
           };
