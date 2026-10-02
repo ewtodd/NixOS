@@ -47,9 +47,9 @@ buildGoModule {
 
   modRoot = "transports";
   subPackages = [ "bifrost-http" ];
-  vendorHash = "sha256-oog1D4MoaASfONkWUYrDu7NIqk8TMesMZCKt752Z4Ss=";
+  vendorHash = "sha256-fq/zndAW/ZkmGBAl+94qaDcxoFyKlG70nJrcGu/pAhY=";
 
-  # All three diffs land in the vendored tree (local replaces), so
+  # All four diffs land in the vendored tree (local replaces), so
   # the vendorHash above follows them and must be re-pinned when any changes:
   #  - forward local servers' own window fields (vLLM max_model_len, llama.cpp
   #    meta.n_ctx, gufo top-level context_length) so the context probe sees
@@ -59,11 +59,15 @@ buildGoModule {
   #    the client (the Bifrost module toggles its is_active on a timer);
   #  - forward captured extra params to custom providers, whose upstream may
   #    accept fields Bifrost does not model (e.g. a vLLM chat_template_kwargs);
-  #    the x-bf-passthrough-extra-params header still gates normal providers.
+  #    the x-bf-passthrough-extra-params header still gates normal providers;
+  #  - teach the name-based xhigh ladder that the local Qwen3.8 routes (vLLM,
+  #    llama.cpp/gufo) accept "xhigh": with no datasheet row the fallback snaps
+  #    xhigh down to high, which those servers reject with HTTP 400.
   patches = [
     ./bifrost-http-context-window.diff
     ./bifrost-vk-inactive-message.diff
     ./bifrost-custom-provider-extra-params.diff
+    ./bifrost-xhigh-base-effort.diff
   ];
 
   doCheck = false;

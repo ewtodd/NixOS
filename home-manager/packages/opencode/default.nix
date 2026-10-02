@@ -216,13 +216,13 @@ in
               name = "Qwen3.8 27B";
               variants = {
                 xhigh = {
-                  reasoning_effort = "xhigh";
+                  reasoningEffort = "xhigh";
                 };
                 medium = {
-                  reasoning_effort = "medium";
+                  reasoningEffort = "medium";
                 };
                 low = {
-                  reasoning_effort = "low";
+                  reasoningEffort = "low";
                 };
                 none = {
                   chat_template_kwargs = {
@@ -243,13 +243,13 @@ in
               name = "Qwen3.8 Flash Next";
               variants = {
                 xhigh = {
-                  reasoning_effort = "xhigh";
+                  reasoningEffort = "xhigh";
                 };
                 medium = {
-                  reasoning_effort = "medium";
+                  reasoningEffort = "medium";
                 };
                 low = {
-                  reasoning_effort = "low";
+                  reasoningEffort = "low";
                 };
                 none = {
                   chat_template_kwargs = {

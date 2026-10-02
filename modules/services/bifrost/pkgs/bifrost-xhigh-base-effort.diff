@@ -1,0 +1,15 @@
+diff --git a/core/providers/openai/utils.go b/core/providers/openai/utils.go
+--- a/core/providers/openai/utils.go
++++ b/core/providers/openai/utils.go
+@@ -138,7 +138,10 @@
+ 	// real catalog IDs keep a region or vendor namespace ("azure/eu/gpt-5.2" →
+ 	// "eu/gpt-5.2"). These needles carry the full version, so they cannot
+ 	// over-match a different revision.
+-	return strings.Contains(modelLower, "gpt-5.2") ||
++	// The local Qwen3.8 routes (vLLM, llama.cpp/gufo) accept xhigh too, and
++	// have no datasheet row.
++	return strings.Contains(modelLower, "qwen3.8") ||
++		strings.Contains(modelLower, "gpt-5.2") ||
+ 		strings.Contains(modelLower, "gpt-5.3-codex") ||
+ 		strings.Contains(modelLower, "gpt-5.4") ||
+ 		strings.Contains(modelLower, "gpt-5.5") ||
