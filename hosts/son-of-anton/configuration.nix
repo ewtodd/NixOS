@@ -39,12 +39,11 @@ in
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
         VLLM_SLEEP_WHEN_IDLE = "1";
       };
-      model = "/scratch/vllm-models/Qwen3.8-27B-Quark-AWQ-MXFP4";
-      mxfp4 = true;
-      quantization = null;
+      model = "/scratch/vllm-models/models--Qwen--Qwen3.8-27B-FP8/snapshots/017b9c7af6b5689d5dd426a76e0bc077eb5ca20a/";
+      quantization = "fp8";
       devices = "0,1";
       tensorParallelSize = 2;
-      maxModelLen = 524288;
+      maxModelLen = 460800;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
         factor = 2;
@@ -67,8 +66,7 @@ in
       draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
       draftAttentionBackend = "TRITON_ATTN";
       draftTensorParallelSize = 2;
-      # Draft accepts 524288 only with patch_dflash_draft_rope (see pkgs/).
-      draftMaxModelLen = 524288;
+      draftMaxModelLen = 460800;
       compilationConfig = {
         cudagraph_mode = "PIECEWISE";
       };
