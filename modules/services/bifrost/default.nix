@@ -123,13 +123,10 @@ in
         };
 
         providers = {
+          # First-class vLLM provider: the server URL lives on the key
+          # (vllm_key_config.url), not in network_config.
           vllm = {
-            custom_provider_config = {
-              base_provider_type = "openai";
-              is_key_less = true;
-            };
             network_config = {
-              base_url = sonOfAntonVllm;
               allow_private_network = true;
               default_request_timeout_in_seconds = 1800;
               stream_idle_timeout_in_seconds = streamIdleTimeout;
@@ -140,6 +137,7 @@ in
                 value = "";
                 models = [ "qwen3.8-27b" ];
                 weight = 1.0;
+                vllm_key_config.url = sonOfAntonVllm;
               }
             ];
           };

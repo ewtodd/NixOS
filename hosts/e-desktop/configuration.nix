@@ -311,7 +311,6 @@ in
         physics = {
           model = "vllm/qwen3.8-27b";
           coder_model = "vllm/qwen3.8-27b";
-          reasoning_effort = "xhigh";
           agent_models = {
             critic = "strix/qwen3.8-flash-next";
           };
@@ -321,6 +320,8 @@ in
           sandbox = "bwrap";
           script_timeout = 900;
           max_iterations = 20;
+          token_budget = 262144;
+          reasoning_effort = "xhigh";
           mcp = {
             server = "oracle";
             roles = {
