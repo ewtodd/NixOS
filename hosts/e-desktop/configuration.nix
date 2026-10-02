@@ -88,7 +88,7 @@ in
     services.scheduledReboot = {
       enable = true;
       action = "poweroff";
-      calendar = "Sun,Wed *-*-* 05:00:00";
+      calendar = "Sun *-*-* 05:00:00";
     };
     services.wakeable.enable = true;
     services.nodeExporter.enable = true;

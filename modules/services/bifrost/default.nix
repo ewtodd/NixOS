@@ -22,12 +22,12 @@ let
       src = inputs.bifrost;
       version = bifrostVersion;
     }).overrideAttrs
-      (old: {
+      (_: {
         npmDeps = buildPkgs.buildPackages.fetchNpmDeps {
           name = "bifrost-ui-${bifrostVersion}-npm-deps";
           src = inputs.bifrost;
           sourceRoot = "source/ui";
-          hash = "sha256-cOswnT4ZahWX66h9oiw4t3r5GZeOH/yjbnTCAsjVgnw=";
+          hash = "sha256-lXyg2jRD+KyLv/3kM2xiT72jlviiFFNq9t/NOThk0rs=";
         };
       });
 
