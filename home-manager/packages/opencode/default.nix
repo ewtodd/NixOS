@@ -57,6 +57,10 @@ in
        - If you are confused, stop and ask for help. This is especially critical in
          Nix.
        - Follow the existing style of the surrounding modules.
+       - Before guessing or scraping search.nixos.org, look up nixpkgs/NixOS/Home
+         Manager/Darwin options and packages with the `nixos` MCP tools (`nixos_nix`,
+         `nixos_nix_versions`): action=search with type=options for options,
+         action=info for a specific path.
 
        ## C++ / ROOT
        - Use ROOT data types, and pick the *correct* one for the actual need rather
@@ -270,6 +274,13 @@ in
         };
       };
       mcp = {
+        # Local Nix option/package search. Kept local (not the Bifrost gateway)
+        # so it works independent of oracle's reachability.
+        nixos = {
+          type = "local";
+          command = [ "${lib.getExe pkgs.mcp-nixos}" ];
+          enabled = true;
+        };
         proton =
           # surely there's a better way to do this!
           lib.mkIf

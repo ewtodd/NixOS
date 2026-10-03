@@ -44,6 +44,38 @@ in
           "html"
           "json"
         ];
+        # Upstream defaults enable the engines that captcha/429 this host; bing
+        # and the keyless API engines answer but ship disabled. Merged by name.
+        engines = [
+          {
+            name = "bing";
+            disabled = false;
+          }
+          {
+            name = "mwmbl";
+            disabled = false;
+          }
+          {
+            name = "yep";
+            disabled = false;
+          }
+          {
+            name = "duckduckgo";
+            disabled = true;
+          }
+          {
+            name = "brave";
+            disabled = true;
+          }
+          {
+            name = "google cse";
+            disabled = true;
+          }
+          {
+            name = "qwant";
+            disabled = true;
+          }
+        ];
       };
     };
 
