@@ -127,7 +127,9 @@ The fleet distributes inference and gateway services across dedicated hosts:
     tcclaviger/Qwen3.8-27B-DFlash2-FP8 drafter (runtime W4 fast draft),
     450k context (YaRN), fp8 KV cache, prefix caching. Built from source in
     Nix against the TheRock ROCm 10.0 SDK with libr4d + the vllm-radiance
-    gfx1201 patch set (no venv); see modules/services/vllm/pkgs
+    gfx1201 patch set (no venv); the build now lives in the
+    [ewtodd/radiance-vllm-mxfp4](https://codeberg.org/ewtodd/radiance-vllm-mxfp4) flake
+    (`lib.<system>.mkVllmStack { pkgs }`) and this repo consumes it as `inputs.vllm-radiance-src`
   - **[gufo](https://github.com/gufo-org/gufo)** (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL) on the Strix Halo iGPU
     (self-contained ROCm 7.2.3) with the MTP draft and vision projector,
     3 sessions at the 262k native context, continuous batching

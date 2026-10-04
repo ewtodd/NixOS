@@ -8,10 +8,8 @@
 let
   cfg = config.systemOptions.services.vllm;
 
-  stack = import ./pkgs {
+  stack = inputs.vllm-radiance-src.lib.${pkgs.stdenv.hostPlatform.system}.mkVllmStack {
     inherit pkgs;
-    r4dSrc = inputs.libr4d-src;
-    radianceSrc = inputs.vllm-radiance-src;
   };
   inherit (stack)
     pythonEnv

@@ -76,15 +76,12 @@
     gufo = {
       url = "github:gufo-org/gufo/eb915840ffb62a8ec4b5c1adb41b04b5c1c75892";
     };
-    libr4d-src = {
-      url = "git+https://codeberg.org/StillDeadcode/libr4d?rev=b9e42ab7202f53a3bc13d415f5d41481f9ca311b";
-      flake = false;
-    };
     vllm-radiance-src = {
-      # ewtodd's fork, branch w4a16-w8a16: native W4A16/W8A16 weight-only
-      # kernels on top of ggz14's main (45da506).
-      url = "git+https://codeberg.org/ewtodd/radiance-vllm-mxfp4?rev=b1b42be22889daa0ee4fd65c1fabcba0b0012c25";
-      flake = false;
+      # ewtodd's fork: native W4A16/W8A16 weight-only kernels, the DFlash2
+      # draft-rope patch, and the Nix build itself (lib.mkVllmStack). It owns
+      # libr4d and the ROCm SDK; we pass our pkgs so there is one nixpkgs.
+      url = "github:ewtodd/vllm-radiance-nix?rev=4bb133f500e57632f19a8c7794dbfb44329a56b3";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
@@ -372,13 +369,11 @@
 
       packages.x86_64-linux =
         let
-          vllmStack = import ./modules/services/vllm/pkgs {
+          vllmStack = inputs.vllm-radiance-src.lib.x86_64-linux.mkVllmStack {
             pkgs = import nixpkgs {
               system = "x86_64-linux";
               config.allowUnfree = true;
             };
-            r4dSrc = inputs.libr4d-src;
-            radianceSrc = inputs.vllm-radiance-src;
           };
         in
         {

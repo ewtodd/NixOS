@@ -711,7 +711,7 @@
         "type": "github"
       }
     },
-    "libr4d-src": {
+    "libr4d": {
       "flake": false,
       "locked": {
         "lastModified": 1787588695,
@@ -1201,7 +1201,6 @@
         "dms-plugin-registry": "dms-plugin-registry",
         "gufo": "gufo",
         "home-manager": "home-manager",
-        "libr4d-src": "libr4d-src",
         "lisepp": "lisepp",
         "llama-cpp": "llama-cpp",
         "llm-agents": "llm-agents",
@@ -1578,20 +1577,25 @@
       }
     },
     "vllm-radiance-src": {
-      "flake": false,
+      "inputs": {
+        "libr4d": "libr4d",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1791149430,
-        "narHash": "sha256-YtzoWa2cpqtLgr1H1eBOvIYkQAgeRVdnI6TUq5Oq/1Y=",
-        "ref": "refs/heads/main",
-        "rev": "b1b42be22889daa0ee4fd65c1fabcba0b0012c25",
-        "revCount": 304,
-        "type": "git",
-        "url": "https://codeberg.org/ewtodd/radiance-vllm-mxfp4"
+        "lastModified": 1791157539,
+        "narHash": "sha256-gMOmECf5xtyMgwyDCJzkUH7xEcHunSRrtY8tlsT7ibI=",
+        "owner": "ewtodd",
+        "repo": "vllm-radiance-nix",
+        "rev": "4bb133f500e57632f19a8c7794dbfb44329a56b3",
+        "type": "github"
       },
       "original": {
-        "rev": "b1b42be22889daa0ee4fd65c1fabcba0b0012c25",
-        "type": "git",
-        "url": "https://codeberg.org/ewtodd/radiance-vllm-mxfp4"
+        "owner": "ewtodd",
+        "repo": "vllm-radiance-nix",
+        "rev": "4bb133f500e57632f19a8c7794dbfb44329a56b3",
+        "type": "github"
       }
     },
     "website": {
