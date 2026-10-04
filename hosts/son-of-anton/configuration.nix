@@ -37,13 +37,38 @@ in
       ];
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
-        VLLM_SLEEP_WHEN_IDLE = "1";
+        # ParoQuant int5 W5A8 profile from run_paroquant.sh: int8 per-group
+        # activations plus the zero-point epilogue; explicit settings win over
+        # the kernel defaults.
+        RADIANCE_PQ_I8 = "1";
+        RADIANCE_PQ_PG = "1";
+        RADIANCE_PQ_ZPE = "1";
+        RADIANCE_PQ_WPERM = "1";
+        RADIANCE_PQ_DECODE_NT = "1";
+        RADIANCE_PQ_ATILED = "1";
+        RADIANCE_PQ_PTOK = "1";
+        RADIANCE_PQ_FUSED_TOKQ = "1";
+        RADIANCE_PQ_ROT_STREAM = "1";
+        RADIANCE_PQ_ROT_STREAM2 = "1";
+        RADIANCE_PQ_ROT_STREAM3 = "0";
+        RADIANCE_PQ_PG_PRODUCER = "3";
+        RADIANCE_PQ_ROT_V2 = "1";
+        RADIANCE_PQ_CHECK_MAX_M = "128";
+        RADIANCE_PQ_DECODE_MAX_M = "64";
       };
-      model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27b-FP8/";
-      quantization = "fp8";
+      # Production: Swift-1.5 Quark RTN MXFP4 served with the native W4A16
+      # (bf16-activation weight-only) kernel from ewtodd's fork. The weight-only
+      # config dir drops input_tensors; quant_method comes from the checkpoint.
+      model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27b-Quark-RTN-MXFP4-W4A16";
+      quantization = null;
+      mxfp4 = true;
+      mxfp4W4A16 = true;
       devices = "0,1";
       tensorParallelSize = 2;
-      maxModelLen = 460800;
+      # 262144 is the model's native ceiling; the DFlash2 drafter refuses a
+      # larger max_model_len without the old draft-rope patch (dropped with
+      # the magiccodingman set). Codeberg's production profile is 262144 too.
+      maxModelLen = 262144;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
         factor = 2;
@@ -57,19 +82,24 @@ in
         partial_rotary_factor = 0.25;
         rope_theta = 10000000;
       };
-      kvCacheDtype = "fp8";
+      kvCacheDtype = "auto";
       maxNumSeqs = 4;
       gpuMemoryUtilization = 0.98;
-      speculative = true;
-      speculativeMethod = "dflash";
-      speculativeTokens = 4;
-      draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
-      draftAttentionBackend = "TRITON_ATTN";
-      draftTensorParallelSize = 2;
-      draftMaxModelLen = 460800;
+      # Codeberg production shape: inductor + piecewise cudagraphs. The
+      # radiance fusion passes (rmsquant, stream producers, GDN glue) only
+      # run under compilation; eager left decode ~10x slower.
       compilationConfig = {
         cudagraph_mode = "PIECEWISE";
       };
+      # Production draft controller (DFlash2, K=7). Set false only for
+      # target-only measurement runs.
+      speculative = true;
+      speculativeMethod = "dflash";
+      speculativeTokens = 7;
+      draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
+      draftAttentionBackend = "TRITON_ATTN";
+      draftTensorParallelSize = 2;
+      draftMaxModelLen = 262144;
       fastDraft = true;
       port = 8100;
       toolCallParser = "qwen3_xml";

@@ -714,16 +714,16 @@
     "libr4d-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1787681852,
-        "narHash": "sha256-MmyasGvJ+6Et8HSbi+qibuq/iulKfP/sX2m4OfN3ui4=",
+        "lastModified": 1787588695,
+        "narHash": "sha256-FzyGGx+cctCg0O2kGuBVuVhZ4hpJbylyCLKRg/xTaZA=",
         "ref": "refs/heads/main",
-        "rev": "e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7",
-        "revCount": 6,
+        "rev": "b9e42ab7202f53a3bc13d415f5d41481f9ca311b",
+        "revCount": 4,
         "type": "git",
         "url": "https://codeberg.org/StillDeadcode/libr4d"
       },
       "original": {
-        "rev": "e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7",
+        "rev": "b9e42ab7202f53a3bc13d415f5d41481f9ca311b",
         "type": "git",
         "url": "https://codeberg.org/StillDeadcode/libr4d"
       }
@@ -1233,11 +1233,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1790970759,
-        "narHash": "sha256-16bCSBlmyZ09c9nSiFbi3zHCt78lWjifGkegNusO24c=",
+        "lastModified": 1791078696,
+        "narHash": "sha256-ExnGZXe1WXNUv2yfo9Vjs6RZ95A4alJq3X4Xmh7lUjg=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "09719099dba0140f64c1c486bee7df69d2b1dfa3",
+        "rev": "83c9a51cc87b3be46d53a8efbe995eff5ca79b1e",
         "type": "github"
       },
       "original": {
@@ -1580,18 +1580,18 @@
     "vllm-radiance-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1789659302,
-        "narHash": "sha256-jNIxjoBqPwef8IulSB++ahIFBhdF96JvjDM+w2UR02w=",
-        "owner": "magiccodingman",
-        "repo": "vllm-radiance",
-        "rev": "285ac78e7f19bc1e1b5b09b25f865aea0c6d9754",
-        "type": "github"
+        "lastModified": 1791149430,
+        "narHash": "sha256-YtzoWa2cpqtLgr1H1eBOvIYkQAgeRVdnI6TUq5Oq/1Y=",
+        "ref": "refs/heads/main",
+        "rev": "b1b42be22889daa0ee4fd65c1fabcba0b0012c25",
+        "revCount": 304,
+        "type": "git",
+        "url": "https://codeberg.org/ewtodd/radiance-vllm-mxfp4"
       },
       "original": {
-        "owner": "magiccodingman",
-        "repo": "vllm-radiance",
-        "rev": "285ac78e7f19bc1e1b5b09b25f865aea0c6d9754",
-        "type": "github"
+        "rev": "b1b42be22889daa0ee4fd65c1fabcba0b0012c25",
+        "type": "git",
+        "url": "https://codeberg.org/ewtodd/radiance-vllm-mxfp4"
       }
     },
     "website": {
