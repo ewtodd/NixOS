@@ -57,7 +57,7 @@ in
         RADIANCE_PQ_DECODE_MAX_M = "64";
       };
       # Production: Swift-1.5 Quark RTN MXFP4 served with the native W4A16
-      # (bf16-activation weight-only) kernel from ewtodd's fork. The weight-only
+      # (bf16-activation weight-only) kernel from my fork. The weight-only
       # config dir drops input_tensors; quant_method comes from the checkpoint.
       model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27b-Quark-RTN-MXFP4-W4A16";
       quantization = null;
@@ -65,10 +65,7 @@ in
       mxfp4W4A16 = true;
       devices = "0,1";
       tensorParallelSize = 2;
-      # 262144 is the model's native ceiling; the DFlash2 drafter refuses a
-      # larger max_model_len without the old draft-rope patch (dropped with
-      # the magiccodingman set). Codeberg's production profile is 262144 too.
-      maxModelLen = 262144;
+      maxModelLen = 393216;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
         factor = 2;
@@ -82,7 +79,7 @@ in
         partial_rotary_factor = 0.25;
         rope_theta = 10000000;
       };
-      kvCacheDtype = "auto";
+      kvCacheDtype = "fp8";
       maxNumSeqs = 4;
       gpuMemoryUtilization = 0.98;
       # Codeberg production shape: inductor + piecewise cudagraphs. The
@@ -95,11 +92,11 @@ in
       # target-only measurement runs.
       speculative = true;
       speculativeMethod = "dflash";
-      speculativeTokens = 7;
+      speculativeTokens = 5;
       draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
       draftAttentionBackend = "TRITON_ATTN";
       draftTensorParallelSize = 2;
-      draftMaxModelLen = 262144;
+      draftMaxModelLen = 393216;
       fastDraft = true;
       port = 8100;
       toolCallParser = "qwen3_xml";
