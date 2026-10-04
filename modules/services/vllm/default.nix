@@ -56,13 +56,19 @@ let
     RADIANCE_RUN_BWTEST = "0";
   }
   // lib.optionalAttrs cfg.mxfp4 {
+    RADIANCE_QUARK_BF16_MTP = "1";
+  }
+  // lib.optionalAttrs (cfg.mxfp4 && !cfg.mxfp4W4A16) {
     RADIANCE_MXFP4_W4A8 = "1";
     RADIANCE_MXFP4_W4A8_MIN_M = "0";
     RADIANCE_MXFP4_DECODE_MAX_M = "64";
     RADIANCE_MXFP4_TN4_MIN_M = "2048";
     RADIANCE_MXFP4_WPERM = "1";
     RADIANCE_MXFP4_DECODE_NT = "1";
-    RADIANCE_QUARK_BF16_MTP = "1";
+  }
+  // lib.optionalAttrs cfg.mxfp4W4A16 {
+    RADIANCE_MXFP4_W4A16 = "1";
+    RADIANCE_MXFP4_WPERM = "1";
   };
 
   aiterEnv = {

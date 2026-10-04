@@ -91,6 +91,39 @@ let
           $INC ${radianceSrc}/radiance_mxfp4_fp8.hip -o $out/radiance_mxfp4_fp8.so
       '';
 
+  # paroquant/radiance_paroquant.hip -> radiance_paroquant_kernel.so. The .hip
+  # includes its sibling par_kernels.h, so no extra include path is needed.
+  # Same hipcc flags as the image bake (-O3 -w -std=c++17 -fPIC -shared).
+  radianceParoquantExt =
+    pkgs.runCommand "radiance-paroquant-kernel"
+      {
+        nativeBuildInputs = [
+          rocmSdkCc
+          (python.withPackages (ps: [ ps.pybind11 ]))
+        ];
+      }
+      ''
+        export ROCM_PATH=${rocmSdk}
+        export HIP_PATH=${rocmSdk}
+        export HIP_CLANG_PATH=${rocmSdkCc}/llvm/bin
+        export HIP_DEVICE_LIB_PATH=${rocmSdk}/lib/llvm/amdgcn/bitcode
+        mkdir -p $out
+        INC=$(python -m pybind11 --includes)
+        hipcc -O3 -w -std=c++17 -fPIC -shared --offload-arch=${gfxArch} \
+          $INC ${radianceSrc}/paroquant/radiance_paroquant.hip \
+          -o $out/radiance_paroquant_kernel.so
+      '';
+
+  # The vLLM postInstall copies this file straight from its flake store path,
+  # so `cp <file> $SP/` keeps the hash-prefixed basename and the
+  # `radiance_paroquant.pth` import could not resolve it. Ship a correctly
+  # named copy through pythonEnv instead; changing this derivation rebuilds
+  # only the env, not vLLM.
+  radianceParoquantHook = pkgs.runCommand "radiance-paroquant-hook" { } ''
+    mkdir -p $out/${python.sitePackages}
+    cp ${./radiance_paroquant_hook.py} $out/${python.sitePackages}/radiance_paroquant_hook.py
+  '';
+
   radiancePatches =
     pkgs.runCommand "radiance-patches"
       {
@@ -99,6 +132,9 @@ let
       ''
         mkdir -p $out
         cp $src/patch_*.py $src/install_radiance_hooks.py $src/_patchlib.py $out/
+        # patch_dflash2.py installs two new files from its sibling dflash2/ dir
+        # (speculator.py, kv collector) relative to the script location.
+        cp -r $src/dflash2 $out/dflash2
         cp ${./patch_dflash_draft_rope.py} $out/patch_dflash_draft_rope.py
         chmod u+w $out/*.py
         for f in $out/*.py; do
@@ -127,47 +163,53 @@ let
     "patch_radiance_dispatch"
   ];
 
+  # ggz14/radiance-vllm-mxfp4 patch chain, in the image's order: the base
+  # recipe (Dockerfile L277-284) then the bake layer (Dockerfile.ggz14.top).
+  # Duplicates between the two lists are idempotent and applied once here.
+  # patch_unified_attention_lds targets aiter only (see aiterPatches).
   vllmPatches = [
     "patch_gfx1201"
     "patch_radiance_dispatch"
     "patch_skinny_gemm"
     "patch_gdn_wmma"
-    "patch_gdn_aiter_prefill"
     "patch_preshuffle"
+    "patch_radiance_fusion"
     "install_radiance_hooks"
     "patch_unpad"
     "patch_mtp_mm_mask"
     "patch_mtp_loopbreak"
     "patch_qwen3_toolparse"
     "patch_from_json_filter"
+    "patch_dynamo_metrics"
     "patch_conv1d_blockn"
     "patch_r4d"
-    # DFlash2 drafter support, in the upstream image's order. patch_dflash_base
-    # is omitted: v0.28.0 already has its sentinel/context/null-block fixes.
+    "patch_dflash_base"
+    "patch_dflash2"
     "patch_dflash_fused_kv_fp8"
-    "patch_dflash_logits_cache_stride"
     "patch_dflash_w4"
-    "patch_dflash_selector_topk"
-    # Local addition (not from the upstream image): lift a DFlash draft's
-    # positional ceiling so its rope cache covers maxModelLen.
-    "patch_dflash_draft_rope"
     "patch_gdn_metadata"
-    "patch_gdn_shared_build"
-    "patch_topk_triton_rows"
-    "patch_topk_composite"
-    "patch_rocm_cudagraph_current_stream"
     "patch_quark_mxfp4"
-    "patch_quark_bf16_mtp"
     "patch_ar_maxbytes"
-    "patch_ar_geometry"
+    "patch_topk_triton_rows"
+    "patch_qwen3_thinkoff"
+    # bake layer additions
+    "patch_nvfp4_mxfp4"
+    "patch_tp3_pad"
+    "patch_dflash_calib"
+    "patch_dflash_mxfp4_kv"
+    "patch_rmsquant_fusion"
+    "patch_verify_head"
     "patch_kv_group_size"
+    "patch_topk_composite"
+    "patch_gdn_shared_build"
+    "patch_dflash_selector_topk"
     "patch_gdn_merge_inproj"
     "patch_dynwidth"
-    "patch_verify_head"
-    "patch_xgrammar_spec_termination"
-    "patch_xgrammar_spec_reasoning"
-    "patch_parser_shared_engine"
-    "patch_qwen_open_object_schema"
+    "patch_async_dynwidth"
+    "patch_step_trace"
+    "patch_ar_geometry"
+    "patch_ar_3rank"
+    "patch_gdn_glue"
   ];
 
   tritonLlvm = pkgs.triton-llvm.overrideAttrs (old: {
@@ -261,7 +303,23 @@ let
         dependencies = old.dependencies ++ [ self.apache-tvm-ffi ];
         doCheck = false;
       });
-      transformers = super.transformers.overridePythonAttrs (old: {
+      transformers = super.transformers.overridePythonAttrs (old: rec {
+        # ggz14 builds vLLM 0.29 against transformers 5.14.1.
+        version = "5.14.1";
+        src = pkgs.fetchFromGitHub {
+          owner = "huggingface";
+          repo = "transformers";
+          tag = "v${version}";
+          hash = "sha256-BmjfFETKt01Z7fYgL83KOSPthZBu19yU5IdITCrpEv0=";
+        };
+        # 5.14.1 caps tokenizers <=0.23.0 while this nixpkgs ships 0.23.2; the
+        # bound is enforced both by the metadata check and at import time, so
+        # widen it in the dependency table itself.
+        dontCheckRuntimeDeps = true;
+        postPatch = (old.postPatch or "") + ''
+          substituteInPlace src/transformers/dependency_versions_table.py \
+            --replace-fail 'tokenizers>=0.22.0,<=0.23.0' 'tokenizers>=0.22.0'
+        '';
         postInstall = (old.postInstall or "") + applyRadiancePatches [ "patch_from_json_filter" ];
       });
 
@@ -281,27 +339,31 @@ let
       };
 
       amd-aiter = (super.amd-aiter.override { inherit rocmPackages; }).overrideAttrs (old: {
-        version = "0.1.20";
+        # ggz14 image pins aiter v0.1.17; the radiance patches carry its module
+        # paths (aiter.ops.triton.gemm.basic.gemm_afp4wfp4).
+        version = "0.1.17";
         src = pkgs.fetchFromGitHub {
           owner = "ROCm";
           repo = "aiter";
-          rev = "fc2e5d57fb5b8ad8e7e23f7103071dde798ea618";
-          hash = "sha256-aL7uEkTvJ19mAp69lWC7VmHgVejr+7kfPta4FphSf1g=";
+          rev = "3d6dd62e54f5acca1a5d11bee73192b7c955b1bd";
+          hash = "sha256-11nT5QT9Yccj0b/S6d2J+0gfuUcFfFv2v16i4dlCWqI=";
           fetchSubmodules = true;
         };
         postPatch = ''
           substituteInPlace pyproject.toml \
-            --replace-fail '"flydsl==0.3.1"' ""
+            --replace-fail '"flydsl==0.2.2"' ""
 
           substituteInPlace csrc/cpp_itfs/utils.py \
             --replace-fail \
               'commit_id = get_git_commit_id_short()' \
-              'commit_id = "0.1.20"'
+              'commit_id = "0.1.17"'
 
+          # 0.1.17 spells the ROCm include append as _join_rocm_home("include")
+          # where 0.1.20 had paths.append(rocm_include).
           substituteInPlace aiter/jit/utils/cpp_extension.py \
             --replace-fail \
-              'paths.append(rocm_include)' \
-              'paths.append(rocm_include); paths.extend(os.environ.get("NIX_AITER_ROCM_INCL", "${rocmSdk}/include:${lib.getDev self.pybind11}/include").split(":"))'
+              'paths.append(_join_rocm_home("include"))' \
+              'paths.append(_join_rocm_home("include")); paths.extend(os.environ.get("NIX_AITER_ROCM_INCL", "${rocmSdk}/include:${lib.getDev self.pybind11}/include").split(":"))'
 
           substituteInPlace setup.py \
             --replace-fail \
@@ -330,12 +392,14 @@ let
         }).overrideAttrs
           (
             finalAttrs: old: {
-              version = "0.28.0";
+              # ggz14 builds vLLM v0.29.0 on torch 2.11; we keep the nixpkgs
+              # torch 2.13/triton 3.7 and will see whether 0.29 is stable on it.
+              version = "0.29.0";
               src = pkgs.fetchFromGitHub {
                 owner = "vllm-project";
                 repo = "vllm";
-                rev = "2cf0a6915ce544dc493a0990f2ea38d81601128a";
-                hash = "sha256-Ia5SB9bQ+Vxkc5wBwY7HxQo6rqYFpWlVxeQyyP55dMg=";
+                rev = "98dff2a81d747d1dba01a47f939f48c3526d4206";
+                hash = "sha256-SPxnCItBgeOJk+io4R4f4JXfH2GSlqRKoIXCw+gpsqE=";
               };
               patches = lib.filter (p: baseNameOf p != "0005-drop-intel-reqs.patch") old.patches;
               propagatedBuildInputs = lib.filter (
@@ -349,7 +413,7 @@ let
                   src
                   cargoRoot
                   ;
-                hash = "sha256-CLvLAkejYfrnrPXJ78xh2mgCyRg7F56Um1LPnJtj7iw=";
+                hash = "sha256-eXCartOeDjzIq8WY/EwV7symrUEHTRkEf4uaehsiPAM=";
               };
               env = old.env // hipEnv;
               # vllm's CMake hits the same rocm_smi → pkg_check_modules(libdrm REQUIRED) chain
@@ -362,6 +426,12 @@ let
                   chmod -R u+w $SP
                   cp ${radianceSrc}/radiance_*.py ${radianceSrc}/radiance_amdsmi.pth $SP/
                   cp ${radianceMxfp4Ext}/radiance_mxfp4_fp8.so $SP/
+                  # ParoQuant serving path: modules + the rotation/GEMM kernel.
+                  cp ${radianceSrc}/paroquant/radiance_paroquant.py \
+                     ${radianceSrc}/paroquant/radiance_paroquant_mxfp4.py $SP/
+                  cp ${radianceParoquantExt}/radiance_paroquant_kernel.so $SP/
+                  cp ${./radiance_paroquant_hook.py} $SP/
+                  printf 'import radiance_paroquant_hook\n' > $SP/radiance_paroquant.pth
                   cp -f ${radianceSrc}/fp8-configs/* $SP/vllm/model_executor/layers/quantization/utils/configs/
                   cp -f ${radianceSrc}/moe-configs/* $SP/vllm/model_executor/layers/fused_moe/configs/
                   mkdir -p $out/share/vllm-radiance
@@ -387,6 +457,7 @@ let
   pythonEnv = python.withPackages (ps: [
     ps.vllm
     (ps.toPythonModule libr4d)
+    (ps.toPythonModule radianceParoquantHook)
   ]);
 
   runtimeLibs = "${rocmSdk}/lib";

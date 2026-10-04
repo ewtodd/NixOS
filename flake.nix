@@ -77,11 +77,13 @@
       url = "github:gufo-org/gufo/eb915840ffb62a8ec4b5c1adb41b04b5c1c75892";
     };
     libr4d-src = {
-      url = "git+https://codeberg.org/StillDeadcode/libr4d?rev=e8de4bc1f3dbd608dcb8d3ffceb6b48acdf83bb7";
+      url = "git+https://codeberg.org/StillDeadcode/libr4d?rev=b9e42ab7202f53a3bc13d415f5d41481f9ca311b";
       flake = false;
     };
     vllm-radiance-src = {
-      url = "github:magiccodingman/vllm-radiance/285ac78e7f19bc1e1b5b09b25f865aea0c6d9754";
+      # ewtodd's fork, branch w4a16-w8a16: native W4A16/W8A16 weight-only
+      # kernels on top of ggz14's main (45da506).
+      url = "git+https://codeberg.org/ewtodd/radiance-vllm-mxfp4?rev=b1b42be22889daa0ee4fd65c1fabcba0b0012c25";
       flake = false;
     };
     llm-agents = {

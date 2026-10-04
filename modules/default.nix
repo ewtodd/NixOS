@@ -653,6 +653,16 @@ with lib;
           default = false;
           description = "RADIANCE_MXFP4: native Quark MXFP4/W4A8 routing for an AMD Quark checkpoint (gfx1201).";
         };
+        mxfp4W4A16 = mkOption {
+          type = types.bool;
+          default = false;
+          description = ''
+            Native weight-only MXFP4: the W16 bf16-WMMA GEMM from the fork, with
+            bf16 activations. Selected by RADIANCE_MXFP4_W4A16 at load; the W4A8
+            flags stay unset. Needs the checkpoint's weight-only config and pairs
+            with kvCacheDtype = "auto" (fp16 KV).
+          '';
+        };
         fastDraft = mkOption {
           type = types.bool;
           default = false;

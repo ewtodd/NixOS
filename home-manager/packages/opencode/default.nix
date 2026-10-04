@@ -104,7 +104,7 @@ in
 
       agent = {
         compaction = {
-          model = "bifrost/qwen3.8-27b";
+          model = "deepseek/deepseek-flash";
         };
         build = {
           variant = "low";
