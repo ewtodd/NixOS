@@ -264,19 +264,8 @@ in
           reasoning_effort = "medium";
           provider = "custom";
         };
-        # Local models only (Bifrost on oracle) - no spend to protect against,
-        # so let unpinned cron jobs track the live default model/provider at
-        # run time instead of failing closed with drift_skip when the default
-        # moves. See the son-of-anton README, "Cron".
         cron.model_drift_guard = false;
-        # Whitelist the nixos declarative config tree for agent file edits.
-        # The blanket /etc/ sensitive-path guard stays on for everything else
-        # (/etc/passwd, systemd units, boot config).
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
-        # Retrieval-augmented recall for every instance: embed session
-        # journals + the long-term notes through Bifrost (the bge-m3
-        # llama.cpp server on oracle) and inject the closest chunks per turn.
-        # Refresh with `son-of-anton rag index` (see a cron job).
         memory.rag = {
           enabled = true;
           base_url = "http://10.0.0.6:4002/v1";
@@ -289,7 +278,7 @@ in
           key_env = "BIFROST_SOA_VK";
           models = {
             "vllm/qwen3.8-27b" = {
-              reasoning_effort = "medium";
+              reasoning_effort = "xhigh";
               reasoning_efforts = [
                 "none"
                 "low"
@@ -298,7 +287,7 @@ in
               ];
             };
             "strix/qwen3.8-flash-next" = {
-              reasoning_effort = "medium";
+              reasoning_effort = "xhigh";
               reasoning_efforts = [
                 "none"
                 "low"

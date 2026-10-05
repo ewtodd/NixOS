@@ -38,7 +38,7 @@ in
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
       };
-      model = "/scratch/vllm-models/Qwen3.8-27B-Quark-AWQ-MXFP4";
+      model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27b-Quark-RTN-MXFP4-W4A16";
       quantization = null;
       mxfp4 = true;
       mxfp4W4A16 = true;
@@ -61,14 +61,9 @@ in
       kvCacheDtype = "fp8";
       maxNumSeqs = 4;
       gpuMemoryUtilization = 0.98;
-      # Codeberg production shape: inductor + piecewise cudagraphs. The
-      # radiance fusion passes (rmsquant, stream producers, GDN glue) only
-      # run under compilation; eager left decode ~10x slower.
       compilationConfig = {
         cudagraph_mode = "PIECEWISE";
       };
-      # Production draft controller (DFlash2, K=7). Set false only for
-      # target-only measurement runs.
       speculative = true;
       speculativeMethod = "dflash";
       speculativeTokens = 5;
