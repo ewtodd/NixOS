@@ -37,29 +37,8 @@ in
       ];
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
-        # ParoQuant int5 W5A8 profile from run_paroquant.sh: int8 per-group
-        # activations plus the zero-point epilogue; explicit settings win over
-        # the kernel defaults.
-        RADIANCE_PQ_I8 = "1";
-        RADIANCE_PQ_PG = "1";
-        RADIANCE_PQ_ZPE = "1";
-        RADIANCE_PQ_WPERM = "1";
-        RADIANCE_PQ_DECODE_NT = "1";
-        RADIANCE_PQ_ATILED = "1";
-        RADIANCE_PQ_PTOK = "1";
-        RADIANCE_PQ_FUSED_TOKQ = "1";
-        RADIANCE_PQ_ROT_STREAM = "1";
-        RADIANCE_PQ_ROT_STREAM2 = "1";
-        RADIANCE_PQ_ROT_STREAM3 = "0";
-        RADIANCE_PQ_PG_PRODUCER = "3";
-        RADIANCE_PQ_ROT_V2 = "1";
-        RADIANCE_PQ_CHECK_MAX_M = "128";
-        RADIANCE_PQ_DECODE_MAX_M = "64";
       };
-      # Production: Swift-1.5 Quark RTN MXFP4 served with the native W4A16
-      # (bf16-activation weight-only) kernel from my fork. The weight-only
-      # config dir drops input_tensors; quant_method comes from the checkpoint.
-      model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27b-Quark-RTN-MXFP4-W4A16";
+      model = "/scratch/vllm-models/Qwen3.8-27B-Quark-AWQ-MXFP4";
       quantization = null;
       mxfp4 = true;
       mxfp4W4A16 = true;
