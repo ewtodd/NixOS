@@ -38,7 +38,7 @@ in
       extraEnv = {
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
       };
-      model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27b-Quark-RTN-MXFP4-W4A16";
+      model = "/scratch/vllm-models/Qwen3.8-27B-Quark-AWQ-MXFP4";
       quantization = null;
       mxfp4 = true;
       mxfp4W4A16 = true;
