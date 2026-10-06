@@ -1,8 +1,9 @@
 # Adapted from upstream nix/packages/bifrost-http.nix at the revision pinned by
 # the `bifrost` flake input. Kept in-repo so the Go vendor hash and the
 # build-platform Go selection are explicit; re-sync when bumping Bifrost. The
-# only functional differences are `go` (upstream's cross set would hand the
-# helper the target compiler) and `vendorHash` (ours is for Go 1.27.1).
+# functional differences are `go` (upstream's cross set would hand the helper
+# the target compiler), `vendorHash`, and bifrost-gomod-tidy.diff, which makes
+# 2.2.5's go.mod/go.sum consistent with the local sibling-module replaces.
 {
   pkgs,
   lib,
@@ -17,29 +18,6 @@ let
   buildGoModule = pkgs.callPackage "${pkgs.path}/pkgs/build-support/go/module.nix" {
     go = pkgs.buildPackages.go_1_27 or pkgs.buildPackages.go;
   };
-
-  # The transports module depends on the sibling modules by version; replace
-  # them with the checkout's local copies for the hermetic source build.
-  transportsLocalReplaces = ''
-    if [ -f transports/go.mod ]; then
-      cat >> transports/go.mod <<'EOF'
-
-    replace github.com/maximhq/bifrost/core => ../core
-    replace github.com/maximhq/bifrost/framework => ../framework
-    replace github.com/maximhq/bifrost/plugins/governance => ../plugins/governance
-    replace github.com/maximhq/bifrost/plugins/compat => ../plugins/compat
-    replace github.com/maximhq/bifrost/plugins/logging => ../plugins/logging
-    replace github.com/maximhq/bifrost/plugins/maxim => ../plugins/maxim
-    replace github.com/maximhq/bifrost/plugins/mocker => ../plugins/mocker
-    replace github.com/maximhq/bifrost/plugins/modelcatalogresolver => ../plugins/modelcatalogresolver
-    replace github.com/maximhq/bifrost/plugins/otel => ../plugins/otel
-    replace github.com/maximhq/bifrost/plugins/prompts => ../plugins/prompts
-    replace github.com/maximhq/bifrost/plugins/routing => ../plugins/routing
-    replace github.com/maximhq/bifrost/plugins/semanticcache => ../plugins/semanticcache
-    replace github.com/maximhq/bifrost/plugins/telemetry => ../plugins/telemetry
-    EOF
-    fi
-  '';
 in
 buildGoModule {
   pname = "bifrost-http";
@@ -47,10 +25,11 @@ buildGoModule {
 
   modRoot = "transports";
   subPackages = [ "bifrost-http" ];
-  vendorHash = "sha256-fq/zndAW/ZkmGBAl+94qaDcxoFyKlG70nJrcGu/pAhY=";
+  vendorHash = "sha256-B2pdVhOk8u7/HTznCfiI3m/emy+oIeupuA/OsqL5YVM=";
 
-  # All four diffs land in the vendored tree (local replaces), so
-  # the vendorHash above follows them and must be re-pinned when any changes:
+  # The source patches and the go.mod/go.sum patch all affect the vendored
+  # tree, so the vendorHash above follows them and must be re-pinned whenever
+  # any of them changes:
   #  - forward local servers' own window fields (vLLM max_model_len, llama.cpp
   #    meta.n_ctx, gufo top-level context_length) so the context probe sees
   #    them;
@@ -62,19 +41,18 @@ buildGoModule {
   #    the x-bf-passthrough-extra-params header still gates normal providers;
   #  - teach the name-based xhigh ladder that the local Qwen3.8 routes (vLLM,
   #    llama.cpp/gufo) accept "xhigh": with no datasheet row the fallback snaps
-  #    xhigh down to high, which those servers reject with HTTP 400.
+  #    xhigh down to high, which those servers reject with HTTP 400;
+  #  - resolve the sibling-module requires against the local checkout and
+  #    complete go.sum so `go mod vendor` works on Go 1.27.
   patches = [
     ./bifrost-http-context-window.diff
     ./bifrost-vk-inactive-message.diff
     ./bifrost-custom-provider-extra-params.diff
     ./bifrost-xhigh-base-effort.diff
+    ./bifrost-gomod-tidy.diff
   ];
 
   doCheck = false;
-
-  overrideModAttrs = _: prev: {
-    postPatch = (prev.postPatch or "") + transportsLocalReplaces;
-  };
 
   env = {
     CGO_ENABLED = "1";
@@ -85,8 +63,6 @@ buildGoModule {
     gcc
   ];
   buildInputs = [ pkgs.sqlite ];
-
-  postPatch = transportsLocalReplaces;
 
   preBuild = ''
     # Provide UI assets for //go:embed all:ui

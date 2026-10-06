@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-oracle.url = "github:NixOS/nixpkgs/c59305bab2065cfecc4944690d9eedbb56f3a9fa";
     wireview-linux = {
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -100,7 +101,7 @@
     };
     nixos-apple-silicon = {
       url = "github:tpwrules/nixos-apple-silicon";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-oracle";
     };
     son-of-anton = {
       url = "github:ewtodd/son-of-anton";
@@ -245,7 +246,10 @@
           headless ? false,
           system ? "x86_64-linux",
         }:
-        nixpkgs.lib.nixosSystem {
+        let
+          hostNixpkgs = if hostname == "oracle" then inputs.nixpkgs-oracle else nixpkgs;
+        in
+        hostNixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
             inherit inputs;
@@ -402,7 +406,7 @@
             config.allowUnfree = true;
           };
           nodeNixpkgs = {
-            oracle = import nixpkgs {
+            oracle = import inputs.nixpkgs-oracle {
               system = "aarch64-linux";
               config.allowUnfree = true;
               overlays = openWebUIOverlays;

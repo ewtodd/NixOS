@@ -26,7 +26,7 @@ let
   ];
 in
 {
-  "onyx-ssh-config.age".publicKeys = personal;
+  "onyx-ssh-config.age".publicKeys = personal ++ [ server-e-desktop ];
   "namecheap-ddns.age".publicKeys = personal ++ [ nu ];
   "e-desktop-luks-passphrase.age".publicKeys = personal ++ [ mu ];
   "bastion-initrd-unlock-key.age".publicKeys = personal ++ [ mu ];
@@ -46,7 +46,13 @@ in
     server-oracle
   ];
   "bifrost-env.age".publicKeys = personal ++ [ server-oracle ];
-  "bifrost-keys.age".publicKeys = personal ++ val ++ [ server-oracle ];
+  "bifrost-keys.age".publicKeys =
+    personal
+    ++ val
+    ++ [
+      server-e-desktop
+      server-oracle
+    ];
   "borg-passphrase.age".publicKeys = personal ++ [ server-e-desktop ];
   "son-of-anton-env.age".publicKeys = personal ++ [
     server-e-desktop
@@ -74,5 +80,5 @@ in
     server-e-desktop
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
-  "proton-mail-bridge.age".publicKeys = personal;
+  "proton-mail-bridge.age".publicKeys = personal ++ [ server-e-desktop ];
 }
