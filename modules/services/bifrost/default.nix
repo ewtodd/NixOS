@@ -73,10 +73,6 @@ let
   arxiv-mcp-server = pkgs.callPackage ./pkgs/arxiv-mcp-server.nix {
     src = inputs.arxiv-mcp-server-src;
   };
-  searxngMcpPython = pkgs.python3.withPackages (ps: [
-    ps.mcp
-    ps.httpx
-  ]);
 
   # Owner and friend instances of the same gateway; the friend key is scoped to
   # the 27B by provider allowlist, rate-limited, and off outside ricky's hours.
@@ -102,7 +98,8 @@ in
       logStyle = "json";
       openFirewall = true;
 
-      # The searxng MCP script reads this and passes it through to the child.
+      # mcp-searxng reads this (forwarded via the stdio `envs` list below) and
+      # queries the host-local SearXNG instance.
       environment.SEARXNG_URL = "http://127.0.0.1:8888";
 
       # Every consumer has its own virtual key (bifrost-keys); admin auth,
@@ -236,8 +233,8 @@ in
             name = "searxng";
             connection_type = "stdio";
             stdio_config = {
-              command = "${searxngMcpPython}/bin/python";
-              args = [ "/etc/bifrost/searxng_mcp.py" ];
+              command = lib.getExe pkgs.mcp-searxng;
+              args = [ ];
               envs = [ "SEARXNG_URL" ];
             };
             auth_type = "none";
@@ -293,6 +290,14 @@ in
               name = "opencode";
               value = "env.BIFROST_OPENCODE_VK";
               allow_all_providers = true;
+              # opencode talks to the gateway's /mcp/searxng endpoint; the
+              # grant narrows what that key can reach.
+              mcp_configs = [
+                {
+                  mcp_client_name = "searxng";
+                  tools_to_execute = [ "*" ];
+                }
+              ];
             }
             {
               id = "open-webui";
@@ -378,7 +383,5 @@ in
         Unit = "bifrost-friend-key.service";
       };
     };
-
-    environment.etc."bifrost/searxng_mcp.py".source = ./searxng_mcp.py;
   };
 }

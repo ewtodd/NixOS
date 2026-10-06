@@ -281,6 +281,18 @@ in
           command = [ "${lib.getExe pkgs.mcp-nixos}" ];
           enabled = true;
         };
+        # Web search through the gateway's aggregate endpoint. The opencode
+        # key's MCP grant (bifrost module) narrows /mcp to the mcp-searxng
+        # tools, so the other MCP servers stay invisible. BIFROST_OPENCODE_VK
+        # comes from the opencode wrapper's secret.
+        searxng = {
+          type = "remote";
+          url = "https://llm.ethanwtodd.com/mcp";
+          headers = {
+            Authorization = "Bearer {env:BIFROST_OPENCODE_VK}";
+          };
+          enabled = true;
+        };
         proton =
           # surely there's a better way to do this!
           lib.mkIf
