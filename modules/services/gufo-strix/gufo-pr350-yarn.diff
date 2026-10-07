@@ -1,0 +1,1240 @@
+diff --git a/cmake/Checks.cmake b/cmake/Checks.cmake
+index cb07d9f..54562c2 100644
+--- a/cmake/Checks.cmake
++++ b/cmake/Checks.cmake
+@@ -10,6 +10,7 @@ set(gufo_pr_targets
+   bench_cli_test prompt_cli_test eval_http_client_test
+   qwen_tokenizer_test qwen_chat_template_test
+   qwen38_flash_next_config_test qwen38_flash_next_mtp_sampling_test
++  qwen38_flash_next_rope_scaling_test
+   ds4_sampling_test ds4_chat_template_test ds4_cli_test
+   qwen3_asr_config_test qwen3_asr_audio_api_test
+   qwen3_tts_config_test qwen3_tts_audio_api_test
+@@ -18,9 +19,11 @@ set(gufo_pr_targets
+ set(gufo_pr_tests ${gufo_pr_targets})
+ list(REMOVE_ITEM gufo_pr_tests
+   qwen38_flash_next_config_test qwen38_flash_next_mtp_sampling_test
++  qwen38_flash_next_rope_scaling_test
+   ds4_sampling_test ds4_chat_template_test ds4_cli_test)
+ list(APPEND gufo_pr_tests
+   "qwen38_flash_next\\.config" "qwen38_flash_next\\.mtp_sampling"
++  "qwen38_flash_next\\.rope_scaling"
+   "ds4\\.sampling" "ds4\\.template" "ds4\\.cli"
+   gufo_version gufo_help serve_cli_test eval_http_test functional_runner_test)
+ list(JOIN gufo_pr_tests "|" gufo_pr_pattern)
+diff --git a/src/cli/bench/bench.cpp b/src/cli/bench/bench.cpp
+index fdf690c..417d32f 100644
+--- a/src/cli/bench/bench.cpp
++++ b/src/cli/bench/bench.cpp
+@@ -923,6 +923,14 @@ int RunQwen38FlashNextBenchmark(
+     return 1;
+   }
+ 
++  // Static YaRN, derived from the same required_context that sizes the
++  // benchmark's own request; a required context at or below the artifact's
++  // native context leaves it off.
++  const std::uint32_t qwen4exp_native_context =
++      reader->GetMetadataUint32("qwen4exp.context_length").value_or(0);
++  const auto rope_scaling = qfn::RopeScalingForContext(
++      static_cast<std::uint32_t>(required_context), qwen4exp_native_context);
++
+   std::string error;
+   auto model = qfn::Model::Load(
+       options.model_path,
+@@ -930,6 +938,7 @@ int RunQwen38FlashNextBenchmark(
+           .max_context = static_cast<std::uint32_t>(required_context),
+           .mtp_model_path = mtp ? options.mtp_model_path : "",
+           .max_draft_tokens = std::max<std::uint32_t>(1, options.draft_tokens),
++          .rope_scaling = rope_scaling,
+       },
+       &error);
+   if (model == nullptr) {
+@@ -938,6 +947,11 @@ int RunQwen38FlashNextBenchmark(
+     return 1;
+   }
+   PrintModelLoadTime(model_load_start);
++  if (rope_scaling) {
++    std::cout << "[YaRN]: factor=" << rope_scaling->factor
++              << " original_context=" << qwen4exp_native_context
++              << " context=" << required_context << '\n';
++  }
+ 
+   // Repeat a fixed token pattern for reproducible timing. It uses far fewer
+   // distinct PLE rows than varied requests.
+diff --git a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backend.cpp
+index 8d9c879..d7729c9 100644
+--- a/src/cli/serve/inference_backend.cpp
++++ b/src/cli/serve/inference_backend.cpp
+@@ -200,7 +200,7 @@ std::vector<std::uint8_t> DeepSeekCompatibilityIdentity(
+ std::vector<std::uint8_t> QwenFlashNextCompatibilityIdentity(
+     std::string_view artifact_fingerprint, std::string_view mtp_fingerprint,
+     bool has_mtp, std::uint32_t max_context, std::uint32_t max_draft_tokens,
+-    std::uint32_t decode_concurrency) {
++    std::uint32_t decode_concurrency, std::string_view position_policy) {
+   if (!IsSha256Hex(artifact_fingerprint)) {
+     throw std::invalid_argument(
+         "Qwen3.8-Flash-Next disk cache requires an artifact fingerprint");
+@@ -224,7 +224,7 @@ std::vector<std::uint8_t> QwenFlashNextCompatibilityIdentity(
+            << models::qwen38_flash_next::Session::kSnapshotPayloadVersion
+            << '\n'
+            << "context_tokens=" << max_context << '\n'
+-           << "position_policy=absolute-v1\n"
++           << "position_policy=" << position_policy << '\n'
+            << "adapters=none\n";
+   if (has_mtp) {
+     identity << "draft_backend=qfn-mtp-v1\n"
+@@ -2427,7 +2427,9 @@ public:
+           .compatibility_identity = QwenFlashNextCompatibilityIdentity(
+               artifact_fingerprint, use_mtp_ ? mtp_fingerprint : std::string{},
+               use_mtp_, max_context_, max_draft_tokens_,
+-              model_->DecodeConcurrency()),
++              model_->DecodeConcurrency(),
++              models::qwen38_flash_next::RopePositionPolicy(
++                  model_->config().rope_scaling)),
+           .payload_version =
+               models::qwen38_flash_next::Session::kSnapshotPayloadVersion,
+       };
+@@ -3068,12 +3070,21 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
+     return false;
+   }
+   const std::shared_ptr<const core::GgufReader> reader(std::move(reader_owner));
++  const auto architecture =
++      reader->GetMetadataString("general.architecture").value_or("");
++  // Read once, reused below to derive YaRN from --context for qwen4exp.
++  const std::uint32_t qwen4exp_native_context =
++      architecture == "qwen4exp"
++          ? reader->GetMetadataUint32("qwen4exp.context_length").value_or(0)
++          : 0;
+   if (max_context == 0) {
+-    const auto architecture =
+-        reader->GetMetadataString("general.architecture").value_or("");
+-    const auto native =
+-        reader->GetMetadataUint64(std::string(architecture) + ".context_length")
+-            .value_or(0);
++    const std::uint64_t native =
++        architecture == "qwen4exp"
++            ? qwen4exp_native_context
++            : reader
++                  ->GetMetadataUint64(std::string(architecture) +
++                                      ".context_length")
++                  .value_or(0);
+     if (native < 2 || native > std::numeric_limits<std::uint32_t>::max()) {
+       SetError(error,
+                "GGUF has no valid native context length; specify --context");
+@@ -3167,6 +3178,10 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
+                "Unsupported Qwen3.8-Flash-Next chat template: " + load_error);
+       return false;
+     }
++    // Static YaRN, derived from the requested --context; a request at or
++    // below the artifact's native context leaves it off.
++    const auto rope_scaling = models::qwen38_flash_next::RopeScalingForContext(
++        max_context, qwen4exp_native_context);
+     // The model owns prefill geometry for both bulk and scheduled requests.
+     auto model = models::qwen38_flash_next::Model::Load(
+         model_path,
+@@ -3180,6 +3195,7 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
+             .vision_model_path = vision_model_path,
+             .decode_concurrency = static_cast<std::uint32_t>(
+                 std::clamp<std::size_t>(session_count, 1, 8)),
++            .rope_scaling = rope_scaling,
+         },
+         &load_error);
+     if (model == nullptr) {
+@@ -3187,6 +3203,13 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
+                "Failed to create Qwen3.8-Flash-Next model: " + load_error);
+       return false;
+     }
++    if (rope_scaling) {
++      Logger::Info(
++          "loader",
++          "event=yarn factor=" + std::to_string(rope_scaling->factor) +
++              " original_context=" + std::to_string(qwen4exp_native_context) +
++              " context=" + std::to_string(max_context));
++    }
+     if (DiskCacheEnabled(resolved_disk_cache_config) &&
+         resolved_disk_cache_config.model_artifact_fingerprint.empty() &&
+         !FingerprintArtifact(
+diff --git a/src/models/qwen38_flash_next/CMakeLists.txt b/src/models/qwen38_flash_next/CMakeLists.txt
+index 220f3d9..6343f0e 100644
+--- a/src/models/qwen38_flash_next/CMakeLists.txt
++++ b/src/models/qwen38_flash_next/CMakeLists.txt
+@@ -3,6 +3,7 @@
+ add_library(gufo_qwen38_flash_next STATIC
+   config.cpp
+   ngram.cpp
++  rope_scaling.cpp
+   weights.cpp)
+ 
+ target_include_directories(gufo_qwen38_flash_next PUBLIC ${PROJECT_SOURCE_DIR})
+diff --git a/src/models/qwen38_flash_next/config.hpp b/src/models/qwen38_flash_next/config.hpp
+index 51f47de..986816e 100644
+--- a/src/models/qwen38_flash_next/config.hpp
++++ b/src/models/qwen38_flash_next/config.hpp
+@@ -9,6 +9,7 @@
+ #include <vector>
+ 
+ #include "src/core/gguf_reader.hpp"
++#include "src/models/qwen38_flash_next/rope_scaling.hpp"
+ 
+ namespace gufo::models::qwen38_flash_next {
+ 
+@@ -38,6 +39,10 @@ struct Config {
+   std::uint32_t rotary_dim{0};               ///< 64
+   float rope_theta{0.0F};                    ///< 1e7
+   std::array<std::uint32_t, 4> rope_sections{};
++  /// Static YaRN, set by `ModelOptions::rope_scaling`; the GGUF loader sets
++  /// no rope-scaling keys of its own today. The native `context_length`
++  /// above is never rewritten.
++  RopeScaling rope_scaling{};
+ 
+   // Qwen Sparse Attention indexer (block top-k selection).
+   std::uint32_t indexer_heads{0};     ///< 4
+@@ -108,6 +113,18 @@ struct Config {
+     return ple_layer >= 0 && layer == static_cast<std::uint32_t>(ple_layer);
+   }
+ 
++  /// Longest session the rope configuration supports.
++  [[nodiscard]] std::uint32_t MaxContextLength() const noexcept {
++    return ScaledContextLength(rope_scaling, context_length);
++  }
++  /// uint32 words per sparse-mask row: one bit per compress_ratio block.
++  [[nodiscard]] std::uint32_t SparseMaskWords(
++      std::uint32_t context) const noexcept {
++    const std::uint32_t blocks =
++        (context + compress_ratio - 1) / compress_ratio;
++    return (blocks + 31) / 32;
++  }
++
+   /// The draft executes with trunk constants and shared vocabulary weights.
+   /// PLE/SSM parameters are intentionally excluded: the draft is full
+   /// attention.
+diff --git a/src/models/qwen38_flash_next/cpu_ops.cpp b/src/models/qwen38_flash_next/cpu_ops.cpp
+index d4d6020..6840e01 100644
+--- a/src/models/qwen38_flash_next/cpu_ops.cpp
++++ b/src/models/qwen38_flash_next/cpu_ops.cpp
+@@ -148,16 +148,23 @@ float Softplus(float x) noexcept {
+ }
+ 
+ void Rope(float* x, std::uint32_t heads, std::uint32_t head_dim,
+-          std::uint32_t rotary_dim, std::uint32_t pos, float theta) {
++          std::uint32_t rotary_dim, std::uint32_t pos, float theta,
++          const YarnRope& yarn) {
+   const std::uint32_t half = rotary_dim / 2;
+   for (std::uint32_t h = 0; h < heads; ++h) {
+     float* v = x + static_cast<std::size_t>(h) * head_dim;
+     for (std::uint32_t i = 0; i < half; ++i) {
+-      const float freq = std::pow(theta, -2.0F * static_cast<float>(i) /
+-                                             static_cast<float>(rotary_dim));
++      float freq = std::pow(theta, -2.0F * static_cast<float>(i) /
++                                       static_cast<float>(rotary_dim));
++      if (yarn.enabled != 0)
++        freq *= YarnPairMultiplier(yarn, i);
+       const float angle = static_cast<float>(pos) * freq;
+-      const float c = std::cos(angle);
+-      const float s = std::sin(angle);
++      float c = std::cos(angle);
++      float s = std::sin(angle);
++      if (yarn.enabled != 0) {
++        c *= yarn.mscale;
++        s *= yarn.mscale;
++      }
+       const float a = v[i];
+       const float b = v[i + half];
+       v[i] = a * c - b * s;
+diff --git a/src/models/qwen38_flash_next/cpu_ops.hpp b/src/models/qwen38_flash_next/cpu_ops.hpp
+index 71e085d..53ff7a0 100644
+--- a/src/models/qwen38_flash_next/cpu_ops.hpp
++++ b/src/models/qwen38_flash_next/cpu_ops.hpp
+@@ -5,6 +5,7 @@
+ #include <cstdint>
+ #include <span>
+ 
++#include "src/models/qwen38_flash_next/rope_scaling.hpp"
+ #include "src/models/qwen38_flash_next/weights.hpp"
+ 
+ /// Scalar CPU operators for the reference model: one row at a time, every
+@@ -35,9 +36,11 @@ void L2Norm(std::span<float> x, float eps);
+ /// NEOX-style partial rotary embedding on the first `rotary_dim` elements of
+ /// each `head_dim` head: pair (i, i + rotary_dim/2) rotates by pos * theta_i.
+ /// Text-only IMRoPE has equal positions on every section, so it is exactly
+-/// this rotation.
++/// this rotation. With `yarn` enabled each pair's frequency is multiplied by
++/// YarnPairMultiplier and cos/sin by yarn.mscale.
+ void Rope(float* x, std::uint32_t heads, std::uint32_t head_dim,
+-          std::uint32_t rotary_dim, std::uint32_t pos, float theta);
++          std::uint32_t rotary_dim, std::uint32_t pos, float theta,
++          const YarnRope& yarn = {});
+ 
+ }  // namespace gufo::models::qwen38_flash_next::cpu
+ 
+diff --git a/src/models/qwen38_flash_next/engine.cpp b/src/models/qwen38_flash_next/engine.cpp
+index 0a9f423..3e6b347 100644
+--- a/src/models/qwen38_flash_next/engine.cpp
++++ b/src/models/qwen38_flash_next/engine.cpp
+@@ -92,10 +92,18 @@ std::shared_ptr<Model> Model::Load(const std::string& model_path,
+     return nullptr;
+   }
+   m->weights_ = std::make_unique<ModelWeights>(std::move(*weights));
++  if (options.rope_scaling.has_value()) {
++    if (!ValidateRopeScaling(*options.rope_scaling,
++                             m->weights_->config.context_length, error_msg)) {
++      return nullptr;
++    }
++    m->weights_->config.rope_scaling = *options.rope_scaling;
++  }
+   const Config& c = m->weights_->config;
+-  if (options.max_context == 0 || options.max_context > c.context_length) {
++  if (options.max_context == 0 || options.max_context > c.MaxContextLength()) {
+     AssignError(error_msg, "context exceeds the model's " +
+-                               std::to_string(c.context_length) + " tokens");
++                               std::to_string(c.MaxContextLength()) +
++                               " tokens");
+     return nullptr;
+   }
+   try {
+@@ -145,6 +153,7 @@ std::shared_ptr<Model> Model::Load(const std::string& model_path,
+                 exec.max_batch, std::uint64_t{options.max_draft_tokens} + 1))
+           : 1;
+   exec.max_speculative = exec.max_logit_rows;
++  exec.max_context = options.max_context;
+   m->executor_ =
+       rocm::Executor::Create(*m->device_, m->ngram_.get(), exec, error_msg);
+   if (!m->executor_) {
+diff --git a/src/models/qwen38_flash_next/engine.hpp b/src/models/qwen38_flash_next/engine.hpp
+index 695443a..d6a2a7a 100644
+--- a/src/models/qwen38_flash_next/engine.hpp
++++ b/src/models/qwen38_flash_next/engine.hpp
+@@ -5,6 +5,7 @@
+ #include <cstdint>
+ #include <functional>
+ #include <memory>
++#include <optional>
+ #include <span>
+ #include <string>
+ #include <string_view>
+@@ -46,6 +47,11 @@ struct ModelOptions {
+   /// Fixed serving capacity used by the calibrated MTP cost model. Keeping
+   /// it independent of scheduler timing preserves seeded request replay.
+   std::uint32_t decode_concurrency = 1;
++  /// Static YaRN scaling, derived by the caller (serve, bench) from the
++  /// requested context via `RopeScalingForContext`. Empty leaves the
++  /// artifact's own setting, which is always off: no GGUF metadata key sets
++  /// it today.
++  std::optional<RopeScaling> rope_scaling{};
+ };
+ 
+ class Session;
+@@ -204,7 +210,7 @@ public:
+   }
+ 
+   /// Compatibility version; bump on payload or inference arithmetic changes.
+-  static constexpr std::uint32_t kSnapshotPayloadVersion = 16;
++  static constexpr std::uint32_t kSnapshotPayloadVersion = 17;
+   /// Bytes a snapshot of the current context occupies.
+   [[nodiscard]] std::uint64_t SnapshotBytes() const;
+   [[nodiscard]] std::uint64_t PrefillCheckpointBytes(
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
+index 77ebf3d..9c7e026 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
+@@ -901,6 +901,12 @@ std::unique_ptr<Executor> Executor::Create(const DeviceModel& model,
+     return nullptr;
+   }
+   const Config& c = model.config();
++  if (options.max_context > c.MaxContextLength()) {
++    AssignError(error_msg, "executor context exceeds the model context");
++    return nullptr;
++  }
++  e->context_capacity_ = std::max(c.context_length, options.max_context);
++  e->yarn_ = MakeYarnRope(c.rope_scaling, c.rotary_dim, c.rope_theta);
+   const std::size_t T = e->options_.max_batch;
+   e->blaslt_ = BlasLt::Create(e->stream_, error_msg);
+   if (e->blaslt_ == nullptr) {
+@@ -951,9 +957,7 @@ std::unique_ptr<Executor> Executor::Create(const DeviceModel& model,
+   s.v = f32(T * c.AttentionKvDim());
+   s.iq = f32(T * c.indexer_heads * c.indexer_head_dim);
+   s.ik = f32(T * c.indexer_head_dim);
+-  const std::uint32_t max_blocks =
+-      (c.context_length + c.compress_ratio - 1) / c.compress_ratio;
+-  e->mask_words_ = (max_blocks + 31) / 32;
++  e->mask_words_ = c.SparseMaskWords(e->context_capacity_);
+   s.mask = Alloc<std::uint32_t>(a, T * e->mask_words_, error_msg);
+   // Keep score/selection traffic near the device cache size. Captured
+   // verification still needs all its rows at the maximum context.
+@@ -1094,7 +1098,7 @@ std::unique_ptr<Session> Executor::CreateSession(core::SessionMode mode,
+     return nullptr;
+   }
+   const Config& c = config();
+-  if (max_context == 0 || max_context > c.context_length) {
++  if (max_context == 0 || max_context > context_capacity_) {
+     AssignError(error_msg, "session context exceeds the model context");
+     return nullptr;
+   }
+@@ -2001,7 +2005,7 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
+           l.attn_qkv.data, static_cast<const __half*>(s_.x_half),
+           l.attn_q_norm.f32(), l.attn_k_norm.f32(), s_.q, s_.attn_gate,
+           s.k_cache, s.v_cache, n_tokens, pos, c.rope_theta, c.rms_eps, stream_,
+-          s.rope);
++          s.rope, yarn_);
+       if (!prepared) {
+         AssignError(error_msg, "fused attention projection failed");
+         return false;
+@@ -2015,7 +2019,7 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
+           s_.qg, l.attn_qkv.rows, l.attn_q_norm.f32(), l.attn_k_norm.f32(),
+           s_.q, s_.attn_gate, s.k_cache, s.v_cache, n_tokens, c.num_heads,
+           c.num_kv_heads, c.head_dim, c.rotary_dim, pos, c.rope_theta,
+-          c.rms_eps, stream_, s.rope, prefill_phase);
++          c.rms_eps, stream_, s.rope, prefill_phase, yarn_);
+       if (!prepared) {
+         UnpackQGate(s_.qg, l.attn_qkv.rows, s_.q, s_.attn_gate, s_.k, s_.v,
+                     n_tokens, c.num_heads, c.head_dim, kv_row, stream_);
+@@ -2039,9 +2043,9 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
+     RmsNormRows(s_.k, l.attn_k_norm.f32(), s_.k, n_tokens * c.num_kv_heads,
+                 c.head_dim, 1, c.rms_eps, stream_);
+     Rope(s_.q, n_tokens, c.num_heads, c.head_dim, c.rotary_dim, pos,
+-         c.rope_theta, stream_, s.rope);
++         c.rope_theta, stream_, s.rope, yarn_);
+     Rope(s_.k, n_tokens, c.num_kv_heads, c.head_dim, c.rotary_dim, pos,
+-         c.rope_theta, stream_, s.rope);
++         c.rope_theta, stream_, s.rope, yarn_);
+     StoreKv(s_.k, s.k_cache, n_tokens, kv_row, pos, stream_);
+     StoreKv(s_.v, s.v_cache, n_tokens, kv_row, pos, stream_);
+   }
+@@ -2066,11 +2070,11 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
+                 n_tokens * c.indexer_heads, c.indexer_head_dim, 1, c.rms_eps,
+                 stream_);
+     Rope(s_.iq, n_tokens, c.indexer_heads, c.indexer_head_dim, c.rotary_dim,
+-         pos, c.rope_theta, stream_, s.rope);
++         pos, c.rope_theta, stream_, s.rope, yarn_);
+     PoolIndexerBlocks(s.index_k, l.indexer_k_norm.f32(), s.block_k, first_block,
+                       pos, n_tokens, pool_grid, c.compress_ratio,
+                       c.indexer_head_dim, c.rotary_dim, c.rope_theta, c.rms_eps,
+-                      index_capacity, stream_, s.rope);
++                      index_capacity, stream_, s.rope, yarn_);
+     // Align score rows to full cache lines. The selector still considers
+     // only complete causal blocks, so padding cannot change the ranking.
+     // Wide prefill is never captured: compact score rows to the populated
+@@ -2840,10 +2844,17 @@ struct SnapshotHeader {
+   std::uint32_t mtp_residual_valid;
+   std::uint32_t hidden_rows;
+   std::uint32_t image_count;
++  // Rotated K depends on the rope scaling at every position.
++  float rope_factor;
++  std::uint32_t rope_original_context;
++  float rope_beta_fast;
++  float rope_beta_slow;
+   std::array<std::int32_t, Config::kMaxPleNgram - 1> ngram_prev;
+   std::uint64_t payload_bytes;
+ };
+ static_assert(std::is_trivially_copyable_v<SnapshotHeader>);
++// The four rope fields must not push payload_bytes off its 8-byte alignment.
++static_assert(offsetof(SnapshotHeader, payload_bytes) == 104);
+ 
+ namespace {
+ 
+@@ -2865,6 +2876,17 @@ SnapshotHeader MakeSnapshotHeader(const Config& c, bool has_mtp,
+   h.image_count = std::ranges::count_if(
+       session.VisionLayout().images,
+       [&](const auto& image) { return image.offset < h.position; });
++  // Disabled scaling has one disk-cache identity ("absolute-v1" from
++  // RopePositionPolicy) regardless of whatever original_context/beta the
++  // config happens to carry, so the header must normalize to the same
++  // defaults rather than echo them raw (else two "off" configs that differ
++  // only in those unused fields would collide on identity but disagree on
++  // SameGeometry, and neither could restore the other's snapshot).
++  const RopeScaling rope = NormalizedRopeScaling(c.rope_scaling);
++  h.rope_factor = rope.factor;
++  h.rope_original_context = rope.original_context;
++  h.rope_beta_fast = rope.beta_fast;
++  h.rope_beta_slow = rope.beta_slow;
+   return h;
+ }
+ 
+@@ -2876,7 +2898,11 @@ bool SameGeometry(const SnapshotHeader& h, const SnapshotHeader& mine) {
+          h.kv_row == mine.kv_row &&
+          h.indexer_head_dim == mine.indexer_head_dim &&
+          h.compress_ratio == mine.compress_ratio && h.hc_dim == mine.hc_dim &&
+-         h.ple_elems == mine.ple_elems && h.has_mtp == mine.has_mtp;
++         h.ple_elems == mine.ple_elems && h.has_mtp == mine.has_mtp &&
++         h.rope_factor == mine.rope_factor &&
++         h.rope_original_context == mine.rope_original_context &&
++         h.rope_beta_fast == mine.rope_beta_fast &&
++         h.rope_beta_slow == mine.rope_beta_slow;
+ }
+ 
+ }  // namespace
+@@ -3762,7 +3788,7 @@ bool Executor::MtpBody(Session& session, std::uint32_t n, std::uint32_t pos,
+                           nullptr, attn.k_cache, attn.v_cache, n, 0,
+                           c.num_kv_heads, c.head_dim, c.rotary_dim,
+                           &session.control_->mtp_position, c.rope_theta,
+-                          c.rms_eps, stream_, attn.rope)) {
++                          c.rms_eps, stream_, attn.rope, false, yarn_)) {
+       AssignError(error_msg, "MTP cache projection failed");
+       return false;
+     }
+@@ -3773,11 +3799,11 @@ bool Executor::MtpBody(Session& session, std::uint32_t n, std::uint32_t pos,
+     StoreRows(s_.ik, attn.index_k, n, c.indexer_head_dim,
+               &session.control_->mtp_position, capacity, stream_);
+     if (pos + n > c.indexer_top_k) {
+-      PoolIndexerBlocks(attn.index_k, l.indexer_k_norm.f32(), attn.block_k,
+-                        &session.control_->mtp_blocks,
+-                        &session.control_->mtp_position, n, pool_grid,
+-                        c.compress_ratio, c.indexer_head_dim, c.rotary_dim,
+-                        c.rope_theta, c.rms_eps, capacity, stream_, attn.rope);
++      PoolIndexerBlocks(
++          attn.index_k, l.indexer_k_norm.f32(), attn.block_k,
++          &session.control_->mtp_blocks, &session.control_->mtp_position, n,
++          pool_grid, c.compress_ratio, c.indexer_head_dim, c.rotary_dim,
++          c.rope_theta, c.rms_eps, capacity, stream_, attn.rope, yarn_);
+     }
+     return true;
+   }
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp b/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
+index b7bbcad..486c1c4 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
+@@ -226,6 +226,9 @@ public:
+     std::uint32_t max_logit_rows{1};
+     /// Longest speculative batch; bounds the recurrent snapshot storage.
+     std::uint32_t max_speculative{1};
++    /// Largest session context. Zero selects the native context; values
++    /// above it require YaRN (Config::MaxContextLength()).
++    std::uint32_t max_context{0};
+   };
+ 
+   ~Executor();
+@@ -623,6 +626,11 @@ private:
+     return selected_logits_ != nullptr ? selected_logits_ : s_.logits;
+   }
+   std::uint32_t mask_words_{0};
++  /// Session capacity the sparse-mask rows and score scratch are sized for:
++  /// max(native context, Options::max_context).
++  std::uint32_t context_capacity_{0};
++  /// YaRN constants every rope launch receives (disabled: original path).
++  YarnRope yarn_{};
+   /// Bounded score scratch, shared by sequential selector chunks.
+   std::size_t select_score_floats_{0};
+   std::vector<void*> allocations_;
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
+index 9b8e63a..29d0902 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
+@@ -1683,9 +1683,36 @@ __global__ void UnpackQGateKernel(const float* qg, std::uint32_t qg_stride,
+   }
+ }
+ 
++// YarnRope travels to the kernels by value as a plain 20-byte argument.
++// Every rope kernel is instantiated with and without YaRN (`kYarn`) and the
++// launcher picks one on the host: a runtime branch in the default kernel let
++// fast-math contract its rotation differently, so the default instantiation
++// keeps the original code and only the YaRN one carries the extra work.
++static_assert(std::is_trivially_copyable_v<YarnRope> && sizeof(YarnRope) == 20);
++
++// YaRN frequency. The product is kept opaque so every rope site rounds the
++// angle identically: fast-math may otherwise reassociate position * freq *
++// multiplier differently per kernel and break cross-site byte identity.
++__device__ __forceinline__ float YarnFrequency(float freq, std::uint32_t pair,
++                                               const YarnRope& yarn) {
++  float scaled = freq * YarnPairMultiplier(yarn, pair);
++  asm volatile("" : "+v"(scaled));
++  return scaled;
++}
++
++// YaRN attention factor on cos and sin, opaque for the same reason: the
++// sites rotate with different expressions (explicit FMA or fast-math
++// contraction), which must all see the same rounded scaled values.
++__device__ __forceinline__ void YarnScale(float& sine, float& cosine,
++                                          const YarnRope& yarn) {
++  sine *= yarn.mscale;
++  cosine *= yarn.mscale;
++  asm volatile("" : "+v"(sine), "+v"(cosine));
++}
++
+ // Keep each head's original eight-wave reduction. Heads in a block share
+ // rotary angles; normalization statistics remain independent.
+-template<std::uint32_t kHeadsPerBlock>
++template<std::uint32_t kHeadsPerBlock, bool kYarn>
+ __global__ void PrepareAttentionKernel(
+     const float* __restrict__ packed, std::uint32_t stride,
+     const float* __restrict__ q_gamma, const float* __restrict__ k_gamma,
+@@ -1693,7 +1720,8 @@ __global__ void PrepareAttentionKernel(
+     __half* __restrict__ k_cache, __half* __restrict__ v_cache,
+     std::uint32_t heads, std::uint32_t kv_heads, std::uint32_t d,
+     std::uint32_t rotary, const std::uint32_t* start_pos, float theta,
+-    float eps, const qwen::vision::DeviceRope* rope) {
++    float eps, const qwen::vision::DeviceRope* rope,
++    [[maybe_unused]] YarnRope yarn) {
+   __shared__ float partial[kHeadsPerBlock][8];
+   __shared__ float norm[kHeadsPerBlock][256];
+   const std::uint32_t t = blockIdx.x, first = blockIdx.y * kHeadsPerBlock,
+@@ -1747,10 +1775,14 @@ __global__ void PrepareAttentionKernel(
+   const std::uint32_t half = rotary / 2;
+   float sine = 0.0f, cosine = 0.0f;
+   if (tid < half) {
+-    const float freq = powf(
++    float freq = powf(
+         theta, -2.0f * static_cast<float>(tid) / static_cast<float>(rotary));
++    if constexpr (kYarn)
++      freq = YarnFrequency(freq, tid, yarn);
+     sincosf(qwen::vision::RopePosition(rope, *start_pos + t, tid) * freq, &sine,
+             &cosine);
++    if constexpr (kYarn)
++      YarnScale(sine, cosine, yarn);
+   }
+ #pragma unroll
+   for (std::uint32_t j = 0; j < kHeadsPerBlock; ++j) {
+@@ -1783,25 +1815,38 @@ __global__ void PrepareAttentionKernel(
+   }
+ }
+ 
++template<bool kYarn>
+ __global__ void RopeKernel(float* x, std::uint32_t heads, std::uint32_t d,
+                            std::uint32_t rotary_dim,
+                            const std::uint32_t* start_pos, float theta,
+-                           const qwen::vision::DeviceRope* rope) {
++                           const qwen::vision::DeviceRope* rope,
++                           [[maybe_unused]] YarnRope yarn) {
+   const std::uint32_t t = blockIdx.x;
+   const std::uint32_t half = rotary_dim / 2;
+   for (std::uint32_t idx = threadIdx.x; idx < heads * half; idx += blockDim.x) {
+     const std::uint32_t h = idx / half;
+     const std::uint32_t i = idx % half;
+     float* v = x + (static_cast<std::size_t>(t) * heads + h) * d;
+-    const float freq = powf(
++    float freq = powf(
+         theta, -2.0f * static_cast<float>(i) / static_cast<float>(rotary_dim));
++    if constexpr (kYarn)
++      freq = YarnFrequency(freq, i, yarn);
+     float s = 0.0f;
+     float c = 0.0f;
+     sincosf(qwen::vision::RopePosition(rope, *start_pos + t, i) * freq, &s, &c);
++    if constexpr (kYarn)
++      YarnScale(s, c, yarn);
+     const float a = v[i];
+     const float b = v[i + half];
+-    v[i] = a * c - b * s;
+-    v[i + half] = a * s + b * c;
++    if constexpr (kYarn) {
++      // Explicit rounding, as in PrepareAttention and the GEMM epilogue:
++      // fast-math may otherwise contract a * s + b * c either way round.
++      v[i] = __fmaf_rn(a, c, -__fmul_rn(b, s));
++      v[i + half] = __fmaf_rn(a, s, __fmul_rn(b, c));
++    } else {
++      v[i] = a * c - b * s;
++      v[i + half] = a * s + b * c;
++    }
+   }
+ }
+ 
+@@ -1830,14 +1875,13 @@ __global__ void StoreRowsKernel(const float* src, float* dst,
+ /// grid: the most blocks a batch can complete. Block b pools raw keys
+ /// [b*ratio, (b+1)*ratio) once every one of them is stored, i.e. for
+ /// b in [*first_block, (*start_pos + n_tokens) / ratio).
+-__global__ void PoolBlocksKernel(const float* raw, const float* gamma,
+-                                 __half* blocks,
+-                                 const std::uint32_t* first_block,
+-                                 const std::uint32_t* start_pos,
+-                                 std::uint32_t n_tokens, std::uint32_t ratio,
+-                                 std::uint32_t dim, std::uint32_t rotary_dim,
+-                                 float theta, float eps, std::uint32_t capacity,
+-                                 const qwen::vision::DeviceRope* rope) {
++template<bool kYarn>
++__global__ void PoolBlocksKernel(
++    const float* raw, const float* gamma, __half* blocks,
++    const std::uint32_t* first_block, const std::uint32_t* start_pos,
++    std::uint32_t n_tokens, std::uint32_t ratio, std::uint32_t dim,
++    std::uint32_t rotary_dim, float theta, float eps, std::uint32_t capacity,
++    const qwen::vision::DeviceRope* rope, [[maybe_unused]] YarnRope yarn) {
+   __shared__ float v[256];
+   __shared__ float shared[32];
+   const std::uint32_t b = *first_block + blockIdx.x;
+@@ -1863,11 +1907,15 @@ __global__ void PoolBlocksKernel(const float* raw, const float* gamma,
+   float outv = i < dim ? v[i] : 0.0f;
+   if (i < rotary_dim) {
+     const std::uint32_t p = i < half ? i : i - half;
+-    const float freq = powf(
++    float freq = powf(
+         theta, -2.0f * static_cast<float>(p) / static_cast<float>(rotary_dim));
++    if constexpr (kYarn)
++      freq = YarnFrequency(freq, p, yarn);
+     float s = 0.0f;
+     float c = 0.0f;
+     sincosf(qwen::vision::RopePosition(rope, b * ratio, p) * freq, &s, &c);
++    if constexpr (kYarn)
++      YarnScale(s, c, yarn);
+     const float a = v[p];
+     const float bb = v[p + half];
+     outv = i < half ? a * c - bb * s : a * s + bb * c;
+@@ -2847,7 +2895,8 @@ constexpr std::uint32_t kWmmaRatio = 4;
+ constexpr std::uint32_t kWmmaKSteps = kWmmaHeadDim / 16;
+ // Row padding keeps a 16-byte-per-lane fragment read off a single bank group.
+ constexpr std::uint32_t kWmmaKStride = kWmmaHeadDim + 8;
+-// Union-mask capacity: one bit per 4-token block, 262,144 tokens of context.
++// Union-mask capacity of the live visible extent: one bit per 4-token block,
++// 262,144 visible tokens. Rows may be strided wider.
+ constexpr std::uint32_t kWmmaMaxMaskWords = 2048;
+ 
+ /// Two row layouts share the kernel. The dense window packs 16 queries x 2
+@@ -4921,6 +4970,7 @@ struct AttentionProjectionOutput {
+   float theta;
+   float eps;
+   const qwen::vision::DeviceRope* rope;
++  YarnRope yarn;
+ };
+ 
+ /// Dense F16 WMMA GEMM over Q8_0 or F16 weights: block = BM rows x BN tokens,
+@@ -4932,7 +4982,7 @@ struct AttentionProjectionOutput {
+ /// and use the same ordered K16 products. y is [batch][m].
+ template<int BM, int BN, int BK, int WM, int WN, int kRowGroup = 1,
+          bool kHcMix = false, bool kSsmConv = false, bool kAttention = false,
+-         bool kHalfWeights = false, bool kBf16 = false>
++         bool kHalfWeights = false, bool kBf16 = false, bool kYarn = false>
+ __launch_bounds__(256) __global__ void DenseF16GEMMKernel(
+     const void* __restrict__ w, const __half* __restrict__ x,
+     float* __restrict__ y, std::size_t batch, std::size_t m, std::size_t k,
+@@ -5260,13 +5310,17 @@ __launch_bounds__(256) __global__ void DenseF16GEMMKernel(
+               v[c] = v[c] * gamma[c * 32 + lane_id];
+               asm volatile("" : "+v"(v[c]));
+             }
+-            const float freq = powf(
+-                attention.theta, -2.0F * static_cast<float>(lane_id) / 64.0F);
++            float freq = powf(attention.theta,
++                              -2.0F * static_cast<float>(lane_id) / 64.0F);
++            if constexpr (kYarn)
++              freq = YarnFrequency(freq, lane_id, attention.yarn);
+             float sn = 0.0F, cs = 0.0F;
+             sincosf(qwen::vision::RopePosition(
+                         attention.rope, *attention.position + tok, lane_id) *
+                         freq,
+                     &sn, &cs);
++            if constexpr (kYarn)
++              YarnScale(sn, cs, attention.yarn);
+             const float lo = __fmaf_rn(v[0], cs, -__fmul_rn(v[1], sn));
+             const float hi = __fmaf_rn(v[0], sn, __fmul_rn(v[1], cs));
+             v[0] = lo;
+@@ -5502,19 +5556,29 @@ bool AttentionF16Gemm(const void* weights, const __half* input,
+                       float* gate, __half* keys, __half* values,
+                       std::uint32_t n_tokens, const std::uint32_t* position,
+                       float theta, float eps, hipStream_t stream,
+-                      const qwen::vision::DeviceRope* rope) {
++                      const qwen::vision::DeviceRope* rope,
++                      const YarnRope& yarn) {
+   if (n_tokens < 1024 || weights == nullptr || input == nullptr ||
+       q_gamma == nullptr || k_gamma == nullptr || query == nullptr ||
+       gate == nullptr || keys == nullptr || values == nullptr ||
+       position == nullptr)
+     return false;
+-  const AttentionProjectionOutput output{q_gamma, k_gamma,  query, gate, keys,
+-                                         values,  position, theta, eps,  rope};
++  const AttentionProjectionOutput output{q_gamma, k_gamma, query,    gate,
++                                         keys,    values,  position, theta,
++                                         eps,     rope,    yarn};
+   // One 256-row tile per query, gate, key or value head (52). Four row
+   // tiles per token tile in launch order share each activation tile's read
+   // (8.8 to 7.9 ms at 4,096 tokens). One K block per LDS stage halves the
+   // stage to 24 KB, so three blocks share a WGP instead of two (7.8 to
+   // 7.3 ms); the K order is unchanged.
++  if (yarn.enabled != 0) {
++    hipLaunchKernelGGL((DenseF16GEMMKernel<256, 128, 1, 8, 1, 4, false, false,
++                                           true, false, false, true>),
++                       dim3((n_tokens + 127) / 128, 52), dim3(kThreads), 0,
++                       stream, weights, input, nullptr, n_tokens, 13312, 2560,
++                       nullptr, nullptr, nullptr, nullptr, nullptr, output);
++    return true;
++  }
+   hipLaunchKernelGGL(
+       (DenseF16GEMMKernel<256, 128, 1, 8, 1, 4, false, false, true>),
+       dim3((n_tokens + 127) / 128, 52), dim3(kThreads), 0, stream, weights,
+@@ -5905,7 +5969,8 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
+                       std::uint32_t kv_heads, std::uint32_t d,
+                       std::uint32_t rotary_dim, const std::uint32_t* start_pos,
+                       float theta, float eps, hipStream_t stream,
+-                      const qwen::vision::DeviceRope* rope, bool prefill) {
++                      const qwen::vision::DeviceRope* rope, bool prefill,
++                      const YarnRope& yarn) {
+   if (d == 0 || d > 256 || rotary_dim == 0 || rotary_dim > d ||
+       rotary_dim % 2 != 0 || kv_heads == 0 ||
+       stride < static_cast<std::size_t>(2) * (heads + kv_heads) * d) {
+@@ -5913,18 +5978,34 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
+   }
+   if (n_tokens == 0)
+     return true;
+-  if (!prefill && n_tokens < 32) {
+-    hipLaunchKernelGGL((PrepareAttentionKernel<1>),
+-                       dim3(n_tokens, heads + kv_heads), dim3(kThreads), 0,
+-                       stream, packed, stride, q_gamma, k_gamma, q, gate,
+-                       k_cache, v_cache, heads, kv_heads, d, rotary_dim,
+-                       start_pos, theta, eps, rope);
++  if (yarn.enabled != 0) {
++    if (!prefill && n_tokens < 32) {
++      hipLaunchKernelGGL((PrepareAttentionKernel<1, true>),
++                         dim3(n_tokens, heads + kv_heads), dim3(kThreads), 0,
++                         stream, packed, stride, q_gamma, k_gamma, q, gate,
++                         k_cache, v_cache, heads, kv_heads, d, rotary_dim,
++                         start_pos, theta, eps, rope, yarn);
++    } else {
++      hipLaunchKernelGGL((PrepareAttentionKernel<4, true>),
++                         dim3(n_tokens, (heads + kv_heads + 3) / 4),
++                         dim3(kThreads), 0, stream, packed, stride, q_gamma,
++                         k_gamma, q, gate, k_cache, v_cache, heads, kv_heads, d,
++                         rotary_dim, start_pos, theta, eps, rope, yarn);
++    }
+   } else {
+-    hipLaunchKernelGGL((PrepareAttentionKernel<4>),
+-                       dim3(n_tokens, (heads + kv_heads + 3) / 4),
+-                       dim3(kThreads), 0, stream, packed, stride, q_gamma,
+-                       k_gamma, q, gate, k_cache, v_cache, heads, kv_heads, d,
+-                       rotary_dim, start_pos, theta, eps, rope);
++    if (!prefill && n_tokens < 32) {
++      hipLaunchKernelGGL((PrepareAttentionKernel<1, false>),
++                         dim3(n_tokens, heads + kv_heads), dim3(kThreads), 0,
++                         stream, packed, stride, q_gamma, k_gamma, q, gate,
++                         k_cache, v_cache, heads, kv_heads, d, rotary_dim,
++                         start_pos, theta, eps, rope, yarn);
++    } else {
++      hipLaunchKernelGGL((PrepareAttentionKernel<4, false>),
++                         dim3(n_tokens, (heads + kv_heads + 3) / 4),
++                         dim3(kThreads), 0, stream, packed, stride, q_gamma,
++                         k_gamma, q, gate, k_cache, v_cache, heads, kv_heads, d,
++                         rotary_dim, start_pos, theta, eps, rope, yarn);
++    }
+   }
+   return true;
+ }
+@@ -5932,9 +6013,15 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
+ void Rope(float* x, std::uint32_t n_tokens, std::uint32_t heads,
+           std::uint32_t d, std::uint32_t rotary_dim,
+           const std::uint32_t* start_pos, float theta, hipStream_t stream,
+-          const qwen::vision::DeviceRope* rope) {
+-  hipLaunchKernelGGL(RopeKernel, dim3(n_tokens), dim3(kThreads), 0, stream, x,
+-                     heads, d, rotary_dim, start_pos, theta, rope);
++          const qwen::vision::DeviceRope* rope, const YarnRope& yarn) {
++  if (yarn.enabled != 0)
++    hipLaunchKernelGGL(RopeKernel<true>, dim3(n_tokens), dim3(kThreads), 0,
++                       stream, x, heads, d, rotary_dim, start_pos, theta, rope,
++                       yarn);
++  else
++    hipLaunchKernelGGL(RopeKernel<false>, dim3(n_tokens), dim3(kThreads), 0,
++                       stream, x, heads, d, rotary_dim, start_pos, theta, rope,
++                       yarn);
+ }
+ 
+ void StoreKv(const float* src, __half* cache, std::uint32_t n_tokens,
+@@ -5957,14 +6044,21 @@ void PoolIndexerBlocks(const float* raw_keys, const float* gamma,
+                        std::uint32_t grid_blocks, std::uint32_t ratio,
+                        std::uint32_t dim, std::uint32_t rotary_dim, float theta,
+                        float eps, std::uint32_t capacity, hipStream_t stream,
+-                       const qwen::vision::DeviceRope* rope) {
++                       const qwen::vision::DeviceRope* rope,
++                       const YarnRope& yarn) {
+   if (grid_blocks == 0) {
+     return;
+   }
+-  hipLaunchKernelGGL(PoolBlocksKernel, dim3(grid_blocks), dim3(kThreads), 0,
+-                     stream, raw_keys, gamma, blocks, first_block, start_pos,
+-                     n_tokens, ratio, dim, rotary_dim, theta, eps, capacity,
+-                     rope);
++  if (yarn.enabled != 0)
++    hipLaunchKernelGGL(PoolBlocksKernel<true>, dim3(grid_blocks),
++                       dim3(kThreads), 0, stream, raw_keys, gamma, blocks,
++                       first_block, start_pos, n_tokens, ratio, dim, rotary_dim,
++                       theta, eps, capacity, rope, yarn);
++  else
++    hipLaunchKernelGGL(PoolBlocksKernel<false>, dim3(grid_blocks),
++                       dim3(kThreads), 0, stream, raw_keys, gamma, blocks,
++                       first_block, start_pos, n_tokens, ratio, dim, rotary_dim,
++                       theta, eps, capacity, rope, yarn);
+ }
+ 
+ void SelectBlocks(const float* q, const __half* blocks, std::uint32_t* mask,
+@@ -6019,10 +6113,19 @@ bool WmmaCausalAttention(const float* q, const float* gate,
+                          std::uint32_t ratio, hipStream_t stream,
+                          bool last_only) {
+   if (heads != kWmmaQueryHeads || kv_heads != kWmmaKvHeads ||
+-      d != kWmmaHeadDim || ratio != kWmmaRatio || n_tokens == 0 ||
+-      (mask != nullptr && mask_words > kWmmaMaxMaskWords)) {
++      d != kWmmaHeadDim || ratio != kWmmaRatio || n_tokens == 0) {
+     return false;
+   }
++  if (mask != nullptr) {
++    // The kernel's union mask covers the LIVE visible extent; mask_words is
++    // only the row stride and may be wider when the session capacity
++    // exceeds 262,144 tokens.
++    const std::uint64_t live_blocks =
++        (std::uint64_t{start_pos} + n_tokens + kWmmaRatio - 1) / kWmmaRatio;
++    const std::uint64_t live_words = (live_blocks + 31) / 32;
++    if (live_words > kWmmaMaxMaskWords || live_words > mask_words)
++      return false;
++  }
+   if (mask != nullptr) {
+     constexpr std::uint32_t kPackedQueries = 4;
+     const std::uint32_t first_group =
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
+index 8a72289..1f0f341 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
+@@ -9,6 +9,7 @@
+ 
+ #include "src/core/sampling.hpp"
+ #include "src/models/qwen/vision/rope.hpp"
++#include "src/models/qwen38_flash_next/rope_scaling.hpp"
+ 
+ /// Model-private HIP launchers for everything outside the quantized GEMM
+ /// tier. Activations are row-major float32 [tokens][dim] unless noted; every
+@@ -165,12 +166,14 @@ bool HcDownF16Gemm(const void* w, const void* x_tiled, __half* out,
+ /// Fixed geometry: 24 query heads, two KV heads, 256 dimensions, 64 rotary.
+ /// Requires at least 1024 tokens; cache capacity must include position +
+ /// tokens.
++/// With yarn enabled, applies static YaRN (see rope_scaling.hpp).
+ bool AttentionF16Gemm(const void* weights, const __half* input,
+                       const float* q_gamma, const float* k_gamma, float* query,
+                       float* gate, __half* keys, __half* values,
+                       std::uint32_t n_tokens, const std::uint32_t* position,
+                       float theta, float eps, hipStream_t stream,
+-                      const qwen::vision::DeviceRope* rope = nullptr);
++                      const qwen::vision::DeviceRope* rope = nullptr,
++                      const YarnRope& yarn = {});
+ 
+ /// Exact Q8_0 HC up projection and F16-input mixer for the Flash Next
+ /// 2560-hidden, rank-320 geometry. Returns false below 96 tokens or for other
+@@ -359,6 +362,7 @@ void UnpackQGate(const float* qg, std::uint32_t qg_stride, float* q,
+ /// Unpacks a stacked Q/gate/K/V projection, normalizes and rotates Q/K,
+ /// and writes the F16 caches. Returns false for heads wider than 256.
+ /// With zero query heads, packed contains only K/V and q/gate may be null.
++/// With yarn enabled, applies static YaRN (see rope_scaling.hpp).
+ bool PrepareAttention(const float* packed, std::uint32_t stride,
+                       const float* q_gamma, const float* k_gamma, float* q,
+                       float* gate, __half* k_cache, __half* v_cache,
+@@ -367,16 +371,18 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
+                       std::uint32_t rotary_dim, const std::uint32_t* start_pos,
+                       float theta, float eps, hipStream_t stream,
+                       const qwen::vision::DeviceRope* rope = nullptr,
+-                      bool prefill = false);
++                      bool prefill = false, const YarnRope& yarn = {});
+ 
+ /// NEOX partial rotary on x [t][heads][d] at positions start_pos + t.
+ /// Positions are read from device memory (`start_pos` points at the
+ /// session's control block) so a captured decode graph replays at any
+ /// position.
++/// With yarn enabled, applies static YaRN (see rope_scaling.hpp).
+ void Rope(float* x, std::uint32_t n_tokens, std::uint32_t heads,
+           std::uint32_t d, std::uint32_t rotary_dim,
+           const std::uint32_t* start_pos, float theta, hipStream_t stream,
+-          const qwen::vision::DeviceRope* rope = nullptr);
++          const qwen::vision::DeviceRope* rope = nullptr,
++          const YarnRope& yarn = {});
+ 
+ /// Stores f32 rows into the f16 cache at positions start_pos + t:
+ /// cache[(start_pos + t)][row_dim].
+@@ -394,13 +400,15 @@ void StoreRows(const float* src, float* dst, std::uint32_t n_tokens,
+ /// block start position, then round once to F16 for scoring.
+ /// `grid_blocks` bounds how many blocks one launch
+ /// can pool (a device-side bound is not available at launch time).
++/// With yarn enabled, applies static YaRN (see rope_scaling.hpp).
+ void PoolIndexerBlocks(const float* raw_keys, const float* gamma,
+                        __half* blocks, const std::uint32_t* first_block,
+                        const std::uint32_t* start_pos, std::uint32_t n_tokens,
+                        std::uint32_t grid_blocks, std::uint32_t ratio,
+                        std::uint32_t dim, std::uint32_t rotary_dim, float theta,
+                        float eps, std::uint32_t capacity, hipStream_t stream,
+-                       const qwen::vision::DeviceRope* rope = nullptr);
++                       const qwen::vision::DeviceRope* rope = nullptr,
++                       const YarnRope& yarn = {});
+ 
+ /// Per query t (position *start_pos + first_token + t): scores every
+ /// complete block below its own tail, keeps the `budget` highest, and
+@@ -434,6 +442,8 @@ void Attention(const float* q, const __half* k_cache, const __half* v_cache,
+ /// false, launching nothing, when the geometry is not the model's 24 x 256
+ /// heads over two KV heads. `last_only` computes only the final dense query
+ /// tile, retaining its key sweep and leaving earlier output rows untouched.
++/// Returns false when the visible extent exceeds 262,144 tokens; the caller
++/// falls back to Attention.
+ bool WmmaCausalAttention(const float* q, const float* gate,
+                          const __half* k_cache, const __half* v_cache,
+                          const std::uint32_t* mask, std::uint32_t mask_words,
+diff --git a/src/models/qwen38_flash_next/reference.cpp b/src/models/qwen38_flash_next/reference.cpp
+index 9bcf226..b785c9b 100644
+--- a/src/models/qwen38_flash_next/reference.cpp
++++ b/src/models/qwen38_flash_next/reference.cpp
+@@ -16,6 +16,7 @@ ReferenceModel::ReferenceModel(const ModelWeights& weights, NgramTable* ngram,
+                                std::uint32_t max_context, Storage storage)
+     : w_(weights),
+       c_(weights.config),
++      yarn_(MakeYarnRope(c_.rope_scaling, c_.rotary_dim, c_.rope_theta)),
+       storage_(storage),
+       ngram_(ngram),
+       max_context_(max_context) {
+@@ -349,7 +350,8 @@ void ReferenceModel::Attention(const LayerWeights& l, AttentionState& s,
+   const auto rope = [&](float* values, std::uint32_t heads, std::uint32_t dim,
+                         std::uint32_t physical) {
+     if (layout == nullptr) {
+-      cpu::Rope(values, heads, dim, c_.rotary_dim, physical, c_.rope_theta);
++      cpu::Rope(values, heads, dim, c_.rotary_dim, physical, c_.rope_theta,
++                yarn_);
+       return;
+     }
+     const auto coordinates = layout->Position(physical);
+@@ -359,12 +361,20 @@ void ReferenceModel::Attention(const LayerWeights& l, AttentionState& s,
+         const auto axis = i % 3 == 1 && i < 33   ? 1
+                           : i % 3 == 2 && i < 30 ? 2
+                                                  : 0;
+-        const float angle = coordinates[axis] *
+-                            std::pow(c_.rope_theta, -2.0F * i / c_.rotary_dim);
++        float freq = std::pow(c_.rope_theta, -2.0F * i / c_.rotary_dim);
++        if (yarn_.enabled != 0)
++          freq *= YarnPairMultiplier(yarn_, i);
++        const float angle = coordinates[axis] * freq;
++        float cs = std::cos(angle);
++        float sn = std::sin(angle);
++        if (yarn_.enabled != 0) {
++          cs *= yarn_.mscale;
++          sn *= yarn_.mscale;
++        }
+         const auto offset = static_cast<std::size_t>(h) * dim + i;
+         const float a = values[offset], b = values[offset + pairs];
+-        values[offset] = a * std::cos(angle) - b * std::sin(angle);
+-        values[offset + pairs] = a * std::sin(angle) + b * std::cos(angle);
++        values[offset] = a * cs - b * sn;
++        values[offset + pairs] = a * sn + b * cs;
+       }
+     }
+   };
+diff --git a/src/models/qwen38_flash_next/reference.hpp b/src/models/qwen38_flash_next/reference.hpp
+index 9375597..5422b20 100644
+--- a/src/models/qwen38_flash_next/reference.hpp
++++ b/src/models/qwen38_flash_next/reference.hpp
+@@ -84,6 +84,7 @@ private:
+ 
+   const ModelWeights& w_;
+   const Config& c_;
++  YarnRope yarn_;  ///< From c_.rope_scaling.
+   Storage storage_;
+   NgramTable* ngram_;
+   std::uint32_t max_context_;
+diff --git a/src/models/qwen38_flash_next/rope_scaling.cpp b/src/models/qwen38_flash_next/rope_scaling.cpp
+new file mode 100644
+index 0000000..b12f969
+--- /dev/null
++++ b/src/models/qwen38_flash_next/rope_scaling.cpp
+@@ -0,0 +1,121 @@
++#include "src/models/qwen38_flash_next/rope_scaling.hpp"
++
++#include <algorithm>
++#include <cmath>
++#include <limits>
++#include <locale>
++#include <numbers>
++#include <optional>
++#include <sstream>
++
++namespace gufo::models::qwen38_flash_next {
++
++bool ValidateRopeScaling(const RopeScaling& scaling,
++                         std::uint32_t native_context, std::string* error) {
++  const auto fail = [&](const char* message) {
++    if (error != nullptr)
++      *error = message;
++    return false;
++  };
++  if (!std::isfinite(scaling.factor) || scaling.factor < 1.0F)
++    return fail("YaRN factor must be finite and at least 1");
++  if (!scaling.Enabled())
++    return true;
++  if (scaling.original_context == 0 ||
++      scaling.original_context > native_context)
++    return fail("YaRN original context must be within the native context");
++  if (!std::isfinite(scaling.beta_fast) || !std::isfinite(scaling.beta_slow) ||
++      scaling.beta_slow <= 0.0F || scaling.beta_fast <= scaling.beta_slow)
++    return fail("YaRN betas must satisfy beta_fast > beta_slow > 0");
++  if (static_cast<double>(scaling.original_context) * scaling.factor >
++      static_cast<double>(kMaxRopePositions))
++    return fail("YaRN context exceeds 16777216 exact rope positions");
++  return true;
++}
++
++std::uint32_t ScaledContextLength(const RopeScaling& scaling,
++                                  std::uint32_t native_context) noexcept {
++  if (!scaling.Enabled() || !std::isfinite(scaling.factor))
++    return native_context;
++  const double scaled =
++      std::floor(static_cast<double>(scaling.original_context) *
++                 static_cast<double>(scaling.factor));
++  const auto bounded = static_cast<std::uint32_t>(
++      std::min(scaled, static_cast<double>(kMaxRopePositions)));
++  return std::max(native_context, bounded);
++}
++
++std::optional<RopeScaling> RopeScalingForContext(
++    std::uint32_t requested, std::uint32_t native) noexcept {
++  // native == 0 means the caller could not read a native context (e.g. a
++  // GGUF missing qwen4exp.context_length); dividing by it would be +-inf.
++  // Leave YaRN off and let the caller's existing "context exceeds the
++  // model's N tokens" check in Model::Load reject the request instead.
++  if (native == 0 || requested <= native)
++    return std::nullopt;
++  RopeScaling scaling{
++      .factor = static_cast<float>(static_cast<double>(requested) /
++                                   static_cast<double>(native)),
++      .original_context = native,
++  };
++  // The float ratio can round down from the exact double value and floor
++  // `ScaledContextLength` one token below `requested`; nudge the factor up
++  // by the smallest float steps until the scaled ceiling covers it. Only
++  // fires for a non-power-of-two native context (the shipped 262,144 is
++  // exact for every valid `requested`, so the loop is a zero-iteration
++  // no-op there). Bounded by `ScaledContextLength`'s own kMaxRopePositions
++  // clamp, so a pathological input still terminates.
++  while (std::isfinite(scaling.factor) &&
++         ScaledContextLength(scaling, native) < requested &&
++         ScaledContextLength(scaling, native) < kMaxRopePositions) {
++    scaling.factor =
++        std::nextafter(scaling.factor, std::numeric_limits<float>::infinity());
++  }
++  return scaling;
++}
++
++YarnRope MakeYarnRope(const RopeScaling& scaling, std::uint32_t rotary_dim,
++                      float theta) noexcept {
++  if (!scaling.Enabled())
++    return {};
++  // HF find_correction_dim: the pair index completing `rotations` turns over
++  // the original context.
++  const auto dim = [&](double rotations) {
++    return static_cast<double>(rotary_dim) *
++           std::log(static_cast<double>(scaling.original_context) /
++                    (rotations * 2.0 * std::numbers::pi)) /
++           (2.0 * std::log(static_cast<double>(theta)));
++  };
++  double low = std::max(std::floor(dim(scaling.beta_fast)), 0.0);
++  double high = std::min(std::ceil(dim(scaling.beta_slow)),
++                         static_cast<double>(rotary_dim - 1));
++  if (high < low) {
++    // HF linear_ramp_factor(min, max, dim) only special-cases min == max; a
++    // negative (max - min) denominator makes every ramp clamp to 0, i.e. no
++    // interpolation at all (multiplier 1 for every pair). Forcing low = high
++    // past the last pair reproduces that with our clamped ramp formula.
++    low = high = static_cast<double>(rotary_dim);
++  }
++  return {
++      .enabled = 1,
++      .low = static_cast<float>(low),
++      .high = static_cast<float>(high),
++      .inv_factor = 1.0F / scaling.factor,
++      .mscale = static_cast<float>(
++          0.1 * std::log(static_cast<double>(scaling.factor)) + 1.0),
++  };
++}
++
++std::string RopePositionPolicy(const RopeScaling& scaling) {
++  if (!scaling.Enabled())
++    return "absolute-v1";
++  std::ostringstream out;
++  out.imbue(std::locale::classic());
++  out << std::hexfloat << "absolute-yarn-v1;factor=" << scaling.factor
++      << ";original=" << scaling.original_context
++      << ";beta_fast=" << scaling.beta_fast
++      << ";beta_slow=" << scaling.beta_slow;
++  return out.str();
++}
++
++}  // namespace gufo::models::qwen38_flash_next
+diff --git a/src/models/qwen38_flash_next/rope_scaling.hpp b/src/models/qwen38_flash_next/rope_scaling.hpp
+new file mode 100644
+index 0000000..ce053c2
+--- /dev/null
++++ b/src/models/qwen38_flash_next/rope_scaling.hpp
+@@ -0,0 +1,94 @@
++#ifndef GUFO_MODELS_QWEN38_FLASH_NEXT_ROPE_SCALING_HPP_
++#define GUFO_MODELS_QWEN38_FLASH_NEXT_ROPE_SCALING_HPP_
++
++#include <cstdint>
++#include <optional>
++#include <string>
++
++#if defined(__HIPCC__)
++#define QFN_HOST_DEVICE __host__ __device__
++#else
++#define QFN_HOST_DEVICE
++#endif
++
++namespace gufo::models::qwen38_flash_next {
++
++/// Static YaRN context extension as in Hugging Face `rope_type: yarn`:
++/// truncated correction range, linear ramp between the beta bounds, and
++/// attention factor 0.1 ln(factor) + 1 applied to cos and sin. `factor == 1`
++/// is off and leaves every rope site on its original instruction sequence.
++struct RopeScaling {
++  float factor{1.0F};
++  std::uint32_t original_context{0};  ///< Pretraining context (262144).
++  float beta_fast{32.0F};
++  float beta_slow{1.0F};
++
++  [[nodiscard]] bool Enabled() const noexcept { return factor != 1.0F; }
++  friend bool operator==(const RopeScaling&, const RopeScaling&) = default;
++};
++
++/// Rope angles use float positions, which are exact below 2^24.
++inline constexpr std::uint32_t kMaxRopePositions = 1U << 24;
++
++/// Launch constants shared by the CPU oracle and every HIP rope site.
++struct YarnRope {
++  std::uint32_t enabled{0};
++  float low{0.0F};         ///< First ramped rotary pair.
++  float high{0.0F};        ///< Pair from which frequencies are divided.
++  float inv_factor{1.0F};  ///< 1 / factor.
++  float mscale{1.0F};      ///< Multiplies cos and sin.
++};
++
++/// Rejects non-finite or sub-unit factors, an original context outside
++/// (0, native], betas that are not beta_fast > beta_slow > 0, and scaled
++/// contexts past kMaxRopePositions. `factor == 1` is always valid (off).
++[[nodiscard]] bool ValidateRopeScaling(const RopeScaling& scaling,
++                                       std::uint32_t native_context,
++                                       std::string* error);
++
++/// Native context when off; floor(original x factor), never below native.
++[[nodiscard]] std::uint32_t ScaledContextLength(
++    const RopeScaling& scaling, std::uint32_t native_context) noexcept;
++
++/// Derives a static YaRN scaling from a requested serving context (factor =
++/// requested / native, Qwen's own advice). Returns nullopt when `native ==
++/// 0` or `requested <= native` (YaRN stays off). Otherwise nudges the float
++/// factor up with `std::nextafter` when needed so `ScaledContextLength` of
++/// the result does not round below `requested`; only needed for a
++/// non-power-of-two native context. Bounded by `ScaledContextLength`'s own
++/// kMaxRopePositions clamp, so it always terminates.
++[[nodiscard]] std::optional<RopeScaling> RopeScalingForContext(
++    std::uint32_t requested, std::uint32_t native) noexcept;
++
++/// Correction range and scale for a rotary dimension and base.
++[[nodiscard]] YarnRope MakeYarnRope(const RopeScaling& scaling,
++                                    std::uint32_t rotary_dim,
++                                    float theta) noexcept;
++
++/// Disk-cache position policy: "absolute-v1" when off (unchanged identity).
++[[nodiscard]] std::string RopePositionPolicy(const RopeScaling& scaling);
++
++/// Collapses a disabled scaling (`factor == 1`) to the same default fields
++/// regardless of whatever `original_context`/beta values happen to be set on
++/// it (they are unused while off), so two off configurations always compare
++/// equal wherever the raw struct is used as an identity key. An enabled
++/// scaling passes through unchanged.
++[[nodiscard]] inline RopeScaling NormalizedRopeScaling(
++    const RopeScaling& scaling) noexcept {
++  return scaling.Enabled() ? scaling : RopeScaling{};
++}
++
++/// Frequency multiplier of rotary pair `pair`: 1 below `low`, 1 / factor
++/// from `high`, linear between (HF `linear_ramp_factor`).
++QFN_HOST_DEVICE inline float YarnPairMultiplier(const YarnRope& yarn,
++                                                std::uint32_t pair) noexcept {
++  const float width = yarn.high - yarn.low;
++  const float span = width > 0.001F ? width : 0.001F;
++  float ramp = (static_cast<float>(pair) - yarn.low) / span;
++  ramp = ramp < 0.0F ? 0.0F : (ramp > 1.0F ? 1.0F : ramp);
++  return 1.0F - ramp * (1.0F - yarn.inv_factor);
++}
++
++}  // namespace gufo::models::qwen38_flash_next
++
++#endif  // GUFO_MODELS_QWEN38_FLASH_NEXT_ROPE_SCALING_HPP_

@@ -807,9 +807,59 @@ with lib;
           type = types.ints.positive;
           default = 262144;
           description = ''
-            Context tokens per session (--context). Flash-Next's native context is
-            262144 and gufo rejects larger values (no YaRN support).
+            Context tokens per session (--context). Flash-Next's native
+            context is 262144; with the YaRN patch (gufo PR #350) applied by
+            the gufo-strix module, any value above it turns on static YaRN
+            with factor = context / 262144. State grows about 27.5 KiB per
+            context token per MTP session, so plan against the 128 GiB
+            unified memory together with {option}`sessions`.
           '';
+        };
+        yarn = mkOption {
+          type = types.nullOr types.bool;
+          default = null;
+          description = ''
+            Expect static YaRN rope scaling (gufo PR #350) to be active.
+            Null accepts whatever the engine derives from
+            {option}`context` (on exactly above the native 262144);
+            true or false additionally fails evaluation when
+            {option}`context` disagrees, catching an unintended silent
+            rope-scale change in review.
+          '';
+        };
+        diskCacheDir = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "/scratch/gufo-cache";
+          description = ''
+            Restart-safe continuation cache directory (--cache-disk).
+            Snapshots are bound to their YaRN factor, so a session saved
+            at one context is never restored at another. Null disables
+            the disk cache.
+          '';
+        };
+        diskCacheBytes = mkOption {
+          type = types.nullOr types.ints.unsigned;
+          default = null;
+          description = ''
+            Retained disk-cache byte budget (--cache-disk-bytes). Null
+            keeps the engine's 8 GiB default, which is smaller than one
+            full snapshot at extended contexts (~27.5 KiB per context
+            token per session: ~14 GiB at 524288).
+          '';
+        };
+        logProgress = mkEnableOption "per-request progress lines including MTP draft_accepted/draft_proposed/acceptance_percentage (--log-progress; needs log level info or above)";
+        logLevel = mkOption {
+          type = types.nullOr (
+            types.enum [
+              "error"
+              "warn"
+              "info"
+              "debug"
+            ]
+          );
+          default = null;
+          description = "Log verbosity (--log-level). Null keeps the engine default (info).";
         };
         think = mkOption {
           type = types.nullOr (
