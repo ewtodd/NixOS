@@ -265,6 +265,7 @@ in
           provider = "custom";
         };
         cron.model_drift_guard = false;
+        delegation.model = "vllm/qwen3.8-27b";
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
           enabled = true;
