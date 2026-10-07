@@ -75,7 +75,7 @@
       url = "github:ggml-org/llama.cpp";
     };
     gufo = {
-      url = "github:gufo-org/gufo/eb915840ffb62a8ec4b5c1adb41b04b5c1c75892";
+      url = "github:gufo-org/gufo";
     };
     vllm-radiance-src = {
       # ewtodd's fork: native W4A16/W8A16 weight-only kernels, the DFlash2

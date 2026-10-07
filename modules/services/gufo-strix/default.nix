@@ -1,5 +1,3 @@
-# gufo: Strix Halo (gfx1151) inference engine with continuous batching,
-# chunked prefill and MTP speculative decoding. Runs on son-of-anton's iGPU.
 {
   config,
   lib,
@@ -10,10 +8,15 @@
 
 let
   cfg = config.systemOptions.services.gufoStrix;
-  gufo = inputs.gufo.packages.${pkgs.system}.default;
 
-  # vLLM's warmup claims host memory; wait for its /health before loading,
-  # bounded so a dead vLLM never blocks gufo.
+  gufo = inputs.gufo.packages.${pkgs.system}.default.overrideAttrs (
+    _: oldAttrs: {
+      patches = (oldAttrs.patches or [ ]) ++ [ ./gufo-pr350-yarn.diff ];
+    }
+  );
+
+  nativeContext = 262144;
+
   vllmCfg = config.systemOptions.services.vllm;
   vllmHealthWait = pkgs.writeShellScript "gufo-strix-wait-vllm" ''
     set -u
@@ -48,11 +51,38 @@ let
     "--draft-tokens ${toString cfg.draftTokens}"
   ]
   ++ lib.optionals (cfg.mmproj != null) [ "--mmproj ${cfg.mmproj}" ]
+  ++ lib.optionals (cfg.diskCacheDir != null) (
+    [ "--cache-disk ${cfg.diskCacheDir}" ]
+    ++ lib.optionals (cfg.diskCacheBytes != null) [
+      "--cache-disk-bytes ${toString cfg.diskCacheBytes}"
+    ]
+  )
+  ++ lib.optionals cfg.logProgress [ "--log-progress" ]
+  ++ lib.optionals (cfg.logLevel != null) [ "--log-level ${cfg.logLevel}" ]
   ++ cfg.extraFlags;
 in
 {
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.yarn == null || cfg.yarn == (cfg.context > nativeContext);
+        message = ''
+          services.gufoStrix.yarn = ${toString cfg.yarn} contradicts
+          context = ${toString cfg.context} (YaRN is active exactly above the
+          native ${toString nativeContext} tokens).
+        '';
+      }
+    ];
+
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose [ cfg.port ];
+
+    # serve auto-creates a missing cache directory, but InitializeDirectory
+    # refuses one it does not own (st_uid == geteuid, then chmod 0700),
+    # so the rule is a convenience, not a requirement; setgid keeps the
+    # group shared with the other llama services.
+    systemd.tmpfiles.rules = lib.optionals (cfg.diskCacheDir != null) [
+      "d ${cfg.diskCacheDir} 2770 ${cfg.user} llama-cache - -"
+    ];
 
     systemd.services.gufo-strix = {
       description = "gufo Strix Halo inference server (${cfg.alias})";

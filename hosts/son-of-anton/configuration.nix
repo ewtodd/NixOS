@@ -84,7 +84,13 @@ in
       mtpModel = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
       mmproj = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
       sessions = 2;
-      context = 262144;
+      context = 393216;
+      yarn = true;
+      # ~10 GiB snapshot per session at 393216; the 8 GiB engine default
+      # could never retain a full one.
+      diskCacheDir = "/scratch/gufo-cache";
+      diskCacheBytes = 64 * 1024 * 1024 * 1024;
+      logProgress = true;
       port = 8050;
     };
     security.harden.enable = true;
