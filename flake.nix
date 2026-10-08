@@ -78,10 +78,7 @@
       url = "github:gufo-org/gufo";
     };
     vllm-radiance-src = {
-      # ewtodd's fork: native W4A16/W8A16 weight-only kernels, the DFlash2
-      # draft-rope patch, and the Nix build itself (lib.mkVllmStack). It owns
-      # libr4d and the ROCm SDK; we pass our pkgs so there is one nixpkgs.
-      url = "github:ewtodd/vllm-radiance-nix?rev=4bb133f500e57632f19a8c7794dbfb44329a56b3";
+      url = "github:ewtodd/vllm-radiance-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     llm-agents = {

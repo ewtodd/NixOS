@@ -42,7 +42,7 @@ in
       quantizationMode = "paroquant-mxfp6";
       devices = "0,1";
       tensorParallelSize = 2;
-      maxModelLen = 393216;
+      maxModelLen = 352256;
       hfOverrides.text_config.rope_parameters = {
         rope_type = "yarn";
         factor = 2;
@@ -68,7 +68,7 @@ in
       draftModel = "/scratch/vllm-models/Qwen3.8-27B-DFlash2-FP8/";
       draftAttentionBackend = "TRITON_ATTN";
       draftTensorParallelSize = 2;
-      draftMaxModelLen = 393216;
+      draftMaxModelLen = 352256;
       fastDraft = true;
       port = 8100;
       toolCallParser = "qwen3_xml";

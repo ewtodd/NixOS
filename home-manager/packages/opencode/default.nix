@@ -30,14 +30,47 @@ let
     fi
     exec ${lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode} "$@"
   '';
+  # AMD's agent skills, pinned by rev+hash. The rocm-systems monorepo is
+  # ~7.6 GB, so sparseCheckout keeps the fetch to the skill directories.
+  amdSkills = pkgs.fetchFromGitHub {
+    owner = "amd";
+    repo = "skills";
+    rev = "6efb39c7ec59f19823372cb22ee3b8fac82dffd7";
+    hash = "sha256-eX+UJgCxetrQ28fDNs221Q2fpkrLOyLh5WvIIpJlZjE=";
+  };
+  rocmSkills = pkgs.fetchgit {
+    url = "https://github.com/ROCm/rocm-systems";
+    rev = "a970e27caab941004c8c55d109d776d01489c89d";
+    sparseCheckout = [
+      "projects/rocprofiler-compute/skills"
+      "projects/rocprofiler-sdk/skills"
+    ];
+    fetchSubmodules = false;
+    hash = "sha256-5+eYbYF+qoP4+3ULUslpI05McEZVpbMiVJfEfkiBK4U=";
+  };
 in
 {
   programs.opencode = {
     enable = true;
     package = opencodeWrapped;
     tui.theme = "system";
+    skills = {
+      magpie-kernel-evaluator = "${amdSkills}/skills/magpie-kernel-evaluator";
+      rocm-doctor = "${amdSkills}/staging/rocm-doctor";
+      quark-torch-llm-ptq = "${amdSkills}/skills/quark-torch-llm-ptq";
+
+      rocprof-compute-kernel-bottleneck = "${rocmSkills}/projects/rocprofiler-compute/skills/rocprof-compute-kernel-bottleneck";
+      rocprof-compute-pc-sampling = "${rocmSkills}/projects/rocprofiler-compute/skills/rocprof-compute-pc-sampling";
+      rocprof-compute-roofline = "${rocmSkills}/projects/rocprofiler-compute/skills/rocprof-compute-roofline";
+      pc-sampling = "${rocmSkills}/projects/rocprofiler-sdk/skills/pc-sampling";
+    };
     context = ''
       # Mandatory Rules
+
+       ## Tools 
+       - Use ripgrep (rg) instead of grep for searches; it is much faster. 
+       - Unless told otherwise, use "son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>"
+         as the author/committer when asked to git commit.
 
        ## In all languages
        - Prefer slightly verbose, self-explanatory code over terse code that needs
