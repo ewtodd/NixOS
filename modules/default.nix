@@ -663,6 +663,15 @@ with lib;
             with kvCacheDtype = "auto" (fp16 KV).
           '';
         };
+        paroquant = mkOption {
+          type = types.bool;
+          default = false;
+          description = ''
+            ParoQuant profile shared by quant_method paroquant / paroquant_mxfp4 /
+            paroquant_mxfp6: rotation streams, single-launch GEMM and the A-tiled
+            prefill band. Requires mxfp4 = true for the MXFP4/MXFP6 kernel knobs.
+          '';
+        };
         fastDraft = mkOption {
           type = types.bool;
           default = false;
