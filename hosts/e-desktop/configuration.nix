@@ -296,6 +296,14 @@ in
                 "xhigh"
               ];
             };
+            "deepseek/deepseek-flash" = {
+              reasoning_effort = "max";
+              reasoning_efforts = [
+                "low"
+                "high"
+                "max"
+              ];
+            };
           };
         };
         physics = {
