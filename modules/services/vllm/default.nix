@@ -67,6 +67,13 @@ let
   // lib.optionalAttrs cfg.mxfp4W4A16 {
     RADIANCE_MXFP4_W4A16 = "1";
     RADIANCE_MXFP4_WPERM = "1";
+  }
+  // lib.optionalAttrs cfg.paroquant {
+    RADIANCE_PQ_ROT_STREAM = "1";
+    RADIANCE_PQ_ROT_STREAM2 = "1";
+    RADIANCE_PQM_FUSED_TOKQ = "1";
+    RADIANCE_PQM_SINGLE_LAUNCH = "1";
+    RADIANCE_MXFP4_A_TILED_MIN_M = "513";
   };
 
   aiterEnv = {
