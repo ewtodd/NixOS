@@ -210,7 +210,7 @@ in
               {
                 name = "deepseek-v4-api";
                 value = "env.DEEPSEEK_API_KEY";
-                models = [ "deepseek-v4-flash" ];
+                models = [ "deepseek-flash" ];
                 weight = 1.0;
                 aliases."deepseek-v4-api" = "deepseek-flash";
               }
