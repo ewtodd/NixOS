@@ -644,32 +644,28 @@ with lib;
           default = true;
           description = "--enable-prefix-caching with --mamba-cache-mode align (GDN hybrids need both).";
         };
-        quantization = mkOption {
-          type = types.nullOr types.str;
+        quantizationMode = mkOption {
+          type = types.enum [
+            "fp8"
+            "mxfp4-w4a8"
+            "mxfp4-w4a16"
+            "paroquant-int5"
+            "paroquant-mxfp4"
+            "paroquant-mxfp6"
+          ];
           default = "fp8";
-        };
-        mxfp4 = mkOption {
-          type = types.bool;
-          default = false;
-          description = "RADIANCE_MXFP4: native Quark MXFP4/W4A8 routing for an AMD Quark checkpoint (gfx1201).";
-        };
-        mxfp4W4A16 = mkOption {
-          type = types.bool;
-          default = false;
           description = ''
-            Native weight-only MXFP4: the W16 bf16-WMMA GEMM from the fork, with
-            bf16 activations. Selected by RADIANCE_MXFP4_W4A16 at load; the W4A8
-            flags stay unset. Needs the checkpoint's weight-only config and pairs
-            with kvCacheDtype = "auto" (fp16 KV).
-          '';
-        };
-        paroquant = mkOption {
-          type = types.bool;
-          default = false;
-          description = ''
-            ParoQuant profile shared by quant_method paroquant / paroquant_mxfp4 /
-            paroquant_mxfp6: rotation streams, single-launch GEMM and the A-tiled
-            prefill band. Requires mxfp4 = true for the MXFP4/MXFP6 kernel knobs.
+            Checkpoint weight format and the Radiance kernel profile that serves
+            it. vLLM resolves the method from config.json, except fp8, which is
+            forced with --quantization fp8.
+
+            fp8              plain W8A8 checkpoint.
+            mxfp4-w4a8       Quark MXFP4 on the native W4A8 kernel (production).
+            mxfp4-w4a16      Quark MXFP4 weight-only A16 shim (slow; validation).
+                             Pairs with kvCacheDtype = "auto".
+            paroquant-int5   ParoQuant int5 on the int4 kernel.
+            paroquant-mxfp4  z-lab rotations on MXFP4, native W4A8.
+            paroquant-mxfp6  z-lab rotations on E2M3 MXFP6, native W4A8.
           '';
         };
         fastDraft = mkOption {

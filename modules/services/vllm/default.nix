@@ -19,6 +19,49 @@ let
     gfxArch
     ;
 
+  # MXFP4 kernel knobs for a Quark checkpoint on the native W4A8 path.
+  mxW4A8Env = {
+    RADIANCE_MXFP4 = "1";
+    RADIANCE_QUARK_BF16_MTP = "1";
+    RADIANCE_MXFP4_W4A8 = "1";
+    RADIANCE_MXFP4_W4A8_MIN_M = "0";
+    RADIANCE_MXFP4_DECODE_MAX_M = "64";
+    RADIANCE_MXFP4_TN4_MIN_M = "2048";
+    RADIANCE_MXFP4_WPERM = "1";
+    RADIANCE_MXFP4_DECODE_NT = "1";
+  };
+
+  # Weight-only A16 shim: bf16 activations, no W4A8 routing.
+  mxW4A16Env = {
+    RADIANCE_MXFP4 = "1";
+    RADIANCE_QUARK_BF16_MTP = "1";
+    RADIANCE_MXFP4_W4A16 = "1";
+    RADIANCE_MXFP4_WPERM = "1";
+  };
+
+  # int5 runs its own prologue; only the shared rotation streams apply.
+  pqStreamEnv = {
+    RADIANCE_PQ_ROT_STREAM = "1";
+    RADIANCE_PQ_ROT_STREAM2 = "1";
+  };
+
+  # MXFP4/MXFP6 route the prologue through the MXFP4 kernel, so they also get
+  # the single-launch GEMM and the A-tiled prefill band.
+  pqMxfpEnv = pqStreamEnv // {
+    RADIANCE_PQM_FUSED_TOKQ = "1";
+    RADIANCE_PQM_SINGLE_LAUNCH = "1";
+    RADIANCE_MXFP4_A_TILED_MIN_M = "513";
+  };
+
+  quantizationEnv = {
+    fp8 = { };
+    mxfp4-w4a8 = mxW4A8Env;
+    mxfp4-w4a16 = mxW4A16Env;
+    paroquant-int5 = pqStreamEnv;
+    paroquant-mxfp4 = mxW4A8Env // pqMxfpEnv;
+    paroquant-mxfp6 = mxW4A8Env // pqMxfpEnv;
+  };
+
   radianceEnv = {
     RADIANCE_GFX_ARCH = gfxArch;
     RADIANCE_USE_R4D = "1";
@@ -35,7 +78,6 @@ let
     RADIANCE_TOPK_TRITON_MIN_ROWS = "1";
     RADIANCE_TOPK_COMPOSITE = "1";
     RADIANCE_TOPK_COMPOSITE_KCAP = "64";
-    RADIANCE_MXFP4 = if cfg.mxfp4 then "1" else "0";
     RADIANCE_KV_GROUP_OPT = "1";
     RADIANCE_AR_QNT = "1024";
     RADIANCE_AR_QNB = "96";
@@ -53,28 +95,10 @@ let
     RADIANCE_FAST_DRAFT = if cfg.fastDraft then "1" else "0";
     RADIANCE_RUN_BWTEST = "0";
   }
-  // lib.optionalAttrs cfg.mxfp4 {
-    RADIANCE_QUARK_BF16_MTP = "1";
+  // {
+    RADIANCE_MXFP4 = "0";
   }
-  // lib.optionalAttrs (cfg.mxfp4 && !cfg.mxfp4W4A16) {
-    RADIANCE_MXFP4_W4A8 = "1";
-    RADIANCE_MXFP4_W4A8_MIN_M = "0";
-    RADIANCE_MXFP4_DECODE_MAX_M = "64";
-    RADIANCE_MXFP4_TN4_MIN_M = "2048";
-    RADIANCE_MXFP4_WPERM = "1";
-    RADIANCE_MXFP4_DECODE_NT = "1";
-  }
-  // lib.optionalAttrs cfg.mxfp4W4A16 {
-    RADIANCE_MXFP4_W4A16 = "1";
-    RADIANCE_MXFP4_WPERM = "1";
-  }
-  // lib.optionalAttrs cfg.paroquant {
-    RADIANCE_PQ_ROT_STREAM = "1";
-    RADIANCE_PQ_ROT_STREAM2 = "1";
-    RADIANCE_PQM_FUSED_TOKQ = "1";
-    RADIANCE_PQM_SINGLE_LAUNCH = "1";
-    RADIANCE_MXFP4_A_TILED_MIN_M = "513";
-  };
+  // quantizationEnv.${cfg.quantizationMode};
 
   aiterEnv = {
     VLLM_ROCM_USE_AITER = "1";
@@ -161,7 +185,7 @@ let
     "--host ${if cfg.lanExpose then "0.0.0.0" else "127.0.0.1"}"
     "--port ${toString cfg.port}"
   ]
-  ++ lib.optionals (cfg.quantization != null) [ "--quantization ${cfg.quantization}" ]
+  ++ lib.optionals (cfg.quantizationMode == "fp8") [ "--quantization fp8" ]
   ++ lib.optionals cfg.prefixCaching [
     "--enable-prefix-caching"
     "--mamba-cache-mode align"

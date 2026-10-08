@@ -39,10 +39,7 @@ in
         TORCH_NCCL_DUMP_ON_TIMEOUT = "0";
       };
       model = "/scratch/vllm-models/Swift-1.5-Qwen3.8-27B-PARO-MXFP6";
-      quantization = null;
-      mxfp4 = true;
-      mxfp4W4A16 = false;
-      paroquant = true;
+      quantizationMode = "paroquant-mxfp6";
       devices = "0,1";
       tensorParallelSize = 2;
       maxModelLen = 393216;
