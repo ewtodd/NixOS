@@ -72,13 +72,8 @@ in
   "son-of-anton-markets-env.age".publicKeys = personal ++ [
     server-e-desktop
   ];
-  # GitHub SSH *private* deploy key installed into the ricky instance HOME by
-  # the son-of-anton module (git.github); the public half is registered on
-  # GitHub. Recipients mirror the instance envs: the human devices plus the
-  # server that must decrypt it.
   "soa-ricky-github-key.age".publicKeys = personal ++ [
     server-e-desktop
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
-  "proton-mail-bridge.age".publicKeys = personal ++ [ server-e-desktop ];
 }

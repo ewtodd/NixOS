@@ -1131,22 +1131,6 @@
         "type": "github"
       }
     },
-    "proton-mcp-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1790307417,
-        "narHash": "sha256-8EdnuMZdiDSqZcC9pnxWzy/i9io3gVin/cuWYk/t84g=",
-        "owner": "ewtodd",
-        "repo": "proton-mcp",
-        "rev": "36a6fd0b1ef725da5cd5cc59af43693c3bb7be0d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ewtodd",
-        "repo": "proton-mcp",
-        "type": "github"
-      }
-    },
     "pyproject-build-systems": {
       "inputs": {
         "nixpkgs": [
@@ -1242,7 +1226,6 @@
         "nixpkgs": "nixpkgs_6",
         "nixpkgs-oracle": "nixpkgs-oracle",
         "nixvim": "nixvim",
-        "proton-mcp-src": "proton-mcp-src",
         "remarkable": "remarkable",
         "son-of-anton": "son-of-anton",
         "split-nvim-src": "split-nvim-src",

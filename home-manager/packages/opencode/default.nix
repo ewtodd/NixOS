@@ -2,26 +2,9 @@
   lib,
   pkgs,
   inputs,
-  osConfig,
-  config,
   ...
 }:
 let
-  protonMCP = pkgs.buildNpmPackage {
-    pname = "proton-mcp";
-    version = "5.0.0";
-    src = inputs.proton-mcp-src;
-    nodejs = pkgs.nodejs;
-    npmDepsHash = "sha256-KG/Nt0lY2w8VHGp6sOW1W0hkP89cuGnwzuhL8Db9dEQ=";
-    dontNpmBuild = true;
-  };
-  entry = "${protonMCP}/lib/node_modules/proton-mcp/index.js";
-  proton-mcp-wrapper = pkgs.writeShellScriptBin "proton-mcp" ''
-    set -a
-    . /run/agenix/proton-mail-bridge
-    set +a
-    exec ${pkgs.nodejs}/bin/node ${entry}
-  '';
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
     if [ -r /run/agenix/bifrost-keys ]; then
       set -a
@@ -326,19 +309,6 @@ in
           };
           enabled = true;
         };
-        proton =
-          # surely there's a better way to do this!
-          lib.mkIf
-            (
-              osConfig.systemOptions.owner.e.enable
-              && osConfig.systemOptions.deviceType.desktop.enable
-              && config.Profile == "play"
-            )
-            {
-              type = "local";
-              command = [ "${proton-mcp-wrapper}/bin/proton-mcp" ];
-              enabled = true;
-            };
       };
       permission = {
         edit = "ask";
