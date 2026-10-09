@@ -70,7 +70,7 @@
         "narHash": "sha256-LIKh44WEGXSAWJuCGFu7vv/fuaAUYX8NA0g57v3cEeg=",
         "owner": "ewtodd",
         "repo": "Analysis-Utilities",
-        "rev": "a030519fea84914ecd5439d629f42aedf3424fa5",
+        "rev": "a12a85b77b7864b0e047b0a425f9e4e3ccb068e4",
         "type": "github"
       },
       "original": {
@@ -234,11 +234,11 @@
     "curriculum-vitae": {
       "flake": false,
       "locked": {
-        "lastModified": 1790901314,
-        "narHash": "sha256-NoyWR5Q78AgHq0+plUTSMDIsYyTfR0l6E+calQhhF1o=",
+        "lastModified": 1791491534,
+        "narHash": "sha256-DpB2dC7L+r/S+gu/qudqGrK8fGKt5e4HUaNKxqUfxtY=",
         "owner": "ewtodd",
         "repo": "Curriculum-Vitae",
-        "rev": "7b49da7a642fcedfc0e72271fedb34706953be1a",
+        "rev": "e7c05fb7f537beefe46ce2a1c9cf033330f00af5",
         "type": "github"
       },
       "original": {
@@ -800,11 +800,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1790898469,
-        "narHash": "sha256-f5Aex6oCh35HkogASIaY3i1cHEmBcxcstTUZuXWteC4=",
+        "lastModified": 1791480142,
+        "narHash": "sha256-3a4H8BHN0DctNpPHzZJ+HX3gHmOev8WeL8c41QdaODo=",
         "owner": "ewtodd",
         "repo": "MUSIC",
-        "rev": "017043be562f78d751bdc690f9b5f0b7f97045f8",
+        "rev": "498a417d3ea18606ca12913fa4b62394428cfcd1",
         "type": "github"
       },
       "original": {
@@ -1530,11 +1530,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790019017,
-        "narHash": "sha256-s71oE55Qw3o+TBp8lEYDalpR+tb0rv/YoUPbozfC6ZQ=",
+        "lastModified": 1791388822,
+        "narHash": "sha256-ilBDHiCuRpULJX9TBBQx+cGBqlqEr1HjtUYYHXn9+qk=",
         "owner": "ewtodd",
         "repo": "talys-nix",
-        "rev": "dd5344c4c614e909893d0ae3b3736daafb9cfab0",
+        "rev": "a7f8ba3a78557104c3ae41083608b8765173ffad",
         "type": "github"
       },
       "original": {
@@ -1659,11 +1659,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790901451,
-        "narHash": "sha256-1OXxM2BEzoURPXe3kfQdtPi8oa3CpixvVBLExzhFtcg=",
+        "lastModified": 1791507732,
+        "narHash": "sha256-TgmujhTLVX/48DpnA+1JXDRPJkmzd1S1lPUKOvcLvh4=",
         "owner": "ewtodd",
         "repo": "website",
-        "rev": "cae4631a981da072bbcdb8ce1b2c0de6b2fb0df8",
+        "rev": "20d5bf57658331e138b566c9f3e6ab0c34497f15",
         "type": "github"
       },
       "original": {
