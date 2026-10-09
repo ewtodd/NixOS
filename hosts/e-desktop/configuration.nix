@@ -489,14 +489,6 @@ in
     ];
   };
 
-  services.protonmail-bridge = {
-    enable = true;
-    path = with pkgs; [
-      pass
-      gnome-keyring
-    ];
-  };
-
   networking.networkmanager = {
     connectionConfig."ethernet.cloned-mac-address" = lib.mkForce "permanent";
     settings.main.no-auto-default = "*";

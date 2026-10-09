@@ -179,15 +179,5 @@
         mode = "0440";
       };
     })
-    (lib.mkIf config.services.protonmail-bridge.enable {
-      # Proton Bridge IMAP/SMTP credentials for the proton-mcp opencode server.
-      # Read at runtime by the proton-mcp wrapper (opencode runs as e-play),
-      # which sources this file for PROTON_BRIDGE_* env vars.
-      proton-mail-bridge = {
-        file = ../../secrets/proton-mail-bridge.age;
-        owner = "e-play";
-        mode = "0400";
-      };
-    })
   ];
 }
