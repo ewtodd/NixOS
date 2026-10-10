@@ -3,7 +3,8 @@
 # build-platform Go selection are explicit; re-sync when bumping Bifrost. The
 # functional differences are `go` (upstream's cross set would hand the helper
 # the target compiler), `vendorHash`, and bifrost-gomod-tidy.diff, which makes
-# 2.2.5's go.mod/go.sum consistent with the local sibling-module replaces.
+# the pinned Bifrost's go.mod/go.sum consistent with the local sibling-module
+# replaces.
 {
   pkgs,
   lib,
@@ -25,7 +26,7 @@ buildGoModule {
 
   modRoot = "transports";
   subPackages = [ "bifrost-http" ];
-  vendorHash = "sha256-B2pdVhOk8u7/HTznCfiI3m/emy+oIeupuA/OsqL5YVM=";
+  vendorHash = "sha256-TYoYIORfantTgAQkVNz5sbnTQDqpXkDLdkMltcfo10A=";
 
   # The source patches and the go.mod/go.sum patch all affect the vendored
   # tree, so the vendorHash above follows them and must be re-pinned whenever

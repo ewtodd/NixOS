@@ -139,6 +139,31 @@
       openWebUIOverlays = [
         (_: prev: {
           python314 = prev.python314.override {
+            # The vLLM stack re-derives pkgs.python3 with its own
+            # packageOverrides, and an override replaces them wholesale, so
+            # fixes that must survive it ride pythonPackagesExtensions, which
+            # the interpreter captures in its passthruFun.
+            passthruFun = import (prev.path + "/pkgs/development/interpreters/python/passthrufun.nix") {
+              inherit (prev)
+                callPackage
+                config
+                lib
+                makeScopeWithSplicing'
+                stdenv
+                ;
+              pythonPackagesExtensions = [
+                (_: pythonPkgs: {
+                  # onnxscript 0.7.2's SpaceToDepth implements DCR mode
+                  # only, but onnx 1.23 checks it against the new CRD
+                  # case; upstream master disables the same test.
+                  onnxscript = pythonPkgs.onnxscript.overridePythonAttrs (old: {
+                    disabledTests = (old.disabledTests or [ ]) ++ [
+                      "test_onnxfns_space_to_depth"
+                    ];
+                  });
+                })
+              ];
+            };
             packageOverrides = _: pythonPkgs: {
               # pypdf's zlib recovery-path speed test asserts a hard 10 s budget
               # and times out on the aarch64 builder; skip the suite.
@@ -370,6 +395,7 @@
             pkgs = import nixpkgs {
               system = "x86_64-linux";
               config.allowUnfree = true;
+              overlays = openWebUIOverlays;
             };
           };
         in
