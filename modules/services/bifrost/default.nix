@@ -27,7 +27,7 @@ let
           name = "bifrost-ui-${bifrostVersion}-npm-deps";
           src = inputs.bifrost;
           sourceRoot = "source/ui";
-          hash = "sha256-lXyg2jRD+KyLv/3kM2xiT72jlviiFFNq9t/NOThk0rs=";
+          hash = "sha256-sH7vaaCBRLSwDUNj/C1mwQtaQ+1Ft8AJkILHnugkceQ=";
         };
       });
 
