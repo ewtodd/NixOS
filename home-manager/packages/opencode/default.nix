@@ -114,7 +114,7 @@ in
         "deepseek"
       ];
 
-      model = "bifrost/qwen3.8-27b";
+      model = "bifrost/dsv4-flash";
       small_model = "bifrost/little-titles";
       default_agent = "build";
 
@@ -124,7 +124,7 @@ in
         };
         build = {
           variant = "low";
-          description = "Coding agent; the default. Fast interactive model (qwen3.8).";
+          description = "Coding agent; the default. DeepSeek-V4-Flash, low thinking.";
           prompt = ''
             You are a coding agent in a terminal. Work tasks through end to end:
             inspect the code, edit files, run commands, verify. Use the questions tool if you need more 
@@ -132,9 +132,9 @@ in
           '';
         };
         plan = {
-          model = "bifrost/qwen3.8-27b";
-          variant = "xhigh";
-          description = "Plans and designs before acting. Deep thinking model (qwen3.8-27b).";
+          model = "bifrost/dsv4-flash";
+          variant = "max";
+          description = "Plans and designs before acting. DeepSeek-V4-Flash, maximum thinking.";
           permission = {
             edit = "deny";
           };
@@ -148,9 +148,9 @@ in
           '';
         };
         execute = {
-          model = "bifrost/qwen3.8-27b";
+          model = "bifrost/dsv4-flash";
           variant = "low";
-          description = "Executes a plan or task with the fast model (qwen3.8).";
+          description = "Executes a plan or task. DeepSeek-V4-Flash, low thinking.";
           prompt = ''
             You are the executor. You get a task and, usually, a plan from the
             planning agent. Follow the plan exactly: read the files it names,
@@ -161,9 +161,9 @@ in
           '';
         };
         explore = {
-          model = "bifrost/qwen3.8-27b";
+          model = "bifrost/dsv4-flash";
           variant = "low";
-          description = "Finds and reads code. Fast low-think qwen; returns file:line evidence.";
+          description = "Finds and reads code. Low-think DeepSeek-V4-Flash; returns file:line evidence.";
           permission = {
             edit = "deny";
           };
@@ -175,9 +175,9 @@ in
           '';
         };
         general = {
-          model = "bifrost/qwen3.8-flash-next";
-          variant = "medium";
-          description = "Runs self-contained multi-step tasks and returns a final report (qwen3.8-27b).";
+          model = "bifrost/dsv4-flash";
+          variant = "high";
+          description = "Runs self-contained multi-step tasks and returns a final report (DeepSeek-V4-Flash).";
           prompt = ''
             You are a worker subagent. You get one self-contained task; finish
             it with your tools and return a single final report. Do not ask the
@@ -185,9 +185,9 @@ in
           '';
         };
         reviewer = {
-          model = "bifrost/qwen3.8-flash-next";
-          variant = "xhigh";
-          description = "Reviews diffs and code for problems, fixes what it finds. Qwen3.8-Flash-Next (177B) on the Strix iGPU.";
+          model = "bifrost/dsv4-flash";
+          variant = "max";
+          description = "Reviews diffs and code for problems, fixes what it finds. DeepSeek-V4-Flash, maximum thinking.";
           prompt = ''
             You are a code reviewer. Read the change and its surroundings.
             Report problems by severity, each with file:line: correctness,
@@ -203,7 +203,7 @@ in
             current repository, write an accurate commit message matching the existing style, and then 
             stage+commit them. Commit using your account: 
             son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>'';
-          model = "bifrost/qwen3.8-27b";
+          model = "bifrost/dsv4-flash";
           variant = "low";
         };
       };
@@ -232,55 +232,32 @@ in
               tool_call = false;
             };
 
-            "qwen3.8-27b" = {
-              name = "Qwen3.8 27B";
+            # unholy on son-of-anton (native precision, 512k context). DSV4 efforts: none (chat mode), low,
+            # high (its default when thinking), max. Images as data URLs.
+            "dsv4-flash" = {
+              name = "DeepSeek-V4-Flash";
               variants = {
-                xhigh = {
-                  reasoningEffort = "xhigh";
+                max = {
+                  reasoningEffort = "max";
                 };
-                medium = {
-                  reasoningEffort = "medium";
+                high = {
+                  reasoningEffort = "high";
                 };
                 low = {
                   reasoningEffort = "low";
                 };
                 none = {
-                  chat_template_kwargs = {
-                    enable_thinking = false;
-                  };
+                  reasoningEffort = "none";
                 };
+              };
+              limit = {
+                context = 524288;
+                output = 131072;
               };
               modalities = {
                 input = [
                   "text"
                   "image"
-                ];
-                output = [ "text" ];
-              };
-            };
-
-            "qwen3.8-flash-next" = {
-              name = "Qwen3.8 Flash Next";
-              variants = {
-                xhigh = {
-                  reasoningEffort = "xhigh";
-                };
-                medium = {
-                  reasoningEffort = "medium";
-                };
-                low = {
-                  reasoningEffort = "low";
-                };
-                none = {
-                  chat_template_kwargs = {
-                    enable_thinking = false;
-                  };
-                };
-              };
-              modalities = {
-                input = [
-                  "image"
-                  "text"
                 ];
                 output = [ "text" ];
               };

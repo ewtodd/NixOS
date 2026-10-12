@@ -144,7 +144,7 @@ in
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "vllm/qwen3.8-27b";
+          model = "unholy/dsv4-flash";
           settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
@@ -160,7 +160,7 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
-          model = "vllm/qwen3.8-27b";
+          model = "unholy/dsv4-flash";
           settings.gateway.single_user = true;
           settings = {
             platforms.signal.gateway_restart_notification = true;
@@ -187,7 +187,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "vllm/qwen3.8-27b";
+          model = "unholy/dsv4-flash";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -207,9 +207,9 @@ in
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           git.github = config.age.secrets.soa-ricky-github-key.path;
-          model = "vllm/qwen3.8-27b";
+          model = "unholy/dsv4-flash";
           settings = {
-            model.default = "vllm/qwen3.8-27b";
+            model.default = "unholy/dsv4-flash";
           };
           settings.platforms.signal = {
             require_mention = true;
@@ -236,9 +236,9 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          model = "vllm/qwen3.8-27b";
+          model = "unholy/dsv4-flash";
           settings = {
-            model.default = "vllm/qwen3.8-27b";
+            model.default = "unholy/dsv4-flash";
           };
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
@@ -260,12 +260,12 @@ in
 
       settings = {
         model = {
-          default = "vllm/qwen3.8-27b";
-          reasoning_effort = "medium";
+          default = "unholy/dsv4-flash";
+          reasoning_effort = "high";
           provider = "custom";
         };
         cron.model_drift_guard = false;
-        delegation.model = "vllm/qwen3.8-27b";
+        delegation.model = "unholy/dsv4-flash";
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
           enabled = true;
@@ -278,22 +278,14 @@ in
           base_url = "http://10.0.0.6:4002/v1";
           key_env = "BIFROST_SOA_VK";
           models = {
-            "vllm/qwen3.8-27b" = {
-              reasoning_effort = "xhigh";
+            # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
+            "unholy/dsv4-flash" = {
+              reasoning_effort = "high";
               reasoning_efforts = [
                 "none"
                 "low"
-                "medium"
-                "xhigh"
-              ];
-            };
-            "strix/qwen3.8-flash-next" = {
-              reasoning_effort = "xhigh";
-              reasoning_efforts = [
-                "none"
-                "low"
-                "medium"
-                "xhigh"
+                "high"
+                "max"
               ];
             };
             "deepseek/deepseek-flash" = {
@@ -307,10 +299,10 @@ in
           };
         };
         physics = {
-          model = "vllm/qwen3.8-27b";
-          coder_model = "vllm/qwen3.8-27b";
+          model = "unholy/dsv4-flash";
+          coder_model = "unholy/dsv4-flash";
           agent_models = {
-            critic = "strix/qwen3.8-flash-next";
+            critic = "unholy/dsv4-flash";
           };
           base_url = "http://10.0.0.6:4002/v1";
           api_key_env = "BIFROST_SOA_VK";
@@ -319,7 +311,7 @@ in
           script_timeout = 900;
           max_iterations = 20;
           token_budget = 262144;
-          reasoning_effort = "xhigh";
+          reasoning_effort = "max";
           mcp = {
             server = "oracle";
             roles = {
@@ -350,10 +342,10 @@ in
           };
           compaction = {
             provider = "custom";
-            model = "strix/qwen3.8-flash-next"; # 524K window, the largest route you have
+            model = "unholy/dsv4-flash"; # 512k window
             base_url = "http://10.0.0.6:4002/v1";
             key_env = "BIFROST_SOA_VK";
-            reasoning_effort = "none"; # extraction, not reasoning; qwen route accepts none/low/medium/xhigh
+            reasoning_effort = "none"; # extraction, not reasoning
             timeout = 300; # local model over a large prompt; 120s default is tight
           };
         };

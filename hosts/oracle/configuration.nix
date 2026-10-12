@@ -34,7 +34,9 @@ in
       embeddingModel = {
         hf = "ggml-org/bge-m3-Q8_0-GGUF";
         hfFile = "bge-m3-q8_0.gguf";
-        pooling = "mean";
+        # bge-m3's dense embedding is the CLS vector; mean pooling compresses
+        # cosine scores into a narrow band where unrelated text still scores ~0.5.
+        pooling = "cls";
         ctxSize = 8192;
         gpuLayers = 0;
         port = 8082;

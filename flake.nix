@@ -81,6 +81,11 @@
       url = "github:ewtodd/vllm-radiance-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Private until it is tested; colmena evaluates on the deploying machine, so its SSH agent fetches it.
+    unholy = {
+      url = "git+ssh://git@github.com/ewtodd/unholy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
     };

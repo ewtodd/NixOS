@@ -15,22 +15,14 @@ let
   bifrostBase = "https://llm.ethanwtodd.com/v1";
   bifrostKeyEnv = "BIFROST_SOA_VK";
   bifrostModels = {
-    "qwen3.8-27b" = {
-      reasoning_effort = "medium";
+    # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
+    "dsv4-flash" = {
+      reasoning_effort = "high";
       reasoning_efforts = [
         "none"
         "low"
-        "medium"
-        "xhigh"
-      ];
-    };
-    "qwen3.8-flash-next" = {
-      reasoning_effort = "medium";
-      reasoning_efforts = [
-        "none"
-        "low"
-        "medium"
-        "xhigh"
+        "high"
+        "max"
       ];
     };
   };
@@ -47,9 +39,9 @@ in
       environmentFiles = [ "/run/agenix/bifrost-keys" ];
       settings = {
         model = {
-          default = "qwen3.8-27b";
+          default = "dsv4-flash";
           provider = "custom";
-          reasoning_effort = "medium";
+          reasoning_effort = "high";
         };
         custom_providers.custom = {
           base_url = bifrostBase;
@@ -67,7 +59,7 @@ in
           compaction = {
             base_url = bifrostBase;
             key_env = bifrostKeyEnv;
-            model = "qwen3.8-flash-next";
+            model = "dsv4-flash";
             provider = "custom";
             reasoning_effort = "none";
             timeout = 300;

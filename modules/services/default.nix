@@ -22,6 +22,7 @@ in
     ./jellyfin
     ./llama-swap
     ./gufo-strix
+    ./unholy
     ./vllm
     ./minecraft
     ./nextcloud
