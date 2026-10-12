@@ -11,7 +11,7 @@ let
   anubisLlm = "127.0.0.1:9003";
 
   # WAN sees only the API surfaces: /v1 (master/client keys), /friend (friend
-  # key, scoped to qwen3.8-27b) and /mcp (virtual keys with MCP grants; the
+  # key, scoped to dsv4-flash) and /mcp (virtual keys with MCP grants; the
   # friend key has none). All terminate at Bifrost (:4002); handle_path strips
   # the /friend prefix before the upstream sees it. The dashboard, /api and
   # /assets are LAN-only: private source ranges hit Bifrost directly (admin

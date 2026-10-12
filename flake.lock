@@ -1230,6 +1230,7 @@
         "remarkable": "remarkable",
         "son-of-anton": "son-of-anton",
         "split-nvim-src": "split-nvim-src",
+        "unholy": "unholy",
         "vllm-radiance-src": "vllm-radiance-src",
         "website": "website",
         "wireview-linux": "wireview-linux"
@@ -1248,11 +1249,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1791598808,
-        "narHash": "sha256-1ufqRr6DYhFECgudLQZVnawZDmyQJDiGSPzNk/TtirE=",
+        "lastModified": 1791823147,
+        "narHash": "sha256-gA/0BZbI2WL3PAg7J0eiF3tM7U9SEy9cQxpnUq7IHPI=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "c527b9c32264fa171095c45d325a3c79356520ed",
+        "rev": "275163aee065b03e81ea94ba5a0ec4af6239ff05",
         "type": "github"
       },
       "original": {
@@ -1529,6 +1530,27 @@
     },
     "therock-sdk": {
       "inputs": {
+        "nixpkgs": [
+          "unholy",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791475071,
+        "narHash": "sha256-bJlR/zOcncvylCrzcX3krFa3T1Cby4kmA7d7nNVx/Wk=",
+        "owner": "ewtodd",
+        "repo": "therock-sdk-nix",
+        "rev": "b11e0906c272f12f15c51933daa33c1627401001",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "therock-sdk-nix",
+        "type": "github"
+      }
+    },
+    "therock-sdk_2": {
+      "inputs": {
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
@@ -1564,6 +1586,27 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "unholy": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "therock-sdk": "therock-sdk"
+      },
+      "locked": {
+        "lastModified": 1791825371,
+        "narHash": "sha256-Zg6+I0rYsrUbwoOrqjl07rFgonyqbi8Ird3YZmKPOAI=",
+        "ref": "refs/heads/main",
+        "rev": "e16517cb4fc3c9f5ba97ad55b4dde1833d75d95a",
+        "revCount": 31,
+        "type": "git",
+        "url": "ssh://git@github.com/ewtodd/unholy"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/ewtodd/unholy"
       }
     },
     "utils": {
@@ -1616,7 +1659,7 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "therock-sdk": "therock-sdk"
+        "therock-sdk": "therock-sdk_2"
       },
       "locked": {
         "lastModified": 1791477745,

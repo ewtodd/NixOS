@@ -16,3 +16,6 @@ SECURITY_AUDIT_*.md
 
 # Python bytecode
 __pycache__/
+
+# colmena apply --keep-result roots
+.gcroots/

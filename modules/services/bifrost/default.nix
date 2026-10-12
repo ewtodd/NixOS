@@ -37,11 +37,13 @@ let
     inherit bifrost-ui;
   };
 
-  sonOfAntonVllm = "http://10.0.0.5:8100"; # vLLM on R9700s (TP=2)
-  sonOfAntonStrix = "http://10.0.0.5:8050"; # llama.cpp strix-halo, Qwen3.8-Flash-Next on the iGPU
+  sonOfAntonUnholy = "http://10.0.0.5:8200"; # unholy: DeepSeek-V4-Flash on both R9700s + the iGPU
   oracleSwap = "http://10.0.0.6:8080"; # llama-swap on this host
 
   streamIdleTimeout = 300;
+  # unholy prefills a cold 1M-token prompt in ~20 min before its first token, so its requests and
+  # streams get an hour (a prompt that repeats an earlier prefix starts in seconds).
+  unholyTimeout = 3600;
 
   # The friend key answers only during ricky's active hours
   # (hosts/e-desktop, gateway.active_hours = [ 20 7 ]): 20:00-07:00
@@ -75,14 +77,27 @@ let
   };
 
   # Owner and friend instances of the same gateway; the friend key is scoped to
-  # the 27B by provider allowlist, rate-limited, and off outside ricky's hours.
-  mcpClients = [
-    "fetch"
-    "searxng"
-    "nixos"
-    "arxiv"
-    "context7"
-  ];
+  # dsv4-flash by provider allowlist, rate-limited, and off outside ricky's hours.
+  #
+  # son-of-anton's MCP grant: client -> allowed (unprefixed) tool names. Every
+  # granted schema rides every inference request, so this is kept narrow.
+  # fetch and searxng are left out: son-of-anton's core web_search/web_extract
+  # already front the same SearXNG instance. arxiv keeps its reading/search
+  # tools; the watch/alert/export/reindex surface is rarely worth its schema.
+  soaMcpTools = {
+    nixos = [ "*" ];
+    context7 = [ "*" ];
+    arxiv = [
+      "search_papers"
+      "semantic_search"
+      "search_paper_text" # physics.mcp.roles.manager
+      "get_abstract"
+      "get_paper_outline"
+      "read_paper"
+      "read_paper_section"
+      "download_paper"
+    ];
+  };
 in
 {
   imports = [ "${inputs.bifrost}/nix/modules/bifrost.nix" ];
@@ -120,41 +135,24 @@ in
         };
 
         providers = {
-          # First-class vLLM provider: the server URL lives on the key
-          # (vllm_key_config.url), not in network_config.
-          vllm = {
-            network_config = {
-              allow_private_network = true;
-              default_request_timeout_in_seconds = 1800;
-              stream_idle_timeout_in_seconds = streamIdleTimeout;
-            };
-            keys = [
-              {
-                name = "qwen38-27b";
-                value = "";
-                models = [ "qwen3.8-27b" ];
-                weight = 1.0;
-                vllm_key_config.url = sonOfAntonVllm;
-              }
-            ];
-          };
-
-          strix = {
+          # unholy's OpenAI-compatible server (vLLM's request conventions for DSV4: tools,
+          # reasoning_effort none/low/high/max, reasoning + reasoning_content).
+          unholy = {
             custom_provider_config = {
               base_provider_type = "openai";
               is_key_less = true;
             };
             network_config = {
-              base_url = sonOfAntonStrix;
+              base_url = sonOfAntonUnholy;
               allow_private_network = true;
-              default_request_timeout_in_seconds = 1800;
-              stream_idle_timeout_in_seconds = streamIdleTimeout;
+              default_request_timeout_in_seconds = unholyTimeout;
+              stream_idle_timeout_in_seconds = unholyTimeout;
             };
             keys = [
               {
-                name = "qwen38-flash-next";
+                name = "dsv4-flash";
                 value = "";
-                models = [ "qwen3.8-flash-next" ];
+                models = [ "dsv4-flash" ];
                 weight = 1.0;
               }
             ];
@@ -310,10 +308,10 @@ in
               name = "son-of-anton";
               value = "env.BIFROST_SOA_VK";
               allow_all_providers = true;
-              mcp_configs = map (name: {
+              mcp_configs = lib.mapAttrsToList (name: tools: {
                 mcp_client_name = name;
-                tools_to_execute = [ "*" ];
-              }) mcpClients;
+                tools_to_execute = tools;
+              }) soaMcpTools;
             }
             {
               id = "friend";
@@ -327,8 +325,8 @@ in
               rate_limit_id = "friend-rpm";
               provider_configs = [
                 {
-                  provider = "vllm";
-                  allowed_models = [ "qwen3.8-27b" ];
+                  provider = "unholy";
+                  allowed_models = [ "dsv4-flash" ];
                   key_ids = [ "*" ];
                 }
               ];

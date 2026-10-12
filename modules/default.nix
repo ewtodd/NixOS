@@ -904,6 +904,107 @@ with lib;
           default = [ ];
         };
       };
+      services.unholy = {
+        enable = mkEnableOption ''
+          unholy, the DeepSeek-V4-Flash engine across both R9700s and the Strix Halo iGPU.
+          It needs all three GPUs, so it cannot run alongside services.vllm or services.gufoStrix'';
+        lanExpose = mkEnableOption "expose unholy on the LAN (bind 0.0.0.0 + open firewall)";
+        model = mkOption {
+          type = types.str;
+          example = "/scratch/dsv4-ve";
+          description = "Native DeepSeek-V4-Flash checkpoint directory (config, tokenizer, dense and MXFP4 expert weights).";
+        };
+        exl3 = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "EXL3 quant whose routed experts replace the native MXFP4 ones. Null serves the native experts.";
+        };
+        profile = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = ''
+            Expert routing profile used to place hot experts on the cards (--profile). Null uses the
+            mixed-traffic profile shipped with the package.
+          '';
+        };
+        servedModelName = mkOption {
+          type = types.str;
+          default = "dsv4-flash";
+        };
+        port = mkOption {
+          type = types.port;
+          default = 8200;
+        };
+        kvTokens = mkOption {
+          type = types.ints.positive;
+          default = 1048576;
+          description = ''
+            KV cache pool in tokens, shared by all requests (--kv-tokens), as vLLM's cache: a request takes
+            256-token pages as it grows. About 5.8 KB per token, split across the two cards; every GB of
+            pool displaces ~80 hot experts from the cards (see `unholy plan`).
+          '';
+        };
+        maxModelLen = mkOption {
+          type = types.ints.positive;
+          default = 524288;
+          description = "Maximum tokens per request, prompt + completion (--max-model-len).";
+        };
+        maxNumSeqs = mkOption {
+          type = types.ints.positive;
+          default = 8;
+          description = "Requests running at once (--max-num-seqs); each holds ~17 MB of fixed state.";
+        };
+        maxBatchTokens = mkOption {
+          type = types.ints.positive;
+          default = 4096;
+          description = "Tokens per engine step (--max-batch-tokens): decode tokens first, prefill chunks fill the rest.";
+        };
+        devices = mkOption {
+          type = types.str;
+          default = "0,1,2";
+          description = "HIP_VISIBLE_DEVICES: the two R9700s, then the iGPU.";
+        };
+        user = mkOption {
+          type = types.str;
+          default = "son-of-anton";
+        };
+        managers = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          example = [ "son-of-anton" ];
+          description = ''
+            Users allowed to start, stop and restart unholy.service without sudo (a polkit rule), e.g.
+            to free the GPUs for development runs.
+          '';
+        };
+        specDrafts = mkOption {
+          type = types.ints.between 0 5;
+          default = 0;
+          description = ''
+            Speculative decoding with the checkpoint's DSpark drafter (--spec-drafts): tokens drafted and
+            verified per decode step (0 turns it off). Outputs are exactly what the model would produce
+            without it; the drafter keeps ~10 GB of experts in the iGPU's share of RAM.
+          '';
+        };
+        prefixSnapshots = mkOption {
+          type = types.ints.unsigned;
+          default = 128;
+          description = ''
+            Slot-state snapshots kept for prefix caching (--prefix-snapshots), ~7 MB of pinned host
+            memory each. A request that repeats an earlier prefix (the next chat turn, a shared system
+            prompt) resumes from the deepest saved page boundary it matches. 0 turns prefix caching off.
+          '';
+        };
+        extraEnv = mkOption {
+          type = types.attrsOf types.str;
+          default = { };
+          description = "Extra environment for unholy serve; merged last.";
+        };
+        extraFlags = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+        };
+      };
       services.bifrost.enable = mkEnableOption "Bifrost AI gateway (model routing, per-consumer virtual keys, MCP gateway)";
       services.httpTarpit.enable = mkEnableOption "HTTP tarpit (endless slow-drip responses for WAN scanners)";
       # One system service per account (the temple design): each instance runs AS its account with
@@ -1198,7 +1299,10 @@ with lib;
         enable = true;
         clean = {
           enable = true;
-          extraArgs = "--keep 3";
+          # --keep-since: gcroots younger than this survive, so colmena
+          # `--keep-result` roots for other hosts (oracle's Asahi kernel has no
+          # binary cache) are not swept by the weekly clean.
+          extraArgs = "--keep 3 --keep-since 30d";
         };
       };
 
