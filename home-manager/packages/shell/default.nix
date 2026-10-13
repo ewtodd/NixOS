@@ -10,6 +10,7 @@ let
 
   isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable else false;
   isLaptop = if osConfig != null then osConfig.systemOptions.deviceType.laptop.enable else false;
+  isEDesktop = osConfig != null && osConfig.networking.hostName == "e-desktop";
 in
 {
   programs.bash = {
@@ -135,6 +136,50 @@ in
         Port = 2222;
         User = "tony";
         ProxyJump = "bastion";
+      };
+
+      # Straight to the LAN address, for when nu is down: the aliases above reach their hosts through the
+      # bastion's public name, which at home resolves (split-horizon) through nu's DNS.
+      "mu-lan" = {
+        Hostname = "10.0.0.2";
+        Port = 2222;
+        User = "mu";
+      };
+      "nu-lan" = {
+        Hostname = "10.0.0.7";
+        Port = 2222;
+        User = "nu";
+      };
+      "anton-lan" = {
+        Hostname = "10.0.0.3";
+        Port = 2222;
+        User = "anton";
+      };
+      "son-of-anton-lan" = {
+        Hostname = "10.0.0.5";
+        Port = 2222;
+        User = "son-of-anton";
+      };
+      "tony-lan" = {
+        Hostname = "10.0.0.8";
+        Port = 2222;
+        User = "tony";
+      };
+    }
+    // lib.optionalAttrs isEDesktop {
+      # nu over IPv6 link-local through this machine's wired port (enp14s0), for when the LAN has no IPv4
+      # at all (nu's DHCP is down). `%%` is ssh_config's escape for the zone's `%`. nu-wan-ll is nu's WAN
+      # port (the cloned BGW320 MAC): it answers here only if its cable has ended up on the LAN switch, as
+      # after the 2026-10-13 RAM swap.
+      "nu-ll" = {
+        Hostname = "fe80::9e69:d3ff:fe3d:6780%%enp14s0";
+        Port = 2222;
+        User = "nu";
+      };
+      "nu-wan-ll" = {
+        Hostname = "fe80::6e4b:b4ff:fe53:3ef0%%enp14s0";
+        Port = 2222;
+        User = "nu";
       };
     };
   };
