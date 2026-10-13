@@ -32,10 +32,13 @@ in
     assertions = [
       {
         assertion =
-          !config.systemOptions.services.vllm.enable && !config.systemOptions.services.gufoStrix.enable;
+          let
+            s = config.systemOptions.services;
+          in
+          s.llmMode.enable || (!s.gufoStrix.enable && !s.radiance.enable);
         message = ''
-          services.unholy uses both R9700s and the Strix Halo iGPU; disable services.vllm and
-          services.gufoStrix on this host.
+          services.unholy uses both R9700s and the Strix Halo iGPU; run
+          services.radiance / services.gufoStrix only under services.llmMode (which switches between them).
         '';
       }
     ];

@@ -39,14 +39,14 @@ Hosts:
 - **v-desktop, v-laptop** - AMD/Intel workstations (v-owner)
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
 - **nu** - Router, AdGuard, reverse proxy, dynamic DNS, Prometheus & Grafana
-- **mu** - SSH bastion, Nextcloud, Minecraft, Signal bot backend
+- **mu** - SSH bastion, Nextcloud, Minecraft, Signal bot backend, and the AI front: maitred,
+  llama-swap, SearXNG, Open WebUI (ai.ethanwtodd.com)
 - **anton** - headless server (no inference role): raidz2 tank with borg backup server,
   zfs-metrics, Jellyfin media server (Intel QSV transcoding, LAN only)
 - **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
-- **son-of-anton** - vLLM (Qwen3.8-27B, MXFP4/W4A8, TP=2) + llama.cpp Strix Halo (Qwen3.8-Flash-Next)
-- **oracle** - model router & tooling host (aarch64): llama-swap, Bifrost MCP gateway,
-  SearXNG, Open WebUI (ai.ethanwtodd.com)
+- **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy), or
+  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo)
 ```
 ## Important Notes
 ### `systemOptions`
@@ -121,33 +121,34 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
-- **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU):
-  - **vLLM** (:8100): Qwen3.8-27B (native 128x128 block FP8), tensor-parallel
-    across the two R9700s, DFlash2 K7 speculative decoding with the
-    tcclaviger/Qwen3.8-27B-DFlash2-FP8 drafter (runtime W4 fast draft),
-    450k context (YaRN), fp8 KV cache, prefix caching. Built from source in
-    Nix against the TheRock ROCm 10.0 SDK with libr4d + the vllm-radiance
-    gfx1201 patch set (no venv); the build now lives in the
-    [ewtodd/radiance-vllm-mxfp4](https://codeberg.org/ewtodd/radiance-vllm-mxfp4) flake
-    (`lib.<system>.mkVllmStack { pkgs }`) and this repo consumes it as `inputs.vllm-radiance-src`
-  - **[gufo](https://github.com/gufo-org/gufo)** (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL) on the Strix Halo iGPU
-    (self-contained ROCm 7.2.3) with the MTP draft and vision projector,
-    3 sessions at the 262k native context, continuous batching
+- **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU) serves one mode at a time;
+  `llm-mode ds4|qwen|status` switches between them without a redeploy:
+  - **ds4** — **unholy** (:8200, github.com/ewtodd/unholy): DeepSeek-V4-Flash across both
+    R9700s and the iGPU, 512k context, a 1.5M-token bf16 KV pool shared by up to 8 requests,
+    DSpark speculative decoding, prefix-cache snapshots
+  - **qwen** — **[Radiance](https://codeberg.org/StillDeadcode/radiance)** (:8100): Qwen3.8-27B
+    FP8 with the DFlash2 drafter, tensor-parallel across the R9700s, 352k context (YaRN), bf16
+    KV; built from source by [radiance-nix](https://github.com/ewtodd/radiance-nix) against the
+    TheRock ROCm 10.1 SDK unholy pins. Beside it **[gufo](https://github.com/gufo-org/gufo)**
+    (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL with Q5 down-projection and bf16 n-gram overlays)
+    on the Strix Halo iGPU, with the MTP draft and vision projector, 262k context
+- **mu** hosts the AI front. `systemOptions.aiFrontAddress` names that host; nu's Caddy and
+  the clients point at it, so moving the front is one line:
+  - **[maitred](https://github.com/ewtodd/maitred)** (:4002), the gateway every client uses:
+    - `/v1` routes son-of-anton, opencode, and Open WebUI to son-of-anton's servers,
+      llama-swap, and the hosted DeepSeek API, with per-consumer virtual keys (plus a friend
+      key limited to ricky's 20:00-07:00 hours). Every model is listed with its context
+      window, reasoning efforts, and live status; a request for a model of the mode that is
+      not loaded gets a 503 naming what to use instead
+    - `/mcp` aggregates stdio MCP servers per key: `fetch` (URL retrieval), `searxng` (web
+      search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
+  - **llama-swap** (CPU): little-titles (Little-Titles Q8_0, always resident — title
+    generation for the son-of-anton accounts) + bge-m3 embeddings
+  - **SearXNG** metasearch, backing the searxng MCP and son-of-anton's web search
+  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via maitred)
 - **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
   successor to temple-server: one system service per account on a shared Signal
   number, and each account's CLI shares its service's session state
-- **oracle** (aarch64, M2 Mac Mini 8 cores / 8 GB) hosts the model router and tooling:
-  - **llama-swap** (Vulkan backend): little-titles (Little-Titles Q8_0, always
-    resident — title generation for the son-of-anton accounts) + bge-m3 embeddings
-  - **Bifrost** gateway (:4002): routes son-of-anton, opencode, and Open WebUI to
-    vLLM and gufo on son-of-anton, llama-swap on oracle, and the hosted DeepSeek API;
-    per-consumer virtual keys (plus a friend key scoped to the 27B and limited
-    to ricky's 20:00-07:00 hours) live in `config.json`
-  - **MCP gateway** (mounted at /mcp) aggregating stdio servers: `fetch` (URL
-    retrieval), `searxng` (web search), `nixos` (Nix/NixOS lookups), `arxiv`,
-    and `context7`
-  - **SearXNG** metasearch, backing the searxng MCP
-  - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via Bifrost)
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
 The hive (`colmena` / `colmenaHive` flake outputs) reuses each host's NixOS
@@ -155,11 +156,11 @@ modules, so it never drifts from `nixosConfigurations`.
 **e-desktop is the build host** — it builds every closure and pushes the result,
 so the servers and laptops never compile.
 ```bash
-colmena apply --on @server   # build on e-desktop, push to the 5 servers
+colmena apply --on @server   # build on e-desktop, push to the 4 servers
 colmena apply-local          # rebuild the local workstation (e-desktop / e-laptop)
 colmena apply --on anton     # a single node
 ```
-- **Scope:** the 8 e-owner nodes (v-devices excluded for now).
+- **Scope:** the 7 e-owner nodes (v-devices excluded for now).
   The headless servers and the tony kiosk are pushed over SSH; the two
   workstations deploy locally (`apply-local`, which also sidesteps e-laptop's
   dynamic IP).

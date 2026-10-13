@@ -34,6 +34,17 @@ with lib;
       deviceType.desktop.enable = mkEnableOption "Desktop-specific features";
       deviceType.server.enable = mkEnableOption "Headless server (skips desktop environment, GUI packages, and audio/bluetooth/printing stacks)";
 
+      aiFrontAddress = mkOption {
+        type = types.str;
+        default = "10.0.0.2";
+        description = ''
+          LAN address of the host serving the house's AI front: maitred (/v1 and /mcp on :4002),
+          Open WebUI (:8081), SearXNG (:8888) and llama-swap (:8080). nu's reverse proxy and the clients
+          point here, so moving those services to another machine changes only this. mu since oracle was
+          decommissioned.
+        '';
+      };
+
       apps.zoom.enable = mkEnableOption "Zoom";
       apps.remarkable.enable = mkEnableOption "Remarkable from wrapWine flake";
       apps.quickemu.enable = mkEnableOption "Quickemu";
@@ -150,9 +161,10 @@ with lib;
           "vulkan"
           "cuda"
           "rocm"
+          "cpu"
         ];
         default = "vulkan";
-        description = "llama.cpp GPU backend: Vulkan (AMD RADV or Intel ANV) or CUDA (NVIDIA).";
+        description = "llama.cpp backend: Vulkan (AMD RADV or Intel ANV), CUDA (NVIDIA), ROCm, or CPU only.";
       };
       services.llamaSwap.cacheDir = mkOption {
         type = types.nullOr types.str;
@@ -587,189 +599,6 @@ with lib;
           must never be evicted. Serves Open WebUI RAG (e.g. bge-m3).
         '';
       };
-      services.vllm = {
-        enable = mkEnableOption "vLLM ROCm inference server (nix-built, TheRock SDK, libr4d)";
-        lanExpose = mkEnableOption "expose vLLM on the LAN (bind 0.0.0.0 + open firewall)";
-        model = mkOption {
-          type = types.str;
-          example = "amd/Qwen3.8-27B-Quark-AWQ-MXFP4";
-          description = "HuggingFace model ID to serve.";
-        };
-        port = mkOption {
-          type = types.port;
-          default = 8100;
-        };
-        devices = mkOption {
-          type = types.str;
-          default = "0,1";
-          description = "HIP_VISIBLE_DEVICES — comma-separated GPU indices.";
-        };
-        tensorParallelSize = mkOption {
-          type = types.ints.positive;
-          default = 2;
-        };
-        maxModelLen = mkOption {
-          type = types.ints.positive;
-          default = 163840;
-        };
-        kvCacheDtype = mkOption {
-          type = types.str;
-          default = "fp8";
-          description = "KV cache data type (fp8, auto).";
-        };
-        maxNumSeqs = mkOption {
-          type = types.ints.positive;
-          default = 8;
-        };
-        gpuMemoryUtilization = mkOption {
-          type = types.float;
-          default = 0.95;
-        };
-        enforceEager = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Disable HIP graphs.";
-        };
-        attentionBackend = mkOption {
-          type = types.str;
-          default = "R4D";
-          description = "Attention backend; ROCM_AITER_UNIFIED_ATTN is the measured fallback.";
-        };
-        maxNumBatchedTokens = mkOption {
-          type = types.ints.positive;
-          default = 4096;
-        };
-        prefixCaching = mkOption {
-          type = types.bool;
-          default = true;
-          description = "--enable-prefix-caching with --mamba-cache-mode align (GDN hybrids need both).";
-        };
-        quantizationMode = mkOption {
-          type = types.enum [
-            "fp8"
-            "mxfp4-w4a8"
-            "mxfp4-w4a16"
-            "paroquant-int5"
-            "paroquant-mxfp4"
-            "paroquant-mxfp6"
-          ];
-          default = "fp8";
-          description = ''
-            Checkpoint weight format and the Radiance kernel profile that serves
-            it. vLLM resolves the method from config.json, except fp8, which is
-            forced with --quantization fp8.
-
-            fp8              plain W8A8 checkpoint.
-            mxfp4-w4a8       Quark MXFP4 on the native W4A8 kernel (production).
-            mxfp4-w4a16      Quark MXFP4 weight-only A16 shim (slow; validation).
-                             Pairs with kvCacheDtype = "auto".
-            paroquant-int5   ParoQuant int5 on the int4 kernel.
-            paroquant-mxfp4  z-lab rotations on MXFP4, native W4A8.
-            paroquant-mxfp6  z-lab rotations on E2M3 MXFP6, native W4A8.
-          '';
-        };
-        fastDraft = mkOption {
-          type = types.bool;
-          default = false;
-          description = "RADIANCE_FAST_DRAFT: INT2 draft head with exact rerank, plus runtime W4 DFlash draft linears.";
-        };
-        compilationConfig = mkOption {
-          type = types.nullOr types.attrs;
-          default = null;
-          description = "Attrs passed as --compilation-config JSON (DFlash2 uses { cudagraph_mode = \"PIECEWISE\"; }).";
-        };
-        chatTemplate = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          description = "Path to a chat template; null uses the checkpoint template.";
-        };
-        hfOverrides = mkOption {
-          type = types.attrs;
-          default = { };
-          description = "JSON passed as --hf-overrides (e.g. YaRN rope_parameters for long context).";
-        };
-        speculative = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Enable speculative decoding (--speculative-config).";
-        };
-        speculativeMethod = mkOption {
-          type = types.enum [
-            "mtp"
-            "dflash"
-          ];
-          default = "mtp";
-          description = "mtp uses the in-checkpoint head; dflash uses a separate DFlash2 drafter.";
-        };
-        speculativeTokens = mkOption {
-          type = types.ints.positive;
-          default = 8;
-          description = "Draft depth ceiling (num_speculative_tokens); the dynamic draft controller may go shallower.";
-        };
-        draftModel = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          description = "Drafter checkpoint path; required for speculativeMethod = \"dflash\".";
-        };
-        draftAttentionBackend = mkOption {
-          type = types.str;
-          default = "TRITON_ATTN";
-          description = "Drafter attention backend; the R4D target path stays on attentionBackend.";
-        };
-        draftTensorParallelSize = mkOption {
-          type = types.nullOr types.ints.positive;
-          default = null;
-          description = "Draft tensor-parallel size; null uses the target's tensorParallelSize.";
-        };
-        draftMaxModelLen = mkOption {
-          type = types.nullOr types.ints.positive;
-          default = null;
-          description = "Draft context ceiling; null lets vLLM clamp it to min(draft checkpoint, target maxModelLen).";
-        };
-        modelCache = mkOption {
-          type = types.str;
-          default = "/scratch/vllm-models";
-          description = "HF_HOME / HF_HUB_CACHE for model downloads.";
-        };
-        cacheDir = mkOption {
-          type = types.str;
-          default = "/scratch/vllm-cache";
-          description = "Root for the aiter JIT, triton, inductor and vLLM compile caches.";
-        };
-        extraEnv = mkOption {
-          type = types.attrsOf types.str;
-          default = { };
-          example = {
-            VLLM_ATTENTION_BACKEND = "TRITON_ATTN";
-          };
-          description = "Extra environment variables for the vLLM service; merged last, so they override the built-in ROCm/RADIANCE sets.";
-        };
-        user = mkOption {
-          type = types.str;
-          default = "son-of-anton";
-        };
-        toolCallParser = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          example = "qwen3_xml";
-          description = "vLLM tool-call parser name; enables --enable-auto-tool-choice when set.";
-        };
-        reasoningParser = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          example = "qwen3";
-          description = "vLLM reasoning parser name; splits thinking into reasoning_content.";
-        };
-        languageModelOnly = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Pass --language-model-only, which zeroes every multimodal limit.";
-        };
-        extraFlags = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-        };
-      };
       services.gufoStrix = {
         enable = mkEnableOption "gufo Strix Halo inference server on the gfx1151 iGPU";
         lanExpose = mkEnableOption "expose the gufo-strix server on the LAN (bind 0.0.0.0 + open firewall)";
@@ -789,6 +618,25 @@ with lib;
           default = null;
           example = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
           description = "Vision projector GGUF (--mmproj). Null serves text only.";
+        };
+        releaseGpuPagePool = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            Drop caches (as root) just before gufo starts, so pages the amdgpu TTM pool kept from an earlier GPU
+            process count as available again: gufo sizes its RAM snapshot cache from MemAvailable, and a pool-held
+            box makes it far too small (fewer parked sessions, ~30% less throughput above `sessions` requests).
+          '';
+        };
+        overlays = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          example = [ "/scratch/models/gufo/qwen3.8-flash-next/ngram-bf16-overlay.gguf" ];
+          description = ''
+            GGUFs whose tensors replace the model's same-named ones (GUFO_GGUF_OVERLAY, from the
+            module's overlay patch), applied in order: e.g. the n-gram table at full BF16 precision,
+            or higher-precision expert tensors, without rewriting the model files.
+          '';
         };
         alias = mkOption {
           type = types.str;
@@ -890,8 +738,8 @@ with lib;
           type = types.str;
           default = "2";
           description = ''
-            HIP_VISIBLE_DEVICES. On son-of-anton the two R9700s are 0,1 (owned by
-            vLLM) and the Strix Halo iGPU (gfx1151) is 2.
+            HIP_VISIBLE_DEVICES. On son-of-anton the two R9700s are 0,1 (Radiance's or
+            unholy's) and the Strix Halo iGPU (gfx1151) is 2.
           '';
         };
         extraEnv = mkOption {
@@ -904,10 +752,109 @@ with lib;
           default = [ ];
         };
       };
+      services.radiance = {
+        enable = mkEnableOption "Radiance inference server (C++/HIP, built from source by radiance-nix) on the R9700s";
+        lanExpose = mkEnableOption "expose Radiance on the LAN (bind 0.0.0.0 + open firewall)";
+        model = mkOption {
+          type = types.str;
+          example = "/scratch/models/rad/qwen3.8-27b-fp8/qwen3.8-27b-fp8.rad";
+          description = "A .rad container (rad-convert) or a checkpoint at its own precision.";
+        };
+        servedModelName = mkOption {
+          type = types.str;
+          default = "qwen3.8-27b";
+        };
+        port = mkOption {
+          type = types.port;
+          default = 8100;
+        };
+        tp = mkOption {
+          type = types.ints.positive;
+          default = 2;
+          description = "Tensor-parallel ranks (--tp), one per visible card.";
+        };
+        maxModelLen = mkOption {
+          type = types.ints.positive;
+          default = 262144;
+          description = "Context per request (--max-model-len). Above the container's 262144, pair it with ropeScaling.";
+        };
+        maxNumSeqs = mkOption {
+          type = types.ints.positive;
+          default = 8;
+          description = "Sequences per step (--max-num-seqs); each holds its own delta-net state.";
+        };
+        kvCacheDtype = mkOption {
+          type = types.enum [
+            "bf16"
+            "fp8"
+          ];
+          default = "bf16";
+          description = "KV-cache element type (--kv-cache-dtype).";
+        };
+        numSpeculativeTokens = mkOption {
+          type = types.nullOr types.ints.unsigned;
+          default = null;
+          description = "Draft tokens per step for the container's drafter (--num-speculative-tokens). Null keeps the drafter's own operating point.";
+        };
+        maxNumBatchedTokens = mkOption {
+          type = types.nullOr types.ints.positive;
+          default = null;
+          description = "Tokens per engine step (--max-num-batched-tokens). Null keeps the engine default.";
+        };
+        ropeScaling = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "yarn:1.34375";
+          description = "Static YaRN over the container's rotary embedding (--rope-scaling yarn:FACTOR[:ORIG]).";
+        };
+        prefixCacheDir = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          description = "Restart-safe prefix cache on disk (--prefix-cache-dir). Null keeps it in memory only.";
+        };
+        devices = mkOption {
+          type = types.str;
+          default = "0,1";
+          description = "HIP_VISIBLE_DEVICES: the two R9700s (the iGPU is gufo's).";
+        };
+        user = mkOption {
+          type = types.str;
+          default = "son-of-anton";
+        };
+        extraEnv = mkOption {
+          type = types.attrsOf types.str;
+          default = { };
+          description = "Extra environment for radiance; merged last.";
+        };
+        extraFlags = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+        };
+      };
+      services.llmMode = {
+        enable = mkEnableOption ''
+          the `llm-mode ds4|qwen|status` switch between unholy (all three GPUs) and the Qwen pair
+          (services.radiance on the R9700s + services.gufoStrix on the iGPU), with no redeploy'';
+        default = mkOption {
+          type = types.enum [
+            "ds4"
+            "qwen"
+          ];
+          default = "ds4";
+          description = "Mode started at boot until `llm-mode` has recorded a choice.";
+        };
+        managers = mkOption {
+          type = types.listOf types.str;
+          default = [ ];
+          example = [ "son-of-anton" ];
+          description = "Users allowed to switch modes and start/stop the model services without sudo (polkit).";
+        };
+      };
       services.unholy = {
         enable = mkEnableOption ''
           unholy, the DeepSeek-V4-Flash engine across both R9700s and the Strix Halo iGPU.
-          It needs all three GPUs, so it cannot run alongside services.vllm or services.gufoStrix'';
+          It needs all three GPUs, so it cannot run alongside services.radiance or services.gufoStrix
+          unless services.llmMode switches between them'';
         lanExpose = mkEnableOption "expose unholy on the LAN (bind 0.0.0.0 + open firewall)";
         model = mkOption {
           type = types.str;
@@ -1005,7 +952,23 @@ with lib;
           default = [ ];
         };
       };
-      services.bifrost.enable = mkEnableOption "Bifrost AI gateway (model routing, per-consumer virtual keys, MCP gateway)";
+      services.maitred = {
+        enable = mkEnableOption "maitred (github.com/ewtodd/maitred): the /v1 front for the LLM servers and the /mcp gateway";
+        port = mkOption {
+          type = types.port;
+          default = 4002;
+          description = "Listen port (nu's Caddy and the clients use 4002).";
+        };
+        openFirewall = mkOption {
+          type = types.bool;
+          default = true;
+        };
+        environmentFiles = mkOption {
+          type = types.listOf types.path;
+          default = [ ];
+          description = "Files with the key variables (BIFROST_*_VK, named for the gateway they started on) and DEEPSEEK_API_KEY.";
+        };
+      };
       services.httpTarpit.enable = mkEnableOption "HTTP tarpit (endless slow-drip responses for WAN scanners)";
       # One system service per account (the temple design): each instance runs AS its account with
       # SON_OF_ANTON_HOME=~/.son-of-anton, so Signal and CLI sessions share one state.db/config.yaml/writer.
@@ -1300,8 +1263,8 @@ with lib;
         clean = {
           enable = true;
           # --keep-since: gcroots younger than this survive, so colmena
-          # `--keep-result` roots for other hosts (oracle's Asahi kernel has no
-          # binary cache) are not swept by the weekly clean.
+          # `--keep-result` roots for other hosts are not swept by the weekly
+          # clean.
           extraArgs = "--keep 3 --keep-since 30d";
         };
       };

@@ -28,8 +28,6 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:00:00";
-    # DeepSeek-V4-Flash, native precision (MXFP4 experts, fp8 dense), on both R9700s + the iGPU.
-    # The KV pool holds three 512k-token requests (or any mix of shorter ones, up to 8 at once).
     services.unholy = {
       enable = true;
       lanExpose = true;
@@ -37,11 +35,40 @@ in
       kvTokens = 1572864;
       maxModelLen = 524288;
       maxNumSeqs = 8;
-      # DSpark speculative decoding (5 drafts, confidence >= 0.5): ~1.6x per stream on its own, still a
-      # few percent at 8 concurrent requests; outputs are exactly what the model would produce.
       specDrafts = 5;
-      # Pinned host memory is tight next to the APU's experts (with the vision tower and DSpark loaded).
       prefixSnapshots = 64;
+      managers = [ "son-of-anton" ];
+    };
+    services.radiance = {
+      enable = true;
+      lanExpose = true;
+      model = "/scratch/models/rad/swift15-27b-fp8-df2.rad";
+      servedModelName = "qwen3.8-27b";
+      maxModelLen = 352256;
+      ropeScaling = "yarn:1.34375";
+      maxNumSeqs = 8;
+      kvCacheDtype = "bf16";
+    };
+    services.gufoStrix = {
+      enable = true;
+      lanExpose = true;
+      model = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
+      overlays = [
+        "/scratch/models/gufo/qwen3.8-flash-next/q5-down-overlay.gguf"
+        "/scratch/models/gufo/qwen3.8-flash-next/ngram-bf16-overlay.gguf"
+      ];
+      mtpModel = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
+      draftTokens = 5;
+      mmproj = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
+      sessions = 2;
+      context = 262144;
+      diskCacheDir = "/scratch/gufo-cache";
+      diskCacheBytes = 64 * 1024 * 1024 * 1024;
+      logProgress = true;
+    };
+    services.llmMode = {
+      enable = true;
+      default = "ds4";
       managers = [ "son-of-anton" ];
     };
     security.harden.enable = true;

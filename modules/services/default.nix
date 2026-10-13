@@ -14,7 +14,6 @@ in
     ./adguard
     ./backup
     ./bastion
-    ./bifrost
     ./deploy
     ./dyndns
     ./grafana
@@ -22,8 +21,10 @@ in
     ./jellyfin
     ./llama-swap
     ./gufo-strix
+    ./maitred
+    ./llm-mode
+    ./radiance
     ./unholy
-    ./vllm
     ./minecraft
     ./nextcloud
     ./node-exporter
@@ -65,7 +66,6 @@ in
             "mu"
             "anton"
             "son-of-anton"
-            "oracle"
           ];
         };
       };

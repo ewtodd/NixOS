@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-oracle.url = "github:NixOS/nixpkgs/c59305bab2065cfecc4944690d9eedbb56f3a9fa";
     wireview-linux = {
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -14,10 +13,6 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    bifrost = {
-      url = "github:maximhq/bifrost";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     base16 = {
@@ -77,13 +72,17 @@
     gufo = {
       url = "github:gufo-org/gufo";
     };
-    vllm-radiance-src = {
-      url = "github:ewtodd/vllm-radiance-nix";
+    maitred = {
+      url = "github:ewtodd/maitred";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Private until it is tested; colmena evaluates on the deploying machine, so its SSH agent fetches it.
+    radiance-nix = {
+      url = "github:ewtodd/radiance-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.therock-sdk.follows = "unholy/therock-sdk";
+    };
     unholy = {
-      url = "git+ssh://git@github.com/ewtodd/unholy";
+      url = "github:ewtodd/unholy";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     llm-agents = {
@@ -96,10 +95,6 @@
     split-nvim-src = {
       url = "github:wurli/split.nvim";
       flake = false;
-    };
-    nixos-apple-silicon = {
-      url = "github:tpwrules/nixos-apple-silicon";
-      inputs.nixpkgs.follows = "nixpkgs-oracle";
     };
     son-of-anton = {
       url = "github:ewtodd/son-of-anton";
@@ -138,13 +133,12 @@
         }
       ];
 
-      # Fixes for the aarch64/open-webui closure. These live here, not in the
-      # open-webui module, because colmena's nodeNixpkgs replaces the node's
-      # package set and silently ignores module-level nixpkgs.overlays.
+      # Fixes for the open-webui closure (first needed on oracle's aarch64
+      # builder), applied to every host's package set.
       openWebUIOverlays = [
         (_: prev: {
           python314 = prev.python314.override {
-            # The vLLM stack re-derives pkgs.python3 with its own
+            # A package set that re-derives pkgs.python3 with its own
             # packageOverrides, and an override replaces them wholesale, so
             # fixes that must survive it ride pythonPackagesExtensions, which
             # the interpreter captures in its passthruFun.
@@ -199,7 +193,7 @@
         # above; overriding both in one overlay leaves it on the base python set.
         (_: prev: {
           # Local embedding/reranking, TTS and evaluation backends. This
-          # deployment sends chat to Bifrost and embeddings to the llama.cpp
+          # deployment sends chat to maitred and embeddings to the llama.cpp
           # bge-m3 server, so transformers/sentence-transformers/colbert-ai
           # and their accelerate->torch stack are dead weight; all their
           # imports are lazy.
@@ -258,10 +252,7 @@
             _module.args.system = system;
           }
           ./hosts/${hostname}/configuration.nix
-        ]
-        ++ nixpkgs.lib.optional (
-          hostname == "oracle"
-        ) inputs.nixos-apple-silicon.nixosModules.apple-silicon-support;
+        ];
 
       mkSystem =
         {
@@ -269,10 +260,7 @@
           headless ? false,
           system ? "x86_64-linux",
         }:
-        let
-          hostNixpkgs = if hostname == "oracle" then inputs.nixpkgs-oracle else nixpkgs;
-        in
-        hostNixpkgs.lib.nixosSystem {
+        nixpkgs.lib.nixosSystem {
           system = system;
           specialArgs = {
             inherit inputs;
@@ -310,10 +298,6 @@
         };
         son-of-anton = {
           headless = true;
-        };
-        oracle = {
-          headless = true;
-          system = "aarch64-linux";
         };
       };
 
@@ -361,12 +345,6 @@
           buildOnTarget = false;
           tags = [ "server" ];
         };
-        oracle = {
-          targetHost = "deploy-oracle";
-          targetUser = "deploy";
-          buildOnTarget = false;
-          tags = [ "server" ];
-        };
       };
 
       mkNeovim = inputs.nixvim.legacyPackages.x86_64-linux.makeNixvimWithModule {
@@ -394,25 +372,9 @@
         inherit mkNeovim;
       };
 
-      packages.x86_64-linux =
-        let
-          vllmStack = inputs.vllm-radiance-src.lib.x86_64-linux.mkVllmStack {
-            pkgs = import nixpkgs {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-              overlays = openWebUIOverlays;
-            };
-          };
-        in
-        {
-          neovim = mkNeovim;
-          vllm-torch = vllmStack.torch;
-          vllm-aiter = vllmStack.aiter;
-          vllm-libr4d = vllmStack.libr4d;
-          vllm-engine = vllmStack.vllm;
-          vllm-env = vllmStack.pythonEnv;
-          rocm-sdk-gfx120X = vllmStack.rocmSdk;
-        };
+      packages.x86_64-linux = {
+        neovim = mkNeovim;
+      };
 
       nixosConfigurations = builtins.mapAttrs (
         hostname: h:
@@ -428,13 +390,6 @@
           nixpkgs = import nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
-          };
-          nodeNixpkgs = {
-            oracle = import inputs.nixpkgs-oracle {
-              system = "aarch64-linux";
-              config.allowUnfree = true;
-              overlays = openWebUIOverlays;
-            };
           };
           specialArgs = {
             inherit inputs;

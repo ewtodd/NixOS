@@ -10,7 +10,6 @@ let
   nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@nu";
   mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@mu";
   server-son-of-anton = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJNP13u10CY6dMNzWze+Hk+as+Esm35XGR4WGXMccgtH root@son-of-anton";
-  server-oracle = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAzfIzVGX+XNGWRrLfL78OeYqt8MB5Xii9EwimFAL0WZ root@oracle";
   server-e-desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPftrHYU/cCgJyXdpIX5FHNpjqfnHRLkytx65JV4uHO root@e-desktop";
   personal = [
     ethan-desktop-ework
@@ -35,23 +34,21 @@ in
   "grafana-secret-key.age".publicKeys = personal ++ [ nu ];
   "searxng-secret-key.age".publicKeys = personal ++ [
     server-son-of-anton
-    server-oracle
+    mu
   ];
   "librechat-env.age".publicKeys = personal ++ [
     server-son-of-anton
-    server-oracle
   ];
   "meilisearch-api-key.age".publicKeys = personal ++ [
     server-son-of-anton
-    server-oracle
   ];
-  "bifrost-env.age".publicKeys = personal ++ [ server-oracle ];
+  "bifrost-env.age".publicKeys = personal ++ [ mu ];
   "bifrost-keys.age".publicKeys =
     personal
     ++ val
     ++ [
       server-e-desktop
-      server-oracle
+      mu
     ];
   "borg-passphrase.age".publicKeys = personal ++ [ server-e-desktop ];
   "son-of-anton-env.age".publicKeys = personal ++ [

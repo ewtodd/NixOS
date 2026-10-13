@@ -6,6 +6,8 @@
   ...
 }:
 let
+  # maitred and SearXNG on the AI front host (mu).
+  aiFront = config.systemOptions.aiFrontAddress;
   personalKeys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOF2AcBcmt8acbIs5DwedIDZ0C02uKkMti5HJ1Mul/DH ethan-desktop-eplay"
@@ -135,7 +137,7 @@ in
       ];
       environment = {
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
-        SEARXNG_URL = "http://10.0.0.6:8888/search";
+        SEARXNG_URL = "http://${aiFront}:8888/search";
         SIGNAL_REACTIONS = "false";
       };
       instances = {
@@ -269,13 +271,13 @@ in
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
           enabled = true;
-          base_url = "http://10.0.0.6:4002/v1";
+          base_url = "http://${aiFront}:4002/v1";
           model = "bge-m3";
           api_key_env = "BIFROST_SOA_VK";
           top_k = 5;
         };
         custom_providers.custom = {
-          base_url = "http://10.0.0.6:4002/v1";
+          base_url = "http://${aiFront}:4002/v1";
           key_env = "BIFROST_SOA_VK";
           models = {
             # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
@@ -304,7 +306,7 @@ in
           agent_models = {
             critic = "unholy/dsv4-flash";
           };
-          base_url = "http://10.0.0.6:4002/v1";
+          base_url = "http://${aiFront}:4002/v1";
           api_key_env = "BIFROST_SOA_VK";
           python = "${soaPhysicsPython}/bin/python3";
           sandbox = "bwrap";
@@ -313,7 +315,7 @@ in
           token_budget = 262144;
           reasoning_effort = "max";
           mcp = {
-            server = "oracle";
+            server = "maitred";
             roles = {
               manager = [
                 "arxiv-search_papers"
@@ -327,8 +329,8 @@ in
           };
         };
         web.backend = "searxng";
-        mcp_servers.oracle = {
-          url = "http://10.0.0.6:4002/mcp";
+        mcp_servers.maitred = {
+          url = "http://${aiFront}:4002/mcp";
           headers.Authorization = "Bearer \${BIFROST_SOA_VK}";
           enabled = true;
         };
@@ -336,14 +338,14 @@ in
           title_generation = {
             provider = "custom";
             model = "little-titles";
-            base_url = "http://10.0.0.6:4002/v1";
+            base_url = "http://${aiFront}:4002/v1";
             key_env = "BIFROST_SOA_VK";
             prompt_style = "chat";
           };
           compaction = {
             provider = "custom";
             model = "unholy/dsv4-flash"; # 512k window
-            base_url = "http://10.0.0.6:4002/v1";
+            base_url = "http://${aiFront}:4002/v1";
             key_env = "BIFROST_SOA_VK";
             reasoning_effort = "none"; # extraction, not reasoning
             timeout = 300; # local model over a large prompt; 120s default is tight
