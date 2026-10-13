@@ -1596,11 +1596,11 @@
         "therock-sdk": "therock-sdk"
       },
       "locked": {
-        "lastModified": 1791846137,
-        "narHash": "sha256-j4STAr3hqGPtySk6gVhFv863fLJ+dlwWdr639RI2GiA=",
+        "lastModified": 1791850476,
+        "narHash": "sha256-ysHX7r6ID44J5aSRIjOPfThJN1YxJ3D7Q5N/CcGUuTA=",
         "ref": "refs/heads/main",
-        "rev": "1b25b1ee7889c73daeadfa00b7b1ea2cebe95c5e",
-        "revCount": 33,
+        "rev": "a59387db4518b54f45a5f6689fac8dc8c44a9626",
+        "revCount": 34,
         "type": "git",
         "url": "ssh://git@github.com/ewtodd/unholy"
       },
