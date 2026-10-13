@@ -5,16 +5,16 @@
   ...
 }:
 let
-  # TUI-only trial for v's laptop: package + config + Bifrost key, no
-  # gateway and no messaging platforms. Drop the deviceType check to give
+  # TUI-only trial for v's laptop: package + config + the maitred key, no
+  # gateway service and no messaging platforms. Drop the deviceType check to give
   # the other v devices the same interactive agent.
   enable = osConfig.systemOptions.owner.v.enable && osConfig.systemOptions.deviceType.laptop.enable;
 
-  # Laptops are off-LAN, so both routes go through the Caddy front for
-  # Bifrost on nu; /v1 bypasses anubis and is key-protected by Bifrost.
-  bifrostBase = "https://llm.ethanwtodd.com/v1";
-  bifrostKeyEnv = "BIFROST_SOA_VK";
-  bifrostModels = {
+  # Laptops are off-LAN, so both routes go through the Caddy front on nu
+  # to maitred; /v1 bypasses anubis and is key-protected by maitred.
+  gatewayBase = "https://llm.ethanwtodd.com/v1";
+  gatewayKeyEnv = "BIFROST_SOA_VK";
+  gatewayModels = {
     # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
     "dsv4-flash" = {
       reasoning_effort = "high";
@@ -44,21 +44,21 @@ in
           reasoning_effort = "high";
         };
         custom_providers.custom = {
-          base_url = bifrostBase;
-          key_env = bifrostKeyEnv;
-          models = bifrostModels;
+          base_url = gatewayBase;
+          key_env = gatewayKeyEnv;
+          models = gatewayModels;
         };
         auxiliary = {
           title_generation = {
-            base_url = bifrostBase;
-            key_env = bifrostKeyEnv;
+            base_url = gatewayBase;
+            key_env = gatewayKeyEnv;
             model = "little-titles";
             provider = "custom";
             prompt_style = "chat";
           };
           compaction = {
-            base_url = bifrostBase;
-            key_env = bifrostKeyEnv;
+            base_url = gatewayBase;
+            key_env = gatewayKeyEnv;
             model = "dsv4-flash";
             provider = "custom";
             reasoning_effort = "none";

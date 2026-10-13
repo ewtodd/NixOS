@@ -63,7 +63,7 @@
     "analysis-utilities_2": {
       "inputs": {
         "flake-utils": "flake-utils_6",
-        "nixpkgs": "nixpkgs_9"
+        "nixpkgs": "nixpkgs_8"
       },
       "locked": {
         "lastModified": 1790097080,
@@ -151,26 +151,6 @@
       "original": {
         "owner": "SenchoPens",
         "repo": "base16.nix",
-        "type": "github"
-      }
-    },
-    "bifrost": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791581925,
-        "narHash": "sha256-piNS5et1JnOskB8KNv7ivyTZ9hRKWWD6nHC2B6watco=",
-        "owner": "maximhq",
-        "repo": "bifrost",
-        "rev": "25e458710658d008c871b60914efddb71ae084b8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "maximhq",
-        "repo": "bifrost",
         "type": "github"
       }
     },
@@ -355,21 +335,6 @@
       },
       "original": {
         "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
-    "flake-compat_3": {
-      "locked": {
-        "lastModified": 1761640442,
-        "narHash": "sha256-AtrEP6Jmdvrqiv4x2xa5mrtaIp3OEe8uBYCDZDS+hu8=",
-        "owner": "nix-community",
-        "repo": "flake-compat",
-        "rev": "4a56054d8ffc173222d09dad23adf4ba946c8884",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
         "repo": "flake-compat",
         "type": "github"
       }
@@ -711,23 +676,6 @@
         "type": "github"
       }
     },
-    "libr4d": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1787588695,
-        "narHash": "sha256-FzyGGx+cctCg0O2kGuBVuVhZ4hpJbylyCLKRg/xTaZA=",
-        "ref": "refs/heads/main",
-        "rev": "b9e42ab7202f53a3bc13d415f5d41481f9ca311b",
-        "revCount": 4,
-        "type": "git",
-        "url": "https://codeberg.org/StillDeadcode/libr4d"
-      },
-      "original": {
-        "rev": "b9e42ab7202f53a3bc13d415f5d41481f9ca311b",
-        "type": "git",
-        "url": "https://codeberg.org/StillDeadcode/libr4d"
-      }
-    },
     "lisepp": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -785,6 +733,26 @@
       "original": {
         "owner": "numtide",
         "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
+    "maitred": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791905065,
+        "narHash": "sha256-y5jmHEh2C1T/RMZy+RaUDVVMeea2vo29eM6Go9WAabk=",
+        "owner": "ewtodd",
+        "repo": "maitred",
+        "rev": "109212ad24cb4ffafa8fd4b7e3ee8c27c8db7804",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "maitred",
         "type": "github"
       }
     },
@@ -898,27 +866,6 @@
         "type": "github"
       }
     },
-    "nixos-apple-silicon": {
-      "inputs": {
-        "flake-compat": "flake-compat_3",
-        "nixpkgs": [
-          "nixpkgs-oracle"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791319332,
-        "narHash": "sha256-QLyJ8+yDihDs0pg2Z3nsihinOubRdsPoo3MwRs2KM+w=",
-        "owner": "tpwrules",
-        "repo": "nixos-apple-silicon",
-        "rev": "c263106abdb41b2b88072d5850b04e30dc4bb23e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tpwrules",
-        "repo": "nixos-apple-silicon",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1786384358,
@@ -947,38 +894,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixpkgs.lib",
-        "type": "github"
-      }
-    },
-    "nixpkgs-oracle": {
-      "locked": {
-        "lastModified": 1790822859,
-        "narHash": "sha256-69xHQhAeMAD2wDXO7T2pcOZIF9Sga2W+JkmY2a11Ops=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c59305bab2065cfecc4944690d9eedbb56f3a9fa",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "c59305bab2065cfecc4944690d9eedbb56f3a9fa",
-        "type": "github"
-      }
-    },
-    "nixpkgs_10": {
-      "locked": {
-        "lastModified": 1785828668,
-        "narHash": "sha256-8fsyqeO+mJqvIzeO4xIpgJe/f7MTbbVTEC6RT6WSXNs=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e72e4f299401a3689d4b3d5fc6496b11db7064eb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -1080,11 +995,11 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1791456040,
-        "narHash": "sha256-H83yz/do+hjOO0uujHyH8RgtIQP2v7Mw+cLwcZK/xKc=",
+        "lastModified": 1785828668,
+        "narHash": "sha256-8fsyqeO+mJqvIzeO4xIpgJe/f7MTbbVTEC6RT6WSXNs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e7439b6b14ad3cc35d05608ebca9bce01a25f5f8",
+        "rev": "e72e4f299401a3689d4b3d5fc6496b11db7064eb",
         "type": "github"
       },
       "original": {
@@ -1182,6 +1097,45 @@
         "type": "github"
       }
     },
+    "radiance-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "radiance-src": "radiance-src",
+        "therock-sdk": [
+          "unholy",
+          "therock-sdk"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791901779,
+        "narHash": "sha256-ZNrdfsPyfn5WH1b+cjUlOz3IL7kKpQaxvR3UrM6bZLk=",
+        "owner": "ewtodd",
+        "repo": "radiance-nix",
+        "rev": "fe66f08e70a674709d50ca232325a765524eb8f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "radiance-nix",
+        "type": "github"
+      }
+    },
+    "radiance-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791798374,
+        "narHash": "sha256-wB+Xyv+RFaEGu8qDT3w4XHDnEyBkjR+54gYaXAFcdLI=",
+        "rev": "dc339b4cd239f7124700dd1f52213f73e8939a14",
+        "type": "tarball",
+        "url": "https://codeberg.org/api/v1/repos/StillDeadcode/radiance/archive/dc339b4cd239f7124700dd1f52213f73e8939a14.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://codeberg.org/StillDeadcode/radiance/archive/dc339b4cd2.tar.gz"
+      }
+    },
     "remarkable": {
       "inputs": {
         "flake-utils": "flake-utils_4",
@@ -1210,7 +1164,6 @@
         "arxiv-mcp-server-src": "arxiv-mcp-server-src",
         "banshee-ucm-conf": "banshee-ucm-conf",
         "base16": "base16",
-        "bifrost": "bifrost",
         "colmena": "colmena",
         "dank-material-shell": "dank-material-shell",
         "danksearch": "danksearch",
@@ -1220,18 +1173,17 @@
         "lisepp": "lisepp",
         "llama-cpp": "llama-cpp",
         "llm-agents": "llm-agents",
+        "maitred": "maitred",
         "niri-nix": "niri-nix",
         "niri-utilities": "niri-utilities",
         "nix-minecraft": "nix-minecraft",
-        "nixos-apple-silicon": "nixos-apple-silicon",
         "nixpkgs": "nixpkgs_6",
-        "nixpkgs-oracle": "nixpkgs-oracle",
         "nixvim": "nixvim",
+        "radiance-nix": "radiance-nix",
         "remarkable": "remarkable",
         "son-of-anton": "son-of-anton",
         "split-nvim-src": "split-nvim-src",
         "unholy": "unholy",
-        "vllm-radiance-src": "vllm-radiance-src",
         "website": "website",
         "wireview-linux": "wireview-linux"
       }
@@ -1249,11 +1201,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1791823147,
-        "narHash": "sha256-gA/0BZbI2WL3PAg7J0eiF3tM7U9SEy9cQxpnUq7IHPI=",
+        "lastModified": 1791903275,
+        "narHash": "sha256-GTvK298GlBG2UFcrHN+qsU9ARzpims6c7UMu5suPKok=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "275163aee065b03e81ea94ba5a0ec4af6239ff05",
+        "rev": "bb0ee8204e1588c034351fc0407922d592bbee3b",
         "type": "github"
       },
       "original": {
@@ -1549,24 +1501,6 @@
         "type": "github"
       }
     },
-    "therock-sdk_2": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_8"
-      },
-      "locked": {
-        "lastModified": 1791475071,
-        "narHash": "sha256-bJlR/zOcncvylCrzcX3krFa3T1Cby4kmA7d7nNVx/Wk=",
-        "owner": "ewtodd",
-        "repo": "therock-sdk-nix",
-        "rev": "b11e0906c272f12f15c51933daa33c1627401001",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ewtodd",
-        "repo": "therock-sdk-nix",
-        "type": "github"
-      }
-    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -1596,23 +1530,23 @@
         "therock-sdk": "therock-sdk"
       },
       "locked": {
-        "lastModified": 1791850476,
-        "narHash": "sha256-ysHX7r6ID44J5aSRIjOPfThJN1YxJ3D7Q5N/CcGUuTA=",
-        "ref": "refs/heads/main",
-        "rev": "a59387db4518b54f45a5f6689fac8dc8c44a9626",
-        "revCount": 34,
-        "type": "git",
-        "url": "ssh://git@github.com/ewtodd/unholy"
+        "lastModified": 1791901957,
+        "narHash": "sha256-JxgqWIk8ZXezsJV53ZXyYiOPbvVZwzJweRs8EcFoDz0=",
+        "owner": "ewtodd",
+        "repo": "unholy",
+        "rev": "bcf9ad5d5e56476035354d5e5faaa5d7f105191a",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/ewtodd/unholy"
+        "owner": "ewtodd",
+        "repo": "unholy",
+        "type": "github"
       }
     },
     "utils": {
       "inputs": {
         "flake-utils": "flake-utils_9",
-        "nixpkgs": "nixpkgs_10"
+        "nixpkgs": "nixpkgs_9"
       },
       "locked": {
         "lastModified": 1790097080,
@@ -1650,28 +1584,6 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "uv2nix",
-        "type": "github"
-      }
-    },
-    "vllm-radiance-src": {
-      "inputs": {
-        "libr4d": "libr4d",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "therock-sdk": "therock-sdk_2"
-      },
-      "locked": {
-        "lastModified": 1791477745,
-        "narHash": "sha256-40qOS7LwantAOxXcd5eytJ6vrjiCmobhJ5kBGuHV7Bk=",
-        "owner": "ewtodd",
-        "repo": "vllm-radiance-nix",
-        "rev": "0132f185282aaf71ac94237a0ef72c7d91867a40",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ewtodd",
-        "repo": "vllm-radiance-nix",
         "type": "github"
       }
     },

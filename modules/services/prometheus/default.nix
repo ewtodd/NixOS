@@ -40,10 +40,6 @@
               labels.instance = "son-of-anton";
             }
             {
-              targets = [ "10.0.0.6:9100" ];
-              labels.instance = "oracle";
-            }
-            {
               targets = [ "10.0.0.8:9100" ];
               labels.instance = "tony";
             }

@@ -1,5 +1,5 @@
-# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> oracle :8081 (8080 is llama-swap).
-# Models from Bifrost on this host (127.0.0.1:4002), the same gateway opencode and son-of-anton use.
+# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> the AI front host (mu) :8081 (8080 is llama-swap).
+# Models from maitred on this host (127.0.0.1:4002), the same gateway opencode and son-of-anton use.
 {
   config,
   lib,
@@ -26,7 +26,7 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 8081;
-      description = "HTTP port; 8080 is already taken by llama-swap on oracle.";
+      description = "HTTP port; 8080 is already taken by llama-swap on the same host.";
     };
     dataDir = lib.mkOption {
       type = lib.types.path;
@@ -71,12 +71,14 @@ in
           "WEBUI_URL=https://ai.ethanwtodd.com"
           "ENABLE_SIGNUP=false"
           "WEBUI_AUTH_COOKIE_SECURE=true"
-          # OpenAI connection: Bifrost on this host, key injected by the wrapper. TASK_MODEL_EXTERNAL routes
-          # session-title generation to the always-resident little-titles model (via Bifrost).
+          # OpenAI connection: maitred on this host, key injected by the wrapper. TASK_MODEL_EXTERNAL routes
+          # session-title generation to the always-resident little-titles model (via maitred). It must be the id
+          # exactly as maitred lists it (llama-swap/little-titles): an id missing from the list silently falls back
+          # to the chat model.
           # Caveat: connections/task model seed into the DB on first run only (Config.seed_defaults skips existing
           # keys) -- on an initialized install the admin sets them in Settings > Connections / Tasks.
           "OPENAI_API_BASE_URL=http://127.0.0.1:4002/v1"
-          "TASK_MODEL_EXTERNAL=little-titles"
+          "TASK_MODEL_EXTERNAL=llama-swap/little-titles"
           # RAG embeddings via the dedicated embedding server on this host (:8082, bge-m3 on CPU).
           # RAG_OPENAI_API_BASE_URL must be set explicitly: it defaults to the chat endpoint, failing every call.
           "RAG_EMBEDDING_ENGINE=openai"

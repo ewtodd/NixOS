@@ -89,17 +89,17 @@
         mode = "0440";
       };
     })
-    (lib.mkIf config.systemOptions.services.bifrost.enable {
-      # Bifrost server env (file content: BIFROST_SPIKE_VK=..., admin
+    (lib.mkIf config.systemOptions.services.maitred.enable {
+      # Env from the Bifrost days (file content: BIFROST_SPIKE_VK=..., admin
       # username/password, BIFROST_ENCRYPTION_KEY=..., DEEPSEEK_API_KEY=...).
-      # Read by the bifrost systemd service as its EnvironmentFile.
+      # maitred reads DEEPSEEK_API_KEY from it (its EnvironmentFile).
       bifrost-env = {
         file = ../../secrets/bifrost-env.age;
         mode = "0400";
       };
-      # Per-consumer Bifrost virtual keys (BIFROST_OPENCODE_VK,
+      # Per-consumer virtual keys (BIFROST_OPENCODE_VK,
       # BIFROST_OPENWEBUI_VK, BIFROST_SOA_VK, BIFROST_FRIEND_VK). Read by the
-      # bifrost service (root) and by the open-webui wrapper (group).
+      # maitred service (systemd, as root) and by the open-webui wrapper (group).
       bifrost-keys = {
         file = ../../secrets/bifrost-keys.age;
         group = "open-webui";

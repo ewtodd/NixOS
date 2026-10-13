@@ -221,7 +221,7 @@ in
       provider = {
         bifrost = {
           npm = "@ai-sdk/openai-compatible";
-          name = "Bifrost";
+          name = "maitred";
           options = {
             baseURL = "https://llm.ethanwtodd.com/v1";
             apiKey = "{env:BIFROST_OPENCODE_VK}";
@@ -263,19 +263,79 @@ in
               };
             };
 
+            # The other llm-mode on son-of-anton (llm-mode qwen). maitred answers a request for a model of the
+            # mode that is not loaded with what to use instead.
+            # Radiance, both R9700s; efforts none/minimal/low/medium/xhigh (high/max are clamped to medium/xhigh).
+            "qwen3.8-27b" = {
+              name = "Qwen3.8-27B";
+              variants = {
+                xhigh = {
+                  reasoningEffort = "xhigh";
+                };
+                medium = {
+                  reasoningEffort = "medium";
+                };
+                low = {
+                  reasoningEffort = "low";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 352256;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
+            # gufo on the Strix Halo iGPU; same effort vocabulary (its template's).
+            "qwen3.8-flash-next" = {
+              name = "Qwen3.8-Flash-Next";
+              variants = {
+                xhigh = {
+                  reasoningEffort = "xhigh";
+                };
+                medium = {
+                  reasoningEffort = "medium";
+                };
+                low = {
+                  reasoningEffort = "low";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 262144;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
           };
         };
       };
       mcp = {
-        # Local Nix option/package search. Kept local (not the Bifrost gateway)
-        # so it works independent of oracle's reachability.
+        # Local Nix option/package search. Kept local (not the gateway's /mcp)
+        # so it works independent of the gateway host's reachability.
         nixos = {
           type = "local";
           command = [ "${lib.getExe pkgs.mcp-nixos}" ];
           enabled = true;
         };
         # Web search through the gateway's aggregate endpoint. The opencode
-        # key's MCP grant (bifrost module) narrows /mcp to the mcp-searxng
+        # key's MCP grant (maitred module) narrows /mcp to the mcp-searxng
         # tools, so the other MCP servers stay invisible. BIFROST_OPENCODE_VK
         # comes from the opencode wrapper's secret.
         searxng = {

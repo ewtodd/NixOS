@@ -10,23 +10,26 @@ let
   anubisStatus = "127.0.0.1:9002";
   anubisLlm = "127.0.0.1:9003";
 
-  # WAN sees only the API surfaces: /v1 (master/client keys), /friend (friend
-  # key, scoped to dsv4-flash) and /mcp (virtual keys with MCP grants; the
-  # friend key has none). All terminate at Bifrost (:4002); handle_path strips
-  # the /friend prefix before the upstream sees it. The dashboard, /api and
-  # /assets are LAN-only: private source ranges hit Bifrost directly (admin
-  # auth still applies), everyone else gets 404.
+  # maitred and Open WebUI live on the AI front host (mu).
+  aiFront = config.systemOptions.aiFrontAddress;
+
+  # WAN sees only the API surfaces: /v1 (client keys), /friend (the friend
+  # key: the son-of-anton chat models during its hours) and /mcp (keys with
+  # MCP grants; the friend key has none). All terminate at maitred (:4002);
+  # handle_path strips the /friend prefix before it sees the request. Private
+  # source ranges reach maitred for any path (/health, or its 404); everyone
+  # else gets Anubis and the tarpit.
   llmRoutes = ''
     handle_path /friend/* {
-      reverse_proxy http://10.0.0.6:4002
+      reverse_proxy http://${aiFront}:4002
     }
     @api path /v1* /mcp*
     handle @api {
-      reverse_proxy http://10.0.0.6:4002
+      reverse_proxy http://${aiFront}:4002
     }
     @lan remote_ip 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
     handle @lan {
-      reverse_proxy http://10.0.0.6:4002
+      reverse_proxy http://${aiFront}:4002
     }
     # Scripted clients announce no browser engine in their User-Agent, so skip
     # the challenge and trap them immediately; browser-like clients get the
@@ -93,7 +96,7 @@ in
         }
       '';
 
-      # Gateway hostname (Bifrost :4002).
+      # Gateway hostname (maitred :4002).
       virtualHosts."llm.ethanwtodd.com".extraConfig = llmRoutes;
 
       # Pure honeypot: nothing legitimate uses this name, so every request is
@@ -105,7 +108,7 @@ in
 
     services.anubis.instances = {
       ai.settings = {
-        TARGET = "http://10.0.0.6:8081";
+        TARGET = "http://${aiFront}:8081";
         BIND = anubisAi;
         BIND_NETWORK = "tcp";
       };

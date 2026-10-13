@@ -67,6 +67,8 @@ let
       cuda
     else if cfg.backend == "vulkan" then
       stampedLlama llamaPkgs.vulkan
+    else if cfg.backend == "cpu" then
+      stampedLlama llamaPkgs.default
     else
       rocm;
   # Mesa names ICD files by arch only (radeon_icd.x86_64.json), NOT by
@@ -228,7 +230,7 @@ let
 
   setExprs = map withResidents (soloSetExprs ++ deviceSetExprs);
 
-  # A residents-only host (e.g. oracle's router pair) would otherwise produce
+  # A residents-only host (e.g. mu, with only little-titles) would otherwise produce
   # an empty matrix, which llama-swap rejects: give it the resident set.
   matrixSetExprs =
     if setExprs != [ ] then
