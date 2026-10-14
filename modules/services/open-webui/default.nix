@@ -1,4 +1,4 @@
-# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> the AI front host (mu) :8081 (8080 is llama-swap).
+# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> the AI front host (mu) :8081 (8080 is the llama.cpp title server).
 # Models from maitred on this host (127.0.0.1:4002), the same gateway opencode and son-of-anton use.
 {
   config,
@@ -26,7 +26,7 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 8081;
-      description = "HTTP port; 8080 is already taken by llama-swap on the same host.";
+      description = "HTTP port; 8080 already serves the llama.cpp title server on this host.";
     };
     dataDir = lib.mkOption {
       type = lib.types.path;
@@ -72,19 +72,20 @@ in
           "ENABLE_SIGNUP=false"
           "WEBUI_AUTH_COOKIE_SECURE=true"
           # OpenAI connection: maitred on this host, key injected by the wrapper. TASK_MODEL_EXTERNAL routes
-          # session-title generation to the always-resident little-titles model (via maitred). It must be the id
-          # exactly as maitred lists it (llama-swap/little-titles): an id missing from the list silently falls back
-          # to the chat model.
+          # session-title generation to little-titles through maitred's JSON-forcing id (Open WebUI parses the title
+          # as JSON). The schema fits titles only, so turn off tag and follow-up generation, which need other shapes.
+          # It must be the id exactly as maitred lists it: an id missing from the list falls back to the chat model.
           # Caveat: connections/task model seed into the DB on first run only (Config.seed_defaults skips existing
           # keys) -- on an initialized install the admin sets them in Settings > Connections / Tasks.
           "OPENAI_API_BASE_URL=http://127.0.0.1:4002/v1"
-          "TASK_MODEL_EXTERNAL=llama-swap/little-titles"
+          "TASK_MODEL_EXTERNAL=llama/little-titles-json"
           # RAG embeddings via the dedicated embedding server on this host (:8082, bge-m3 on CPU).
           # RAG_OPENAI_API_BASE_URL must be set explicitly: it defaults to the chat endpoint, failing every call.
           "RAG_EMBEDDING_ENGINE=openai"
           "RAG_EMBEDDING_MODEL=bge-m3"
           "RAG_OPENAI_API_BASE_URL=http://127.0.0.1:8082/v1"
-          "RAG_OPENAI_API_KEY=llama-swap"
+          # The embedding server needs no auth; any value satisfies the OpenAI client.
+          "RAG_OPENAI_API_KEY=llama-cpp"
           # Built-in web search backed by the SearXNG instance on this host
           # (modules/services/searxng binds 127.0.0.1:8888). The provider appends
           # q= and format=json itself, so only the bare endpoint is needed.

@@ -39,7 +39,7 @@ in
 
     # The AI front, moved here from oracle (systemOptions.aiFrontAddress points the clients and nu's
     # reverse proxy at this host): maitred (/v1 and /mcp on :4002, with Bifrost's keys and model ids),
-    # Open WebUI, SearXNG, and llama-swap serving the title model and the RAG embeddings on the CPU.
+    # Open WebUI, SearXNG, and llama.cpp serving the title model (CPU) and the RAG embeddings (iGPU).
     services.maitred = {
       enable = true;
       environmentFiles = [
@@ -53,24 +53,28 @@ in
       openFirewall = true;
     };
     services.openWebUI.enable = true;
-    services.llamaSwap = {
+    services.llamaCpp = {
       enable = true;
       lanExpose = true;
+      # Measured on this box (i5-8250U, UHD 620): the title model decodes ~40% slower on the
+      # iGPU, so it stays on the CPU (BLAS); bge-m3 is all prompt processing and runs ~1.5x
+      # faster on the iGPU, which also keeps it off the cores Minecraft and Nextcloud use.
       backend = "cpu";
+      vulkanDriver = "intel";
       embeddingModel = {
+        backend = "vulkan";
         hf = "ggml-org/bge-m3-Q8_0-GGUF";
         hfFile = "bge-m3-q8_0.gguf";
         # bge-m3's dense embedding is the CLS vector; mean pooling compresses
         # cosine scores into a narrow band where unrelated text still scores ~0.5.
         pooling = "cls";
         ctxSize = 8192;
-        gpuLayers = 0;
         port = 8082;
       };
       models = {
         "little-titles" = {
           hf = "acon96/Little-Titles-GGUF:Q8_0";
-          alwaysResident = true;
+          port = 8080;
           ctxSize = 4096;
           gpuLayers = "0";
           chatTemplateFile = pkgs.writeText "little-titles.jinja" ''
