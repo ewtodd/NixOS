@@ -337,7 +337,7 @@ in
         auxiliary = {
           title_generation = {
             provider = "custom";
-            model = "little-titles";
+            model = "llama/little-titles";
             base_url = "http://${aiFront}:4002/v1";
             key_env = "BIFROST_SOA_VK";
             prompt_style = "chat";
