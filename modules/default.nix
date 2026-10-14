@@ -39,7 +39,7 @@ with lib;
         default = "10.0.0.2";
         description = ''
           LAN address of the host serving the house's AI front: maitred (/v1 and /mcp on :4002),
-          Open WebUI (:8081), SearXNG (:8888) and llama-swap (:8080). nu's reverse proxy and the clients
+          Open WebUI (:8081), SearXNG (:8888) and llama.cpp (:8080). nu's reverse proxy and the clients
           point here, so moving those services to another machine changes only this. mu since oracle was
           decommissioned.
         '';
@@ -144,19 +144,14 @@ with lib;
 
       services.openWebUI.enable = mkEnableOption "Open WebUI web interface (ai.ethanwtodd.com, behind Anubis on nu)";
 
-      services.llamaSwap.enable = mkEnableOption "llama.cpp model server via llama-swap (multi-model, hot-swapped)";
+      services.llamaCpp.enable = mkEnableOption "llama.cpp model servers (one llama-server per model)";
 
-      services.llamaSwap.lanExpose = mkEnableOption ''
-        expose llama-swap on the LAN (bind 0.0.0.0 + open the firewall). Off (the
-        default) binds 127.0.0.1 only — correct for hosts where the sole consumer
-        is local nvim FIM. Enable it on hosts another machine must reach (e.g.
-        son-of-anton, serving the e-desktop gateway)'';
-      services.llamaSwap.port = mkOption {
-        type = types.ints.positive;
-        default = 8080;
-        example = 1234;
-      };
-      services.llamaSwap.backend = mkOption {
+      services.llamaCpp.lanExpose = mkEnableOption ''
+        expose the llama.cpp servers on the LAN (bind 0.0.0.0 + open the
+        firewall). Off (the default) binds 127.0.0.1 only — correct for hosts
+        where the sole consumer is local (e.g. maitred on the same box). Enable
+        it on hosts another machine must reach directly.'';
+      services.llamaCpp.backend = mkOption {
         type = types.enum [
           "vulkan"
           "cuda"
@@ -166,7 +161,22 @@ with lib;
         default = "vulkan";
         description = "llama.cpp backend: Vulkan (AMD RADV or Intel ANV), CUDA (NVIDIA), ROCm, or CPU only.";
       };
-      services.llamaSwap.cacheDir = mkOption {
+      services.llamaCpp.vulkanDriver = mkOption {
+        type = types.nullOr (
+          types.enum [
+            "intel"
+            "radeon"
+            "asahi"
+          ]
+        );
+        default = null;
+        description = ''
+          Mesa Vulkan driver (ICD) the Vulkan backend binds. Null picks it from
+          systemOptions.graphics.*; set it on hosts that enable none of those
+          (a headless box whose GPU only runs llama.cpp).
+        '';
+      };
+      services.llamaCpp.cacheDir = mkOption {
         type = types.nullOr types.str;
         default = "/var/cache/llama-cache";
         example = "/scratch/llama-cache";
@@ -177,27 +187,18 @@ with lib;
           the sandboxed service can write to it).
         '';
       };
-      services.llamaSwap.verboseLogging = mkOption {
+      services.llamaCpp.verboseLogging = mkOption {
         type = types.bool;
         default = false;
         description = ''
-          Verbose logging for llama-swap and every llama-server it spawns:
-
-          - llama-server runs with --verbose (per-token timing, full debug
-            output — extremely chatty, so off by default).
-          - llama-swap logs at debug level with RFC3339 timestamps.
-          - llama-server output is routed to llama-swap's stdout
-            (logToStdout = both), so it lands in the systemd journal
-            (journalctl -u llama-swap).
-
-          Logs are always available while llama-swap runs, regardless of this
-          toggle, via its in-memory /logs endpoints (see the llama-swap
-          service description for details).
+          Run every llama-server with --verbose (per-token timing, full debug
+          output — extremely chatty, so off by default). Output lands in each
+          unit's systemd journal (journalctl -u llama-server-NAME).
         '';
       };
-      services.llamaSwap.models = mkOption {
+      services.llamaCpp.models = mkOption {
         default = { };
-        description = "Models served via llama-swap; the module builds each llama-server command.";
+        description = "Models served as standalone llama-server systemd units; the module builds each command.";
         type = types.attrsOf (
           types.submodule {
             options = {
@@ -215,15 +216,19 @@ with lib;
                   Mutually exclusive with `path`.
                 '';
               };
+              port = mkOption {
+                type = types.port;
+                default = 8080;
+                description = ''
+                  OpenAI-compatible port for this model's llama-server
+                  (--port). Every model runs at once, so each needs a port
+                  distinct from the others.
+                '';
+              };
               ctxSize = mkOption {
                 type = types.ints.positive;
                 default = 32768;
                 description = "Context size (--ctx-size), sized for agentic/MCP use.";
-              };
-              ttl = mkOption {
-                type = types.nullOr types.ints.positive;
-                default = null;
-                description = "Idle seconds before llama-swap unloads the model (frees VRAM). Null = keep loaded.";
               };
               mmproj = mkOption {
                 type = types.nullOr types.path;
@@ -246,48 +251,8 @@ with lib;
                 default = null;
                 description = ''
                   Value for llama.cpp --device (e.g. "ROCm0", or a comma list
-                  "ROCm0,ROCm1,ROCm2" to span several devices). Also drives
-                  co-residency in the swap matrix: models sharing the exact
-                  same value are mutual alternatives (they contend for the
-                  same device), models on distinct devices may all be resident
-                  together, and a comma list (multi-device) is treated as solo
-                  — it can never co-reside with anything. Null lets llama.cpp
-                  pick the device and gives the model its own exclusive slot.
-                '';
-              };
-              solo = mkOption {
-                type = types.bool;
-                default = false;
-                description = ''
-                  Mark a model as "solo": it can never co-reside with any
-                  other model. When requested, every other model (including
-                  preloaded ones) is evicted, and it stays resident alone
-                  until another model is requested. Use for models so large
-                  they must occupy the whole host — e.g. a Q8 ~85GB+ model
-                  that spans every GPU. Takes precedence over device-based
-                  co-residency (a multi-device `device` list is auto-solo).
-                '';
-              };
-              alwaysResident = mkOption {
-                type = types.bool;
-                default = false;
-                description = ''
-                  Keep this model loaded at all times. It is ANDed into every
-                  swap-matrix set and preloaded at startup, so it is never
-                  evicted — regardless of what else is running, including
-                  solo models. Use only for tiny utility models that must
-                  never go down.
-                  Keep it small: it occupies RAM permanently.
-                '';
-              };
-              preload = mkOption {
-                type = types.bool;
-                default = false;
-                description = ''
-                  Preload this model at llama-swap startup so it is warm
-                  before the first request. Unlike `alwaysResident`, a
-                  preloaded model CAN be evicted when another request (e.g. a
-                  solo model) needs its resources.
+                  "ROCm0,ROCm1,ROCm2" to span several devices). Null lets
+                  llama.cpp pick the device.
                 '';
               };
               gpuLayers = mkOption {
@@ -403,7 +368,7 @@ with lib;
                 default = null;
                 description = ''
                   Value for --parallel (number of parallel request slots).
-                  Set to null to omit the flag (llama-swap manages concurrency).
+                  Set to null to omit the flag (llama-server's default).
                   Use 1 for models that fail under concurrent requests.
                 '';
               };
@@ -545,7 +510,7 @@ with lib;
           }
         );
       };
-      services.llamaSwap.embeddingModel = mkOption {
+      services.llamaCpp.embeddingModel = mkOption {
         type = types.nullOr (
           types.submodule {
             options = {
@@ -563,6 +528,18 @@ with lib;
                 type = types.nullOr types.str;
                 default = null;
                 description = "Explicit file within the -hf repo (--hf-file).";
+              };
+              backend = mkOption {
+                type = types.nullOr (
+                  types.enum [
+                    "vulkan"
+                    "cuda"
+                    "rocm"
+                    "cpu"
+                  ]
+                );
+                default = null;
+                description = "llama.cpp backend for the embedding server; null uses services.llamaCpp.backend.";
               };
               gpuLayers = mkOption {
                 type = types.ints.unsigned;
@@ -594,9 +571,9 @@ with lib;
         );
         default = null;
         description = ''
-          Run a dedicated always-resident llama.cpp embedding server
-          (llama-server --embedding) outside the swap matrix — embeddings
-          must never be evicted. Serves Open WebUI RAG (e.g. bge-m3).
+          Run a dedicated llama.cpp embedding server (llama-server
+          --embedding) as its own always-on unit, separate from the chat
+          models. Serves Open WebUI RAG (e.g. bge-m3).
         '';
       };
       services.gufoStrix = {

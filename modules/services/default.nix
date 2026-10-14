@@ -19,7 +19,7 @@ in
     ./grafana
     ./http-tarpit
     ./jellyfin
-    ./llama-swap
+    ./llama-cpp
     ./gufo-strix
     ./maitred
     ./llm-mode

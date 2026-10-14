@@ -57,8 +57,8 @@ let
         base_url = "http://${sonOfAnton}:8050/v1";
         timeout_secs = 1800;
       };
-      # llama-swap (the title model) and the embedding server, on this host.
-      llama-swap = {
+      # llama.cpp (the title model) and the embedding server, on this host.
+      llama = {
         base_url = "http://127.0.0.1:8080/v1";
         timeout_secs = 1800;
       };
@@ -142,11 +142,34 @@ let
         default_reasoning_effort = "xhigh";
       }
       {
-        id = "llama-swap/little-titles";
-        upstream = "llama-swap";
+        id = "llama/little-titles";
+        upstream = "llama";
         upstream_model = "little-titles";
         display_name = "Little-Titles";
         context_length = 4096;
+      }
+      # The same model forced to answer {"title": ...}: Open WebUI parses its titles as JSON and falls back to the
+      # user's first message when the reply is plain text, which is what Little-Titles answers with on Open
+      # WebUI's prompt. llama.cpp turns the schema into a grammar. (LiteLLM's little-titles-json route did this.)
+      {
+        id = "llama/little-titles-json";
+        upstream = "llama";
+        upstream_model = "little-titles";
+        display_name = "Little-Titles (JSON)";
+        context_length = 4096;
+        request_overrides.response_format = {
+          type = "json_schema";
+          json_schema = {
+            name = "title";
+            strict = true;
+            schema = {
+              type = "object";
+              properties.title.type = "string";
+              required = [ "title" ];
+              additionalProperties = false;
+            };
+          };
+        };
       }
       {
         id = "embed/bge-m3";
