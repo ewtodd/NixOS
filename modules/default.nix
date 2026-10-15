@@ -948,7 +948,7 @@ with lib;
       };
       services.httpTarpit.enable = mkEnableOption "HTTP tarpit (endless slow-drip responses for WAN scanners)";
       # One system service per account (the temple design): each instance runs AS its account with
-      # SON_OF_ANTON_HOME=~/.son-of-anton, so Signal and CLI sessions share one state.db/config.yaml/writer.
+      # SON_OF_ANTON_HOME=~/.son-of-anton, so Signal and CLI sessions share one state.db/config.toml/writer.
       # All instances share one Signal number, separated by group id: signal-cli broadcasts every event over
       # SSE and each instance drops foreign groups before any session or agent work.
       services.son-of-anton = {
@@ -1039,11 +1039,10 @@ with lib;
                   type = types.attrs;
                   default = { };
                   description = ''
-                    config.yaml overrides for THIS instance, deep-merged over
+                    config.toml overrides for THIS instance, deep-merged over
                     the shared `settings`. Use it for anything an instance
-                    should differ on, e.g. `router.modes = [ "standard" ]` to
-                    keep the physics and research loops off a gateway that has
-                    no use for them.
+                    should differ on, e.g. `gateway.single_user = true` for an
+                    instance that is one person's own.
                   '';
                 };
                 extraPackages = mkOption {
@@ -1077,7 +1076,7 @@ with lib;
         settings = mkOption {
           type = types.attrs;
           default = { };
-          description = "config.yaml settings shared by every instance (and by each account's CLI).";
+          description = "config.toml settings shared by every instance (and by each account's CLI).";
         };
         extraPackages = mkOption {
           type = types.listOf types.package;
