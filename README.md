@@ -136,10 +136,9 @@ The fleet distributes inference and gateway services across dedicated hosts:
   the clients point at it, so moving the front is one line:
   - **[maitred](https://github.com/ewtodd/maitred)** (:4002), the gateway every client uses:
     - `/v1` routes son-of-anton, opencode, and Open WebUI to son-of-anton's servers,
-      llama.cpp, and the hosted DeepSeek API, with per-consumer virtual keys (plus a friend
-      key limited to ricky's 20:00-07:00 hours). Every model is listed with its context
-      window, reasoning efforts, and live status; a request for a model of the mode that is
-      not loaded gets a 503 naming what to use instead
+      llama.cpp, and the hosted DeepSeek API, with per-consumer virtual keys. Every model is
+      listed with its context window, reasoning efforts, and live status; a request for a
+      model of the mode that is not loaded gets a 503 naming what to use instead
     - `/mcp` aggregates stdio MCP servers per key: `fetch` (URL retrieval), `searxng` (web
       search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
   - **llama.cpp** (CPU): a llama-server for little-titles (Little-Titles Q8_0 — title

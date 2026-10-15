@@ -19,6 +19,28 @@ let
       })
       inst.settings
     ];
+
+  # The language servers nixvim enables, so the agent's post-write LSP
+  # diagnostics run the same servers as the editor. Read from nixvim's
+  # lsp.servers (one entry per server, no renamed aliases); entries that
+  # fail to evaluate are skipped rather than breaking the build.
+  nvimLspPackages =
+    let
+      nvim = lib.attrByPath [ pkgs.stdenv.hostPlatform.system "neovim" ] null inputs.self.packages;
+      servers = if nvim == null then { } else nvim.config.lsp.servers;
+      packageOf =
+        name:
+        let
+          r = builtins.tryEval (
+            let
+              s = servers.${name};
+            in
+            if (s.enable or false) && (s.package or null) != null then [ s.package ] else [ ]
+          );
+        in
+        if r.success then r.value else [ ];
+    in
+    lib.unique (lib.concatMap packageOf (lib.attrNames servers));
 in
 {
   imports = [ inputs.son-of-anton.nixosModules.default ];
@@ -48,9 +70,11 @@ in
         SIGNAL_DM_MODE = "ignore";
       };
       settings = settingsFor inst;
-      extraPackages = cfg.extraPackages ++ inst.extraPackages;
+      extraPackages = cfg.extraPackages ++ inst.extraPackages ++ nvimLspPackages;
     }) cfg.instances;
-    environment.systemPackages = [ inputs.son-of-anton.packages.${pkgs.system}.default ];
+    environment.systemPackages = [
+      (inputs.son-of-anton.packages.${pkgs.system}.default.override { extraPackages = nvimLspPackages; })
+    ];
 
     systemd.services = lib.mapAttrs' (
       name: _:

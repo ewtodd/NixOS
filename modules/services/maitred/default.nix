@@ -42,20 +42,29 @@ let
   settings = {
     listen = "0.0.0.0:${toString cfg.port}";
     switch_hint = "ask the admin to switch son-of-anton to {mode} (llm-mode)";
+    # "auto" leaves the model to maitred: the strongest tiered model below that is serving, fits the
+    # conversation and has a free slot, keeping a conversation on the model that has it cached. Not a
+    # fallback: a request naming a model still gets that model or the not-loaded error. Cron asks for it, so
+    # its jobs run on whichever mode son-of-anton has up. Each decision is a JSON line in the log.
+    router.decision_log = "/var/lib/maitred/routes.jsonl";
+    # slots: how many requests each server runs at once (son-of-anton's maxNumSeqs; gufo's sessions).
     upstreams = {
       # A cold 1M-token prefill takes ~20 min before the first token.
       unholy = {
         base_url = "http://${sonOfAnton}:8200/v1";
         timeout_secs = 3600;
         idle_timeout_secs = 3600;
+        slots = 8;
       };
       radiance = {
         base_url = "http://${sonOfAnton}:8100/v1";
         timeout_secs = 1800;
+        slots = 8;
       };
       gufo = {
         base_url = "http://${sonOfAnton}:8050/v1";
         timeout_secs = 1800;
+        slots = 2;
       };
       # llama.cpp (the title model) and the embedding server, on this host.
       llama = {
@@ -91,7 +100,9 @@ let
     ];
     # reasoning_efforts: what each server takes (unholy: none/low/high/max; Radiance, as its /v1/models lists:
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
-    # template has none/low/medium/xhigh).
+    # template has none/low/medium/xhigh). The Qwen pair alias high to xhigh, their default, so "high" means
+    # each model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier:
+    # DeepSeek-V4-Flash above the Qwen pair, which share one tier while it is unsettled which is stronger.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -111,6 +122,7 @@ let
           medium = "high";
           xhigh = "max";
         };
+        tier = 3;
       }
       {
         id = "radiance/qwen3.8-27b";
@@ -126,6 +138,8 @@ let
           "xhigh"
         ];
         default_reasoning_effort = "xhigh";
+        effort_aliases.high = "xhigh";
+        tier = 2;
       }
       {
         id = "gufo/qwen3.8-flash-next";
@@ -140,6 +154,8 @@ let
           "xhigh"
         ];
         default_reasoning_effort = "xhigh";
+        effort_aliases.high = "xhigh";
+        tier = 2;
       }
       {
         id = "llama/little-titles";
@@ -147,16 +163,22 @@ let
         upstream_model = "little-titles";
         display_name = "Little-Titles";
         context_length = 4096;
+        # Title generation only; every consumer names it outright. Kept out of the /v1/models
+        # listing so the agent pickers show chat models.
+        hidden = true;
       }
       # The same model forced to answer {"title": ...}: Open WebUI parses its titles as JSON and falls back to the
       # user's first message when the reply is plain text, which is what Little-Titles answers with on Open
       # WebUI's prompt. llama.cpp turns the schema into a grammar. (LiteLLM's little-titles-json route did this.)
+      # Hidden like its sibling: Open WebUI validates TASK_MODEL_EXTERNAL against the listing, so its titles
+      # fall back to the chat model (plain text -> the user's first message) until it is unhidden.
       {
         id = "llama/little-titles-json";
         upstream = "llama";
         upstream_model = "little-titles";
         display_name = "Little-Titles (JSON)";
         context_length = 4096;
+        hidden = true;
         request_overrides.response_format = {
           type = "json_schema";
           json_schema = {
@@ -177,6 +199,8 @@ let
         upstream_model = "bge-m3";
         display_name = "bge-m3";
         context_length = 8192;
+        # Embeddings only; every consumer names it outright.
+        hidden = true;
       }
       {
         id = "deepseek/deepseek-flash";
@@ -192,9 +216,7 @@ let
         default_reasoning_effort = "max";
       }
     ];
-    # The virtual keys from Bifrost's days, unchanged (bifrost-keys). The friend key gets the three
-    # son-of-anton chat models (whichever mode is loaded) during ricky's hours; outside them the refusal says
-    # when.
+    # The virtual keys from Bifrost's days, unchanged (bifrost-keys).
     keys = [
       {
         name = "opencode";
@@ -210,25 +232,6 @@ let
         name = "son-of-anton";
         env = "BIFROST_SOA_VK";
         mcp = soaMcpTools;
-      }
-      {
-        name = "friend";
-        env = "BIFROST_FRIEND_VK";
-        models = [
-          "unholy/dsv4-flash"
-          "radiance/qwen3.8-27b"
-          "gufo/qwen3.8-flash-next"
-        ];
-        rate_limit = {
-          requests = 30;
-          per_secs = 60;
-        };
-        active_hours = {
-          start = 20;
-          end = 7;
-          timezone = "America/Chicago";
-          message = "The friend key is only active 20:00-07:00 America/Chicago (8pm-7am).";
-        };
       }
     ];
     # The stdio MCP servers behind /mcp; a tool t of server s is offered as s-t.

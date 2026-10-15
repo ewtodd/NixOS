@@ -52,7 +52,9 @@ in
           title_generation = {
             base_url = gatewayBase;
             key_env = gatewayKeyEnv;
-            model = "little-titles";
+            # Full id: the bare name is ambiguous in maitred (little-titles-json serves the
+            # same upstream model), so it 404s.
+            model = "llama/little-titles";
             provider = "custom";
             prompt_style = "chat";
           };

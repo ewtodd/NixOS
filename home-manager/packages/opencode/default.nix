@@ -115,7 +115,9 @@ in
       ];
 
       model = "bifrost/dsv4-flash";
-      small_model = "bifrost/little-titles";
+      # Full id: the bare name "little-titles" is ambiguous in maitred (little-titles-json
+      # serves the same upstream model) and resolves to a 404, which drops titles silently.
+      small_model = "bifrost/llama/little-titles";
       default_agent = "build";
 
       agent = {
@@ -227,7 +229,7 @@ in
             apiKey = "{env:BIFROST_OPENCODE_VK}";
           };
           models = {
-            "little-titles" = {
+            "llama/little-titles" = {
               name = "Little Titles (do not select!)";
               tool_call = false;
             };
