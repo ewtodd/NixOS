@@ -214,11 +214,11 @@
     "curriculum-vitae": {
       "flake": false,
       "locked": {
-        "lastModified": 1791491534,
-        "narHash": "sha256-DpB2dC7L+r/S+gu/qudqGrK8fGKt5e4HUaNKxqUfxtY=",
+        "lastModified": 1792099068,
+        "narHash": "sha256-AvLWV+2lAh4ohdPtNb7OFuIW2TG8Sii4n62lJ/hYI18=",
         "owner": "ewtodd",
         "repo": "Curriculum-Vitae",
-        "rev": "e7c05fb7f537beefe46ce2a1c9cf033330f00af5",
+        "rev": "62d89b2c0837642fa3bca292926923b41111323c",
         "type": "github"
       },
       "original": {
@@ -1598,11 +1598,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791507732,
-        "narHash": "sha256-TgmujhTLVX/48DpnA+1JXDRPJkmzd1S1lPUKOvcLvh4=",
+        "lastModified": 1792099272,
+        "narHash": "sha256-EjDTBKo9JdxrTobN3vS8YZNS5JSCc1qIm1zENAr8p4A=",
         "owner": "ewtodd",
         "repo": "website",
-        "rev": "20d5bf57658331e138b566c9f3e6ab0c34497f15",
+        "rev": "5f5891170c2a933903419c335c3330e64f613d7d",
         "type": "github"
       },
       "original": {
