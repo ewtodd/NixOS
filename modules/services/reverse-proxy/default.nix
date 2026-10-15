@@ -13,16 +13,11 @@ let
   # maitred and Open WebUI live on the AI front host (mu).
   aiFront = config.systemOptions.aiFrontAddress;
 
-  # WAN sees only the API surfaces: /v1 (client keys), /friend (the friend
-  # key: the son-of-anton chat models during its hours) and /mcp (keys with
-  # MCP grants; the friend key has none). All terminate at maitred (:4002);
-  # handle_path strips the /friend prefix before it sees the request. Private
-  # source ranges reach maitred for any path (/health, or its 404); everyone
-  # else gets Anubis and the tarpit.
+  # WAN sees only the API surfaces: /v1 (client keys) and /mcp (keys with MCP
+  # grants). Both terminate at maitred (:4002). Private source ranges reach
+  # maitred for any path (/health, or its 404); everyone else gets Anubis and
+  # the tarpit.
   llmRoutes = ''
-    handle_path /friend/* {
-      reverse_proxy http://${aiFront}:4002
-    }
     @api path /v1* /mcp*
     handle @api {
       reverse_proxy http://${aiFront}:4002

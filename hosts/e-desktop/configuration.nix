@@ -146,7 +146,7 @@ in
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "unholy/dsv4-flash";
+          model = "auto";
           settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
@@ -162,7 +162,7 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
-          model = "unholy/dsv4-flash";
+          model = "auto";
           settings.gateway.single_user = true;
           settings = {
             platforms.signal.gateway_restart_notification = true;
@@ -189,7 +189,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "unholy/dsv4-flash";
+          model = "auto";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -209,9 +209,9 @@ in
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           git.github = config.age.secrets.soa-ricky-github-key.path;
-          model = "unholy/dsv4-flash";
+          model = "auto";
           settings = {
-            model.default = "unholy/dsv4-flash";
+            model.default = "auto";
           };
           settings.platforms.signal = {
             require_mention = true;
@@ -238,9 +238,9 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          model = "unholy/dsv4-flash";
+          model = "auto";
           settings = {
-            model.default = "unholy/dsv4-flash";
+            model.default = "auto";
           };
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
@@ -262,12 +262,21 @@ in
 
       settings = {
         model = {
-          default = "unholy/dsv4-flash";
+          # maitred's routed id: the strongest model son-of-anton is serving, kept per conversation where its
+          # context is cached. "high" is each model's normal thinking (maitred maps it to xhigh on the Qwen pair).
+          default = "auto";
           reasoning_effort = "high";
           provider = "custom";
         };
-        cron.model_drift_guard = false;
-        delegation.model = "unholy/dsv4-flash";
+        cron = {
+          model_drift_guard = false;
+          # maitred's routed id: jobs run on ds4 or qwen, whichever mode is up, instead of failing when a
+          # pinned model's mode is not loaded. Jobs with their own model pin keep it.
+          model = "auto";
+          model_provider = "custom";
+        };
+        # Sub-agents too, so they run whichever mode is up instead of failing while the Qwen pair is loaded.
+        delegation.model = "auto";
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
           enabled = true;
@@ -279,6 +288,10 @@ in
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
           key_env = "BIFROST_SOA_VK";
+          # /model lists maitred's live /v1/models catalog (context windows and effort
+          # vocabularies come from the same response); the models below are per-model
+          # metadata only and no longer pin the picker.
+          discover_models = true;
           models = {
             # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
             "unholy/dsv4-flash" = {
@@ -288,6 +301,27 @@ in
                 "low"
                 "high"
                 "max"
+              ];
+            };
+            # Radiance's R9700 pair; its template's efforts (high/max clamp to medium/xhigh).
+            "radiance/qwen3.8-27b" = {
+              reasoning_effort = "xhigh";
+              reasoning_efforts = [
+                "none"
+                "minimal"
+                "low"
+                "medium"
+                "xhigh"
+              ];
+            };
+            # gufo on the Strix Halo iGPU; its template's efforts.
+            "gufo/qwen3.8-flash-next" = {
+              reasoning_effort = "xhigh";
+              reasoning_efforts = [
+                "none"
+                "low"
+                "medium"
+                "xhigh"
               ];
             };
             "deepseek/deepseek-flash" = {
@@ -344,7 +378,10 @@ in
           };
           compaction = {
             provider = "custom";
-            model = "unholy/dsv4-flash"; # 512k window
+            # For an auxiliary task son-of-anton reads "auto" as the session's own model, which is maitred's
+            # "auto" unless the session is pinned: the strongest serving model whose window fits the whole
+            # conversation (DS4's 512k whenever it is loaded).
+            model = "auto";
             base_url = "http://${aiFront}:4002/v1";
             key_env = "BIFROST_SOA_VK";
             reasoning_effort = "none"; # extraction, not reasoning
