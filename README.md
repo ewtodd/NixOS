@@ -157,13 +157,13 @@ modules, so it never drifts from `nixosConfigurations`.
 so the servers and laptops never compile.
 ```bash
 colmena apply --on @server   # build on e-desktop, push to the 4 servers
-colmena apply-local          # rebuild the local workstation (e-desktop / e-laptop)
 colmena apply --on anton     # a single node
+nrs                          # rebuild the local workstation (e-desktop / e-laptop): nh os switch /etc/nixos
 ```
 - **Scope:** the 7 e-owner nodes (v-devices excluded for now).
   The headless servers and the tony kiosk are pushed over SSH; the two
-  workstations deploy locally (`apply-local`, which also sidesteps e-laptop's
-  dynamic IP).
+  workstations rebuild themselves with `nrs` (`nh os switch /etc/nixos`), which
+  also sidesteps e-laptop's dynamic IP.
 - **Auth:** a key-only `deploy` user (`systemOptions.services.deploy.enable`)
   with scoped NOPASSWD sudo (only the activation commands) and nix trusted-user.
   Connections jump through the `mu` bastion via the `*-deploy` SSH
