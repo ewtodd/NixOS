@@ -52,6 +52,7 @@ in
       signal-desktop
       mangohud
       gamescope
+      dolphin-emu
       lsfg-vk
       lsfg-vk-ui
       vulkan-tools
