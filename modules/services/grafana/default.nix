@@ -11,6 +11,7 @@ let
     anton-storage = import ./dashboards/anton-storage.nix;
     bot-defense = import ./dashboards/bot-defense.nix;
     fleet-health = import ./dashboards/fleet-health.nix;
+    gpus = import ./dashboards/gpus.nix;
   };
   dashboardDir = pkgs.linkFarm "grafana-dashboards" (
     lib.mapAttrsToList (name: dashboard: {
