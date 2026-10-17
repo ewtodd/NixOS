@@ -53,6 +53,7 @@ in
       mangohud
       gamescope
       dolphin-emu
+      darktable
       lsfg-vk
       lsfg-vk-ui
       vulkan-tools
