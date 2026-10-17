@@ -33,7 +33,7 @@ in
       lanExpose = true;
       model = "/scratch/dsv4-ve";
       kvTokens = 1572864;
-      maxModelLen = 524288;
+      maxModelLen = 786432;
       maxNumSeqs = 8;
       specDrafts = 5;
       prefixSnapshots = 64;
