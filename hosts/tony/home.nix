@@ -1,6 +1,9 @@
 {
   "tony" =
-    { ... }:
+    { pkgs, ... }:
+    let
+      landing = "file://${./landing}/index.html";
+    in
     {
       home.username = "tony";
       home.homeDirectory = "/home/tony";
@@ -10,6 +13,15 @@
 
       programs.firefox = {
         enable = true;
+
+        # ESR, not the release channel: Firefox 158 locks up the Prime Video tab (the
+        # Watch button spins forever). Reproduced headless against a copy of this
+        # profile: 158 hangs with or without extensions and policies, while 157.0.1
+        # and 153 ESR load it with Widevine working. An appliance wants the slower
+        # channel anyway.
+        package = pkgs.firefox-esr.override {
+          extraPrefsFiles = [ (pkgs.replaceVars ./autoconfig.js { inherit landing; }) ];
+        };
 
         policies = {
           ExtensionSettings = {
@@ -94,10 +106,9 @@
           id = 0;
           isDefault = true;
           settings = {
-            "browser.startup.homepage" = "file://${./landing}/index.html";
+            # New tabs follow from autoconfig.js; no pref can set them.
+            "browser.startup.homepage" = landing;
             "browser.startup.page" = 1;
-            "browser.newtab.url" = "file://${./landing}/index.html";
-            "browser.newtab.page-loaded-url" = "file://${./landing}/index.html";
 
             # Containers must be enabled at the pref level, or both extensions
             # install and silently do nothing.

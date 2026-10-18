@@ -16,10 +16,12 @@ let
   outputName = "HDMI-A-2";
   outputMode = "3840x2160@30";
 
+  firefox = config.home-manager.users.tony.programs.firefox.finalPackage;
+
   kiosk = pkgs.writeShellApplication {
     name = "tony-kiosk";
     runtimeInputs = [
-      config.home-manager.users.tony.programs.firefox.finalPackage
+      firefox
       pkgs.wlr-randr
     ];
     text = ''
@@ -35,7 +37,7 @@ let
 
             wlr-randr --output ${outputName} --mode ${outputMode} || true
 
-            exec firefox --kiosk
+            exec ${lib.getExe firefox} --kiosk
     '';
   };
 in
