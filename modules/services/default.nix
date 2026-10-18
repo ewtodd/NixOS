@@ -27,6 +27,7 @@ in
     ./unholy
     ./minecraft
     ./nextcloud
+    ./nfs
     ./node-exporter
     ./open-webui
     ./prometheus

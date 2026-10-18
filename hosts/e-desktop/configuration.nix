@@ -125,10 +125,14 @@ in
         "/home/*/.local/share/Steam/steamapps/shadercache"
         "/home/*/.nv/ComputeCache"
         "/var/lib/systemd/coredump"
+        # NFS from anton's tank, the same pool this repo lives on; its own
+        # zfs snapshots cover it, and the SSD holds the originals.
+        "/home/e-play/BIRDING"
         # Symlinks into /labdata stay links, so their trees are captured once
         # via the /labdata path, not twice.
       ];
     };
+    services.nfs.client.mounts."/home/e-play/BIRDING" = "10.0.0.3:/tank/photos/BIRDING";
     services.son-of-anton = {
       enable = true;
       environmentFiles = [

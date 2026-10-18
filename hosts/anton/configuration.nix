@@ -23,6 +23,14 @@ in
     services.nodeExporter.enable = true;
     services.zfsMetrics.enable = true;
     services.jellyfin.enable = true;
+    # e-desktop's photo library (darktable); e-play there is uid 1003.
+    services.nfs.server = {
+      enable = true;
+      exports."/tank/photos" = {
+        client = "10.0.0.4";
+        uid = 1003;
+      };
+    };
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:15:00";
     security.harden.enable = true;
