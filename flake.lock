@@ -1201,11 +1201,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1792169307,
-        "narHash": "sha256-t2tPX08Vsd0+puat7lMlz8RlLG6PKLXsPHVn++zRNFI=",
+        "lastModified": 1792258196,
+        "narHash": "sha256-1mAFVcCBLFP/7uF8jxn14KQvINzQJ/qIrh5fSzlK9kE=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "fe9d67555b9512c52fe9d6a9907c6aee6ea23e31",
+        "rev": "9a51bbc2926df030442b299725006d6e63c262aa",
         "type": "github"
       },
       "original": {
