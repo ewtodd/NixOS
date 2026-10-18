@@ -188,4 +188,7 @@ in
     enable = true;
     enableBashIntegration = true;
   };
+  programs.bash.bashrcExtra = ''
+    export STARSHIP_LOG=error
+  '';
 }
