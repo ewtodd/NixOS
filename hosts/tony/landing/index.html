@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>tony</title>
 <style>
-  :root { --bg:#0b0d10; --fg:#e8eaed; --focus:#4da3ff; }
+  :root { --bg:#170c22; --fg:#f3e9f1; --focus:#f5a9c8; }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; background: var(--bg); }
   body {
@@ -28,20 +28,20 @@
     border-radius: 3vmin;
     text-decoration: none;
     color: var(--fg);
-    background: #161a20;
+    background: #2a1a3d;
     border: 0.5vmin solid transparent;
     transition: transform .12s ease, border-color .12s ease, background .12s ease;
   }
-  a.tile:hover { background: #1d222a; }
+  a.tile:hover { background: #3a2552; }
 
   /* Deliberately loud. Read from a sofa, and with Vimium-C or a D-pad this
      focus ring is the only thing telling you where you are. */
   a.tile:focus, a.tile:focus-visible {
     outline: none;
     border-color: var(--focus);
-    background: #1d222a;
+    background: #3a2552;
     transform: scale(1.02);
-    box-shadow: 0 0 0 1.2vmin rgba(77,163,255,.20);
+    box-shadow: 0 0 0 1.2vmin rgba(245,169,200,.22);
   }
 
   /* Three tiles in a two-column grid: the last spans the row beneath rather

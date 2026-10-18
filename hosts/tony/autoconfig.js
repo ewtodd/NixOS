@@ -22,17 +22,17 @@ const CSS = `
     align-items: center;
     gap: 1.5vmin;
     padding: 1.6vmin 3vmin 1.6vmin 2.4vmin;
-    border: 0.4vmin solid rgba(232, 234, 237, 0.25);
+    border: 0.4vmin solid rgba(243, 233, 241, 0.25);
     border-radius: 2vmin;
-    background: rgba(11, 13, 16, 0.85);
-    color: #e8eaed;
+    background: rgba(23, 12, 34, 0.88);
+    color: #f3e9f1;
     font: 600 4vmin system-ui, sans-serif;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease, border-color 0.12s ease;
   }
   #tony-home.shown { opacity: 1; pointer-events: auto; }
-  #tony-home:hover { border-color: #4da3ff; }
+  #tony-home:hover { border-color: #f5a9c8; }
   #tony-home svg { width: 5vmin; height: 5vmin; fill: currentColor; }
 `;
 
