@@ -1,12 +1,5 @@
 { pkgs, ... }:
 {
-  # tank: 5x WD40EFRX 4TB CMR raidz2 (~10.5 TiB usable). Mixed-batch drives on purpose:
-  # same-batch drives hit the wear cliff together and correlated failures during resilver kill arrays.
-  # Unencrypted by design (headless: native encryption needs a manual unlock per boot or a key on the box).
-  # Datasets self-mount via their mountpoint property -- no fileSystems entries. Created by anton-zfs/01-create-pool.sh.
-  # 'archive' (14TB SAS) is out of service: its HBA died. To restore after a replacement (LSI 9211-8i/9300-8i, IT mode):
-  # re-add "archive" to extraPools + autoScrub below, `zpool import archive` (pool is wwn-keyed, controller-agnostic),
-  # and point Jellyfin at /archive/video. anton-zfs/02-add-archive-pool.sh kept for a from-scratch rebuild.
   boot.zfs.extraPools = [ "tank" ];
 
   # A scrub reads every allocated block and repairs anything raidz2 can
