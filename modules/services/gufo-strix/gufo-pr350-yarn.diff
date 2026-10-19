@@ -1,31 +1,34 @@
-diff -ruN a/cmake/Checks.cmake b/cmake/Checks.cmake
---- a/cmake/Checks.cmake	2026-10-16 23:04:42.581629665 -0500
-+++ b/cmake/Checks.cmake	2026-10-16 23:04:42.589212805 -0500
-@@ -24,6 +24,7 @@
+diff --git a/cmake/Checks.cmake b/cmake/Checks.cmake
+index bbade27c..fc375b65 100644
+--- a/cmake/Checks.cmake
++++ b/cmake/Checks.cmake
+@@ -23,6 +23,7 @@ set(gufo_pr_targets
+   bench_cli_test prompt_cli_test eval_http_client_test
    qwen_tokenizer_test qwen_chat_template_test
    qwen38_flash_next_config_test qwen38_flash_next_mtp_sampling_test
-   qwen38_flash_next_continuation_layout_test
 +  qwen38_flash_next_rope_scaling_test
+   qwen38_flash_next_continuation_layout_test
    ds4_sampling_test ds4_chat_template_test ds4_cli_test
    qwen3_asr_config_test qwen3_asr_audio_api_test
-   qwen3_tts_config_test qwen3_tts_audio_api_test
-@@ -33,10 +34,12 @@
+@@ -32,11 +33,12 @@ set(gufo_pr_targets
+ set(gufo_pr_tests ${gufo_pr_targets})
  list(REMOVE_ITEM gufo_pr_tests
    qwen38_flash_next_config_test qwen38_flash_next_mtp_sampling_test
-   qwen38_flash_next_continuation_layout_test
 +  qwen38_flash_next_rope_scaling_test
+   qwen38_flash_next_continuation_layout_test
    ds4_sampling_test ds4_chat_template_test ds4_cli_test)
  list(APPEND gufo_pr_tests
    "qwen38_flash_next\\.config" "qwen38_flash_next\\.mtp_sampling"
-   "qwen38_flash_next\\.continuation_layout"
-+  "qwen38_flash_next\\.rope_scaling"
+-  "qwen38_flash_next\\.continuation_layout"
++  "qwen38_flash_next\\.rope_scaling" "qwen38_flash_next\\.continuation_layout"
    "ds4\\.sampling" "ds4\\.template" "ds4\\.cli"
    gufo_version gufo_help serve_cli_test eval_http_test functional_runner_test
    cache_workloads_test cache_disk_faults_test
-diff -ruN a/src/cli/bench/bench.cpp b/src/cli/bench/bench.cpp
---- a/src/cli/bench/bench.cpp	2026-10-16 23:04:42.582139878 -0500
-+++ b/src/cli/bench/bench.cpp	2026-10-16 23:04:42.589781199 -0500
-@@ -923,6 +923,14 @@
+diff --git a/src/cli/bench/bench.cpp b/src/cli/bench/bench.cpp
+index 550104b2..22bfed63 100644
+--- a/src/cli/bench/bench.cpp
++++ b/src/cli/bench/bench.cpp
+@@ -923,6 +923,14 @@ int RunQwen38FlashNextBenchmark(
      return 1;
    }
  
@@ -40,7 +43,7 @@ diff -ruN a/src/cli/bench/bench.cpp b/src/cli/bench/bench.cpp
    std::string error;
    auto model = qfn::Model::Load(
        options.model_path,
-@@ -930,6 +938,7 @@
+@@ -930,6 +938,7 @@ int RunQwen38FlashNextBenchmark(
            .max_context = static_cast<std::uint32_t>(required_context),
            .mtp_model_path = mtp ? options.mtp_model_path : "",
            .max_draft_tokens = std::max<std::uint32_t>(1, options.draft_tokens),
@@ -48,7 +51,7 @@ diff -ruN a/src/cli/bench/bench.cpp b/src/cli/bench/bench.cpp
        },
        &error);
    if (model == nullptr) {
-@@ -938,6 +947,11 @@
+@@ -938,6 +947,11 @@ int RunQwen38FlashNextBenchmark(
      return 1;
    }
    PrintModelLoadTime(model_load_start);
@@ -60,10 +63,11 @@ diff -ruN a/src/cli/bench/bench.cpp b/src/cli/bench/bench.cpp
  
    // Repeat a fixed token pattern for reproducible timing. It uses far fewer
    // distinct PLE rows than varied requests.
-diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backend.cpp
---- a/src/cli/serve/inference_backend.cpp	2026-10-16 23:04:42.582646535 -0500
-+++ b/src/cli/serve/inference_backend.cpp	2026-10-16 23:04:42.590391842 -0500
-@@ -264,7 +264,7 @@
+diff --git a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backend.cpp
+index 8874ddc6..a9620cf7 100644
+--- a/src/cli/serve/inference_backend.cpp
++++ b/src/cli/serve/inference_backend.cpp
+@@ -277,7 +277,7 @@ std::vector<std::uint8_t> DeepSeekCompatibilityIdentity(
  std::vector<std::uint8_t> QwenFlashNextCompatibilityIdentity(
      std::string_view artifact_fingerprint, std::string_view mtp_fingerprint,
      bool has_mtp, std::uint32_t max_context, std::uint32_t max_draft_tokens,
@@ -72,7 +76,7 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
    if (!IsSha256Hex(artifact_fingerprint)) {
      throw std::invalid_argument(
          "Qwen3.8-Flash-Next disk cache requires an artifact fingerprint");
-@@ -288,7 +288,7 @@
+@@ -301,7 +301,7 @@ std::vector<std::uint8_t> QwenFlashNextCompatibilityIdentity(
             << models::qwen38_flash_next::Session::kSnapshotPayloadVersion
             << '\n'
             << "context_tokens=" << max_context << '\n'
@@ -81,7 +85,7 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
             << "adapters=none\n";
    if (has_mtp) {
      identity << "draft_backend=qfn-mtp-v1\n"
-@@ -2467,7 +2467,9 @@
+@@ -2499,7 +2499,9 @@ public:
            .compatibility_identity = QwenFlashNextCompatibilityIdentity(
                artifact_fingerprint, use_mtp_ ? mtp_fingerprint : std::string{},
                use_mtp_, max_context_, max_draft_tokens_,
@@ -92,7 +96,7 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
            .payload_version =
                models::qwen38_flash_next::Session::kSnapshotPayloadVersion,
        };
-@@ -3228,12 +3230,21 @@
+@@ -3290,12 +3292,21 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
      return false;
    }
    const std::shared_ptr<const core::GgufReader> reader(std::move(reader_owner));
@@ -119,7 +123,7 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
      if (native < 2 || native > std::numeric_limits<std::uint32_t>::max()) {
        SetError(error,
                 "GGUF has no valid native context length; specify --context");
-@@ -3327,6 +3338,10 @@
+@@ -3389,6 +3400,10 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
                 "Unsupported Qwen3.8-Flash-Next chat template: " + load_error);
        return false;
      }
@@ -130,7 +134,7 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
      // The model owns prefill geometry for both bulk and scheduled requests.
      auto model = models::qwen38_flash_next::Model::Load(
          model_path,
-@@ -3340,6 +3355,7 @@
+@@ -3402,6 +3417,7 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
              .vision_model_path = vision_model_path,
              .decode_concurrency = static_cast<std::uint32_t>(
                  std::clamp<std::size_t>(session_count, 1, 8)),
@@ -138,8 +142,8 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
          },
          &load_error);
      if (model == nullptr) {
-@@ -3357,6 +3373,13 @@
-             &resolved_disk_cache_config.model_artifact_fingerprint, error)) {
+@@ -3409,6 +3425,13 @@ bool InferenceBackend::load(const std::string& model_path, std::string* error,
+                "Failed to create Qwen3.8-Flash-Next model: " + load_error);
        return false;
      }
 +    if (rope_scaling) {
@@ -149,13 +153,14 @@ diff -ruN a/src/cli/serve/inference_backend.cpp b/src/cli/serve/inference_backen
 +              " original_context=" + std::to_string(qwen4exp_native_context) +
 +              " context=" + std::to_string(max_context));
 +    }
-     if (DiskCacheEnabled(resolved_disk_cache_config) &&
-         speculative_config.backend == TextSpeculativeBackend::kMtp &&
-         resolved_disk_cache_config.draft_model_artifact_fingerprint.empty() &&
-diff -ruN a/src/models/qwen38_flash_next/CMakeLists.txt b/src/models/qwen38_flash_next/CMakeLists.txt
---- a/src/models/qwen38_flash_next/CMakeLists.txt	2026-10-16 23:04:42.586621231 -0500
-+++ b/src/models/qwen38_flash_next/CMakeLists.txt	2026-10-16 23:04:42.594527111 -0500
-@@ -4,6 +4,7 @@
+     // RAM checkpoints cannot outlive this loaded model. Their process-local
+     // identity is sufficient; hashing every shard here adds a complete model
+     // read on each fresh container start even when disk caching is disabled.
+diff --git a/src/models/qwen38_flash_next/CMakeLists.txt b/src/models/qwen38_flash_next/CMakeLists.txt
+index c09ead6a..e6551c03 100644
+--- a/src/models/qwen38_flash_next/CMakeLists.txt
++++ b/src/models/qwen38_flash_next/CMakeLists.txt
+@@ -4,6 +4,7 @@ add_library(gufo_qwen38_flash_next STATIC
    config.cpp
    continuation_layout.cpp
    ngram.cpp
@@ -163,9 +168,10 @@ diff -ruN a/src/models/qwen38_flash_next/CMakeLists.txt b/src/models/qwen38_flas
    weights.cpp)
  
  target_include_directories(gufo_qwen38_flash_next PUBLIC ${PROJECT_SOURCE_DIR})
-diff -ruN a/src/models/qwen38_flash_next/config.hpp b/src/models/qwen38_flash_next/config.hpp
---- a/src/models/qwen38_flash_next/config.hpp	2026-10-16 23:04:42.586535890 -0500
-+++ b/src/models/qwen38_flash_next/config.hpp	2026-10-16 23:04:42.594535948 -0500
+diff --git a/src/models/qwen38_flash_next/config.hpp b/src/models/qwen38_flash_next/config.hpp
+index 51f47ded..986816e1 100644
+--- a/src/models/qwen38_flash_next/config.hpp
++++ b/src/models/qwen38_flash_next/config.hpp
 @@ -9,6 +9,7 @@
  #include <vector>
  
@@ -174,7 +180,7 @@ diff -ruN a/src/models/qwen38_flash_next/config.hpp b/src/models/qwen38_flash_ne
  
  namespace gufo::models::qwen38_flash_next {
  
-@@ -38,6 +39,10 @@
+@@ -38,6 +39,10 @@ struct Config {
    std::uint32_t rotary_dim{0};               ///< 64
    float rope_theta{0.0F};                    ///< 1e7
    std::array<std::uint32_t, 4> rope_sections{};
@@ -185,7 +191,7 @@ diff -ruN a/src/models/qwen38_flash_next/config.hpp b/src/models/qwen38_flash_ne
  
    // Qwen Sparse Attention indexer (block top-k selection).
    std::uint32_t indexer_heads{0};     ///< 4
-@@ -108,6 +113,18 @@
+@@ -108,6 +113,18 @@ struct Config {
      return ple_layer >= 0 && layer == static_cast<std::uint32_t>(ple_layer);
    }
  
@@ -204,10 +210,24 @@ diff -ruN a/src/models/qwen38_flash_next/config.hpp b/src/models/qwen38_flash_ne
    /// The draft executes with trunk constants and shared vocabulary weights.
    /// PLE/SSM parameters are intentionally excluded: the draft is full
    /// attention.
-diff -ruN a/src/models/qwen38_flash_next/cpu_ops.cpp b/src/models/qwen38_flash_next/cpu_ops.cpp
---- a/src/models/qwen38_flash_next/cpu_ops.cpp	2026-10-16 23:04:42.586543585 -0500
-+++ b/src/models/qwen38_flash_next/cpu_ops.cpp	2026-10-16 23:04:42.594547660 -0500
-@@ -148,16 +148,23 @@
+diff --git a/src/models/qwen38_flash_next/continuation_layout.cpp b/src/models/qwen38_flash_next/continuation_layout.cpp
+index 90e1950d..41d8e6cd 100644
+--- a/src/models/qwen38_flash_next/continuation_layout.cpp
++++ b/src/models/qwen38_flash_next/continuation_layout.cpp
+@@ -23,7 +23,7 @@ ContinuationLayout::ContinuationLayout(const Config& c, bool mtp,
+                                        std::uint32_t context,
+                                        std::uint32_t kept_rows)
+     : context_(context), ratio_(c.compress_ratio), mtp_(mtp) {
+-  if (!context || context > c.context_length || !ratio_ ||
++  if (!context || context > c.MaxContextLength() || !ratio_ ||
+       !c.full_attention_interval || !c.num_layers || !c.AttentionKvDim() ||
+       !c.indexer_head_dim || !c.indexer_top_k || !c.ssm_conv_kernel ||
+       !c.ssm_head_dim || !c.ssm_num_v_heads || !c.HcDim() || !c.vocab_size ||
+diff --git a/src/models/qwen38_flash_next/cpu_ops.cpp b/src/models/qwen38_flash_next/cpu_ops.cpp
+index d4d60207..6840e018 100644
+--- a/src/models/qwen38_flash_next/cpu_ops.cpp
++++ b/src/models/qwen38_flash_next/cpu_ops.cpp
+@@ -148,16 +148,23 @@ float Softplus(float x) noexcept {
  }
  
  void Rope(float* x, std::uint32_t heads, std::uint32_t head_dim,
@@ -236,9 +256,10 @@ diff -ruN a/src/models/qwen38_flash_next/cpu_ops.cpp b/src/models/qwen38_flash_n
        const float a = v[i];
        const float b = v[i + half];
        v[i] = a * c - b * s;
-diff -ruN a/src/models/qwen38_flash_next/cpu_ops.hpp b/src/models/qwen38_flash_next/cpu_ops.hpp
---- a/src/models/qwen38_flash_next/cpu_ops.hpp	2026-10-16 23:04:42.586552311 -0500
-+++ b/src/models/qwen38_flash_next/cpu_ops.hpp	2026-10-16 23:04:42.594557158 -0500
+diff --git a/src/models/qwen38_flash_next/cpu_ops.hpp b/src/models/qwen38_flash_next/cpu_ops.hpp
+index 71e085d3..53ff7a09 100644
+--- a/src/models/qwen38_flash_next/cpu_ops.hpp
++++ b/src/models/qwen38_flash_next/cpu_ops.hpp
 @@ -5,6 +5,7 @@
  #include <cstdint>
  #include <span>
@@ -247,7 +268,7 @@ diff -ruN a/src/models/qwen38_flash_next/cpu_ops.hpp b/src/models/qwen38_flash_n
  #include "src/models/qwen38_flash_next/weights.hpp"
  
  /// Scalar CPU operators for the reference model: one row at a time, every
-@@ -35,9 +36,11 @@
+@@ -35,9 +36,11 @@ void L2Norm(std::span<float> x, float eps);
  /// NEOX-style partial rotary embedding on the first `rotary_dim` elements of
  /// each `head_dim` head: pair (i, i + rotary_dim/2) rotates by pos * theta_i.
  /// Text-only IMRoPE has equal positions on every section, so it is exactly
@@ -261,10 +282,11 @@ diff -ruN a/src/models/qwen38_flash_next/cpu_ops.hpp b/src/models/qwen38_flash_n
  
  }  // namespace gufo::models::qwen38_flash_next::cpu
  
-diff -ruN a/src/models/qwen38_flash_next/engine.cpp b/src/models/qwen38_flash_next/engine.cpp
---- a/src/models/qwen38_flash_next/engine.cpp	2026-10-16 23:04:42.586677628 -0500
-+++ b/src/models/qwen38_flash_next/engine.cpp	2026-10-16 23:04:42.594568319 -0500
-@@ -97,10 +97,18 @@
+diff --git a/src/models/qwen38_flash_next/engine.cpp b/src/models/qwen38_flash_next/engine.cpp
+index 8ee91001..c2a75234 100644
+--- a/src/models/qwen38_flash_next/engine.cpp
++++ b/src/models/qwen38_flash_next/engine.cpp
+@@ -98,10 +98,18 @@ std::shared_ptr<Model> Model::Load(const std::string& model_path,
      return nullptr;
    }
    m->weights_ = std::make_unique<ModelWeights>(std::move(*weights));
@@ -285,7 +307,7 @@ diff -ruN a/src/models/qwen38_flash_next/engine.cpp b/src/models/qwen38_flash_ne
      return nullptr;
    }
    try {
-@@ -166,6 +174,7 @@
+@@ -167,6 +175,7 @@ std::shared_ptr<Model> Model::Load(const std::string& model_path,
                  exec.max_batch, std::uint64_t{options.max_draft_tokens} + 1))
            : 1;
    exec.max_speculative = exec.max_logit_rows;
@@ -293,9 +315,32 @@ diff -ruN a/src/models/qwen38_flash_next/engine.cpp b/src/models/qwen38_flash_ne
    m->executor_ =
        rocm::Executor::Create(*m->device_, m->ngram_.get(), exec, error_msg);
    if (!m->executor_) {
-diff -ruN a/src/models/qwen38_flash_next/engine.hpp b/src/models/qwen38_flash_next/engine.hpp
---- a/src/models/qwen38_flash_next/engine.hpp	2026-10-16 23:04:42.586694299 -0500
-+++ b/src/models/qwen38_flash_next/engine.hpp	2026-10-16 23:04:42.593786904 -0500
+@@ -667,7 +676,20 @@ bool Session::Feed(std::span<const std::int32_t> tokens, std::string* error_msg,
+     const auto capacity = remaining <= exec.max_batch()
+                               ? exec.max_batch()
+                               : model_->PrefillCapacity();
+-    const std::size_t n = std::min<std::size_t>(capacity, remaining);
++    std::size_t n = std::min<std::size_t>(capacity, remaining);
++    // Extended-context attention can fall back from WMMA to the per-token
++    // kernel. Its checkpoint must end a pass: the fused in-pass path requires
++    // WMMA for both query groups. Preserve ordinary split-pass arithmetic on
++    // either side of the boundary. Use the actual launch capability rather
++    // than the model's independently configured native context length.
++    if ((checkpoint || consume) && boundary > tokens_.size() &&
++        boundary < tokens_.size() + n &&
++        tokens_.size() + n >
++            rocm::WmmaCausalAttentionContextLimit(
++                model_->config().num_heads, model_->config().num_kv_heads,
++                model_->config().head_dim, model_->config().compress_ratio)) {
++      n = boundary - tokens_.size();
++    }
+     const auto chunk = tokens.subspan(off, n);
+     if (MtpEnabled() && !tokens_.empty() &&
+         !DraftCatchUp(chunk[0], false, error_msg)) {
+diff --git a/src/models/qwen38_flash_next/engine.hpp b/src/models/qwen38_flash_next/engine.hpp
+index c2aed499..614f0cf9 100644
+--- a/src/models/qwen38_flash_next/engine.hpp
++++ b/src/models/qwen38_flash_next/engine.hpp
 @@ -5,6 +5,7 @@
  #include <cstdint>
  #include <functional>
@@ -304,7 +349,7 @@ diff -ruN a/src/models/qwen38_flash_next/engine.hpp b/src/models/qwen38_flash_ne
  #include <span>
  #include <string>
  #include <string_view>
-@@ -50,6 +51,11 @@
+@@ -51,6 +52,11 @@ struct ModelOptions {
    /// Fixed serving capacity used by the calibrated MTP cost model. Keeping
    /// it independent of scheduler timing preserves seeded request replay.
    std::uint32_t decode_concurrency = 1;
@@ -316,19 +361,20 @@ diff -ruN a/src/models/qwen38_flash_next/engine.hpp b/src/models/qwen38_flash_ne
  };
  
  class Session;
-@@ -220,7 +226,7 @@
+@@ -225,7 +231,7 @@ public:
    }
  
    /// Compatibility version; bump on payload or inference arithmetic changes.
--  static constexpr std::uint32_t kSnapshotPayloadVersion = 17;
-+  static constexpr std::uint32_t kSnapshotPayloadVersion = 18;
+-  static constexpr std::uint32_t kSnapshotPayloadVersion = 18;
++  static constexpr std::uint32_t kSnapshotPayloadVersion = 19;
    /// Bytes a snapshot of the current context occupies.
    [[nodiscard]] std::uint64_t SnapshotBytes() const;
    [[nodiscard]] std::uint64_t PrefillCheckpointBytes(
-diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
---- a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp	2026-10-16 23:04:42.586772567 -0500
-+++ b/src/models/qwen38_flash_next/kernels/rocm/executor.cpp	2026-10-16 23:04:42.593925495 -0500
-@@ -970,6 +970,12 @@
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
+index 2948b053..c5676438 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/executor.cpp
+@@ -970,6 +970,12 @@ std::unique_ptr<Executor> Executor::Create(const DeviceModel& model,
      return nullptr;
    }
    const Config& c = model.config();
@@ -341,7 +387,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
    const std::size_t T = e->options_.max_batch;
    e->blaslt_ = BlasLt::Create(e->stream_, error_msg);
    if (e->blaslt_ == nullptr) {
-@@ -1011,9 +1017,7 @@
+@@ -1029,9 +1035,7 @@ std::unique_ptr<Executor> Executor::Create(const DeviceModel& model,
    s.inject = f32(T * c.hc_count * HcInjectParts(hidden));
    s.block_out = f32(T * hidden);
    s.hc_defer_w = f32(T * c.hc_count);
@@ -352,7 +398,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
    const std::size_t linear_projection = std::max<std::size_t>(
        c.SsmConvChannels() + c.SsmValueDim(), c.ple_layer >= 0 ? hc_dim : 0);
    const std::size_t linear_floats =
-@@ -1217,7 +1221,7 @@
+@@ -1243,7 +1247,7 @@ std::unique_ptr<Session> Executor::CreateSession(core::SessionMode mode,
      return nullptr;
    }
    const Config& c = config();
@@ -361,7 +407,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
      AssignError(error_msg, "session context exceeds the model context");
      return nullptr;
    }
-@@ -2381,7 +2385,7 @@
+@@ -2407,7 +2411,7 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
            l.attn_qkv.data, static_cast<const __half*>(s_.x_half),
            l.attn_q_norm.f32(), l.attn_k_norm.f32(), s_.q, s_.attn_gate,
            s.k_cache, s.v_cache, n_tokens, pos, c.rope_theta, c.rms_eps, stream_,
@@ -370,7 +416,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
        if (!prepared) {
          AssignError(error_msg, "fused attention projection failed");
          return false;
-@@ -2395,7 +2399,7 @@
+@@ -2421,7 +2425,7 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
            s_.qg, l.attn_qkv.rows, l.attn_q_norm.f32(), l.attn_k_norm.f32(),
            s_.q, s_.attn_gate, s.k_cache, s.v_cache, n_tokens, c.num_heads,
            c.num_kv_heads, c.head_dim, c.rotary_dim, pos, c.rope_theta,
@@ -379,7 +425,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
        if (!prepared) {
          UnpackQGate(s_.qg, l.attn_qkv.rows, s_.q, s_.attn_gate, s_.k, s_.v,
                      n_tokens, c.num_heads, c.head_dim, kv_row, stream_);
-@@ -2419,9 +2423,9 @@
+@@ -2445,9 +2449,9 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
      RmsNormRows(s_.k, l.attn_k_norm.f32(), s_.k, n_tokens * c.num_kv_heads,
                  c.head_dim, 1, c.rms_eps, stream_);
      Rope(s_.q, n_tokens, c.num_heads, c.head_dim, c.rotary_dim, pos,
@@ -391,7 +437,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
      StoreKv(s_.k, s.k_cache, n_tokens, kv_row, pos, stream_);
      StoreKv(s_.v, s.v_cache, n_tokens, kv_row, pos, stream_);
    }
-@@ -2446,11 +2450,11 @@
+@@ -2472,11 +2476,11 @@ bool Executor::Attention(const DeviceLayer& l, Session::AttentionState& s,
                  n_tokens * c.indexer_heads, c.indexer_head_dim, 1, c.rms_eps,
                  stream_);
      Rope(s_.iq, n_tokens, c.indexer_heads, c.indexer_head_dim, c.rotary_dim,
@@ -405,7 +451,16 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
      // Align score rows to full cache lines. The selector still considers
      // only complete causal blocks, so padding cannot change the ranking.
      // Wide prefill is never captured: compact score rows to the populated
-@@ -3326,10 +3330,17 @@
+@@ -3328,7 +3332,7 @@ bool Executor::Rollback(Session& session, std::uint32_t keep,
+ }
+ 
+ constexpr std::array<char, 8> kSnapshotMagic{'Q', 'F', 'N', 'S',
+-                                             'N', 'A', 'P', '5'};
++                                             'N', 'A', 'P', '6'};
+ 
+ /// Fixed header ahead of the section bytes. It carries every geometry
+ /// value the section sizes derive from, so a payload of another artifact
+@@ -3352,10 +3356,17 @@ struct SnapshotHeader {
    std::uint32_t mtp_residual_valid;
    std::uint32_t hidden_rows;
    std::uint32_t image_count;
@@ -423,7 +478,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
  
  namespace {
  
-@@ -3351,6 +3362,17 @@
+@@ -3377,6 +3388,17 @@ SnapshotHeader MakeSnapshotHeader(const Config& c, bool has_mtp,
    h.image_count = std::ranges::count_if(
        session.VisionLayout().images,
        [&](const auto& image) { return image.offset < h.position; });
@@ -441,7 +496,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
    return h;
  }
  
-@@ -3362,7 +3384,11 @@
+@@ -3388,7 +3410,11 @@ bool SameGeometry(const SnapshotHeader& h, const SnapshotHeader& mine) {
           h.kv_row == mine.kv_row &&
           h.indexer_head_dim == mine.indexer_head_dim &&
           h.compress_ratio == mine.compress_ratio && h.hc_dim == mine.hc_dim &&
@@ -454,7 +509,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
  }
  
  }  // namespace
-@@ -4272,7 +4298,7 @@
+@@ -4298,7 +4324,7 @@ bool Executor::MtpBody(Session& session, std::uint32_t n, std::uint32_t pos,
                            nullptr, attn.k_cache, attn.v_cache, n, 0,
                            c.num_kv_heads, c.head_dim, c.rotary_dim,
                            &session.control_->mtp_position, c.rope_theta,
@@ -463,7 +518,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
        AssignError(error_msg, "MTP cache projection failed");
        return false;
      }
-@@ -4283,11 +4309,11 @@
+@@ -4309,11 +4335,11 @@ bool Executor::MtpBody(Session& session, std::uint32_t n, std::uint32_t pos,
      StoreRows(s_.ik, attn.index_k, n, c.indexer_head_dim,
                &session.control_->mtp_position, capacity, stream_);
      if (pos + n > c.indexer_top_k) {
@@ -480,10 +535,11 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.cpp b/src/models/
      }
      return true;
    }
-diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp b/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
---- a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp	2026-10-16 23:04:42.586805369 -0500
-+++ b/src/models/qwen38_flash_next/kernels/rocm/executor.hpp	2026-10-16 23:04:42.594362941 -0500
-@@ -235,6 +235,9 @@
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp b/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
+index 41baa088..07b08f26 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/executor.hpp
+@@ -237,6 +237,9 @@ public:
      std::uint32_t max_logit_rows{1};
      /// Longest speculative batch; bounds the recurrent snapshot storage.
      std::uint32_t max_speculative{1};
@@ -493,7 +549,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp b/src/models/
    };
  
    ~Executor();
-@@ -698,6 +701,11 @@
+@@ -700,6 +703,11 @@ private:
      return selected_logits_ != nullptr ? selected_logits_ : s_.logits;
    }
    std::uint32_t mask_words_{0};
@@ -505,10 +561,11 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/executor.hpp b/src/models/
    /// Bounded score scratch, shared by sequential selector chunks.
    std::size_t select_score_floats_{0};
    std::vector<void*> allocations_;
-diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
---- a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp	2026-10-16 23:04:42.586815448 -0500
-+++ b/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp	2026-10-16 23:04:42.594408347 -0500
-@@ -2272,9 +2272,36 @@
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
+index 5f959d6a..1a4b3350 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp
+@@ -2269,9 +2269,36 @@ __global__ void UnpackQGateKernel(const float* qg, std::uint32_t qg_stride,
    }
  }
  
@@ -546,7 +603,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
  __global__ void PrepareAttentionKernel(
      const float* __restrict__ packed, std::uint32_t stride,
      const float* __restrict__ q_gamma, const float* __restrict__ k_gamma,
-@@ -2282,7 +2309,8 @@
+@@ -2279,7 +2306,8 @@ __global__ void PrepareAttentionKernel(
      __half* __restrict__ k_cache, __half* __restrict__ v_cache,
      std::uint32_t heads, std::uint32_t kv_heads, std::uint32_t d,
      std::uint32_t rotary, const std::uint32_t* start_pos, float theta,
@@ -556,7 +613,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    __shared__ float partial[kHeadsPerBlock][8];
    __shared__ float norm[kHeadsPerBlock][256];
    const std::uint32_t t = blockIdx.x, first = blockIdx.y * kHeadsPerBlock,
-@@ -2336,10 +2364,14 @@
+@@ -2333,10 +2361,14 @@ __global__ void PrepareAttentionKernel(
    const std::uint32_t half = rotary / 2;
    float sine = 0.0f, cosine = 0.0f;
    if (tid < half) {
@@ -572,7 +629,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    }
  #pragma unroll
    for (std::uint32_t j = 0; j < kHeadsPerBlock; ++j) {
-@@ -2372,25 +2404,38 @@
+@@ -2369,25 +2401,38 @@ __global__ void PrepareAttentionKernel(
    }
  }
  
@@ -615,7 +672,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    }
  }
  
-@@ -2419,14 +2464,13 @@
+@@ -2416,14 +2461,13 @@ __global__ void StoreRowsKernel(const float* src, float* dst,
  /// grid: the most blocks a batch can complete. Block b pools raw keys
  /// [b*ratio, (b+1)*ratio) once every one of them is stored, i.e. for
  /// b in [*first_block, (*start_pos + n_tokens) / ratio).
@@ -637,7 +694,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    __shared__ float v[256];
    __shared__ float shared[32];
    const std::uint32_t b = *first_block + blockIdx.x;
-@@ -2452,11 +2496,15 @@
+@@ -2449,11 +2493,15 @@ __global__ void PoolBlocksKernel(const float* raw, const float* gamma,
    float outv = i < dim ? v[i] : 0.0f;
    if (i < rotary_dim) {
      const std::uint32_t p = i < half ? i : i - half;
@@ -654,7 +711,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
      const float a = v[p];
      const float bb = v[p + half];
      outv = i < half ? a * c - bb * s : a * s + bb * c;
-@@ -3640,7 +3688,8 @@
+@@ -3783,7 +3831,8 @@ constexpr std::uint32_t kWmmaRatio = 4;
  constexpr std::uint32_t kWmmaKSteps = kWmmaHeadDim / 16;
  // Row padding keeps a 16-byte-per-lane fragment read off a single bank group.
  constexpr std::uint32_t kWmmaKStride = kWmmaHeadDim + 8;
@@ -664,7 +721,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
  constexpr std::uint32_t kWmmaMaxMaskWords = 2048;
  
  /// Two row layouts share the kernel. The dense window packs 16 queries x 2
-@@ -6033,6 +6082,7 @@
+@@ -6309,6 +6358,7 @@ struct AttentionProjectionOutput {
    float theta;
    float eps;
    const qwen::vision::DeviceRope* rope;
@@ -672,7 +729,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
  };
  
  /// Dense F16 WMMA GEMM over Q8_0 or F16 weights: block = BM rows x BN tokens,
-@@ -6045,7 +6095,8 @@
+@@ -6321,7 +6371,8 @@ struct AttentionProjectionOutput {
  /// skip decoding and use the same ordered K16 products. y is [batch][m].
  template<int BM, int BN, int BK, int WM, int WN, int kRowGroup = 1,
           bool kHcMix = false, bool kSsmConv = false, bool kAttention = false,
@@ -682,7 +739,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
  __launch_bounds__(256) __global__ void DenseF16GEMMKernel(
      const void* __restrict__ w, const __half* __restrict__ x,
      float* __restrict__ y, std::size_t batch, std::size_t m, std::size_t k,
-@@ -6424,13 +6475,17 @@
+@@ -6700,13 +6751,17 @@ __launch_bounds__(256) __global__ void DenseF16GEMMKernel(
                v[c] = v[c] * gamma[c * 32 + lane_id];
                asm volatile("" : "+v"(v[c]));
              }
@@ -702,7 +759,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
              const float lo = __fmaf_rn(v[0], cs, -__fmul_rn(v[1], sn));
              const float hi = __fmaf_rn(v[0], sn, __fmul_rn(v[1], cs));
              v[0] = lo;
-@@ -6667,19 +6722,29 @@
+@@ -6943,19 +6998,29 @@ bool AttentionF16Gemm(const void* weights, const __half* input,
                        float* gate, __half* keys, __half* values,
                        std::uint32_t n_tokens, const std::uint32_t* position,
                        float theta, float eps, hipStream_t stream,
@@ -735,7 +792,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    hipLaunchKernelGGL(
        (DenseF16GEMMKernel<256, 128, 1, 8, 1, 4, false, false, true>),
        dim3((n_tokens + 127) / 128, 52), dim3(kThreads), 0, stream, weights,
-@@ -7113,7 +7178,8 @@
+@@ -7389,7 +7454,8 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
                        std::uint32_t kv_heads, std::uint32_t d,
                        std::uint32_t rotary_dim, const std::uint32_t* start_pos,
                        float theta, float eps, hipStream_t stream,
@@ -745,7 +802,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    if (d == 0 || d > 256 || rotary_dim == 0 || rotary_dim > d ||
        rotary_dim % 2 != 0 || kv_heads == 0 ||
        stride < static_cast<std::size_t>(2) * (heads + kv_heads) * d) {
-@@ -7121,18 +7187,34 @@
+@@ -7397,18 +7463,34 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
    }
    if (n_tokens == 0)
      return true;
@@ -791,7 +848,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
    }
    return true;
  }
-@@ -7140,9 +7222,15 @@
+@@ -7416,9 +7498,15 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
  void Rope(float* x, std::uint32_t n_tokens, std::uint32_t heads,
            std::uint32_t d, std::uint32_t rotary_dim,
            const std::uint32_t* start_pos, float theta, hipStream_t stream,
@@ -810,7 +867,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
  }
  
  void StoreKv(const float* src, __half* cache, std::uint32_t n_tokens,
-@@ -7165,14 +7253,21 @@
+@@ -7441,14 +7529,21 @@ void PoolIndexerBlocks(const float* raw_keys, const float* gamma,
                         std::uint32_t grid_blocks, std::uint32_t ratio,
                         std::uint32_t dim, std::uint32_t rotary_dim, float theta,
                         float eps, std::uint32_t capacity, hipStream_t stream,
@@ -837,16 +894,35 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
  }
  
  void SelectBlocks(const float* q, const __half* blocks, std::uint32_t* mask,
-@@ -7242,11 +7337,20 @@
+@@ -7526,6 +7621,16 @@ void Attention(const float* q, const __half* k_cache, const __half* v_cache,
+   }
+ }
+ 
++std::uint32_t WmmaCausalAttentionContextLimit(std::uint32_t heads,
++                                              std::uint32_t kv_heads,
++                                              std::uint32_t d,
++                                              std::uint32_t ratio) {
++  if (heads != kWmmaQueryHeads || kv_heads != kWmmaKvHeads ||
++      d != kWmmaHeadDim || ratio != kWmmaRatio)
++    return 0;
++  return kWmmaMaxMaskWords * kWmmaRatio * 32;
++}
++
+ bool WmmaCausalAttention(const float* q, const float* gate,
+                          const __half* k_cache, const __half* v_cache,
+                          const std::uint32_t* mask, std::uint32_t mask_words,
+@@ -7534,11 +7639,20 @@ bool WmmaCausalAttention(const float* q, const float* gate,
+                          std::uint32_t kv_heads, std::uint32_t d,
                           std::uint32_t ratio, hipStream_t stream,
                           bool last_only) {
-   if (heads != kWmmaQueryHeads || kv_heads != kWmmaKvHeads ||
+-  if (heads != kWmmaQueryHeads || kv_heads != kWmmaKvHeads ||
 -      d != kWmmaHeadDim || ratio != kWmmaRatio || n_tokens == 0 ||
 -      (mask != nullptr && mask_words > kWmmaMaxMaskWords)) {
-+      d != kWmmaHeadDim || ratio != kWmmaRatio || n_tokens == 0) {
++  if (WmmaCausalAttentionContextLimit(heads, kv_heads, d, ratio) == 0 ||
++      n_tokens == 0) {
      return false;
    }
-   if (mask != nullptr) {
++  if (mask != nullptr) {
 +    // The kernel's union mask covers the LIVE visible extent; mask_words is
 +    // only the row stride and may be wider when the session capacity
 +    // exceeds 262,144 tokens.
@@ -856,13 +932,13 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hip.cpp b/src/mode
 +    if (live_words > kWmmaMaxMaskWords || live_words > mask_words)
 +      return false;
 +  }
-+  if (mask != nullptr) {
+   if (mask != nullptr) {
      constexpr std::uint32_t kPackedQueries = 4;
      const std::uint32_t first_group =
-         last_only ? (n_tokens - 1) / kPackedQueries : 0;
-diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
---- a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp	2026-10-16 23:04:42.586861114 -0500
-+++ b/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp	2026-10-16 23:04:42.594496874 -0500
+diff --git a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
+index 8cea0eaa..15489ab7 100644
+--- a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
++++ b/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp
 @@ -9,6 +9,7 @@
  
  #include "src/core/sampling.hpp"
@@ -871,7 +947,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/q
  
  /// Model-private HIP launchers for everything outside the quantized GEMM
  /// tier. Activations are row-major float32 [tokens][dim] unless noted; every
-@@ -205,12 +206,14 @@
+@@ -207,12 +208,14 @@ bool HcDownF16Gemm(const void* w, const void* x_tiled, __half* out,
  /// Fixed geometry: 24 query heads, two KV heads, 256 dimensions, 64 rotary.
  /// Requires at least 1024 tokens; cache capacity must include position +
  /// tokens.
@@ -887,7 +963,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/q
  
  /// Exact Q8_0 HC up projection and F16-input mixer for the Flash Next
  /// 2560-hidden, rank-320 geometry. Returns false below 96 tokens or for other
-@@ -404,6 +407,7 @@
+@@ -406,6 +409,7 @@ void UnpackQGate(const float* qg, std::uint32_t qg_stride, float* q,
  /// Unpacks a stacked Q/gate/K/V projection, normalizes and rotates Q/K,
  /// and writes the F16 caches. Returns false for heads wider than 256.
  /// With zero query heads, packed contains only K/V and q/gate may be null.
@@ -895,7 +971,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/q
  bool PrepareAttention(const float* packed, std::uint32_t stride,
                        const float* q_gamma, const float* k_gamma, float* q,
                        float* gate, __half* k_cache, __half* v_cache,
-@@ -412,16 +416,18 @@
+@@ -414,16 +418,18 @@ bool PrepareAttention(const float* packed, std::uint32_t stride,
                        std::uint32_t rotary_dim, const std::uint32_t* start_pos,
                        float theta, float eps, hipStream_t stream,
                        const qwen::vision::DeviceRope* rope = nullptr,
@@ -916,7 +992,7 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/q
  
  /// Stores f32 rows into the f16 cache at positions start_pos + t:
  /// cache[(start_pos + t)][row_dim].
-@@ -439,13 +445,15 @@
+@@ -441,13 +447,15 @@ void StoreRows(const float* src, float* dst, std::uint32_t n_tokens,
  /// block start position, then round once to F16 for scoring.
  /// `grid_blocks` bounds how many blocks one launch
  /// can pool (a device-side bound is not available at launch time).
@@ -933,7 +1009,19 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/q
  
  /// Per query t (position *start_pos + first_token + t): scores every
  /// complete block below its own tail, keeps the `budget` highest, and
-@@ -485,6 +493,8 @@
+@@ -481,12 +489,20 @@ void Attention(const float* q, const __half* k_cache, const __half* v_cache,
+                std::uint32_t* counts = nullptr,
+                std::uint32_t list_capacity = 0);
+ 
++/// Maximum visible sparse context for this WMMA geometry, or zero when the
++/// geometry is unsupported. Checkpoint planning uses the same dispatch limit.
++[[nodiscard]] std::uint32_t WmmaCausalAttentionContextLimit(
++    std::uint32_t heads, std::uint32_t kv_heads, std::uint32_t d,
++    std::uint32_t ratio);
++
+ /// Fused causal attention on the WMMA cores for wide batches: scores, online
+ /// softmax, PV and the sigmoid output gate in one launch. `mask` follows
+ /// Attention's block-selection contract (null for the dense window). Returns
  /// false, launching nothing, when the geometry is not the model's 24 x 256
  /// heads over two KV heads. `last_only` computes only the final dense query
  /// tile, retaining its key sweep and leaving earlier output rows untouched.
@@ -942,10 +1030,11 @@ diff -ruN a/src/models/qwen38_flash_next/kernels/rocm/kernels.hpp b/src/models/q
  bool WmmaCausalAttention(const float* q, const float* gate,
                           const __half* k_cache, const __half* v_cache,
                           const std::uint32_t* mask, std::uint32_t mask_words,
-diff -ruN a/src/models/qwen38_flash_next/reference.cpp b/src/models/qwen38_flash_next/reference.cpp
---- a/src/models/qwen38_flash_next/reference.cpp	2026-10-16 23:04:42.586584252 -0500
-+++ b/src/models/qwen38_flash_next/reference.cpp	2026-10-16 23:04:42.594594619 -0500
-@@ -16,6 +16,7 @@
+diff --git a/src/models/qwen38_flash_next/reference.cpp b/src/models/qwen38_flash_next/reference.cpp
+index 9bcf2263..b785c9bb 100644
+--- a/src/models/qwen38_flash_next/reference.cpp
++++ b/src/models/qwen38_flash_next/reference.cpp
+@@ -16,6 +16,7 @@ ReferenceModel::ReferenceModel(const ModelWeights& weights, NgramTable* ngram,
                                 std::uint32_t max_context, Storage storage)
      : w_(weights),
        c_(weights.config),
@@ -953,7 +1042,7 @@ diff -ruN a/src/models/qwen38_flash_next/reference.cpp b/src/models/qwen38_flash
        storage_(storage),
        ngram_(ngram),
        max_context_(max_context) {
-@@ -349,7 +350,8 @@
+@@ -349,7 +350,8 @@ void ReferenceModel::Attention(const LayerWeights& l, AttentionState& s,
    const auto rope = [&](float* values, std::uint32_t heads, std::uint32_t dim,
                          std::uint32_t physical) {
      if (layout == nullptr) {
@@ -963,7 +1052,7 @@ diff -ruN a/src/models/qwen38_flash_next/reference.cpp b/src/models/qwen38_flash
        return;
      }
      const auto coordinates = layout->Position(physical);
-@@ -359,12 +361,20 @@
+@@ -359,12 +361,20 @@ void ReferenceModel::Attention(const LayerWeights& l, AttentionState& s,
          const auto axis = i % 3 == 1 && i < 33   ? 1
                            : i % 3 == 2 && i < 30 ? 2
                                                   : 0;
@@ -988,10 +1077,11 @@ diff -ruN a/src/models/qwen38_flash_next/reference.cpp b/src/models/qwen38_flash
        }
      }
    };
-diff -ruN a/src/models/qwen38_flash_next/reference.hpp b/src/models/qwen38_flash_next/reference.hpp
---- a/src/models/qwen38_flash_next/reference.hpp	2026-10-16 23:04:42.586599490 -0500
-+++ b/src/models/qwen38_flash_next/reference.hpp	2026-10-16 23:04:42.594608345 -0500
-@@ -84,6 +84,7 @@
+diff --git a/src/models/qwen38_flash_next/reference.hpp b/src/models/qwen38_flash_next/reference.hpp
+index 9375597f..5422b204 100644
+--- a/src/models/qwen38_flash_next/reference.hpp
++++ b/src/models/qwen38_flash_next/reference.hpp
+@@ -84,6 +84,7 @@ private:
  
    const ModelWeights& w_;
    const Config& c_;
@@ -999,9 +1089,11 @@ diff -ruN a/src/models/qwen38_flash_next/reference.hpp b/src/models/qwen38_flash
    Storage storage_;
    NgramTable* ngram_;
    std::uint32_t max_context_;
-diff -ruN a/src/models/qwen38_flash_next/rope_scaling.cpp b/src/models/qwen38_flash_next/rope_scaling.cpp
---- a/src/models/qwen38_flash_next/rope_scaling.cpp	1969-12-31 18:00:00.000000000 -0600
-+++ b/src/models/qwen38_flash_next/rope_scaling.cpp	2026-10-16 23:04:42.594618223 -0500
+diff --git a/src/models/qwen38_flash_next/rope_scaling.cpp b/src/models/qwen38_flash_next/rope_scaling.cpp
+new file mode 100644
+index 00000000..b12f9697
+--- /dev/null
++++ b/src/models/qwen38_flash_next/rope_scaling.cpp
 @@ -0,0 +1,121 @@
 +#include "src/models/qwen38_flash_next/rope_scaling.hpp"
 +
@@ -1124,9 +1216,11 @@ diff -ruN a/src/models/qwen38_flash_next/rope_scaling.cpp b/src/models/qwen38_fl
 +}
 +
 +}  // namespace gufo::models::qwen38_flash_next
-diff -ruN a/src/models/qwen38_flash_next/rope_scaling.hpp b/src/models/qwen38_flash_next/rope_scaling.hpp
---- a/src/models/qwen38_flash_next/rope_scaling.hpp	1969-12-31 18:00:00.000000000 -0600
-+++ b/src/models/qwen38_flash_next/rope_scaling.hpp	2026-10-16 23:04:42.594628813 -0500
+diff --git a/src/models/qwen38_flash_next/rope_scaling.hpp b/src/models/qwen38_flash_next/rope_scaling.hpp
+new file mode 100644
+index 00000000..ce053c2b
+--- /dev/null
++++ b/src/models/qwen38_flash_next/rope_scaling.hpp
 @@ -0,0 +1,94 @@
 +#ifndef GUFO_MODELS_QWEN38_FLASH_NEXT_ROPE_SCALING_HPP_
 +#define GUFO_MODELS_QWEN38_FLASH_NEXT_ROPE_SCALING_HPP_
