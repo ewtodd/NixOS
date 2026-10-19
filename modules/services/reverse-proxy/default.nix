@@ -64,6 +64,16 @@ in
       virtualHosts."cache.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.4:5000
       '';
+      # birdid's review app on e-desktop (writes the owner's ID decisions), so a
+      # password in front of everything. The bcrypt hash is substituted from the
+      # agenix EnvironmentFile; this repo is public.
+      environmentFile = config.age.secrets.birds-basic-auth.path;
+      virtualHosts."birds.ethanwtodd.com".extraConfig = ''
+        basic_auth {
+          birds {$BIRDS_AUTH_HASH}
+        }
+        reverse_proxy http://10.0.0.4:8737
+      '';
       virtualHosts."cloud.ethanwtodd.com".extraConfig = ''
         reverse_proxy http://10.0.0.2:80
       '';

@@ -11,6 +11,7 @@ let
     "@"
     "admin"
     "ai"
+    "birds"
     "cache"
     "cloud"
     "docs"
