@@ -33,9 +33,6 @@ in
       desk = "ssh -t e-desktop tmux new -A -s main";
       phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh e-desktop kitty";
       files-home = "${pkgs.sshfs}/bin/sshfs e-desktop:${config.home.homeDirectory} ${config.home.homeDirectory}/remoteHome";
-    }
-    // lib.optionalAttrs (isEOwner && isLaptop && profile == "work") {
-      plots-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render --compress lz4 ssh e-desktop gthumb";
     };
   };
 

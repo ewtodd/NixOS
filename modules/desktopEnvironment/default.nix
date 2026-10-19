@@ -45,7 +45,7 @@ in
         environment.systemPackages = with pkgs; [
           xwayland-satellite
           libnotify
-          gthumb
+          pix
           nautilus
           glib
           gnome-themes-extra

@@ -266,7 +266,7 @@ in
           ];
         };
         "Mod+g" = {
-          spawn-sh = [ "${pkgs.gthumb}/bin/gthumb" ];
+          spawn-sh = [ "${pkgs.pix}/bin/pix" ];
         };
         "Mod+h" = {
           focus-column-or-monitor-left = [ ];
