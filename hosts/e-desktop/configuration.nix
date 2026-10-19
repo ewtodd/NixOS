@@ -339,10 +339,10 @@ in
           };
         };
         physics = {
-          model = "unholy/dsv4-flash";
-          coder_model = "unholy/dsv4-flash";
+          model = "auto";
+          coder_model = "auto";
           agent_models = {
-            critic = "unholy/dsv4-flash";
+            critic = "auto";
           };
           base_url = "http://${aiFront}:4002/v1";
           api_key_env = "BIFROST_SOA_VK";
@@ -482,6 +482,9 @@ in
   users.users.e-play = {
     isNormalUser = true;
     uid = 1003;
+    # Keep e-play's user manager up without a login, so the lifer review app
+    # (birds.ethanwtodd.com) survives switching to e-work or logging out.
+    linger = true;
     description = "ethan-play";
     extraGroups = [
       "nixconfig"
@@ -539,6 +542,18 @@ in
       ipv6.method = "auto";
     };
   };
+
+  # lifer's review app (e-play's user service, :8737) has no auth of its own:
+  # only Caddy on nu, which puts a password in front of birds.ethanwtodd.com,
+  # may reach it. Everything else on the LAN stays closed.
+  networking.firewall.extraCommands = ''
+    iptables -A nixos-fw -p tcp -s 10.0.0.7 --dport 8737 -j nixos-fw-accept
+  '';
+  # lifer's home-manager module runs `pkgs.lifer`; home-manager uses the
+  # system pkgs (useGlobalPkgs), so provide it here.
+  nixpkgs.overlays = [
+    (_: _: { lifer = inputs.lifer.packages.${pkgs.stdenv.hostPlatform.system}.default; })
+  ];
 
   time.timeZone = "America/Chicago";
   networking.hostName = "e-desktop";

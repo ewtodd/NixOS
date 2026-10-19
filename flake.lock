@@ -676,6 +676,29 @@
         "type": "github"
       }
     },
+    "lifer": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792382585,
+        "narHash": "sha256-Lprqz84psNX7Qo0ts4TqPc8bu5Z3BFsqYVSTj8OZI3A=",
+        "owner": "ewtodd",
+        "repo": "lifer",
+        "rev": "b7462ff54d2d764573a1c10050dd7b5f6e076095",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "lifer",
+        "type": "github"
+      }
+    },
     "lisepp": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -1170,6 +1193,7 @@
         "dms-plugin-registry": "dms-plugin-registry",
         "gufo": "gufo",
         "home-manager": "home-manager",
+        "lifer": "lifer",
         "lisepp": "lisepp",
         "llama-cpp": "llama-cpp",
         "llm-agents": "llm-agents",
