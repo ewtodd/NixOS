@@ -482,9 +482,6 @@ in
   users.users.e-play = {
     isNormalUser = true;
     uid = 1003;
-    # Keep e-play's user manager up without a login, so the lifer review app
-    # (birds.ethanwtodd.com) survives switching to e-work or logging out.
-    linger = true;
     description = "ethan-play";
     extraGroups = [
       "nixconfig"
