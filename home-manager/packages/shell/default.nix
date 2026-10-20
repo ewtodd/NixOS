@@ -29,8 +29,6 @@ in
       vpn = "sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup=\"UMVPN-Only U-M Traffic alt\" umvpn.umnet.umich.edu";
     }
     // lib.optionalAttrs (isEOwner && isLaptop) {
-      # Attach to (or create) the persistent tmux session on the desktop.
-      desk = "ssh -t e-desktop tmux new -A -s main";
       phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh e-desktop kitty";
       files-home = "${pkgs.sshfs}/bin/sshfs e-desktop:${config.home.homeDirectory} ${config.home.homeDirectory}/remoteHome";
     };
@@ -190,21 +188,4 @@ in
   programs.bash.bashrcExtra = ''
     export STARSHIP_LOG=error
   '';
-
-  # Long-running work (agents, builds) lives in tmux so it survives ssh drops;
-  # e-play lingers, so sessions also outlive logging out.
-  programs.tmux = {
-    enable = true;
-    mouse = true;
-    clock24 = true;
-    baseIndex = 1;
-    escapeTime = 10;
-    historyLimit = 50000;
-    terminal = "tmux-256color";
-    extraConfig = ''
-      set -as terminal-features ",*:RGB"
-      set -g set-clipboard on
-      set -g renumber-windows on
-    '';
-  };
 }
