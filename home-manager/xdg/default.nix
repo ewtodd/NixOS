@@ -50,15 +50,15 @@ in
 
       "application/pdf" = "org.pwmt.zathura.desktop";
 
-      "image/jpeg" = "org.gnome.gThumb.desktop";
-      "image/jpg" = "org.gnome.gThumb.desktop";
-      "image/png" = "org.gnome.gThumb.desktop";
-      "image/gif" = "org.gnome.gThumb.desktop";
-      "image/webp" = "org.gnome.gThumb.desktop";
-      "image/bmp" = "org.gnome.gThumb.desktop";
-      "image/tiff" = "org.gnome.gThumb.desktop";
-      "image/svg+xml" = "org.gnome.gThumb.desktop";
-      "image/avif" = "org.gnome.gThumb.desktop";
+      "image/jpeg" = "pix.desktop";
+      "image/jpg" = "pix.desktop";
+      "image/png" = "pix.desktop";
+      "image/gif" = "pix.desktop";
+      "image/webp" = "pix.desktop";
+      "image/bmp" = "pix.desktop";
+      "image/tiff" = "pix.desktop";
+      "image/svg+xml" = "pix.desktop";
+      "image/avif" = "pix.desktop";
 
       "video/mp4" = "mpv.desktop";
       "video/x-matroska" = "mpv.desktop";

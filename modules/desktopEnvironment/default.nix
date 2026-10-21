@@ -47,6 +47,7 @@ in
           libnotify
           pix
           nautilus
+          file-roller
           glib
           gnome-themes-extra
         ];
