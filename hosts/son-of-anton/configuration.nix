@@ -48,20 +48,19 @@ in
       ropeScaling = "yarn:1.34375";
       maxNumSeqs = 8;
       kvCacheDtype = "bf16";
+      prefixCacheMib = 0;
+      checkpointSlots = 8;
     };
     services.gufoStrix = {
       enable = true;
       lanExpose = true;
       model = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
-      overlays = [
-        "/scratch/models/gufo/qwen3.8-flash-next/q5-down-overlay.gguf"
-        "/scratch/models/gufo/qwen3.8-flash-next/ngram-bf16-overlay.gguf"
-      ];
       mtpModel = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
       draftTokens = 5;
       mmproj = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
       sessions = 2;
       context = 262144;
+      yarn = false;
       diskCacheDir = "/scratch/gufo-cache";
       diskCacheBytes = 64 * 1024 * 1024 * 1024;
       logProgress = true;

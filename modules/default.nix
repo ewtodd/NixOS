@@ -605,16 +605,6 @@ with lib;
             box makes it far too small (fewer parked sessions, ~30% less throughput above `sessions` requests).
           '';
         };
-        overlays = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          example = [ "/scratch/models/gufo/qwen3.8-flash-next/ngram-bf16-overlay.gguf" ];
-          description = ''
-            GGUFs whose tensors replace the model's same-named ones (GUFO_GGUF_OVERLAY, from the
-            module's overlay patch), applied in order: e.g. the n-gram table at full BF16 precision,
-            or higher-precision expert tensors, without rewriting the model files.
-          '';
-        };
         alias = mkOption {
           type = types.str;
           default = "qwen3.8-flash-next";
@@ -638,19 +628,22 @@ with lib;
           default = 262144;
           description = ''
             Context tokens per session (--context). Flash-Next's native
-            context is 262144; with the YaRN patch (gufo PR #350) applied by
-            the gufo-strix module, any value above it turns on static YaRN
-            with factor = context / 262144. State grows about 27.5 KiB per
-            context token per MTP session, so plan against the 128 GiB
-            unified memory together with {option}`sessions`.
+            context is 262144; above it the module passes gufo's
+            --enable-yarn flag (gufo PR #350, now upstream), which applies
+            static YaRN with factor = context / 262144 to every request,
+            including short ones. The engine refuses to start above the
+            native context without it, and rejects it at or below. State
+            grows about 27.5 KiB per context token per MTP session, so plan
+            against the 128 GiB unified memory together
+            with {option}`sessions`.
           '';
         };
         yarn = mkOption {
           type = types.nullOr types.bool;
           default = null;
           description = ''
-            Expect static YaRN rope scaling (gufo PR #350) to be active.
-            Null accepts whatever the engine derives from
+            Expect static YaRN rope scaling (gufo's --enable-yarn, PR #350,
+            now upstream) to be active. Null accepts whatever follows from
             {option}`context` (on exactly above the native 262144);
             true or false additionally fails evaluation when
             {option}`context` disagrees, catching an unintended silent
@@ -676,6 +669,21 @@ with lib;
             keeps the engine's 8 GiB default, which is smaller than one
             full snapshot at extended contexts (~27.5 KiB per context
             token per session: ~14 GiB at 524288).
+          '';
+        };
+        cacheRamBytes = mkOption {
+          type = types.nullOr types.ints.unsigned;
+          default = null;
+          example = 1;
+          description = ''
+            Retained RAM snapshot byte budget (--cache-ram-bytes). Null
+            keeps the engine's automatic budget: half the free RAM at
+            startup, at most 32 GiB, which it reserves on top of the
+            session preallocation. 0 also means automatic, not off; a tiny
+            explicit value is the off switch -- snapshots above the budget
+            are written straight to the disk cache instead of being held
+            in RAM, so with diskCacheDir set it buys unified-RAM headroom
+            at the cost of a disk re-read per restore.
           '';
         };
         logProgress = mkEnableOption "per-request progress lines including MTP draft_accepted/draft_proposed/acceptance_percentage (--log-progress; needs log level info or above)";
@@ -784,10 +792,31 @@ with lib;
           example = "yarn:1.34375";
           description = "Static YaRN over the container's rotary embedding (--rope-scaling yarn:FACTOR[:ORIG]).";
         };
-        prefixCacheDir = mkOption {
-          type = types.nullOr types.str;
+        prefixCacheMib = mkOption {
+          type = types.nullOr types.ints.unsigned;
           default = null;
-          description = "Restart-safe prefix cache on disk (--prefix-cache-dir). Null keeps it in memory only.";
+          description = ''
+            Host-RAM prefix tier (--prefix-cache-mib): finished
+            conversations' KV copied out of VRAM to pinned host memory, so
+            their VRAM goes to the experts and a return restores instead of
+            re-prefilling. 0 is off and is radiance 1.4.0's default; null
+            leaves the engine default alone. There is no disk tier in the
+            locked radiance (see radiance-nix), so RAM is the only place
+            finished KV can live.
+          '';
+        };
+        checkpointSlots = mkOption {
+          type = types.nullOr types.ints.unsigned;
+          default = null;
+          description = ''
+            Linear-state snapshots held in pinned host memory
+            (--checkpoint-slots). Null keeps `auto`: what the checkpoint
+            policy keeps for a max-model-len session plus one per
+            max-num-seqs, capped at an eighth of host memory. At 352256
+            context that can pin many GiB on top of everything else; 0
+            keeps none (a prefix hit then replays the hybrid's linear
+            layers from zero), N fixes the total.
+          '';
         };
         devices = mkOption {
           type = types.str;

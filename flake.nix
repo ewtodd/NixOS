@@ -36,7 +36,6 @@
       url = "github:AvengeMedia/danksearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Bird photo ID + lifelist review app (e-play's user service on e-desktop).
     lifer = {
       url = "github:ewtodd/lifer";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -77,6 +76,7 @@
     };
     gufo = {
       url = "github:gufo-org/gufo";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     maitred = {
       url = "github:ewtodd/maitred";

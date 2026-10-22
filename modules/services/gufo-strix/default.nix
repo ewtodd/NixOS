@@ -9,22 +9,14 @@
 let
   cfg = config.systemOptions.services.gufoStrix;
 
-  gufo = inputs.gufo.packages.${pkgs.system}.default.overrideAttrs (
-    _: oldAttrs: {
-      # YaRN above the native 262144 (gufo PR #350), and GUFO_GGUF_OVERLAY (cfg.overlays): tensors
-      # replaced by name from extra GGUFs, e.g. the full-precision n-gram table.
-      patches = (oldAttrs.patches or [ ]) ++ [
-        ./gufo-pr350-yarn.diff
-        ./gufo-gguf-overlay.diff
-      ];
-    }
-  );
+  # Upstream's package as is: the toolchain gufo qualifies (GCC 15.3, ROCm
+  # 7.2.3) with its patched ROCr, which keeps queue memory resident during
+  # host memory compaction on Strix Halo.
+  gufo = inputs.gufo.packages.${pkgs.system}.default;
 
   nativeContext = 262144;
 
   radianceCfg = config.systemOptions.services.radiance;
-  # The R9700 server sharing this host: gufo sizes its RAM snapshot budget from what is free when it
-  # starts, and a server that starts later is not in that budget (gufo #556), so gufo waits for it.
   cardServer =
     if radianceCfg.enable then
       {
@@ -50,11 +42,6 @@ let
     done
   '';
 
-  # Freed GPU pages stay in the TTM page pool (ttm.page_pool_size is all of RAM on son-of-anton) and are not counted
-  # in MemAvailable, so after unholy or another big GPU process has run, RAM reads ~10 GB available with nothing
-  # loaded. gufo sizes its RAM snapshot cache from MemAvailable (half of it, explicit values capped at it minus
-  # 4 GiB) and gets 2.7-3.7 GB instead of ~7: Flash-Next then serves 4 requests on 2 sessions at ~41 tok/s instead
-  # of ~60. Dropping caches runs the pool's shrinker and returns those pages before gufo measures.
   releasePagePool = pkgs.writeShellScript "gufo-strix-release-page-pool" ''
     ${pkgs.coreutils}/bin/sync
     echo 3 > /proc/sys/vm/drop_caches
@@ -70,6 +57,7 @@ let
     "--context ${toString cfg.context}"
     "--served-model-name ${cfg.alias}"
   ]
+  ++ lib.optionals (cfg.context > nativeContext) [ "--enable-yarn" ]
   ++ lib.optionals (cfg.think != null) [ "--think ${cfg.think}" ]
   ++ lib.optionals (cfg.mtpModel != null) [
     "--speculative mtp"
@@ -83,6 +71,9 @@ let
       "--cache-disk-bytes ${toString cfg.diskCacheBytes}"
     ]
   )
+  ++ lib.optionals (cfg.cacheRamBytes != null) [
+    "--cache-ram-bytes ${toString cfg.cacheRamBytes}"
+  ]
   ++ lib.optionals cfg.logProgress [ "--log-progress" ]
   ++ lib.optionals (cfg.logLevel != null) [ "--log-level ${cfg.logLevel}" ]
   ++ cfg.extraFlags;
@@ -117,9 +108,6 @@ in
 
       environment = {
         HIP_VISIBLE_DEVICES = cfg.devices;
-      }
-      // lib.optionalAttrs (cfg.overlays != [ ]) {
-        GUFO_GGUF_OVERLAY = lib.concatStringsSep ":" cfg.overlays;
       }
       // cfg.extraEnv;
 

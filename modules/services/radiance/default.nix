@@ -30,16 +30,17 @@ let
     "--max-num-batched-tokens ${toString cfg.maxNumBatchedTokens}"
   ]
   ++ lib.optionals (cfg.ropeScaling != null) [ "--rope-scaling ${cfg.ropeScaling}" ]
-  ++ lib.optionals (cfg.prefixCacheDir != null) [ "--prefix-cache-dir ${cfg.prefixCacheDir}" ]
+  ++ lib.optionals (cfg.prefixCacheMib != null) [
+    "--prefix-cache-mib ${toString cfg.prefixCacheMib}"
+  ]
+  ++ lib.optionals (cfg.checkpointSlots != null) [
+    "--checkpoint-slots ${toString cfg.checkpointSlots}"
+  ]
   ++ cfg.extraFlags;
 in
 {
   config = lib.mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose [ cfg.port ];
-
-    systemd.tmpfiles.rules = lib.optionals (cfg.prefixCacheDir != null) [
-      "d ${cfg.prefixCacheDir} 0700 ${cfg.user} users - -"
-    ];
 
     systemd.services.radiance = {
       description = "Radiance inference server (${cfg.servedModelName})";
