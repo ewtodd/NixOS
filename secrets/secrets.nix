@@ -31,7 +31,6 @@ in
   "bastion-initrd-unlock-key.age".publicKeys = personal ++ [ mu ];
   "nextcloud-admin-password.age".publicKeys = personal ++ [ mu ];
   "grafana-admin-password.age".publicKeys = personal ++ [ nu ];
-  "birds-basic-auth.age".publicKeys = personal ++ [ nu ];
   "grafana-secret-key.age".publicKeys = personal ++ [ nu ];
   "searxng-secret-key.age".publicKeys = personal ++ [
     server-son-of-anton

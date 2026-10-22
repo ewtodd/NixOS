@@ -70,14 +70,6 @@
         mode = "0400";
       };
     })
-    (lib.mkIf config.systemOptions.services.reverseProxy.enable {
-      # BIRDS_AUTH_HASH='<bcrypt>' for the birds.ethanwtodd.com basic_auth. Caddy's
-      # EnvironmentFile, read by systemd as root before the service drops privileges.
-      birds-basic-auth = {
-        file = ../../secrets/birds-basic-auth.age;
-        mode = "0400";
-      };
-    })
     (lib.mkIf config.systemOptions.services.searxng.enable {
       # Read by the searx service (runs as user `searx`) as an EnvironmentFile;
       # provides $SEARX_SECRET_KEY referenced from settings.server.secret_key.

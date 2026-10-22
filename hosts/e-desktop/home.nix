@@ -14,11 +14,10 @@
         ../../home-manager/profiles/play.nix
         inputs.lifer.homeManagerModules.${system}.default
       ];
-      # Listens on all interfaces, but the host firewall admits only nu (Caddy,
-      # birds.ethanwtodd.com with basic_auth); see configuration.nix.
+      # Local-only: the module's default host is 127.0.0.1, so nothing outside
+      # this machine can reach the review app.
       services.lifer = {
         enable = true;
-        host = "0.0.0.0";
       };
       scheme = "${pkgs.base16-schemes}/share/themes/isotope.yaml";
     };

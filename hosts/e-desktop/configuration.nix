@@ -540,12 +540,8 @@ in
     };
   };
 
-  # lifer's review app (e-play's user service, :8737) has no auth of its own:
-  # only Caddy on nu, which puts a password in front of birds.ethanwtodd.com,
-  # may reach it. Everything else on the LAN stays closed.
-  networking.firewall.extraCommands = ''
-    iptables -A nixos-fw -p tcp -s 10.0.0.7 --dport 8737 -j nixos-fw-accept
-  '';
+  # lifer's review app (e-play's user service) binds 127.0.0.1:8737 only, so no
+  # firewall opening is needed.
   # lifer's home-manager module runs `pkgs.lifer`; home-manager uses the
   # system pkgs (useGlobalPkgs), so provide it here.
   nixpkgs.overlays = [
