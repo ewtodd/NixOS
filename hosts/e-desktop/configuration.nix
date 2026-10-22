@@ -482,6 +482,9 @@ in
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
+    keep-going = true;
+    keep-outputs = true;
+    log-lines = 200;
   };
 
   users.users.e-play = {

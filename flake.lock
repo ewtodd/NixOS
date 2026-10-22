@@ -688,11 +688,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792642347,
-        "narHash": "sha256-BZdhVX5fxfYPWhRZ1BW4iP9llr08wbDKRwzGcAqCwxs=",
+        "lastModified": 1792697321,
+        "narHash": "sha256-NTbTrxBwGc/Q79wHSC+hc07iubZrKPOvUhvB0Y39vTU=",
         "owner": "ewtodd",
         "repo": "lifer",
-        "rev": "60c2025947419438f011db4831fc906fa952854f",
+        "rev": "56805259596f77598d25edc9e7ac1faf0cda7acc",
         "type": "github"
       },
       "original": {
@@ -1608,11 +1608,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792644019,
-        "narHash": "sha256-sDJAKmqYLc+eFuHlEXd+ZdFiJJJsYDLbyMvqQg3dMis=",
+        "lastModified": 1792697878,
+        "narHash": "sha256-W6bMaV4Yg9/DtJyHIhJENo5pmve1rs47bbesuqtple8=",
         "owner": "ewtodd",
         "repo": "website",
-        "rev": "b75089c6fc4a059bf96d1ff6befb3d9a99e170f3",
+        "rev": "5f9a79d4f11dd8da5f0fa7466fce377d8ebd8034",
         "type": "github"
       },
       "original": {
