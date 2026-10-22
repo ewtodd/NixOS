@@ -66,11 +66,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1790097080,
-        "narHash": "sha256-LIKh44WEGXSAWJuCGFu7vv/fuaAUYX8NA0g57v3cEeg=",
+        "lastModified": 1792428520,
+        "narHash": "sha256-TTOhgQj/p1svxOsWnn3K2nGkdIm7ZKWGa0hmUINDDIg=",
         "owner": "ewtodd",
         "repo": "Analysis-Utilities",
-        "rev": "a12a85b77b7864b0e047b0a425f9e4e3ccb068e4",
+        "rev": "781932dff122e03ed5cc987a226cc95988253dcb",
         "type": "github"
       },
       "original": {
@@ -214,11 +214,11 @@
     "curriculum-vitae": {
       "flake": false,
       "locked": {
-        "lastModified": 1792099068,
-        "narHash": "sha256-AvLWV+2lAh4ohdPtNb7OFuIW2TG8Sii4n62lJ/hYI18=",
+        "lastModified": 1792612037,
+        "narHash": "sha256-D6fK6qttAGSm4PdxDmFZ8sWm32/aTFM5C5JyntytNvY=",
         "owner": "ewtodd",
         "repo": "Curriculum-Vitae",
-        "rev": "62d89b2c0837642fa3bca292926923b41111323c",
+        "rev": "8f9291905ffad5d96799249ecc47e13d93abf23a",
         "type": "github"
       },
       "original": {
@@ -686,11 +686,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792451808,
-        "narHash": "sha256-KSVfE3uLnIZjC32LvsVlj/Ag4jVxdQhcOSNGojLTrRk=",
+        "lastModified": 1792642347,
+        "narHash": "sha256-BZdhVX5fxfYPWhRZ1BW4iP9llr08wbDKRwzGcAqCwxs=",
         "owner": "ewtodd",
         "repo": "lifer",
-        "rev": "2adb1eca3ebae15b53fa663c672b7b5a70be02ca",
+        "rev": "60c2025947419438f011db4831fc906fa952854f",
         "type": "github"
       },
       "original": {
@@ -792,11 +792,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1791480142,
-        "narHash": "sha256-3a4H8BHN0DctNpPHzZJ+HX3gHmOev8WeL8c41QdaODo=",
+        "lastModified": 1792174010,
+        "narHash": "sha256-5rf/W/kPHIaYa/IJzlnCe8dL39cByUT7E4rjPtSMEh0=",
         "owner": "ewtodd",
         "repo": "MUSIC",
-        "rev": "498a417d3ea18606ca12913fa4b62394428cfcd1",
+        "rev": "c3f65c1267ad72a008f4b6c379a763314546979e",
         "type": "github"
       },
       "original": {
@@ -1225,11 +1225,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1792382609,
-        "narHash": "sha256-4LBrTNQn7pwurPvtwlLWkIw4r388tkeJrxl8upI7W0A=",
+        "lastModified": 1792634012,
+        "narHash": "sha256-RFJ4DLNsf6yjC+RvHgFhPTNmsXtDV1uPRsgaB3CigRQ=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "44c334bd4158ab9e0a788b6cefddeb76fdbe779a",
+        "rev": "a304cec0c4818ac579bf9b1b258f50185c4a287c",
         "type": "github"
       },
       "original": {
@@ -1622,11 +1622,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792099272,
-        "narHash": "sha256-EjDTBKo9JdxrTobN3vS8YZNS5JSCc1qIm1zENAr8p4A=",
+        "lastModified": 1792644019,
+        "narHash": "sha256-sDJAKmqYLc+eFuHlEXd+ZdFiJJJsYDLbyMvqQg3dMis=",
         "owner": "ewtodd",
         "repo": "website",
-        "rev": "5f5891170c2a933903419c335c3330e64f613d7d",
+        "rev": "b75089c6fc4a059bf96d1ff6befb3d9a99e170f3",
         "type": "github"
       },
       "original": {

@@ -271,6 +271,11 @@ in
           default = "auto";
           reasoning_effort = "high";
           provider = "custom";
+          # Every model on the maitred backend is vision-capable, so attach
+          # user images natively (image_url parts on the turn) instead of
+          # pre-running vision_analyze and handing the model a lossy text
+          # summary. auto image_input_mode reads this key.
+          supports_vision = true;
         };
         cron = {
           model_drift_guard = false;
