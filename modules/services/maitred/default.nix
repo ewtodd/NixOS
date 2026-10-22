@@ -102,7 +102,7 @@ let
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
     # template has none/low/medium/xhigh). The Qwen pair alias high to xhigh, their default, so "high" means
     # each model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier:
-    # DeepSeek-V4-Flash above the Qwen pair, which share one tier while it is unsettled which is stronger.
+    # DeepSeek-V4-Flash, then Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -155,7 +155,7 @@ let
         ];
         default_reasoning_effort = "xhigh";
         effort_aliases.high = "xhigh";
-        tier = 2;
+        tier = 1;
       }
       {
         id = "llama/little-titles";

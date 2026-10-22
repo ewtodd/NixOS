@@ -110,23 +110,23 @@ in
     settings = {
       experimental.openTelemetry = false;
       enabled_providers = [
-        "bifrost"
+        "maitred"
         "deepseek"
       ];
 
-      model = "bifrost/dsv4-flash";
+      model = "maitred/auto";
       # Full id: the bare name "little-titles" is ambiguous in maitred (little-titles-json
       # serves the same upstream model) and resolves to a 404, which drops titles silently.
-      small_model = "bifrost/llama/little-titles";
+      small_model = "maitred/llama/little-titles";
       default_agent = "build";
 
       agent = {
         compaction = {
-          model = "deepseek/deepseek-flash";
+          model = "maitred/auto";
         };
         build = {
           variant = "low";
-          description = "Coding agent; the default. DeepSeek-V4-Flash, low thinking.";
+          description = "Coding agent; the default. maitred's pick for the loaded mode, low thinking.";
           prompt = ''
             You are a coding agent in a terminal. Work tasks through end to end:
             inspect the code, edit files, run commands, verify. Use the questions tool if you need more 
@@ -134,7 +134,7 @@ in
           '';
         };
         plan = {
-          model = "bifrost/dsv4-flash";
+          model = "maitred/dsv4-flash";
           variant = "max";
           description = "Plans and designs before acting. DeepSeek-V4-Flash, maximum thinking.";
           permission = {
@@ -150,7 +150,7 @@ in
           '';
         };
         execute = {
-          model = "bifrost/dsv4-flash";
+          model = "maitred/dsv4-flash";
           variant = "low";
           description = "Executes a plan or task. DeepSeek-V4-Flash, low thinking.";
           prompt = ''
@@ -163,7 +163,7 @@ in
           '';
         };
         explore = {
-          model = "bifrost/dsv4-flash";
+          model = "maitred/dsv4-flash";
           variant = "low";
           description = "Finds and reads code. Low-think DeepSeek-V4-Flash; returns file:line evidence.";
           permission = {
@@ -177,7 +177,7 @@ in
           '';
         };
         general = {
-          model = "bifrost/dsv4-flash";
+          model = "maitred/dsv4-flash";
           variant = "high";
           description = "Runs self-contained multi-step tasks and returns a final report (DeepSeek-V4-Flash).";
           prompt = ''
@@ -187,7 +187,7 @@ in
           '';
         };
         reviewer = {
-          model = "bifrost/dsv4-flash";
+          model = "maitred/dsv4-flash";
           variant = "max";
           description = "Reviews diffs and code for problems, fixes what it finds. DeepSeek-V4-Flash, maximum thinking.";
           prompt = ''
@@ -205,7 +205,7 @@ in
             current repository, write an accurate commit message matching the existing style, and then 
             stage+commit them. Commit using your account: 
             son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>'';
-          model = "bifrost/dsv4-flash";
+          model = "maitred/dsv4-flash";
           variant = "low";
         };
       };
@@ -221,7 +221,7 @@ in
         };
       };
       provider = {
-        bifrost = {
+        maitred = {
           npm = "@ai-sdk/openai-compatible";
           name = "maitred";
           options = {
@@ -232,6 +232,38 @@ in
             "llama/little-titles" = {
               name = "Little Titles (do not select!)";
               tool_call = false;
+            };
+
+            # maitred's routed id: the strongest model the loaded llm-mode serves, so it answers in either mode.
+            # Each effort is translated for the model it lands on (max is xhigh on the Qwen pair). Window and
+            # output are the 27B's, the smaller mode's, so compaction runs before a qwen-mode session outgrows it.
+            "auto" = {
+              name = "Auto (maitred)";
+              variants = {
+                max = {
+                  reasoningEffort = "max";
+                };
+                high = {
+                  reasoningEffort = "high";
+                };
+                low = {
+                  reasoningEffort = "low";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 352256;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
             };
 
             # unholy on son-of-anton (native precision, 512k context). DSV4 efforts: none (chat mode), low,
