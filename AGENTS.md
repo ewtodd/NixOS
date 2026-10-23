@@ -38,7 +38,7 @@ README.md covers layout, hosts, `systemOptions`, and Colmena deployment.
   Some older commits cram everything into one long
   subject line; don't copy them.
 - Agent commits: `--author="son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>"`.
-  Don't change the repo's git config.
+  Don't change the repo's git config. Do not add co-authored trailers.
 <!---->
 ## Son of Anton instances (e-desktop)
 - Settings live in `hosts/e-desktop/configuration.nix` under
