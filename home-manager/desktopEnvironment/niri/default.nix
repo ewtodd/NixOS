@@ -15,7 +15,7 @@ let
       "laptop";
   radius = "10";
   open-nix-docs = pkgs.writeShellScript "open-nix-docs-firefox" ''
-    ${config.programs.firefox.finalPackage}/bin/firefox --new-window \
+    ${config.programs.firefox.finalPackage}/bin/firefox-esr --new-window \
       -url https://search.nixos.org/packages \
       -new-tab -url https://search.nixos.org/options? \
       -new-tab -url https://home-manager-options.extranix.com/ \
@@ -31,9 +31,9 @@ let
     setsid ${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render --compress lz4 ssh e-desktop kitty
   '';
 
-  open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";
-  open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox";
-  open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
+  open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox-esr --private-window \ https://monkeytype.com";
+  open-browser-window = "${config.programs.firefox.finalPackage}/bin/firefox-esr";
+  open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox-esr --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
   homeDir = config.home.homeDirectory;
