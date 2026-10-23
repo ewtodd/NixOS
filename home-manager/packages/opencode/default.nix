@@ -6,9 +6,9 @@
 }:
 let
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
-    if [ -r /run/agenix/bifrost-keys ]; then
+    if [ -r /run/agenix/maitred-keys ]; then
       set -a
-      . /run/agenix/bifrost-keys
+      . /run/agenix/maitred-keys
       set +a
     fi
     exec ${lib.getExe inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.opencode} "$@"
@@ -226,7 +226,7 @@ in
           name = "maitred";
           options = {
             baseURL = "https://llm.ethanwtodd.com/v1";
-            apiKey = "{env:BIFROST_OPENCODE_VK}";
+            apiKey = "{env:MAITRED_KEY_OPENCODE}";
           };
           models = {
             "llama/little-titles" = {
@@ -370,13 +370,13 @@ in
         };
         # Web search through the gateway's aggregate endpoint. The opencode
         # key's MCP grant (maitred module) narrows /mcp to the mcp-searxng
-        # tools, so the other MCP servers stay invisible. BIFROST_OPENCODE_VK
+        # tools, so the other MCP servers stay invisible. MAITRED_KEY_OPENCODE
         # comes from the opencode wrapper's secret.
         searxng = {
           type = "remote";
           url = "https://llm.ethanwtodd.com/mcp";
           headers = {
-            Authorization = "Bearer {env:BIFROST_OPENCODE_VK}";
+            Authorization = "Bearer {env:MAITRED_KEY_OPENCODE}";
           };
           enabled = true;
         };

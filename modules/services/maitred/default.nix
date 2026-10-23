@@ -6,8 +6,8 @@
   ...
 }:
 
-# maitred (github.com/ewtodd/maitred, ~/Software/maitred): the house's AI front on :4002, in Bifrost's place
-# with its virtual keys (bifrost-keys), model ids and MCP tool names. /v1 lists every model with its context
+# maitred (github.com/ewtodd/maitred, ~/Software/maitred): the house's AI front on :4002, keeping Bifrost's
+# model ids and MCP tool names. /v1 lists every model with its context
 # window, reasoning efforts and live status, and answers a request for a model whose son-of-anton mode is not
 # loaded with what to use instead; /mcp aggregates the stdio MCP servers below, per key. The service itself is
 # maitred's own NixOS module; this writes its settings.
@@ -216,22 +216,33 @@ let
         default_reasoning_effort = "max";
       }
     ];
-    # The virtual keys from Bifrost's days, unchanged (bifrost-keys).
     keys = [
       {
         name = "opencode";
-        env = "BIFROST_OPENCODE_VK";
+        env = "MAITRED_KEY_OPENCODE";
         # opencode's web search (its nixos MCP runs locally).
         mcp.searxng = [ "*" ];
       }
       {
         name = "open-webui";
-        env = "BIFROST_OPENWEBUI_VK";
+        env = "MAITRED_KEY_OPENWEBUI";
       }
       {
         name = "son-of-anton";
-        env = "BIFROST_SOA_VK";
+        env = "MAITRED_KEY_SOA";
         mcp = soaMcpTools;
+      }
+      {
+        # The Knoll bench pipeline feeds these models private session data, so the list is LAN-served
+        # models only: deepseek/* is DeepSeek's hosted API, and auto is left out so every call pins its model.
+        name = "knoll";
+        env = "MAITRED_KEY_KNOLL";
+        models = [
+          "unholy/dsv4-flash"
+          "radiance/qwen3.8-27b"
+          "gufo/qwen3.8-flash-next"
+          "embed/bge-m3"
+        ];
       }
     ];
     # The stdio MCP servers behind /mcp; a tool t of server s is offered as s-t.
@@ -262,7 +273,6 @@ in
       enable = true;
       inherit settings;
       inherit (cfg) openFirewall;
-      # Virtual keys (bifrost-keys) and the DeepSeek key (bifrost-env; its other variables were Bifrost's).
       inherit (cfg) environmentFiles;
     };
   };

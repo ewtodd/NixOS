@@ -38,13 +38,13 @@ in
     };
 
     # The AI front, moved here from oracle (systemOptions.aiFrontAddress points the clients and nu's
-    # reverse proxy at this host): maitred (/v1 and /mcp on :4002, with Bifrost's keys and model ids),
+    # reverse proxy at this host): maitred (/v1 and /mcp on :4002),
     # Open WebUI, SearXNG, and llama.cpp serving the title model (CPU) and the RAG embeddings (iGPU).
     services.maitred = {
       enable = true;
       environmentFiles = [
-        config.age.secrets.bifrost-env.path
-        config.age.secrets.bifrost-keys.path
+        config.age.secrets.maitred-env.path
+        config.age.secrets.maitred-keys.path
       ];
     };
     services.searxng = {

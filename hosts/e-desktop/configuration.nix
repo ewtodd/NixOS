@@ -137,7 +137,7 @@ in
       enable = true;
       environmentFiles = [
         config.age.secrets.son-of-anton-env.path
-        config.age.secrets.bifrost-keys.path
+        config.age.secrets.maitred-keys.path
       ];
       environment = {
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
@@ -291,12 +291,12 @@ in
           enabled = true;
           base_url = "http://${aiFront}:4002/v1";
           model = "bge-m3";
-          api_key_env = "BIFROST_SOA_VK";
+          api_key_env = "MAITRED_KEY_SOA";
           top_k = 5;
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
-          key_env = "BIFROST_SOA_VK";
+          key_env = "MAITRED_KEY_SOA";
           # /model lists maitred's live /v1/models catalog (context windows and effort
           # vocabularies come from the same response); the models below are per-model
           # metadata only and no longer pin the picker.
@@ -350,7 +350,7 @@ in
             critic = "auto";
           };
           base_url = "http://${aiFront}:4002/v1";
-          api_key_env = "BIFROST_SOA_VK";
+          api_key_env = "MAITRED_KEY_SOA";
           python = "${soaPhysicsPython}/bin/python3";
           sandbox = "bwrap";
           script_timeout = 900;
@@ -374,7 +374,7 @@ in
         web.backend = "searxng";
         mcp_servers.maitred = {
           url = "http://${aiFront}:4002/mcp";
-          headers.Authorization = "Bearer \${BIFROST_SOA_VK}";
+          headers.Authorization = "Bearer \${MAITRED_KEY_SOA}";
           enabled = true;
         };
         auxiliary = {
@@ -382,7 +382,7 @@ in
             provider = "custom";
             model = "llama/little-titles";
             base_url = "http://${aiFront}:4002/v1";
-            key_env = "BIFROST_SOA_VK";
+            key_env = "MAITRED_KEY_SOA";
             prompt_style = "chat";
           };
           compaction = {
@@ -392,7 +392,7 @@ in
             # conversation (DS4's 512k whenever it is loaded).
             model = "auto";
             base_url = "http://${aiFront}:4002/v1";
-            key_env = "BIFROST_SOA_VK";
+            key_env = "MAITRED_KEY_SOA";
             reasoning_effort = "none"; # extraction, not reasoning
             timeout = 300; # local model over a large prompt; 120s default is tight
           };

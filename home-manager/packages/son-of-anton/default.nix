@@ -13,7 +13,7 @@ let
   # Laptops are off-LAN, so both routes go through the Caddy front on nu
   # to maitred; /v1 bypasses anubis and is key-protected by maitred.
   gatewayBase = "https://llm.ethanwtodd.com/v1";
-  gatewayKeyEnv = "BIFROST_SOA_VK";
+  gatewayKeyEnv = "MAITRED_KEY_SOA";
   gatewayModels = {
     # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
     "dsv4-flash" = {
@@ -36,7 +36,7 @@ in
       installPackage = true;
       # Activation merges this into $SON_OF_ANTON_HOME/.env, tolerating the
       # file being absent; no gateway needs the key exported system-wide.
-      environmentFiles = [ "/run/agenix/bifrost-keys" ];
+      environmentFiles = [ "/run/agenix/maitred-keys" ];
       settings = {
         model = {
           default = "dsv4-flash";

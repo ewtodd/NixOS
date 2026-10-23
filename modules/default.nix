@@ -972,7 +972,7 @@ with lib;
         environmentFiles = mkOption {
           type = types.listOf types.path;
           default = [ ];
-          description = "Files with the key variables (BIFROST_*_VK, named for the gateway they started on) and DEEPSEEK_API_KEY.";
+          description = "Files with the key variables (MAITRED_KEY_*) and DEEPSEEK_API_KEY.";
         };
       };
       services.httpTarpit.enable = mkEnableOption "HTTP tarpit (endless slow-drip responses for WAN scanners)";

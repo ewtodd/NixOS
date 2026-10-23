@@ -8,15 +8,15 @@
 }:
 let
   cfg = config.systemOptions.services.openWebUI;
-  # Sources the agenix bifrost-keys secret and re-exports the Open WebUI
+  # Sources the agenix maitred-keys secret and re-exports the Open WebUI
   # virtual key as OPENAI_API_KEYS (what its OpenAI connection seeds from) --
   # the key stays out of the nix store. Secret must be group-readable.
   openWebUIWrapped = pkgs.writeShellScriptBin "open-webui" ''
-    if [ -r /run/agenix/bifrost-keys ]; then
+    if [ -r /run/agenix/maitred-keys ]; then
       set -a
-      . /run/agenix/bifrost-keys
+      . /run/agenix/maitred-keys
       set +a
-      export OPENAI_API_KEYS="$BIFROST_OPENWEBUI_VK"
+      export OPENAI_API_KEYS="$MAITRED_KEY_OPENWEBUI"
     fi
     exec ${lib.getExe pkgs.open-webui} "$@"
   '';

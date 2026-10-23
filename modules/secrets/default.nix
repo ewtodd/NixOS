@@ -90,18 +90,17 @@
       };
     })
     (lib.mkIf config.systemOptions.services.maitred.enable {
-      # Env from the Bifrost days (file content: BIFROST_SPIKE_VK=..., admin
-      # username/password, BIFROST_ENCRYPTION_KEY=..., DEEPSEEK_API_KEY=...).
-      # maitred reads DEEPSEEK_API_KEY from it (its EnvironmentFile).
-      bifrost-env = {
-        file = ../../secrets/bifrost-env.age;
+      # DEEPSEEK_API_KEY=..., maitred's key for the hosted DeepSeek upstream
+      # (its EnvironmentFile).
+      maitred-env = {
+        file = ../../secrets/maitred-env.age;
         mode = "0400";
       };
-      # Per-consumer virtual keys (BIFROST_OPENCODE_VK,
-      # BIFROST_OPENWEBUI_VK, BIFROST_SOA_VK, BIFROST_FRIEND_VK). Read by the
-      # maitred service (systemd, as root) and by the open-webui wrapper (group).
-      bifrost-keys = {
-        file = ../../secrets/bifrost-keys.age;
+      # Per-consumer virtual keys (MAITRED_KEY_OPENCODE, MAITRED_KEY_OPENWEBUI,
+      # MAITRED_KEY_SOA, MAITRED_KEY_KNOLL). Read by the maitred service
+      # (systemd, as root) and by the open-webui wrapper (group).
+      maitred-keys = {
+        file = ../../secrets/maitred-keys.age;
         group = "open-webui";
         mode = "0440";
       };
@@ -163,18 +162,19 @@
       };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
-      # Per-consumer Bifrost keys; opencode and the son-of-anton instances
-      # source this for BIFROST_OPENCODE_VK / BIFROST_SOA_VK.
-      bifrost-keys = {
-        file = ../../secrets/bifrost-keys.age;
+      # Per-consumer maitred keys; opencode, the son-of-anton instances and the
+      # Knoll bench pipeline source this for MAITRED_KEY_OPENCODE /
+      # MAITRED_KEY_SOA / MAITRED_KEY_KNOLL.
+      maitred-keys = {
+        file = ../../secrets/maitred-keys.age;
         group = "users";
         mode = "0440";
       };
     })
     (lib.mkIf config.systemOptions.owner.v.enable {
-      # The son-of-anton home module sources this for BIFROST_SOA_VK.
-      bifrost-keys = {
-        file = ../../secrets/bifrost-keys.age;
+      # The son-of-anton home module sources this for MAITRED_KEY_SOA.
+      maitred-keys = {
+        file = ../../secrets/maitred-keys.age;
         group = "users";
         mode = "0440";
       };
