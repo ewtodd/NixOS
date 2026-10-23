@@ -70,6 +70,37 @@
     fsType = "ext4";
   };
 
+  # 6x Micron 1100 256GB on the ASM1166: two 3-drive RAID 0 arrays (unholy's SSD
+  # stream pool and the dev workspace)
+  boot.swraid = {
+    enable = true;
+    mdadmConf = ''
+      MAILADDR root
+      ARRAY /dev/md/stream metadata=1.2 UUID=77ee4b1d:cf5e9b59:a68e7ab2:094e5110
+      ARRAY /dev/md/work metadata=1.2 UUID=b2d2f1c0:bb40cd9c:64ae0989:24df0d8e
+    '';
+  };
+
+  fileSystems."/stream" = {
+    device = "/dev/disk/by-label/stream";
+    fsType = "ext4";
+    options = [
+      "nofail"
+      "noatime"
+      "x-systemd.device-timeout=10s"
+    ];
+  };
+
+  fileSystems."/work" = {
+    device = "/dev/disk/by-label/work";
+    fsType = "ext4";
+    options = [
+      "nofail"
+      "noatime"
+      "x-systemd.device-timeout=10s"
+    ];
+  };
+
   swapDevices = [
     {
       device = "/var/swap";
