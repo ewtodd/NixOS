@@ -141,6 +141,9 @@
         enable = true;
       };
       services.hardware.bolt.enable = true;
+      services.udev.extraRules = ''
+        ACTION=="add", SUBSYSTEM=="power_supply", KERNEL=="BAT*", ATTR{charge_control_end_threshold}="90", ATTR{charge_control_start_threshold}="20"
+      '';
     })
     (lib.mkIf (config.systemOptions.hardware.frameworkLaptop.enable) {
       hardware.fw-fanctrl = {
