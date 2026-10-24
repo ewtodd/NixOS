@@ -5,6 +5,14 @@
 }:
 {
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # The A770M (5690) on xe, which takes Alchemist only by force_probe; the
+  # Iris Xe stays on i915. Under i915, a long llama.cpp prefill tripped the
+  # 10 s CONFIG_DRM_I915_FENCE_TIMEOUT, after which the server's GPU work was
+  # silently skipped and Gemma answered with garbage until it restarted.
+  boot.kernelParams = [
+    "i915.force_probe=!5690"
+    "xe.force_probe=5690"
+  ];
   hardware.firmware = [ pkgs.linux-firmware ];
 
   boot.loader.systemd-boot = {
