@@ -165,10 +165,10 @@ let
         tier = 1;
       }
       {
-        id = "llama/gemma-4-26b-a4b";
+        id = "llama/gemma-4-12b";
         upstream = "gemma";
-        upstream_model = "gemma-4-26b-a4b";
-        display_name = "Gemma 4 26B A4B";
+        upstream_model = "gemma-4-12b";
+        display_name = "Gemma 4 12B";
         context_length = 32768;
         reasoning_efforts = [
           "none"
