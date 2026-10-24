@@ -6,8 +6,9 @@ in headless Chromium by Crawl4AI and returned as markdown; PDFs and text
 types are read from the fetched bytes. A failed extraction still answers
 200, with "error" set.
 
-The pre-fetch refuses non-public addresses on every redirect hop. The
-browser's own requests are kept off the LAN by the unit's IP filter.
+The pre-fetch refuses non-public addresses on every redirect hop, and every
+request the browser makes to a non-public address is aborted. The unit's IP
+filter is the backstop for both.
 """
 
 import argparse
@@ -17,6 +18,7 @@ import ipaddress
 import logging
 import re
 import socket
+import time
 from urllib.parse import urljoin, urlsplit
 
 import httpx
@@ -42,9 +44,6 @@ IMAGE = re.compile(r"!\[([^\]]*)\]\([^)]*\)")
 
 # remove_overlay_elements stays off: it strips Wikipedia's whole body as an
 # overlay. header and form are not excluded for the same reason.
-# Waiting for DOMContentLoaded hung for the whole timeout on some pages here
-# (likely a blocking script whose host the unit's IP filter drops silently);
-# a committed navigation plus a 2 s render gives the same text everywhere tested.
 RUN_CONFIG = CrawlerRunConfig(
     cache_mode=CacheMode.BYPASS,
     excluded_tags=["nav", "footer", "aside", "noscript"],
@@ -52,9 +51,8 @@ RUN_CONFIG = CrawlerRunConfig(
         content_filter=PruningContentFilter(),
         options={"ignore_links": True, "ignore_images": False, "body_width": 0},
     ),
-    wait_until="commit",
     page_timeout=20000,
-    delay_before_return_html=2.0,
+    delay_before_return_html=1.0,
     verbose=False,
 )
 
@@ -67,18 +65,23 @@ class RenderFailed(Exception):
     pass
 
 
+async def resolves_public(host: str) -> bool:
+    """True when every address host resolves to is global; raises socket.gaierror if it does not resolve."""
+    infos = await asyncio.get_running_loop().getaddrinfo(host, 443, type=socket.SOCK_STREAM)
+    return all(ipaddress.ip_address(info[4][0]).is_global for info in infos)
+
+
 async def check_public(url: str) -> None:
     """Raises Refused unless url is http(s) and every address its host resolves to is global."""
     parts = urlsplit(url)
     if parts.scheme not in ("http", "https") or not parts.hostname:
         raise Refused(f"unsupported URL: {url}")
     try:
-        infos = await asyncio.get_running_loop().getaddrinfo(parts.hostname, parts.port or 443, type=socket.SOCK_STREAM)
+        public = await resolves_public(parts.hostname)
     except socket.gaierror as exc:
         raise Refused(f"cannot resolve {parts.hostname}: {exc}") from exc
-    for info in infos:
-        if not ipaddress.ip_address(info[4][0]).is_global:
-            raise Refused(f"{parts.hostname} resolves to a non-public address")
+    if not public:
+        raise Refused(f"{parts.hostname} resolves to a non-public address")
 
 
 async def prefetch(client: httpx.AsyncClient, url: str) -> tuple[str, str, bytes]:
@@ -122,6 +125,7 @@ class Extractor:
     def __init__(self, concurrency: int):
         self.crawler: AsyncWebCrawler | None = None
         self.browser_slots = asyncio.Semaphore(concurrency)
+        self.host_verdicts: dict[str, tuple[bool, float]] = {}
         self.client = httpx.AsyncClient(
             follow_redirects=False,
             timeout=httpx.Timeout(30.0, connect=10.0),
@@ -130,7 +134,36 @@ class Extractor:
 
     async def start(self, _app=None):
         self.crawler = AsyncWebCrawler(config=BrowserConfig(headless=True, verbose=False))
+        self.crawler.crawler_strategy.set_hook("on_page_context_created", self._vet_context)
         await self.crawler.start()
+
+    async def _vet_context(self, page, context=None, **_):
+        if context is not None and not getattr(context, "_web_extract_vetted", False):
+            await context.route("**/*", self._vet_request)
+            context._web_extract_vetted = True
+        return page
+
+    async def _vet_request(self, route):
+        # nu's AdGuard answers blocked hosts with 0.0.0.0, which lands on
+        # loopback; the unit's IP filter drops that silently, so a blocking ad
+        # script would hang the page's parse instead of failing.
+        parts = urlsplit(route.request.url)
+        if parts.scheme in ("http", "https") and parts.hostname and not await self._host_public(parts.hostname):
+            await route.abort("addressunreachable")
+        else:
+            await route.continue_()
+
+    async def _host_public(self, host: str) -> bool:
+        verdict = self.host_verdicts.get(host)
+        if verdict is not None and verdict[1] > time.monotonic():
+            return verdict[0]
+        try:
+            public = await resolves_public(host)
+        except socket.gaierror:
+            # Unresolvable: let the browser fail on it the usual way.
+            public = True
+        self.host_verdicts[host] = (public, time.monotonic() + 300)
+        return public
 
     async def stop(self, _app=None):
         if self.crawler is not None:
@@ -140,10 +173,13 @@ class Extractor:
     async def render(self, url: str) -> tuple[str, str]:
         async with self.browser_slots:
             result = await self.crawler.arun(url, config=RUN_CONFIG)
-        if not result.success:
+        raw = (result.markdown.raw_markdown if result.markdown else "") or ""
+        fit = (result.markdown.fit_markdown if result.markdown else "") or ""
+        # Crawl4AI's anti-bot heuristic also fails short, legitimate pages
+        # ("minimal_text on small page"); a page that loaded with real text is kept.
+        flagged_only = (result.error_message or "").startswith("Blocked by anti-bot protection")
+        if not result.success and not (flagged_only and raw.strip() and (result.status_code or 200) < 400):
             raise RenderFailed(result.error_message or "the browser could not load the page")
-        raw = result.markdown.raw_markdown or ""
-        fit = result.markdown.fit_markdown or ""
         # The pruning filter occasionally drops most of a page; keep the unfiltered text then.
         content = fit if len(fit) >= 0.3 * len(raw) else raw
         return (result.metadata or {}).get("title") or "", tidy_markdown(content)
