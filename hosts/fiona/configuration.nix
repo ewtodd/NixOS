@@ -55,8 +55,9 @@ in
         "gemma-4-12b" = {
           hf = "google/gemma-4-12B-it-qat-q4_0-gguf:Q4_0";
           port = 8081;
-          # Split between the slots: 32k each, the window maitred lists.
-          ctxSize = 65536;
+          # Split between the slots: 64k each, the window maitred lists and the
+          # least son-of-anton accepts.
+          ctxSize = 131072;
           parallel = 2;
           # No MTP draft: with the pinned llama.cpp, Gemma 4's MTP head stops
           # accepting drafts after the first prompt of ~4-7k tokens and stays
