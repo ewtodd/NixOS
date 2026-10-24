@@ -42,6 +42,9 @@ IMAGE = re.compile(r"!\[([^\]]*)\]\([^)]*\)")
 
 # remove_overlay_elements stays off: it strips Wikipedia's whole body as an
 # overlay. header and form are not excluded for the same reason.
+# Waiting for DOMContentLoaded hung for the whole timeout on some pages here
+# (likely a blocking script whose host the unit's IP filter drops silently);
+# a committed navigation plus a 2 s render gives the same text everywhere tested.
 RUN_CONFIG = CrawlerRunConfig(
     cache_mode=CacheMode.BYPASS,
     excluded_tags=["nav", "footer", "aside", "noscript"],
@@ -49,7 +52,9 @@ RUN_CONFIG = CrawlerRunConfig(
         content_filter=PruningContentFilter(),
         options={"ignore_links": True, "ignore_images": False, "body_width": 0},
     ),
-    page_timeout=45000,
+    wait_until="commit",
+    page_timeout=20000,
+    delay_before_return_html=2.0,
     verbose=False,
 )
 
