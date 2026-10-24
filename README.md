@@ -47,8 +47,8 @@ Hosts:
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy), or
   Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo)
-- **fiona** - small-model inference on an Arc A770M (16 GB): llama.cpp (Vulkan) for title
-  generation, EmbeddingGemma 2 embeddings and Gemma 4 12B chat, behind maitred
+- **fiona** - small-model inference on an Arc A770M (16 GB) and its Iris Xe iGPU: llama.cpp
+  (Vulkan) for title generation, EmbeddingGemma 2 embeddings and Gemma 4 12B chat, behind maitred
 ```
 ## Important Notes
 ### `systemOptions`
@@ -135,7 +135,8 @@ The fleet distributes inference and gateway services across dedicated hosts:
     (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL with Q5 down-projection and bf16 n-gram overlays)
     on the Strix Halo iGPU, with the MTP draft and vision projector, 262k context
 - **fiona** (Arc A770M 16GB) runs llama.cpp on Vulkan, one llama-server systemd unit per model:
-  Little-Titles Q8_0 (:8080, title generation for the son-of-anton accounts and Open WebUI),
+  Little-Titles Q8_0 (:8080, on the Iris Xe iGPU, title generation for the son-of-anton
+  accounts and Open WebUI),
   Gemma 4 12B QAT Q4_0 (:8081, the fast frontend for tasks that don't need Qwen or DeepSeek:
   vision and audio input, 32k context per slot; maitred's lowest tier, so "auto"
   lands there when son-of-anton is off or full)

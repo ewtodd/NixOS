@@ -34,6 +34,9 @@ in
         "little-titles" = {
           hf = "acon96/Little-Titles-GGUF:Q8_0";
           port = 8080;
+          # The Iris Xe iGPU (Vulkan1 is the A770M), leaving the A770M's VRAM
+          # to Gemma and the embeddings.
+          device = "Vulkan0";
           ctxSize = 4096;
           chatTemplateFile = pkgs.writeText "little-titles.jinja" ''
             {%- set ns = namespace(system="Generate a short title describing the following user request.", user="") -%}
