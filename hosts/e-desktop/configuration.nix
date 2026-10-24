@@ -142,6 +142,7 @@ in
       environment = {
         SIGNAL_HTTP_URL = "http://10.0.0.2:7583";
         SEARXNG_URL = "http://${aiFront}:8888/search";
+        WEB_EXTRACT_URL = "http://${aiFront}:8890";
         SIGNAL_REACTIONS = "false";
       };
       instances = {
