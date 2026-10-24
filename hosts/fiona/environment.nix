@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   ...
 }:
@@ -18,4 +19,14 @@
     nvtopPackages.intel
     vulkan-tools
   ];
+
+  # nvtop gets Intel GPU usage from each client's /proc/<pid>/fd and fdinfo;
+  # reading those for the root-owned llama servers takes both capabilities.
+  security.wrappers.nvtop = {
+    source = lib.getExe pkgs.nvtopPackages.intel;
+    capabilities = "cap_sys_ptrace,cap_dac_read_search+p";
+    owner = "root";
+    group = "wheel";
+    permissions = "u+rx,g+x";
+  };
 }
