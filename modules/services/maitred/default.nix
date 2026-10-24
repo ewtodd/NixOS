@@ -169,7 +169,7 @@ let
         upstream = "gemma";
         upstream_model = "gemma-4-12b";
         display_name = "Gemma 4 12B";
-        context_length = 32768;
+        context_length = 65536;
         reasoning_efforts = [
           "none"
           "high"
