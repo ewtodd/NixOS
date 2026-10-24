@@ -88,6 +88,17 @@ in
     openssh.authorizedKeys.keys = personalKeys;
   };
 
+  # Development on the A770M stops and restarts the llama servers without sudo.
+  security.polkit.extraConfig = ''
+    polkit.addRule(function (action, subject) {
+      if (action.id == "org.freedesktop.systemd1.manage-units" &&
+          subject.user == "fiona" &&
+          /^llama-(server-[a-z0-9-]+|embeddings)\.service$/.test(action.lookup("unit"))) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
+
   time.timeZone = "America/Chicago";
   networking.hostName = "fiona";
   system.stateVersion = "26.11";
