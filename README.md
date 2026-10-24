@@ -47,6 +47,8 @@ Hosts:
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy), or
   Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo)
+- **fiona** - small-model inference on an Arc A770M (16 GB): llama.cpp (Vulkan) for title
+  generation and EmbeddingGemma 2 embeddings, behind maitred
 ```
 ## Important Notes
 ### `systemOptions`
@@ -156,11 +158,11 @@ modules, so it never drifts from `nixosConfigurations`.
 **e-desktop is the build host** — it builds every closure and pushes the result,
 so the servers and laptops never compile.
 ```bash
-colmena apply --on @server   # build on e-desktop, push to the 4 servers
+colmena apply --on @server   # build on e-desktop, push to the 5 servers
 colmena apply --on anton     # a single node
 nrs                          # rebuild the local workstation (e-desktop / e-laptop): nh os switch /etc/nixos
 ```
-- **Scope:** the 7 e-owner nodes (v-devices excluded for now).
+- **Scope:** the 8 e-owner nodes (v-devices excluded for now).
   The headless servers and the tony kiosk are pushed over SSH; the two
   workstations rebuild themselves with `nrs` (`nh os switch /etc/nixos`), which
   also sidesteps e-laptop's dynamic IP.

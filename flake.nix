@@ -305,6 +305,9 @@
         son-of-anton = {
           headless = true;
         };
+        fiona = {
+          headless = true;
+        };
       };
 
       colmenaDeployments = {
@@ -347,6 +350,12 @@
         };
         son-of-anton = {
           targetHost = "deploy-son-of-anton";
+          targetUser = "deploy";
+          buildOnTarget = false;
+          tags = [ "server" ];
+        };
+        fiona = {
+          targetHost = "deploy-fiona";
           targetUser = "deploy";
           buildOnTarget = false;
           tags = [ "server" ];

@@ -87,6 +87,7 @@ in
           "30:56:0f:4b:ac:de,e-desktop,10.0.0.4"
           "d8:bb:c1:d8:7d:49,anton,10.0.0.3"
           "9c:bf:0d:01:ec:71,son-of-anton,10.0.0.5"
+          "b0:25:aa:51:54:b0,fiona,10.0.0.6"
           # enp4s0, the NIC with carrier. The board has two; enp3s0
           # (a8:b8:e0:0a:94:5c) is unused.
           "a8:b8:e0:0a:94:5d,tony,10.0.0.8"

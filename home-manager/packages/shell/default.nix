@@ -95,6 +95,12 @@ in
         User = "son-of-anton";
         ProxyJump = "bastion";
       };
+      "fiona" = {
+        Hostname = "10.0.0.6";
+        Port = 2222;
+        User = "fiona";
+        ProxyJump = "bastion";
+      };
       # Colmena deploy targets: same inner hosts as the *-admin shells, as the key-only `deploy` user.
       # flake colmenaDeployments.*.targetHost points at these aliases -- closures push through the bastion,
       # working on- or off-LAN (split-horizon DNS resolves the bastion to its LAN address at home).
@@ -118,6 +124,12 @@ in
       };
       "deploy-son-of-anton" = {
         Hostname = "10.0.0.5";
+        Port = 2222;
+        User = "deploy";
+        ProxyJump = "bastion";
+      };
+      "deploy-fiona" = {
+        Hostname = "10.0.0.6";
         Port = 2222;
         User = "deploy";
         ProxyJump = "bastion";
@@ -156,6 +168,11 @@ in
         Hostname = "10.0.0.5";
         Port = 2222;
         User = "son-of-anton";
+      };
+      "fiona-lan" = {
+        Hostname = "10.0.0.6";
+        Port = 2222;
+        User = "fiona";
       };
       "tony-lan" = {
         Hostname = "10.0.0.8";
