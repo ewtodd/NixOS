@@ -48,7 +48,7 @@ Hosts:
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy), or
   Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo)
 - **fiona** - small-model inference on an Arc A770M (16 GB): llama.cpp (Vulkan) for title
-  generation, EmbeddingGemma 2 embeddings and Gemma 4 26B A4B chat, behind maitred
+  generation, EmbeddingGemma 2 embeddings and Gemma 4 12B chat, behind maitred
 ```
 ## Important Notes
 ### `systemOptions`
@@ -136,8 +136,9 @@ The fleet distributes inference and gateway services across dedicated hosts:
     on the Strix Halo iGPU, with the MTP draft and vision projector, 262k context
 - **fiona** (Arc A770M 16GB) runs llama.cpp on Vulkan, one llama-server systemd unit per model:
   Little-Titles Q8_0 (:8080, title generation for the son-of-anton accounts and Open WebUI),
-  Gemma 4 26B A4B QAT Q4_0 (:8081, six layers' experts on the CPU, MTP draft, vision projector,
-  32k context; maitred's lowest tier, so "auto" lands there when son-of-anton is off or full)
+  Gemma 4 12B QAT Q4_0 (:8081, the fast frontend for tasks that don't need Qwen or DeepSeek:
+  MTP draft, vision and audio input, 32k context per slot; maitred's lowest tier, so "auto"
+  lands there when son-of-anton is off or full)
   and an EmbeddingGemma 2 embedding server (:8082, son-of-anton's memory RAG and Open WebUI)
 - **mu** hosts the AI front. `systemOptions.aiFrontAddress` names that host; nu's Caddy and
   the clients point at it, so moving the front is one line:

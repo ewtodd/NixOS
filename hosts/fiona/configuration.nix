@@ -49,23 +49,16 @@ in
             {%- if add_generation_prompt -%}{{- "<|im_start|>assistant\n" -}}{%- endif -%}
           '';
         };
-        "gemma-4-26b-a4b" = {
-          hf = "google/gemma-4-26B-A4B-it-qat-q4_0-gguf:Q4_0";
+        "gemma-4-12b" = {
+          hf = "google/gemma-4-12B-it-qat-q4_0-gguf:Q4_0";
           port = 8081;
           # Split between the slots: 32k each, the window maitred lists.
           ctxSize = 65536;
           parallel = 2;
-          # Leaves ~0.4 GiB of VRAM beside titles and embeddings (measured from
-          # fdinfo); fewer layers on the CPU overcommit the A770M and i915
-          # evicts to RAM, stalling generation. llama.cpp's own fitting can't
-          # catch it: Intel's Vulkan driver overstates free memory.
-          nCpuMoe = 12;
-          # No VRAM left for the vision encoder.
-          mmprojDevice = "none";
           # Google's QAT repo ships no MTP head; ggml-org's works with these
           # weights (about half its drafts accepted).
           specType = "draft-mtp";
-          specDraftHf = "ggml-org/gemma-4-26B-A4B-it-GGUF:Q8_0";
+          specDraftHf = "ggml-org/gemma-4-12B-it-GGUF:Q8_0";
           # The model card's sampling; llama.cpp's defaults differ.
           extraFlags = [
             "--temp 1.0"
