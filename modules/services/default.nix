@@ -37,6 +37,7 @@ in
     ./router
     ./scheduled-reboot
     ./searxng
+    ./web-extract
     ./signal-cli
     ./son-of-anton
     ./wakeable

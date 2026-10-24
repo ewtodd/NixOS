@@ -52,6 +52,16 @@ in
       listenAddress = "0.0.0.0";
       openFirewall = true;
     };
+    # Page extraction for son-of-anton's web_extract, which the gateway on
+    # e-desktop calls; DNS goes to nu (both of its resolver addresses).
+    services.webExtract = {
+      enable = true;
+      allowedClients = [ "10.0.0.4" ];
+      resolvers = [
+        "10.0.0.7"
+        "fda0:7ddd:26e8::1"
+      ];
+    };
     services.openWebUI.enable = true;
     security.harden.enable = true;
   };
