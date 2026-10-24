@@ -55,10 +55,9 @@ in
           # Split between the slots: 32k each, the window maitred lists.
           ctxSize = 65536;
           parallel = 2;
-          # Google's QAT repo ships no MTP head; ggml-org's works with these
-          # weights (about half its drafts accepted).
-          specType = "draft-mtp";
-          specDraftHf = "ggml-org/gemma-4-12B-it-GGUF:Q8_0";
+          # No MTP draft: with the pinned llama.cpp, Gemma 4's MTP head stops
+          # accepting drafts after the first prompt of ~4-7k tokens and stays
+          # broken until restart, decoding slower than with no draft at all.
           # The model card's sampling; llama.cpp's defaults differ.
           extraFlags = [
             "--temp 1.0"

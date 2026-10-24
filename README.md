@@ -137,7 +137,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
 - **fiona** (Arc A770M 16GB) runs llama.cpp on Vulkan, one llama-server systemd unit per model:
   Little-Titles Q8_0 (:8080, title generation for the son-of-anton accounts and Open WebUI),
   Gemma 4 12B QAT Q4_0 (:8081, the fast frontend for tasks that don't need Qwen or DeepSeek:
-  MTP draft, vision and audio input, 32k context per slot; maitred's lowest tier, so "auto"
+  vision and audio input, 32k context per slot; maitred's lowest tier, so "auto"
   lands there when son-of-anton is off or full)
   and an EmbeddingGemma 2 embedding server (:8082, son-of-anton's memory RAG and Open WebUI)
 - **mu** hosts the AI front. `systemOptions.aiFrontAddress` names that host; nu's Caddy and
