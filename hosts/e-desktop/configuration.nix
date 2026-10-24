@@ -290,7 +290,7 @@ in
         memory.rag = {
           enabled = true;
           base_url = "http://${aiFront}:4002/v1";
-          model = "bge-m3";
+          model = "embed/embeddinggemma-2";
           api_key_env = "MAITRED_KEY_SOA";
           top_k = 5;
         };

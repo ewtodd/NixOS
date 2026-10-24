@@ -15,6 +15,7 @@ let
   cfg = config.systemOptions.services.maitred;
 
   sonOfAnton = "10.0.0.5";
+  fiona = "10.0.0.6";
 
   arxiv-mcp-server = pkgs.callPackage ./arxiv-mcp-server.nix {
     src = inputs.arxiv-mcp-server-src;
@@ -66,13 +67,13 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
-      # llama.cpp (the title model) and the embedding server, on this host.
+      # llama.cpp on fiona: the title model and the embedding server.
       llama = {
-        base_url = "http://127.0.0.1:8080/v1";
+        base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
       };
       embed = {
-        base_url = "http://127.0.0.1:8082/v1";
+        base_url = "http://${fiona}:8082/v1";
         timeout_secs = 120;
       };
       deepseek = {
@@ -194,10 +195,10 @@ let
         };
       }
       {
-        id = "embed/bge-m3";
+        id = "embed/embeddinggemma-2";
         upstream = "embed";
-        upstream_model = "bge-m3";
-        display_name = "bge-m3";
+        upstream_model = "embeddinggemma-2";
+        display_name = "EmbeddingGemma 2";
         context_length = 8192;
         # Embeddings only; every consumer names it outright.
         hidden = true;
@@ -241,7 +242,7 @@ let
           "unholy/dsv4-flash"
           "radiance/qwen3.8-27b"
           "gufo/qwen3.8-flash-next"
-          "embed/bge-m3"
+          "embed/embeddinggemma-2"
         ];
       }
     ];

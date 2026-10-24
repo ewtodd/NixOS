@@ -1,4 +1,4 @@
-# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> the AI front host (mu) :8081 (8080 is the llama.cpp title server).
+# Open WebUI at ai.ethanwtodd.com: Caddy on nu -> Anubis PoW -> the AI front host (mu) :8081.
 # Models from maitred on this host (127.0.0.1:4002), the same gateway opencode and son-of-anton use.
 {
   config,
@@ -9,14 +9,16 @@
 let
   cfg = config.systemOptions.services.openWebUI;
   # Sources the agenix maitred-keys secret and re-exports the Open WebUI
-  # virtual key as OPENAI_API_KEYS (what its OpenAI connection seeds from) --
-  # the key stays out of the nix store. Secret must be group-readable.
+  # virtual key as OPENAI_API_KEYS (what its OpenAI connection seeds from) and
+  # RAG_OPENAI_API_KEY (embeddings) -- the key stays out of the nix store.
+  # Secret must be group-readable.
   openWebUIWrapped = pkgs.writeShellScriptBin "open-webui" ''
     if [ -r /run/agenix/maitred-keys ]; then
       set -a
       . /run/agenix/maitred-keys
       set +a
       export OPENAI_API_KEYS="$MAITRED_KEY_OPENWEBUI"
+      export RAG_OPENAI_API_KEY="$MAITRED_KEY_OPENWEBUI"
     fi
     exec ${lib.getExe pkgs.open-webui} "$@"
   '';
@@ -26,7 +28,7 @@ in
     port = lib.mkOption {
       type = lib.types.port;
       default = 8081;
-      description = "HTTP port; 8080 already serves the llama.cpp title server on this host.";
+      description = "HTTP port; nu's reverse proxy forwards ai.ethanwtodd.com here.";
     };
     dataDir = lib.mkOption {
       type = lib.types.path;
@@ -79,13 +81,15 @@ in
           # keys) -- on an initialized install the admin sets them in Settings > Connections / Tasks.
           "OPENAI_API_BASE_URL=http://127.0.0.1:4002/v1"
           "TASK_MODEL_EXTERNAL=llama/little-titles-json"
-          # RAG embeddings via the dedicated embedding server on this host (:8082, bge-m3 on CPU).
-          # RAG_OPENAI_API_BASE_URL must be set explicitly: it defaults to the chat endpoint, failing every call.
+          # RAG embeddings through maitred like the chat models, with the key from the wrapper. Same first-run
+          # seeding caveat as above: on an initialized install, change these in Settings > Documents and reindex.
           "RAG_EMBEDDING_ENGINE=openai"
-          "RAG_EMBEDDING_MODEL=bge-m3"
-          "RAG_OPENAI_API_BASE_URL=http://127.0.0.1:8082/v1"
-          # The embedding server needs no auth; any value satisfies the OpenAI client.
-          "RAG_OPENAI_API_KEY=llama-cpp"
+          "RAG_EMBEDDING_MODEL=embed/embeddinggemma-2"
+          "RAG_OPENAI_API_BASE_URL=http://127.0.0.1:4002/v1"
+          # EmbeddingGemma's retrieval prompts (google/embeddinggemma-2 model card); read from the environment on
+          # every start, not seeded into the DB.
+          "RAG_EMBEDDING_QUERY_PREFIX=task: search result | query: "
+          "RAG_EMBEDDING_CONTENT_PREFIX=title: none | text: "
           # Built-in web search backed by the SearXNG instance on this host
           # (modules/services/searxng binds 127.0.0.1:8888). The provider appends
           # q= and format=json itself, so only the bare endpoint is needed.

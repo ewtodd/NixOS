@@ -39,7 +39,7 @@ with lib;
         default = "10.0.0.2";
         description = ''
           LAN address of the host serving the house's AI front: maitred (/v1 and /mcp on :4002),
-          Open WebUI (:8081), SearXNG (:8888) and llama.cpp (:8080). nu's reverse proxy and the clients
+          Open WebUI (:8081) and SearXNG (:8888). nu's reverse proxy and the clients
           point here, so moving those services to another machine changes only this. mu since oracle was
           decommissioned.
         '';

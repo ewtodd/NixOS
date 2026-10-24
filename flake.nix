@@ -199,8 +199,8 @@
         # above; overriding both in one overlay leaves it on the base python set.
         (_: prev: {
           # Local embedding/reranking, TTS and evaluation backends. This
-          # deployment sends chat to maitred and embeddings to the llama.cpp
-          # bge-m3 server, so transformers/sentence-transformers/colbert-ai
+          # deployment sends chat and embeddings to maitred (embeddings land on
+          # fiona's llama.cpp), so transformers/sentence-transformers/colbert-ai
           # and their accelerate->torch stack are dead weight; all their
           # imports are lazy.
           open-webui = prev.open-webui.overridePythonAttrs (old: {

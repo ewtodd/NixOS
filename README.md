@@ -40,7 +40,7 @@ Hosts:
 - **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
 - **nu** - Router, AdGuard, reverse proxy, dynamic DNS, Prometheus & Grafana
 - **mu** - SSH bastion, Nextcloud, Minecraft, Signal bot backend, and the AI front: maitred,
-  llama.cpp (title model + embeddings), SearXNG, Open WebUI (ai.ethanwtodd.com)
+  SearXNG, Open WebUI (ai.ethanwtodd.com)
 - **anton** - headless server (no inference role): raidz2 tank with borg backup server,
   zfs-metrics, Jellyfin media server (Intel QSV transcoding, LAN only)
 - **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
@@ -134,18 +134,18 @@ The fleet distributes inference and gateway services across dedicated hosts:
     TheRock ROCm 10.1 SDK unholy pins. Beside it **[gufo](https://github.com/gufo-org/gufo)**
     (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL with Q5 down-projection and bf16 n-gram overlays)
     on the Strix Halo iGPU, with the MTP draft and vision projector, 262k context
+- **fiona** (Arc A770M 16GB) runs llama.cpp on Vulkan, one llama-server systemd unit per model:
+  Little-Titles Q8_0 (:8080, title generation for the son-of-anton accounts and Open WebUI)
+  and an EmbeddingGemma 2 embedding server (:8082, son-of-anton's memory RAG and Open WebUI)
 - **mu** hosts the AI front. `systemOptions.aiFrontAddress` names that host; nu's Caddy and
   the clients point at it, so moving the front is one line:
   - **[maitred](https://github.com/ewtodd/maitred)** (:4002), the gateway every client uses:
     - `/v1` routes son-of-anton, opencode, and Open WebUI to son-of-anton's servers,
-      llama.cpp, and the hosted DeepSeek API, with per-consumer virtual keys. Every model is
+      fiona's llama.cpp, and the hosted DeepSeek API, with per-consumer virtual keys. Every model is
       listed with its context window, reasoning efforts, and live status; a request for a
       model of the mode that is not loaded gets a 503 naming what to use instead
     - `/mcp` aggregates stdio MCP servers per key: `fetch` (URL retrieval), `searxng` (web
       search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
-  - **llama.cpp** (CPU): a llama-server for little-titles (Little-Titles Q8_0 — title
-    generation for the son-of-anton accounts) plus a dedicated bge-m3 embedding server, each
-    as its own systemd unit
   - **SearXNG** metasearch, backing the searxng MCP and son-of-anton's web search
   - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via maitred)
 - **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
