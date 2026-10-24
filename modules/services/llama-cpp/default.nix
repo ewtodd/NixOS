@@ -123,7 +123,8 @@ let
           "--ubatch-size 2048"
           "--n-gpu-layers ${toString embedding.gpuLayers}"
           "--parallel 1"
-          "--host 127.0.0.1 --port ${toString embedding.port}"
+          "--host ${if cfg.lanExpose then "0.0.0.0" else "127.0.0.1"}"
+          "--port ${toString embedding.port}"
           "--no-webui"
         ]
         ++ lib.optionals cfg.verboseLogging [ "--verbose" ]
@@ -280,10 +281,8 @@ in
       "d ${cfg.cacheDir} 2770 root llama-cache - -"
     ];
 
-    # Exposed services get their ports opened; the embedding server never
-    # leaves loopback, so it needs no firewall entry.
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose (
-      map (name: cfg.models.${name}.port) modelNames
+      map (name: cfg.models.${name}.port) modelNames ++ lib.optional (embedding != null) embedding.port
     );
 
     systemd.services = lib.mkMerge [
