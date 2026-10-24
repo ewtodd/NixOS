@@ -67,10 +67,15 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
-      # llama.cpp on fiona: the title model and the embedding server.
+      # llama.cpp on fiona: the title model, Gemma 4 and the embedding server.
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
+      };
+      gemma = {
+        base_url = "http://${fiona}:8081/v1";
+        timeout_secs = 1800;
+        slots = 2;
       };
       embed = {
         base_url = "http://${fiona}:8082/v1";
@@ -101,9 +106,10 @@ let
     ];
     # reasoning_efforts: what each server takes (unholy: none/low/high/max; Radiance, as its /v1/models lists:
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
-    # template has none/low/medium/xhigh). The Qwen pair alias high to xhigh, their default, so "high" means
-    # each model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier:
-    # DeepSeek-V4-Flash, then Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down.
+    # template has none/low/medium/xhigh; Gemma 4's template only turns thinking on or off). The Qwen pair alias
+    # high to xhigh, their default, so "high" means each model's normal thinking whichever one "auto" lands on
+    # (clamping would give them medium). tier: DeepSeek-V4-Flash, then Qwen3.8-27B, then Flash-Next, which
+    # "auto" takes when Radiance is full or down, then Gemma 4 on fiona, which is up when son-of-anton is not.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -157,6 +163,19 @@ let
         default_reasoning_effort = "xhigh";
         effort_aliases.high = "xhigh";
         tier = 1;
+      }
+      {
+        id = "llama/gemma-4-26b-a4b";
+        upstream = "gemma";
+        upstream_model = "gemma-4-26b-a4b";
+        display_name = "Gemma 4 26B A4B";
+        context_length = 32768;
+        reasoning_efforts = [
+          "none"
+          "high"
+        ];
+        default_reasoning_effort = "high";
+        tier = 0;
       }
       {
         id = "llama/little-titles";
