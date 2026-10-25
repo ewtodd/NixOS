@@ -1600,11 +1600,11 @@
         "therock-sdk": "therock-sdk"
       },
       "locked": {
-        "lastModified": 1792076022,
-        "narHash": "sha256-o6EFoD6PiWZ+gyuGC4Ks9PStqXds0dYtO1Ou8wMqzuU=",
+        "lastModified": 1792904359,
+        "narHash": "sha256-C0/YEd7UDOxwUSIDXyjlupbEqQfokPI1H7SuRy0/3Wc=",
         "owner": "ewtodd",
         "repo": "unholy",
-        "rev": "c79435bb3dfa5b9b4fb7b9266e8a2af283105a99",
+        "rev": "6f713e14c31b75caf45d11d88b077fc85000c4ae",
         "type": "github"
       },
       "original": {
