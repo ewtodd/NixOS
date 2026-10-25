@@ -297,6 +297,30 @@ in
               };
             };
 
+            # unholy's llm-mode glm (EXL3 4.05). GLM-5.3-Flash always thinks: efforts low, high, max; text only.
+            "glm53" = {
+              name = "GLM-5.3-Flash";
+              variants = {
+                max = {
+                  reasoningEffort = "max";
+                };
+                high = {
+                  reasoningEffort = "high";
+                };
+                low = {
+                  reasoningEffort = "low";
+                };
+              };
+              limit = {
+                context = 524288;
+                output = 131072;
+              };
+              modalities = {
+                input = [ "text" ];
+                output = [ "text" ];
+              };
+            };
+
             # The other llm-mode on son-of-anton (llm-mode qwen). maitred answers a request for a model of the
             # mode that is not loaded with what to use instead.
             # Radiance, both R9700s; efforts none/minimal/low/medium/xhigh (high/max are clamped to medium/xhigh).

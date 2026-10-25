@@ -313,6 +313,15 @@ in
                 "max"
               ];
             };
+            # GLM-5.3-Flash always thinks: low, high, max.
+            "unholy/glm53" = {
+              reasoning_effort = "high";
+              reasoning_efforts = [
+                "low"
+                "high"
+                "max"
+              ];
+            };
             # Radiance's R9700 pair; its template's efforts (high/max clamp to medium/xhigh).
             "radiance/qwen3.8-27b" = {
               reasoning_effort = "xhigh";
