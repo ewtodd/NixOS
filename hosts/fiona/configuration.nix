@@ -22,7 +22,7 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:30:00";
-    # Title generation, RAG embeddings and a chat model for maitred on mu, on the Arc A770M.
+    # Title generation and RAG embeddings for maitred on mu.
     services.llamaCpp = {
       enable = true;
       lanExpose = true;
@@ -34,8 +34,8 @@ in
         "little-titles" = {
           hf = "acon96/Little-Titles-GGUF:Q8_0";
           port = 8080;
-          # The Iris Xe iGPU (Vulkan1 is the A770M), leaving the A770M's VRAM
-          # to Gemma and the embeddings.
+          # The Iris Xe iGPU (Vulkan1 is the A770M), leaving the A770M to the
+          # embeddings and eklow.
           device = "Vulkan0";
           ctxSize = 4096;
           chatTemplateFile = pkgs.writeText "little-titles.jinja" ''
@@ -51,24 +51,6 @@ in
             {{- "<|im_start|>user\n" + ns.user + "<|im_end|>\n" -}}
             {%- if add_generation_prompt -%}{{- "<|im_start|>assistant\n" -}}{%- endif -%}
           '';
-        };
-        "gemma-4-12b" = {
-          hf = "google/gemma-4-12B-it-qat-q4_0-gguf:Q4_0";
-          port = 8081;
-          # Split between the slots: 64k each, the window maitred lists and the
-          # least son-of-anton accepts.
-          ctxSize = 131072;
-          parallel = 2;
-          # No MTP draft: with the pinned llama.cpp, Gemma 4's MTP head stops
-          # accepting drafts after the first prompt of ~4-7k tokens and stays
-          # broken until restart, decoding slower than with no draft at all.
-          # The model card's sampling; llama.cpp's defaults differ.
-          extraFlags = [
-            "--temp 1.0"
-            "--top-k 64"
-            "--top-p 0.95"
-            "--min-p 0"
-          ];
         };
       };
     };
