@@ -730,11 +730,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792702843,
-        "narHash": "sha256-Elvz51+sj4UFmQjdN1WDb9BDvMsjQ2o342BLndMnqM8=",
+        "lastModified": 1792950262,
+        "narHash": "sha256-NeVDTxIJEHN6bH4yRJ5lWADQcyB6H6ISp1Cd7PvbY9A=",
         "owner": "ewtodd",
         "repo": "lifer",
-        "rev": "3fcfeacd29477ed0b4821c55c47f5dfd402ccb0e",
+        "rev": "248e702ba36651058fa272e8ffd68decba02f0d2",
         "type": "github"
       },
       "original": {
