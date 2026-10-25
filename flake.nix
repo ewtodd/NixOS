@@ -106,6 +106,11 @@
       url = "github:ewtodd/son-of-anton";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    eklow = {
+      url = "github:ewtodd/eklow";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.llama-cpp.follows = "llama-cpp";
+    };
     niri-utilities = {
       url = "github:ewtodd/niri-utilities";
       inputs.nixpkgs.follows = "nixpkgs";

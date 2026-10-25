@@ -958,6 +958,10 @@ with lib;
           default = [ ];
         };
       };
+      services.eklow = {
+        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Gemma 4 and EmbeddingGemma 2 on an Intel Arc A770M";
+        lanExpose = mkEnableOption "eklow on the LAN (0.0.0.0, ports open) for maitred";
+      };
       services.maitred = {
         enable = mkEnableOption "maitred (github.com/ewtodd/maitred): the /v1 front for the LLM servers and the /mcp gateway";
         port = mkOption {

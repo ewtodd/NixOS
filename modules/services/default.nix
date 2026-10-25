@@ -16,6 +16,7 @@ in
     ./bastion
     ./deploy
     ./dyndns
+    ./eklow
     ./grafana
     ./http-tarpit
     ./jellyfin

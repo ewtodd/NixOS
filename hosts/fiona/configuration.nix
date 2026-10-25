@@ -22,14 +22,15 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:30:00";
-    # Title generation and RAG embeddings for maitred on mu.
+    # Gemma 4 12B and the RAG embeddings for maitred on mu, on the A770M.
+    services.eklow = {
+      enable = true;
+      lanExpose = true;
+    };
+    # Title generation for maitred, on the Iris Xe.
     services.llamaCpp = {
       enable = true;
       lanExpose = true;
-      embeddingModel = {
-        hf = "ggml-org/embeddinggemma-2-GGUF:Q8_0";
-        port = 8082;
-      };
       models = {
         "little-titles" = {
           hf = "acon96/Little-Titles-GGUF:Q8_0";
@@ -72,12 +73,12 @@ in
 
   hardware.graphics.extraPackages = [ pkgs.intel-compute-runtime ];
 
-  # Development on the A770M stops and restarts the llama servers without sudo.
+  # Development on the A770M stops and restarts eklow and the llama servers without sudo.
   security.polkit.extraConfig = ''
     polkit.addRule(function (action, subject) {
       if (action.id == "org.freedesktop.systemd1.manage-units" &&
           subject.user == "fiona" &&
-          /^llama-(server-[a-z0-9-]+|embeddings)\.service$/.test(action.lookup("unit"))) {
+          /^(eklow|llama-(server-[a-z0-9-]+|embeddings))\.service$/.test(action.lookup("unit"))) {
         return polkit.Result.YES;
       }
     });

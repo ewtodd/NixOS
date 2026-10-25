@@ -326,6 +326,29 @@
         "type": "github"
       }
     },
+    "eklow": {
+      "inputs": {
+        "llama-cpp": [
+          "llama-cpp"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792905596,
+        "narHash": "sha256-KF/ZsVluWBU3Cwkz0u90rCwYKnPfxk9gDx7GSAOps+0=",
+        "owner": "ewtodd",
+        "repo": "eklow",
+        "rev": "9249d600e7ea993931520b2e53acf547a7677bc4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ewtodd",
+        "repo": "eklow",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -1196,6 +1219,7 @@
         "dank-material-shell": "dank-material-shell",
         "danksearch": "danksearch",
         "dms-plugin-registry": "dms-plugin-registry",
+        "eklow": "eklow",
         "gufo": "gufo",
         "home-manager": "home-manager",
         "lifer": "lifer",
