@@ -57,6 +57,12 @@ let
         idle_timeout_secs = 3600;
         slots = 8;
       };
+      unholy-glm = {
+        base_url = "http://${sonOfAnton}:8250/v1";
+        timeout_secs = 3600;
+        idle_timeout_secs = 3600;
+        slots = 8;
+      };
       radiance = {
         base_url = "http://${sonOfAnton}:8100/v1";
         timeout_secs = 1800;
@@ -95,6 +101,12 @@ let
         upstreams = [ "unholy" ];
       }
       {
+        name = "glm";
+        label = "GLM-5.3-Flash";
+        host = "son-of-anton";
+        upstreams = [ "unholy-glm" ];
+      }
+      {
         name = "qwen";
         label = "the Qwen models";
         host = "son-of-anton";
@@ -104,12 +116,14 @@ let
         ];
       }
     ];
-    # reasoning_efforts: what each server takes (unholy: none/low/high/max; Radiance, as its /v1/models lists:
+    # reasoning_efforts: what each server takes (unholy: none/low/high/max for DeepSeek-V4-Flash, low/high/max
+    # for GLM-5.3-Flash, which always thinks, so none is answered with low; Radiance, as its /v1/models lists:
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
     # template has none/low/medium/xhigh; Gemma 4's template only turns thinking on or off). The Qwen pair alias
     # high to xhigh, their default, so "high" means each model's normal thinking whichever one "auto" lands on
-    # (clamping would give them medium). tier: DeepSeek-V4-Flash, then Qwen3.8-27B, then Flash-Next, which
-    # "auto" takes when Radiance is full or down, then Gemma 4 on fiona, which is up when son-of-anton is not.
+    # (clamping would give them medium). tier: DeepSeek-V4-Flash (and GLM-5.3-Flash, never up with it), then
+    # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then Gemma 4 on fiona, which
+    # is up when son-of-anton is not.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -125,6 +139,26 @@ let
         ];
         default_reasoning_effort = "high";
         effort_aliases = {
+          minimal = "low";
+          medium = "high";
+          xhigh = "max";
+        };
+        tier = 3;
+      }
+      {
+        id = "unholy/glm53";
+        upstream = "unholy-glm";
+        upstream_model = "glm53";
+        display_name = "GLM-5.3-Flash";
+        context_length = 524288;
+        reasoning_efforts = [
+          "low"
+          "high"
+          "max"
+        ];
+        default_reasoning_effort = "high";
+        effort_aliases = {
+          none = "low";
           minimal = "low";
           medium = "high";
           xhigh = "max";
@@ -259,6 +293,7 @@ let
         env = "MAITRED_KEY_KNOLL";
         models = [
           "unholy/dsv4-flash"
+          "unholy/glm53"
           "radiance/qwen3.8-27b"
           "gufo/qwen3.8-flash-next"
           "embed/embeddinggemma-2"
