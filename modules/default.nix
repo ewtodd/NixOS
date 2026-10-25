@@ -839,15 +839,13 @@ with lib;
       };
       services.llmMode = {
         enable = mkEnableOption ''
-          the `llm-mode ds4|qwen|status` switch between unholy (all three GPUs) and the Qwen pair
+          the `llm-mode <mode>|status` switch between the model sets sharing son-of-anton's GPUs: each
+          services.unholy instance (all three GPUs) is a mode of its own name, and `qwen` the Qwen pair
           (services.radiance on the R9700s + services.gufoStrix on the iGPU), with no redeploy'';
         default = mkOption {
-          type = types.enum [
-            "ds4"
-            "qwen"
-          ];
+          type = types.str;
           default = "ds4";
-          description = "Mode started at boot until `llm-mode` has recorded a choice.";
+          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance or `qwen`.";
         };
         managers = mkOption {
           type = types.listOf types.str;
@@ -858,60 +856,11 @@ with lib;
       };
       services.unholy = {
         enable = mkEnableOption ''
-          unholy, the DeepSeek-V4-Flash engine across both R9700s and the Strix Halo iGPU.
-          It needs all three GPUs, so it cannot run alongside services.radiance or services.gufoStrix
-          unless services.llmMode switches between them'';
-        lanExpose = mkEnableOption "expose unholy on the LAN (bind 0.0.0.0 + open firewall)";
-        model = mkOption {
-          type = types.str;
-          example = "/scratch/dsv4-ve";
-          description = "Native DeepSeek-V4-Flash checkpoint directory (config, tokenizer, dense and MXFP4 expert weights).";
-        };
-        exl3 = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          description = "EXL3 quant whose routed experts replace the native MXFP4 ones. Null serves the native experts.";
-        };
-        profile = mkOption {
-          type = types.nullOr types.str;
-          default = null;
-          description = ''
-            Expert routing profile used to place hot experts on the cards (--profile). Null uses the
-            mixed-traffic profile shipped with the package.
-          '';
-        };
-        servedModelName = mkOption {
-          type = types.str;
-          default = "dsv4-flash";
-        };
-        port = mkOption {
-          type = types.port;
-          default = 8200;
-        };
-        kvTokens = mkOption {
-          type = types.ints.positive;
-          default = 1048576;
-          description = ''
-            KV cache pool in tokens, shared by all requests (--kv-tokens), as vLLM's cache: a request takes
-            256-token pages as it grows. About 5.8 KB per token, split across the two cards; every GB of
-            pool displaces ~80 hot experts from the cards (see `unholy plan`).
-          '';
-        };
-        maxModelLen = mkOption {
-          type = types.ints.positive;
-          default = 524288;
-          description = "Maximum tokens per request, prompt + completion (--max-model-len).";
-        };
-        maxNumSeqs = mkOption {
-          type = types.ints.positive;
-          default = 8;
-          description = "Requests running at once (--max-num-seqs); each holds ~17 MB of fixed state.";
-        };
-        maxBatchTokens = mkOption {
-          type = types.ints.positive;
-          default = 4096;
-          description = "Tokens per engine step (--max-batch-tokens): decode tokens first, prefill chunks fill the rest.";
-        };
+          unholy, the DeepSeek-V4-Flash and GLM-5.3-Flash engine across both R9700s and the Strix Halo
+          iGPU, one unholy-<name>.service per instance. Each needs all three GPUs, so the instances conflict
+          with each other and cannot run alongside services.radiance or services.gufoStrix unless
+          services.llmMode switches between them'';
+        lanExpose = mkEnableOption "expose the unholy instances on the LAN (bind 0.0.0.0 + open their ports)";
         devices = mkOption {
           type = types.str;
           default = "0,1,2";
@@ -926,36 +875,101 @@ with lib;
           default = [ ];
           example = [ "son-of-anton" ];
           description = ''
-            Users allowed to start, stop and restart unholy.service without sudo (a polkit rule), e.g.
-            to free the GPUs for development runs.
+            Users allowed to start, stop and restart the unholy-*.service units without sudo (a polkit
+            rule), e.g. to free the GPUs for development runs.
           '';
         };
-        specDrafts = mkOption {
-          type = types.ints.between 0 5;
-          default = 0;
-          description = ''
-            Speculative decoding with the checkpoint's DSpark drafter (--spec-drafts): tokens drafted and
-            verified per decode step (0 turns it off). Outputs are exactly what the model would produce
-            without it; the drafter keeps ~10 GB of experts in the iGPU's share of RAM.
-          '';
-        };
-        prefixSnapshots = mkOption {
-          type = types.ints.unsigned;
-          default = 128;
-          description = ''
-            Slot-state snapshots kept for prefix caching (--prefix-snapshots), ~7 MB of pinned host
-            memory each. A request that repeats an earlier prefix (the next chat turn, a shared system
-            prompt) resumes from the deepest saved page boundary it matches. 0 turns prefix caching off.
-          '';
-        };
-        extraEnv = mkOption {
-          type = types.attrsOf types.str;
+        instances = mkOption {
           default = { };
-          description = "Extra environment for unholy serve; merged last.";
-        };
-        extraFlags = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
+          description = "Model servers by name, each unholy-<name>.service; unholy serve picks the engine from the checkpoint.";
+          type = types.attrsOf (
+            types.submodule {
+              options = {
+                model = mkOption {
+                  type = types.str;
+                  example = "/scratch/dsv4-ve";
+                  description = ''
+                    Checkpoint directory: native DeepSeek-V4-Flash (config, tokenizer, dense and MXFP4 expert
+                    weights) or a GLM-5.3-Flash EXL3 quant.
+                  '';
+                };
+                exl3 = mkOption {
+                  type = types.nullOr types.str;
+                  default = null;
+                  description = "DeepSeek-V4-Flash: an EXL3 quant whose routed experts replace the native MXFP4 ones. Null serves the native experts.";
+                };
+                profile = mkOption {
+                  type = types.nullOr types.str;
+                  default = null;
+                  description = ''
+                    Expert routing profile used to place hot experts on the cards (--profile). Null uses the
+                    profile the package ships for the model family.
+                  '';
+                };
+                servedModelName = mkOption {
+                  type = types.str;
+                  example = "dsv4-flash";
+                };
+                port = mkOption {
+                  type = types.port;
+                };
+                kvTokens = mkOption {
+                  type = types.ints.positive;
+                  default = 1048576;
+                  description = ''
+                    KV cache pool in tokens, shared by all requests (--kv-tokens), as vLLM's cache: a request
+                    takes 256-token pages as it grows. Every GB of pool displaces ~80 hot experts from the
+                    cards (see `unholy plan`).
+                  '';
+                };
+                maxModelLen = mkOption {
+                  type = types.ints.positive;
+                  default = 524288;
+                  description = "Maximum tokens per request, prompt + completion (--max-model-len).";
+                };
+                maxNumSeqs = mkOption {
+                  type = types.ints.positive;
+                  default = 8;
+                  description = "Requests running at once (--max-num-seqs).";
+                };
+                maxBatchTokens = mkOption {
+                  type = types.ints.positive;
+                  default = 4096;
+                  description = "Tokens per engine step (--max-batch-tokens): decode tokens first, prefill chunks fill the rest.";
+                };
+                specDrafts = mkOption {
+                  type = types.ints.between 0 5;
+                  default = 0;
+                  description = ''
+                    Speculative decoding (--spec-drafts; 0 turns it off): DeepSeek-V4-Flash drafts this many
+                    tokens per step with its DSpark drafter (~10 GB of experts in the iGPU's share of RAM),
+                    GLM-5.3-Flash one with its MTP layer for any value above 0. Outputs are exactly what the
+                    model would produce without it.
+                  '';
+                };
+                prefixSnapshots = mkOption {
+                  type = types.ints.unsigned;
+                  default = 128;
+                  description = ''
+                    Slot-state snapshots kept for prefix caching (--prefix-snapshots), in pinned host memory:
+                    ~7 MB each for DeepSeek-V4-Flash, ~148 MB for GLM-5.3-Flash (as many as fit beside the
+                    iGPU's experts). A request that repeats an earlier prefix (the next chat turn, a shared
+                    system prompt) resumes from the deepest saved page boundary it matches. 0 turns prefix
+                    caching off.
+                  '';
+                };
+                extraEnv = mkOption {
+                  type = types.attrsOf types.str;
+                  default = { };
+                  description = "Extra environment for unholy serve; merged last.";
+                };
+                extraFlags = mkOption {
+                  type = types.listOf types.str;
+                  default = [ ];
+                };
+              };
+            }
+          );
         };
       };
       services.eklow = {

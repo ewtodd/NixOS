@@ -31,13 +31,29 @@ in
     services.unholy = {
       enable = true;
       lanExpose = true;
-      model = "/scratch/dsv4-ve";
-      kvTokens = 1572864;
-      maxModelLen = 786432;
-      maxNumSeqs = 8;
-      specDrafts = 5;
-      prefixSnapshots = 64;
       managers = [ "son-of-anton" ];
+      instances.ds4 = {
+        model = "/scratch/dsv4-ve";
+        servedModelName = "dsv4-flash";
+        port = 8200;
+        kvTokens = 1572864;
+        maxModelLen = 786432;
+        maxNumSeqs = 8;
+        specDrafts = 5;
+        prefixSnapshots = 64;
+      };
+      instances.glm = {
+        model = "/scratch/models/glm53-flash-exl3-4.05bpw";
+        servedModelName = "glm53";
+        # Not 8300: unholy's development servers (tools/box) use it.
+        port = 8250;
+        kvTokens = 1048576;
+        maxModelLen = 786432;
+        maxNumSeqs = 8;
+        maxBatchTokens = 3072;
+        specDrafts = 1;
+        prefixSnapshots = 64;
+      };
     };
     services.radiance = {
       enable = true;

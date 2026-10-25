@@ -5,17 +5,17 @@
   ...
 }:
 
-# Which model set owns son-of-anton's GPUs: `ds4` (unholy: DeepSeek-V4-Flash on both R9700s + the iGPU)
-# or `qwen` (Radiance: Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU). The model
-# services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default)
-# and `llm-mode ds4|qwen` switches at run time, no redeploy. unholy and the Qwen pair also conflict in
-# systemd, so starting one side by hand stops the other.
+# Which model set owns son-of-anton's GPUs: an unholy instance, a mode of its own name (`ds4`:
+# DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), or `qwen` (Radiance:
+# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU). The model services do not start on
+# their own; `llm-mode-boot` starts the last selected mode (or the default) and `llm-mode <mode>` switches
+# at run time, no redeploy. The unholy instances and the Qwen pair also conflict in systemd, so starting
+# one by hand stops the others.
 let
   cfg = config.systemOptions.services.llmMode;
   svc = config.systemOptions.services;
 
-  modes = {
-    ds4 = [ "unholy.service" ];
+  modes = lib.mapAttrs (name: _: [ "unholy-${name}.service" ]) svc.unholy.instances // {
     qwen = [
       "radiance.service"
       "gufo-strix.service"
@@ -25,20 +25,21 @@ let
   stateFile = "/var/lib/llm-mode/mode";
 
   # name -> (port, model) for `llm-mode status`.
-  endpoints = [
-    {
-      unit = "unholy.service";
-      port = svc.unholy.port;
-    }
-    {
-      unit = "radiance.service";
-      port = svc.radiance.port;
-    }
-    {
-      unit = "gufo-strix.service";
-      port = svc.gufoStrix.port;
-    }
-  ];
+  endpoints =
+    lib.mapAttrsToList (name: inst: {
+      unit = "unholy-${name}.service";
+      inherit (inst) port;
+    }) svc.unholy.instances
+    ++ [
+      {
+        unit = "radiance.service";
+        port = svc.radiance.port;
+      }
+      {
+        unit = "gufo-strix.service";
+        port = svc.gufoStrix.port;
+      }
+    ];
 
   # Runs as root from llm-mode@MODE.service: stop the other mode's units, start this one's (without
   # blocking on their load), remember the choice for the next boot.
@@ -100,6 +101,10 @@ in
         assertion = svc.unholy.enable && svc.radiance.enable && svc.gufoStrix.enable;
         message = "services.llmMode switches between unholy and radiance + gufoStrix; enable all three.";
       }
+      {
+        assertion = modes ? ${cfg.default};
+        message = "services.llmMode.default '${cfg.default}' is not a mode (${lib.concatStringsSep ", " (lib.attrNames modes)}).";
+      }
     ];
 
     environment.systemPackages = [ cli ];
@@ -109,9 +114,10 @@ in
       (lib.genAttrs (map (lib.removeSuffix ".service") allUnits) (_: {
         wantedBy = lib.mkForce [ ];
       }))
+      (lib.mapAttrs' (
+        name: _: lib.nameValuePair "unholy-${name}" { conflicts = modes.qwen; }
+      ) svc.unholy.instances)
       {
-        unholy.conflicts = modes.qwen;
-
         "llm-mode@" = {
           description = "Switch son-of-anton's GPUs to the %i model set";
           serviceConfig = {
