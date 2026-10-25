@@ -88,6 +88,8 @@ in
     openssh.authorizedKeys.keys = personalKeys;
   };
 
+  hardware.graphics.extraPackages = [ pkgs.intel-compute-runtime ];
+
   # Development on the A770M stops and restarts the llama servers without sudo.
   security.polkit.extraConfig = ''
     polkit.addRule(function (action, subject) {
