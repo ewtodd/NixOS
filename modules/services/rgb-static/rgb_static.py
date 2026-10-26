@@ -41,7 +41,11 @@ def parse_color(text):
 def connect():
     for attempt in range(1, CONNECT_ATTEMPTS + 1):
         try:
-            return OpenRGBClient(name="rgb-static")
+            # Protocol 3, not the library's default 4: OpenRGB 1.0 in --server
+            # mode never answers the protocol-4 plugin-list request, so
+            # openrgb-python sits out a 10 s socket timeout and reconnects
+            # before the constructor returns. Nothing here uses plugins.
+            return OpenRGBClient(name="rgb-static", protocol_version=3)
         except (ConnectionError, OSError) as exc:
             if attempt == CONNECT_ATTEMPTS:
                 raise
