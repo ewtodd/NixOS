@@ -336,11 +336,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792905596,
-        "narHash": "sha256-KF/ZsVluWBU3Cwkz0u90rCwYKnPfxk9gDx7GSAOps+0=",
+        "lastModified": 1793038427,
+        "narHash": "sha256-nayrJzYF9IR3TVL+0QEhA+fxVYIHJ7gnJkvDqjPD59s=",
         "owner": "ewtodd",
         "repo": "eklow",
-        "rev": "9249d600e7ea993931520b2e53acf547a7677bc4",
+        "rev": "cc79fc7f2e2d8f8460fb4d76d68fdc3a14ce4859",
         "type": "github"
       },
       "original": {

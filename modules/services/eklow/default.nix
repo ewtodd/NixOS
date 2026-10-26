@@ -19,9 +19,10 @@ in
       enable = true;
       host = if cfg.lanExpose then "0.0.0.0" else "127.0.0.1";
       openFirewall = cfg.lanExpose;
-      # maitred lists llama/gemma-4-12b with this window and two slots.
-      contextSize = 65536;
+      # maitred lists eklow/gemma-4-12b with this window and two slots.
+      contextSize = 262144;
       slots = 2;
+      kvInt8 = true;
     };
   };
 }

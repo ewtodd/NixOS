@@ -73,7 +73,7 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
-      # llama.cpp on fiona: the title model, Gemma 4 and the embedding server.
+      # fiona: llama.cpp serves the title model; eklow serves Gemma 4 and the embeddings.
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
@@ -199,11 +199,11 @@ let
         tier = 1;
       }
       {
-        id = "llama/gemma-4-12b";
+        id = "eklow/gemma-4-12b";
         upstream = "gemma";
         upstream_model = "gemma-4-12b";
         display_name = "Gemma 4 12B";
-        context_length = 65536;
+        context_length = 262144;
         reasoning_efforts = [
           "none"
           "high"
