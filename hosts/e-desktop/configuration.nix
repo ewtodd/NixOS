@@ -80,6 +80,16 @@ in
     services.rgbLoad = {
       enable = true;
       backend = "openrgb";
+      # The board and the GPU; drop to 1 when the GPU goes.
+      expectedDevices = 2;
+      # The GPU's lighting cannot be seen from outside the case.
+      excludeDevices = [ "GeForce" ];
+      # Only has to cover each header's chain; colours for LEDs past its end go nowhere.
+      zoneSizes = {
+        ARGB_V2_1 = 100;
+        ARGB_V2_2 = 100;
+        ARGB_V2_3 = 100;
+      };
     };
     hardware.suzyqable.enable = true;
     hardware.xbox.enable = true;

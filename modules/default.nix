@@ -1193,6 +1193,38 @@ with lib;
         default = "openrgb";
         description = "Lighting backend: the OpenRGB SDK server, or `framework_tool --rgbkbd`.";
       };
+      services.rgbLoad.expectedDevices = mkOption {
+        type = types.ints.unsigned;
+        default = 0;
+        example = 2;
+        description = ''
+          OpenRGB backend: how many controllers `openrgb --list-devices`
+          reports, excluded ones included. Same boot race as
+          services.rgbStatic.expectedDevices: without it the board can be
+          missed. 0 waits for the list to stop growing instead. If the count is
+          never reached, the service drives whatever it found after two minutes.
+        '';
+      };
+      services.rgbLoad.zoneSizes = mkOption {
+        type = types.attrsOf types.ints.unsigned;
+        default = { };
+        example = {
+          ARGB_V2_1 = 30;
+        };
+        description = ''
+          OpenRGB backend: LED counts for resizable (ARGB header) zones, keyed
+          by zone name, applied every time the service starts. The server only
+          remembers sizes per controller location, a hidraw path that can move
+          between boots, and a header it has no size for comes up with 0 LEDs
+          and stays dark.
+        '';
+      };
+      services.rgbLoad.excludeDevices = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        example = [ "GeForce" ];
+        description = "OpenRGB backend: devices to leave alone, by case-insensitive substring of the device name.";
+      };
 
       services.rgbStatic.enable = mkEnableOption ''
         fixed OpenRGB colours, applied at boot and after resume. The

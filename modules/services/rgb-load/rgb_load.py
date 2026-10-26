@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import glob
+import json
 import subprocess
 import time
 
@@ -15,6 +16,22 @@ FRAMEWORK_EMIT_INTERVAL = 0.1   # 10 Hz
 FRAMEWORK_LEDS          = 8
 
 AMDGPU_BUSY_GLOB = "/sys/class/drm/card*/device/gpu_busy_percent"
+
+# openrgb.service is Type=simple and the SDK server starts listening part-way
+# through enumeration: on e-desktop the GPU is listed at once and the board two
+# seconds later. A client that takes the first list it gets never drives the
+# late arrivals, so wait for the count the host config expects (rgb-static has
+# the same wait).
+CONNECT_ATTEMPTS = 30
+CONNECT_INTERVAL = 1.0
+DETECT_POLL      = 0.5
+DETECT_SETTLE    = 8.0
+DETECT_TIMEOUT   = 120.0
+
+# A controller can drop a mode command sent just after it is enumerated while
+# OpenRGB's model still records the new mode, so zone sizes and Direct are
+# re-sent at these offsets (seconds after detection), as rgb-static does.
+SETUP_PASSES = (0.0, 2.0, 5.0, 15.0, 30.0)
 
 
 PINK_STOPS = (
@@ -81,34 +98,105 @@ def make_gpu_reader(vendor):
     return read_load
 
 
-def make_openrgb_emitter():
+def connect_openrgb():
     from openrgb import OpenRGBClient
+
+    for attempt in range(1, CONNECT_ATTEMPTS + 1):
+        try:
+            # Protocol 3, not the library's default 4: OpenRGB 1.0 in --server
+            # mode never answers the protocol-4 plugin-list request, so
+            # openrgb-python sits out a 10 s socket timeout and reconnects
+            # before the constructor returns. Nothing here uses plugins.
+            return OpenRGBClient(name="rgb-load", protocol_version=3)
+        except (ConnectionError, OSError) as exc:
+            if attempt == CONNECT_ATTEMPTS:
+                raise
+            print(f"rgb-load: waiting for the OpenRGB server ({exc})", flush=True)
+            time.sleep(CONNECT_INTERVAL)
+
+
+def wait_for_detection(client, expected):
+    """Poll the server until it lists `expected` devices (0: until the count
+    stops growing). Gives up after DETECT_TIMEOUT and carries on with whatever
+    was found, so a missing controller costs its own lights, not the rest."""
+    deadline = time.monotonic() + DETECT_TIMEOUT
+    count, changed_at = -1, time.monotonic()
+    while time.monotonic() < deadline:
+        client.update()
+        found = len(client.devices)
+        if found != count:
+            print(f"rgb-load: detected {found} device(s)", flush=True)
+            count, changed_at = found, time.monotonic()
+        if expected and found >= expected:
+            return
+        if not expected and found and time.monotonic() - changed_at >= DETECT_SETTLE:
+            return
+        time.sleep(DETECT_POLL)
+    print(f"rgb-load: {count} device(s) after {DETECT_TIMEOUT:.0f}s, expected {expected}", flush=True)
+
+
+def make_openrgb_emitter(expect_devices, zone_sizes, exclude):
     from openrgb.utils import RGBColor
 
-    client = OpenRGBClient()
+    client = connect_openrgb()
+    wait_for_detection(client, expect_devices)
 
-    # A device only honours per-LED colour writes while it is in a software
-    # mode. Anything left in a hardware effect (the MSI board boots into
-    # "Rainbow wave", the Gigabyte GPU into "Static") ignores the updates and
-    # keeps running its own animation, so put every device into Direct first.
-    # Sent unconditionally, never skipped because the cached mode already looks
-    # right: a mode command the hardware drops still updates OpenRGB's model, so
-    # the server can report Direct for a board that is really still running its
-    # BIOS effect and ignoring every colour we write.
+    def excluded(dev):
+        return any(pattern.lower() in dev.name.lower() for pattern in exclude)
+
+    def targets():
+        return [dev for dev in client.devices if not excluded(dev)]
+
+    def setup():
+        # ARGB header zones are resizable and come up with whatever size the
+        # server has saved for the controller's location, 0 if none; colour
+        # writes reach only the LEDs the zone claims.
+        for dev in targets():
+            for zone in dev.zones:
+                size = zone_sizes.get(zone.name)
+                if size is None or len(zone.leds) == size:
+                    continue
+                print(f"rgb-load: {dev.name}: {zone.name}: {len(zone.leds)} -> {size} LEDs", flush=True)
+                try:
+                    zone.resize(size)
+                except Exception as exc:
+                    print(f"rgb-load: {dev.name}: {zone.name}: cannot resize: {exc}", flush=True)
+        client.update()
+
+        # A device only honours per-LED colour writes while it is in a software
+        # mode. Anything left in a hardware effect (the MSI board boots into
+        # "Rainbow wave", the Gigabyte GPU into "Static") ignores the updates and
+        # keeps running its own animation, so put every device into Direct first.
+        # Sent unconditionally, never skipped because the cached mode already looks
+        # right: a mode command the hardware drops still updates OpenRGB's model, so
+        # the server can report Direct for a board that is really still running its
+        # BIOS effect and ignoring every colour we write.
+        for dev in targets():
+            modes = {mode.name.lower(): mode.name for mode in dev.modes}
+            name = modes.get("direct") or modes.get("static")
+            if name is None:
+                continue
+            try:
+                dev.set_mode(name)
+            except Exception as exc:  # a device we cannot switch is not fatal
+                print(f"rgb-load: {dev.name}: cannot set mode {name}: {exc}", flush=True)
+
     for dev in client.devices:
-        modes = {mode.name.lower(): mode.name for mode in dev.modes}
-        name = modes.get("direct") or modes.get("static")
-        if name is None:
-            continue
-        try:
-            dev.set_mode(name)
-        except Exception as exc:  # a device we cannot switch is not fatal
-            print(f"rgb-load: {dev.name}: cannot set mode {name}: {exc}", flush=True)
+        state = "excluded" if excluded(dev) else f"{len(dev.leds)} LEDs"
+        print(f"rgb-load: {dev.name}: {state}", flush=True)
+
+    passes = list(SETUP_PASSES)
+    detected_at = time.monotonic()
 
     def emit(color):
+        if passes and time.monotonic() - detected_at >= passes[0]:
+            passes.pop(0)
+            setup()
         rgb = RGBColor(*color)
-        for dev in client.devices:
-            dev.set_color(rgb)
+        for dev in targets():
+            # fast: skip the full device read-back after every write, which for
+            # the board is a few hundred LEDs parsed 60 times a second.
+            dev.set_color(rgb, fast=True)
 
     def close():
         client.disconnect()
@@ -140,12 +228,21 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--backend", choices=["openrgb", "framework"], required=True)
     parser.add_argument("--gpu", choices=["nvidia", "amd", "none"], default="none")
+    parser.add_argument("--expect-devices", type=int, default=0)
+    parser.add_argument("--zone-sizes", default="{}")
+    parser.add_argument("--exclude-devices", default="[]")
     args = parser.parse_args()
 
     read_cpu = make_cpu_reader()
     read_gpu = make_gpu_reader(args.gpu)
     emit, close = (
-        make_openrgb_emitter() if args.backend == "openrgb" else make_framework_emitter()
+        make_openrgb_emitter(
+            args.expect_devices,
+            json.loads(args.zone_sizes),
+            json.loads(args.exclude_devices),
+        )
+        if args.backend == "openrgb"
+        else make_framework_emitter()
     )
 
     last_sample = time.monotonic()

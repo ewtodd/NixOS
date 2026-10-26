@@ -30,6 +30,19 @@ let
       exec python3 ${./rgb_load.py} "$@"
     '';
   };
+
+  command = lib.concatStringsSep " " (
+    [
+      "${rgb-load}/bin/rgb-load"
+      "--backend ${cfg.backend}"
+      "--gpu ${gpu}"
+    ]
+    ++ lib.optionals (cfg.backend == "openrgb") [
+      "--expect-devices ${toString cfg.expectedDevices}"
+      "--zone-sizes ${lib.escapeShellArg (builtins.toJSON cfg.zoneSizes)}"
+      "--exclude-devices ${lib.escapeShellArg (builtins.toJSON cfg.excludeDevices)}"
+    ]
+  );
 in
 {
   config = lib.mkIf cfg.enable {
@@ -40,7 +53,7 @@ in
       after = lib.optional (cfg.backend == "openrgb") "openrgb.service";
       wants = lib.optional (cfg.backend == "openrgb") "openrgb.service";
       serviceConfig = {
-        ExecStart = "${rgb-load}/bin/rgb-load --backend ${cfg.backend} --gpu ${gpu}";
+        ExecStart = command;
         Restart = "on-failure";
         RestartSec = "5s";
       };
