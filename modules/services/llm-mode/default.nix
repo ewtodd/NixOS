@@ -93,6 +93,21 @@ let
       *) echo "usage: llm-mode ${lib.concatStringsSep "|" (lib.attrNames modes)}|status" >&2; exit 2 ;;
     esac
   '';
+
+  # Bash completion, generated from `modes` so it can't drift from the case arm
+  # above; installed through the system profile so interactive bash lazy-loads it
+  # from its $XDG_DATA_DIRS/bash-completion/completions.
+  completion = pkgs.runCommand "llm-mode-completions" { } ''
+    mkdir -p "$out/share/bash-completion/completions"
+    cat > "$out/share/bash-completion/completions/llm-mode" <<'EOF'
+    _llm_mode() {
+      local cur=''${COMP_WORDS[COMP_CWORD]}
+      ((COMP_CWORD == 1)) || return 0
+      COMPREPLY=($(compgen -W "${lib.concatStringsSep " " (lib.attrNames modes)} status" -- "$cur"))
+    }
+    complete -F _llm_mode llm-mode
+    EOF
+  '';
 in
 {
   config = lib.mkIf cfg.enable {
@@ -107,7 +122,10 @@ in
       }
     ];
 
-    environment.systemPackages = [ cli ];
+    environment.systemPackages = [
+      cli
+      completion
+    ];
 
     # The mode decides what runs; none of the model services starts on its own.
     systemd.services = lib.mkMerge [
