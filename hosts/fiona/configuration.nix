@@ -22,7 +22,7 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:30:00";
-    # Gemma 4 12B and the RAG embeddings for maitred on mu, on the A770M.
+    # Gemma 4 26B A4B and the RAG embeddings for maitred on mu, on the A770M.
     services.eklow = {
       enable = true;
       lanExpose = true;

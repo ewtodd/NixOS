@@ -199,10 +199,10 @@ let
         tier = 1;
       }
       {
-        id = "eklow/gemma-4-12b";
+        id = "eklow/gemma-4-26b-a4b";
         upstream = "gemma";
-        upstream_model = "gemma-4-12b";
-        display_name = "Gemma 4 12B";
+        upstream_model = "gemma-4-26b-a4b";
+        display_name = "Gemma 4 26B A4B";
         context_length = 262144;
         reasoning_efforts = [
           "none"
