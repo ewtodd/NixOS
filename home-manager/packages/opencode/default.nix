@@ -381,6 +381,27 @@ in
                 output = [ "text" ];
               };
             };
+            # eklow on fiona's A770M, two slots of 262k; Gemma 4 thinks or not (efforts none and high).
+            # Full id, as maitred lists it. Text only: eklow has no image input yet.
+            "eklow/gemma-4-26b-a4b" = {
+              name = "Gemma 4 26B A4B";
+              variants = {
+                high = {
+                  reasoningEffort = "high";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 262144;
+                output = 65536;
+              };
+              modalities = {
+                input = [ "text" ];
+                output = [ "text" ];
+              };
+            };
           };
         };
       };

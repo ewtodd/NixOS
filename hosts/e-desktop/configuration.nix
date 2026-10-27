@@ -353,6 +353,15 @@ in
                 "xhigh"
               ];
             };
+            # eklow on fiona's A770M; Gemma 4 thinks or not. No image input yet (eklow answers
+            # image parts with an error).
+            "eklow/gemma-4-26b-a4b" = {
+              reasoning_effort = "high";
+              reasoning_efforts = [
+                "none"
+                "high"
+              ];
+            };
             "deepseek/deepseek-flash" = {
               reasoning_effort = "max";
               reasoning_efforts = [
