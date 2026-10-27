@@ -15,8 +15,9 @@ const IDLE_MS = 3000;
 const CSS = `
   #tony-home {
     position: fixed;
-    top: 3vmin;
-    left: 3vmin;
+    bottom: 3vmin;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 2147483647;
     display: flex;
     align-items: center;
