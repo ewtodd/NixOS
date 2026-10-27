@@ -1,7 +1,6 @@
 {
   osConfig,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -12,7 +11,6 @@ in
   programs = {
     firefox = {
       enable = true;
-      package = pkgs.firefox-esr;
       configPath = ".mozilla/firefox";
       policies = lib.mkIf e {
         DisableTelemetry = true;
