@@ -9,8 +9,9 @@
 # DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), or `qwen` (Radiance:
 # Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU). The model services do not start on
 # their own; `llm-mode-boot` starts the last selected mode (or the default) and `llm-mode <mode>` switches
-# at run time, no redeploy. The unholy instances and the Qwen pair also conflict in systemd, so starting
-# one by hand stops the others.
+# at run time, no redeploy. `llm-mode pause` stops them all and keeps the selection until `llm-mode resume`
+# or a reboot. The unholy instances and the Qwen pair also conflict in systemd, so starting one by hand
+# stops the others.
 let
   cfg = config.systemOptions.services.llmMode;
   svc = config.systemOptions.services;
@@ -23,6 +24,7 @@ let
   };
   allUnits = lib.unique (lib.concatLists (lib.attrValues modes));
   stateFile = "/var/lib/llm-mode/mode";
+  pausedFile = "/run/llm-mode/paused";
 
   # name -> (port, model) for `llm-mode status`.
   endpoints =
@@ -42,7 +44,8 @@ let
     ];
 
   # Runs as root from llm-mode@MODE.service: stop the other mode's units, start this one's (without
-  # blocking on their load), remember the choice for the next boot.
+  # blocking on their load), remember the choice for the next boot. MODE `pause` stops every unit and
+  # leaves the remembered mode alone.
   switch = pkgs.writeShellScript "llm-mode-switch" ''
     set -eu
     mode=$1
@@ -52,6 +55,7 @@ let
         ${m}) want="${lib.concatStringsSep " " units}" ;;
       '') modes
     )}
+      pause) want="" ;;
       *) echo "llm-mode: unknown mode '$mode' (${lib.concatStringsSep ", " (lib.attrNames modes)})" >&2; exit 2 ;;
     esac
     stop=""
@@ -60,6 +64,13 @@ let
     done
     # The other side must be gone before this one allocates its GPUs.
     [ -n "$stop" ] && ${pkgs.systemd}/bin/systemctl stop $stop
+    if [ "$mode" = pause ]; then
+      mkdir -p ${dirOf pausedFile}
+      touch ${pausedFile}
+      echo "llm-mode: paused"
+      exit 0
+    fi
+    rm -f ${pausedFile}
     ${pkgs.systemd}/bin/systemctl start --no-block $want
     mkdir -p /var/lib/llm-mode
     echo "$mode" > ${stateFile}
@@ -77,20 +88,28 @@ let
       ]
     }
     status() {
-      echo "mode: $(cat ${stateFile} 2>/dev/null || echo "${cfg.default} (default)")"
+      paused=""
+      [ -e ${pausedFile} ] && paused=" (paused)"
+      echo "mode: $(cat ${stateFile} 2>/dev/null || echo "${cfg.default} (default)")$paused"
       ${lib.concatMapStrings (e: ''
         st=$(systemctl is-active ${e.unit} 2>/dev/null)
         models=$(curl -fsS --max-time 3 http://127.0.0.1:${toString e.port}/v1/models 2>/dev/null | jq -r '[.data[].id] | join(",")' 2>/dev/null)
         printf '  %-20s %-10s :%-5s %s\n' ${e.unit} "$st" ${toString e.port} "''${models:-(not serving)}"
       '') endpoints}
     }
-    case "''${1:-status}" in
+    cmd=''${1:-status}
+    [ "$cmd" = resume ] && cmd=$(cat ${stateFile} 2>/dev/null || echo ${cfg.default})
+    case "$cmd" in
       status) status ;;
-      ${lib.concatStringsSep "|" (lib.attrNames modes)})
-        systemctl start "llm-mode@$1.service" || exit $?
-        echo "switched to $1; models load in the background (unholy ~1-2 min, radiance/gufo ~2-5 min)"
+      pause)
+        systemctl start llm-mode@pause.service || exit $?
+        echo "paused: the GPUs are free until llm-mode resume (or a reboot)"
         status ;;
-      *) echo "usage: llm-mode ${lib.concatStringsSep "|" (lib.attrNames modes)}|status" >&2; exit 2 ;;
+      ${lib.concatStringsSep "|" (lib.attrNames modes)})
+        systemctl start "llm-mode@$cmd.service" || exit $?
+        echo "switched to $cmd; models load in the background (unholy ~1-2 min, radiance/gufo ~2-5 min)"
+        status ;;
+      *) echo "usage: llm-mode ${lib.concatStringsSep "|" (lib.attrNames modes)}|pause|resume|status" >&2; exit 2 ;;
     esac
   '';
 
@@ -103,7 +122,7 @@ let
     _llm_mode() {
       local cur=''${COMP_WORDS[COMP_CWORD]}
       ((COMP_CWORD == 1)) || return 0
-      COMPREPLY=($(compgen -W "${lib.concatStringsSep " " (lib.attrNames modes)} status" -- "$cur"))
+      COMPREPLY=($(compgen -W "${lib.concatStringsSep " " (lib.attrNames modes)} pause resume status" -- "$cur"))
     }
     complete -F _llm_mode llm-mode
     EOF
