@@ -180,7 +180,6 @@ in
           model = "auto";
           settings.gateway.single_user = true;
           settings = {
-            platforms.signal.gateway_restart_notification = true;
             mcp_servers = lib.mapAttrs (name: _: {
               command = "${pkgs.socat}/bin/socat";
               args = [
