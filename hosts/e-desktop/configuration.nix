@@ -303,6 +303,9 @@ in
           model = "embed/embeddinggemma-2";
           api_key_env = "MAITRED_KEY_SOA";
           top_k = 5;
+          # No per-refresh cap: eklow embeds ~20k tok/s, so a full rebuild (a model or prompt change) takes minutes
+          # instead of ~40 hours at the default 200 chunks per 15-minute refresh.
+          max_chunks_per_refresh = 0;
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
