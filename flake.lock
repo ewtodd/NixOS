@@ -49,11 +49,11 @@
         "root-src": "root-src"
       },
       "locked": {
-        "lastModified": 1792702408,
-        "narHash": "sha256-uPz3CCSq4rgflUEO4I/D31dlUqKUoGExPQg7AQih7nE=",
+        "lastModified": 1792894075,
+        "narHash": "sha256-4O1lZG7fmSeAoZ0YOKPFfYxPbG0fC/BHyrUuqsNlfhQ=",
         "owner": "ewtodd",
         "repo": "Analysis-Utilities",
-        "rev": "da6489d00bd8f1c0d39879fdbe7cdd1270e7ed7e",
+        "rev": "f0f7d40d9b94b50a34ff69e2c5a17cc8282df225",
         "type": "github"
       },
       "original": {
@@ -336,11 +336,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793148455,
-        "narHash": "sha256-t3eBANQbsKask3KM9OUDLrqGPG4weeKONhaJ48ebGmw=",
+        "lastModified": 1793156197,
+        "narHash": "sha256-r1KLo/xCXcEW2JY+vOQ8jdqTMSOKJNw2xGSaBWKQO0Y=",
         "owner": "ewtodd",
         "repo": "eklow",
-        "rev": "be49996869d7316d1a7de0dde084f091eaf8afa6",
+        "rev": "76d85880a3a580b24dc6e88e1d50c059177662b2",
         "type": "github"
       },
       "original": {
@@ -1271,11 +1271,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1792874350,
-        "narHash": "sha256-vsvZGViBqlTJcegYndJGyfN30aF6bU00oY/cJmI+POc=",
+        "lastModified": 1793156640,
+        "narHash": "sha256-zi9RkwqfjbW/hDuDrHd3o4lbEHeCtVFkvFWp/NPKJlk=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "85300ef37bea62f00671adc9fae6214ae2eabda8",
+        "rev": "bb2a12061182431b0fd75bcc203340e4da2dd8f8",
         "type": "github"
       },
       "original": {
