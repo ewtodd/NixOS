@@ -36,7 +36,8 @@ SETUP_PASSES = (0.0, 2.0, 5.0, 15.0, 30.0)
 
 PINK_STOPS = (
     (255, 255, 255),
-    (255, 182, 193),
+    (255, 105, 180),
+    (230, 30, 120),
     (190, 15, 110),
 )
 
@@ -82,18 +83,24 @@ def make_gpu_reader(vendor):
     if vendor == "nvidia":
         import pynvml
         pynvml.nvmlInit()
-        gpu = pynvml.nvmlDeviceGetHandleByIndex(0)
-        return lambda: float(pynvml.nvmlDeviceGetUtilizationRates(gpu).gpu)
+        gpus = [pynvml.nvmlDeviceGetHandleByIndex(i) for i in range(pynvml.nvmlDeviceGetCount())]
+        return lambda: max(float(pynvml.nvmlDeviceGetUtilizationRates(g).gpu) for g in gpus)
 
-    # amd: amdgpu exposes instantaneous busy percentage via sysfs.
+    # amd: amdgpu exposes instantaneous busy percentage via sysfs. Hosts with
+    # several cards expose one node each, and they diverge heavily on son-of-anton
+    # (one R9700 idle-ish while the other decodes), so the light follows the
+    # busiest card, not whichever node sorts first.
     paths = glob.glob(AMDGPU_BUSY_GLOB)
     if not paths:
         raise RuntimeError(f"no amdgpu busy sysfs node found ({AMDGPU_BUSY_GLOB})")
-    path = sorted(paths)[0]
 
     def read_load():
-        with open(path) as f:
-            return float(f.read().strip())
+        with open(paths[0]) as f:
+            busy = float(f.read().strip())
+        for path in paths[1:]:
+            with open(path) as f:
+                busy = max(busy, float(f.read().strip()))
+        return busy
 
     return read_load
 
