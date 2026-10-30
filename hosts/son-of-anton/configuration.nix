@@ -70,10 +70,10 @@ in
     services.gufoStrix = {
       enable = true;
       lanExpose = true;
-      model = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
+      model = "/scratch/models/gufo/swift15-flash-next/Swift-1.5-Qwen3.8-Flash-Next-UD-Q4_K_XL-layout.gguf";
       mtpModel = "/scratch/models/gufo/qwen3.8-flash-next/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf";
       draftTokens = 5;
-      mmproj = "/scratch/models/gufo/qwen3.8-flash-next/mmproj-BF16.gguf";
+      mmproj = "/scratch/models/gufo/swift15-flash-next/mmproj-Swift-1.5-Qwen3.8-Flash-Next-BF16.gguf";
       sessions = 2;
       context = 262144;
       yarn = false;
