@@ -80,8 +80,8 @@ on it in `home-manager/packages/default.nix`:
 Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 ## Desktop Environment
 - **Compositor:** niri (scrollable tiling Wayland)
-- **Shell:** DankMaterialShell (DMS)
-- **Greeter:** DMS greeter
+- **Shell:** Dux (formerly DankMaterialShell/DMS; options still `programs.dank-material-shell`, binary still `dms`)
+- **Greeter:** Dux greeter (`services.displayManager.dux-greeter`)
 - **Config:** `home-manager/desktopEnvironment/`
 - **tony** is the exception: bare cage as a single-window kiosk compositor
 ## Shell & Terminal
@@ -117,7 +117,7 @@ Edit `home-manager/packages/default.nix`.
 Edit `home-manager/packages/shell/default.nix` for bash aliases.
 ## Binary Cache
 **e-desktop** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source.
-This is especially useful for git-versioned packages like niri, quickshell, and DMS.
+This is especially useful for git-versioned packages like niri, quickshell, and Dux.
 - **Server:** `nix-serve-ng` on e-desktop, exposed via Caddy reverse proxy on nu
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`

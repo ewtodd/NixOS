@@ -23,7 +23,7 @@ in
 
   programs.dank-material-shell = {
     enable = true;
-    package = pkgs.dms-shell;
+    package = pkgs.dux-shell;
     quickshell.package = pkgs.quickshell;
     enableDynamicTheming = false;
     enableAudioWavelength = false;
@@ -59,15 +59,11 @@ in
       latitude = 0;
       longitude = 0;
       nightModeUseIPLocation = false;
-      nightModeLocationProvider = "";
-      pinnedApps = [ ];
       hiddenTrayIds = [ ];
-      selectedGpuIndex = 0;
       nvidiaGpuTempEnabled = false;
       nonNvidiaGpuTempEnabled = false;
       enabledGpuPciIds = [ ];
       wifiDeviceOverride = "";
-      weatherHourlyDetailed = true;
       weatherLocation = weatherLocation;
       weatherCoordinates = weatherCoordinates;
       wallpaperCyclingEnabled = false;

@@ -20,7 +20,6 @@
     "systemd.show_status=false"
     "rd.udev.log_level=3"
   ];
-  boot.initrd.verbose = false;
   boot.consoleLogLevel = 0;
 
   environment.sessionVariables.LIBVA_DRIVER_NAME = "iHD";

@@ -21,19 +21,20 @@
     niri-nix = {
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.niri-unstable.follows = "";
-      inputs.xwayland-satellite-unstable.follows = "";
     };
     dank-material-shell = {
-      url = "github:AvengeMedia/DankMaterialShell/stable";
+      # The repo moved from AvengeMedia/DankMaterialShell to
+      # duxlabs-dev/dux-shell; /stable still exists and is what v2.0.0 (the
+      # version nixpkgs ships as pkgs.dux-shell) is tagged from.
+      url = "github:duxlabs-dev/dux-shell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     dms-plugin-registry = {
-      url = "github:AvengeMedia/dms-plugin-registry";
+      url = "github:duxlabs-dev/dux-plugin-registry";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     danksearch = {
-      url = "github:AvengeMedia/danksearch";
+      url = "github:duxlabs-dev/dux-search";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lifer = {
@@ -85,7 +86,6 @@
     radiance-nix = {
       url = "github:ewtodd/radiance-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.therock-sdk.follows = "unholy/therock-sdk";
     };
     unholy = {
       url = "github:ewtodd/unholy";
@@ -170,6 +170,14 @@
                     disabledTests = (old.disabledTests or [ ]) ++ [
                       "test_onnxfns_space_to_depth"
                     ];
+                  });
+                  # posthog's broken flag is mcp>=2 failing its test suite;
+                  # mcp is check-only and the runtime deps are trivial.
+                  posthog = pythonPkgs.posthog.overridePythonAttrs (old: {
+                    doCheck = false;
+                    meta = (old.meta or { }) // {
+                      broken = false;
+                    };
                   });
                 })
               ];

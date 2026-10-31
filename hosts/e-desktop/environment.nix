@@ -8,7 +8,6 @@
   boot.kernelPackages = pkgs.linuxPackages_zen;
   hardware.firmware = [ pkgs.linux-firmware ];
 
-  boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot = {
     enable = true;
     configurationLimit = 5;

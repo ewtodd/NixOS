@@ -40,8 +40,6 @@ in
   config = lib.mkIf cfg.enable {
     networking.interfaces.${cfg.wiredInterface}.wakeOnLan.enable = true;
 
-    boot.initrd.systemd.enable = true;
-
     boot.initrd.availableKernelModules = [ cfg.initrdNicModule ];
     boot.initrd.kernelModules = [ cfg.initrdNicModule ];
 

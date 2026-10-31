@@ -32,7 +32,7 @@ in
     lib.mkIf
       (config.systemOptions.deviceType.desktop.enable || config.systemOptions.deviceType.laptop.enable)
       {
-        services.displayManager.dms-greeter = {
+        services.displayManager.dux-greeter = {
           enable = true;
           compositor.name = "niri";
           compositor.customConfig = lib.optionalString config.systemOptions.owner.e.enable eDesktopGreeterNiriConfig;

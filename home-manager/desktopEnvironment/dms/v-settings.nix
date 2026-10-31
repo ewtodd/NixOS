@@ -35,8 +35,6 @@ in
     showMemUsage = true;
     showCpuTemp = true;
     showGpuTemp = true;
-    selectedGpuIndex = 0;
-    enabledGpuPciIds = [ ];
     showSystemTray = true;
     showClock = true;
     showNotificationButton = true;

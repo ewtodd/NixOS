@@ -49,8 +49,6 @@
 
       config = {
         dbtype = "pgsql";
-        adminuser = "ewtodd";
-        adminpassFile = config.age.secrets.nextcloud-admin-password.path;
       };
 
       settings = {
