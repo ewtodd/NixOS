@@ -15,6 +15,7 @@
         ../../home-manager/profiles/play.nix
       ];
       scheme = "${eris}";
+      WallpaperPath = "/etc/nixos/hosts/v-laptop/play.png";
     };
 
   "v-work" =
@@ -28,6 +29,7 @@
       ];
       home.packages = [ pkgs.signal-desktop ];
       scheme = "${pkgs.base16-schemes}/share/themes/atelier-cave.yaml";
+      WallpaperPath = "/etc/nixos/hosts/v-laptop/work.png";
     };
 
   "root" =
