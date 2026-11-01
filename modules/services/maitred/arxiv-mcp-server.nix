@@ -20,11 +20,9 @@ python3Packages.buildPythonApplication {
 
   build-system = [ python3Packages.hatchling ];
 
-  # nixpkgs ships mcp 1.26.0; upstream pins >=1.27.0 (compatible, relax it).
   # `black` is declared as a runtime dependency upstream (a packaging slip) --
   # it's a formatter, not imported at runtime, so drop it.
   pythonRelaxDeps = [
-    "mcp"
     "arxiv"
     "anyio"
   ];
@@ -36,7 +34,8 @@ python3Packages.buildPythonApplication {
     anyio
     arxivRelaxed
     httpx
-    mcp
+    # Upstream pins mcp<2: mcp 2 dropped the decorator Server API it uses.
+    mcp_1
     pydantic-settings
     pydantic
     python-dateutil
