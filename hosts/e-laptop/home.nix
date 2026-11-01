@@ -8,7 +8,7 @@
       imports = [
         ../../home-manager/profiles/play.nix
       ];
-      scheme = "${pkgs.base16-schemes}/share/themes/purpledream.yaml";
+      scheme = "${pkgs.base16-schemes}/share/themes/eldritch.yaml";
     };
   "e-work" =
     { pkgs, ... }:

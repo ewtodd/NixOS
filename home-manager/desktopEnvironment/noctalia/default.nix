@@ -13,7 +13,7 @@ let
       "desktop"
     else
       "laptop";
-  opacity = 0.875;
+  opacity = 0.9;
 in
 {
   imports = [
