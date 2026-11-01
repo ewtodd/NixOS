@@ -19,7 +19,7 @@
       services.lifer = {
         enable = true;
       };
-      scheme = "${pkgs.base16-schemes}/share/themes/isotope.yaml";
+      scheme = "${pkgs.base16-schemes}/share/themes/eldritch.yaml";
     };
   "e-work" =
     { pkgs, ... }:
