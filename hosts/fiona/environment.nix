@@ -14,6 +14,12 @@
     "xe.force_probe=5690"
   ];
   hardware.firmware = [ pkgs.linux-firmware ];
+  # Keep the A770M out of runtime suspend. On xe, a resume from it sometimes fails ("Force wake domain 0 failed to
+  # ack wake"): 76 times in the week to 2026-11-01, only while the card sat idle (none in the four days eklow served
+  # without a break), and on 2026-11-01 one left the card unusable until a reboot.
+  services.udev.extraRules = ''
+    ACTION=="add|bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0x5690", ATTR{power/control}="on"
+  '';
 
   boot.loader.systemd-boot = {
     enable = true;
