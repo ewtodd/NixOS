@@ -95,6 +95,12 @@ Colors managed via **base16.nix** with schemes from `pkgs.base16-schemes` on a p
 ```nix
 scheme = "${pkgs.base16-schemes}/share/themes/kanagawa.yaml";
 ```
+### Wallpapers
+When a user sets no `WallpaperPath`, one is generated from their base16 scheme:
+the NixOS logomark rendered with the theme's accent colours (`base08`–`base0E`)
+on a `base01` backdrop at 3840×2160, so it always matches the active theme. Set
+`WallpaperPath` to a file to use a custom wallpaper instead.
+![Wallpaper generated from the Kanagawa scheme](images/wallpaper-kanagawa.png)
 ## Adding a New Host
 ```bash
 nixos-generate-config --show-hardware-config > hosts/new-host/hardware-configuration.nix

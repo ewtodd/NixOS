@@ -1,4 +1,4 @@
-{ lib, osConfig, ... }:
+{ lib, ... }:
 with lib;
 {
   options = {
@@ -13,9 +13,8 @@ with lib;
     };
 
     WallpaperPath = mkOption {
-      type = types.str;
-      default = "/etc/nixos/hosts/${osConfig.networking.hostName}/wallpaper.png";
-      description = "Absolute path for wallpaper location";
+      type = types.path;
+      description = "Absolute path for wallpaper location. When unset, one is generated from the active base16 scheme.";
     };
 
     Owner = mkOption {

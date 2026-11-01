@@ -5,6 +5,7 @@
     ./packages
     ./system-options
     ./theming
+    ./wallpaper
     ./xdg
   ];
 }
