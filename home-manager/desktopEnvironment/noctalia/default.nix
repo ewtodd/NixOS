@@ -33,14 +33,13 @@ in
       };
       wallpaper = {
         enabled = true;
-        directory = "/etc/nixos/hosts/${hostname}";
+        directory = builtins.dirOf wallpaperPath;
         default.path = wallpaperPath;
       };
       backdrop.enabled = true;
       shell = {
         avatar_path = wallpaperPath;
         screen_time_enabled = true;
-        greeter_sync.auto_sync = true;
         session.actions = [
           {
             action = "lock";
@@ -67,7 +66,7 @@ in
             action = "shutdown";
             countdown_seconds = 5.0;
             enabled = true;
-            shortcut = "s";
+            shortcut = "p";
             variant = "default";
           }
         ];

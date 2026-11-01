@@ -58,6 +58,8 @@ let
     </svg>
   '';
 
+  # Emits a directory holding wallpaper.png so Noctalia's wallpaper.directory
+  # (builtins.dirOf the path) contains the file it can find.
   wallpaper = pkgs.stdenvNoCC.mkDerivation {
     name = "nixos-wallpaper";
     src = pkgs.writeText "nixos-logomark.svg" svg;
@@ -65,11 +67,14 @@ let
     dontConfigure = true;
     dontUnpack = true;
     dontBuild = true;
-    installPhase = "rsvg-convert --width ${lib.toString width} --height ${lib.toString height} $src > $out";
+    installPhase = ''
+      mkdir -p $out
+      rsvg-convert --width ${lib.toString width} --height ${lib.toString height} $src > $out/wallpaper.png
+    '';
   };
 in
 {
   config = lib.mkIf (colors != null) {
-    WallpaperPath = lib.mkDefault wallpaper;
+    WallpaperPath = lib.mkDefault (wallpaper + "/wallpaper.png");
   };
 }
