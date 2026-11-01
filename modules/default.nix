@@ -1082,6 +1082,17 @@ with lib;
                     can clone and push over ssh.
                   '';
                 };
+                memoryRulesFile = mkOption {
+                  type = types.nullOr types.str;
+                  default = null;
+                  description = ''
+                    Runtime path (an agenix secret) to THIS instance's standing
+                    memory rules, `[[rule]]` TOML. Activation merges it into
+                    memories/rules.toml by id; the file stays mutable and the
+                    agent adds rules only with approval. A path, never the
+                    rules themselves: this repo is public.
+                  '';
+                };
                 settings = mkOption {
                   type = types.attrs;
                   default = { };

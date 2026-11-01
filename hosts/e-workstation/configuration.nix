@@ -177,6 +177,8 @@ in
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
+          # Standing memory rules, encrypted (secrets/son-of-anton-play-rules.age).
+          memoryRulesFile = config.age.secrets.son-of-anton-play-rules.path;
           model = "auto";
           settings.gateway.single_user = true;
           settings = {

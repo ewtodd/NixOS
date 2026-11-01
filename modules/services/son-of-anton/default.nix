@@ -59,6 +59,7 @@ in
         workingDirectory
         protectedPaths
         git
+        memoryRulesFile
         ;
       group = "son-of-anton";
 

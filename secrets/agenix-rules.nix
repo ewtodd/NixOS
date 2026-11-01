@@ -50,6 +50,9 @@ in
   "son-of-anton-play-env.age".publicKeys = personal ++ [
     server-e-workstation
   ];
+  "son-of-anton-play-rules.age".publicKeys = personal ++ [
+    server-e-workstation
+  ];
   "son-of-anton-house-env.age".publicKeys = personal ++ [
     server-e-workstation
   ];

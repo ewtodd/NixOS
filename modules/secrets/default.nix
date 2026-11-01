@@ -127,6 +127,12 @@
         group = "son-of-anton";
         mode = "0440";
       };
+      # play's standing memory rules (memoryRulesFile). Encrypted because the repo is public and the
+      # rules are personal. Only activation (root) reads it, to merge it into memories/rules.toml.
+      son-of-anton-play-rules = {
+        file = ../../secrets/son-of-anton-play-rules.age;
+        mode = "0400";
+      };
       # Also re-declares SIGNAL_ALLOWED_USERS with the household members. The
       # shared secret keeps the single-owner allowlist, so widening it here
       # cannot widen work or play.
