@@ -7,16 +7,16 @@
 let
   cfg = config.systemOptions.services.bastion;
 
-  eDesktopIp = "10.0.0.4";
-  eDesktopMac = "30:56:0f:4b:ac:de";
+  eWorkstationIp = "10.0.0.4";
+  eWorkstationMac = "30:56:0f:4b:ac:de";
   innerSshPort = 2222;
   initrdSshPort = 2223;
 
-  # Wake e-desktop and unlock it, with no relay attached. Both of its LUKS
+  # Wake e-workstation and unlock it, with no relay attached. Both of its LUKS
   # volumes take a passphrase that exists only here, so this host is the only
   # thing on the network that can bring that machine up at all.
   wakeAndUnlock = pkgs.writeShellApplication {
-    name = "wake-and-unlock-e-desktop";
+    name = "wake-and-unlock-e-workstation";
     runtimeInputs = with pkgs; [
       wakeonlan
       netcat-openbsd
@@ -26,19 +26,19 @@ let
     text = ''
       set -u
 
-      EIP=${eDesktopIp}
-      EMAC=${eDesktopMac}
+      EIP=${eWorkstationIp}
+      EMAC=${eWorkstationMac}
       SSH_PORT=${toString innerSshPort}
       INITRD_PORT=${toString initrdSshPort}
       INITRD_KEY=${config.age.secrets.bastion-initrd-unlock-key.path}
-      LUKS_PASS=${config.age.secrets.e-desktop-luks-passphrase.path}
+      LUKS_PASS=${config.age.secrets.e-workstation-luks-passphrase.path}
 
       if nc -z -w 1 "$EIP" "$SSH_PORT" 2>/dev/null; then
-        echo "e-desktop is already up" >&2
+        echo "e-workstation is already up" >&2
         exit 0
       fi
 
-      echo "e-desktop not reachable, sending magic packet..." >&2
+      echo "e-workstation not reachable, sending magic packet..." >&2
       wakeonlan "$EMAC" >&2 || true
 
       for _ in $(seq 1 90); do
@@ -67,16 +67,16 @@ let
         sleep 1
       done
 
-      echo "Timed out waiting for e-desktop sshd on $SSH_PORT" >&2
+      echo "Timed out waiting for e-workstation sshd on $SSH_PORT" >&2
       exit 1
     '';
   };
 
-  # ProxyCommand target for reaching e-desktop from outside: the same wake and
+  # ProxyCommand target for reaching e-workstation from outside: the same wake and
   # unlock, then hand over the socket. Everything it prints goes to stderr so
   # stdout stays clean for the ssh client on the far end.
   wakeAndRelay = pkgs.writeShellApplication {
-    name = "wake-and-relay-e-desktop";
+    name = "wake-and-relay-e-workstation";
     runtimeInputs = [
       pkgs.netcat-openbsd
       wakeAndUnlock
@@ -84,11 +84,11 @@ let
     text = ''
       set -u
 
-      EIP=${eDesktopIp}
+      EIP=${eWorkstationIp}
       SSH_PORT=${toString innerSshPort}
 
       if ! nc -z -w 1 "$EIP" "$SSH_PORT" 2>/dev/null; then
-        wake-and-unlock-e-desktop >&2 || exit 1
+        wake-and-unlock-e-workstation >&2 || exit 1
       fi
 
       exec nc "$EIP" "$SSH_PORT"
@@ -133,19 +133,19 @@ in
       wakeAndRelay
       wakeAndUnlock
     ];
-    # The return half of e-desktop's scheduled poweroff: it shuts down on its own timer, this wakes it a few
+    # The return half of e-workstation's scheduled poweroff: it shuts down on its own timer, this wakes it a few
     # minutes later -- together an unattended reboot for a machine that cannot reboot unattended.
-    # Not Persistent: waking e-desktop hours late serves nobody, and the next relay connection wakes it anyway.
-    systemd.services.wake-e-desktop = lib.mkIf (cfg.wakeCalendar != "") {
-      description = "Wake and unlock e-desktop";
+    # Not Persistent: waking e-workstation hours late serves nobody, and the next relay connection wakes it anyway.
+    systemd.services.wake-e-workstation = lib.mkIf (cfg.wakeCalendar != "") {
+      description = "Wake and unlock e-workstation";
       serviceConfig = {
         Type = "oneshot";
         ExecStart = lib.getExe wakeAndUnlock;
       };
     };
 
-    systemd.timers.wake-e-desktop = lib.mkIf (cfg.wakeCalendar != "") {
-      description = "Timer for waking e-desktop after its scheduled poweroff";
+    systemd.timers.wake-e-workstation = lib.mkIf (cfg.wakeCalendar != "") {
+      description = "Timer for waking e-workstation after its scheduled poweroff";
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = cfg.wakeCalendar;

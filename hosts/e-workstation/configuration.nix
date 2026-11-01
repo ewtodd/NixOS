@@ -112,7 +112,7 @@ in
     services.backup.client = {
       enable = true;
       # ssh:// form: the shorthand cannot carry a port, and sshd here runs on 2222.
-      repo = "ssh://borg@10.0.0.3:2222/tank/backups/e-desktop";
+      repo = "ssh://borg@10.0.0.3:2222/tank/backups/e-workstation";
       passphraseFile = config.age.secrets.borg-passphrase.path;
       # /games excluded on purpose: 1.2 TiB of re-downloadable Steam content.
       paths = [
@@ -460,8 +460,8 @@ in
         environment = {
           GIT_AUTHOR_NAME = "son-of-anton (${name})";
           GIT_COMMITTER_NAME = "son-of-anton (${name})";
-          GIT_AUTHOR_EMAIL = "${user}@e-desktop.invalid";
-          GIT_COMMITTER_EMAIL = "${user}@e-desktop.invalid";
+          GIT_AUTHOR_EMAIL = "${user}@e-workstation.invalid";
+          GIT_COMMITTER_EMAIL = "${user}@e-workstation.invalid";
           NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
         };
       }
@@ -588,7 +588,7 @@ in
   ];
 
   time.timeZone = "America/Chicago";
-  networking.hostName = "e-desktop";
+  networking.hostName = "e-workstation";
   system.stateVersion = "24.11";
 
 }

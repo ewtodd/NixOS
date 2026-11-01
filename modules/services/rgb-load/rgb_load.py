@@ -18,7 +18,7 @@ FRAMEWORK_LEDS          = 8
 AMDGPU_BUSY_GLOB = "/sys/class/drm/card*/device/gpu_busy_percent"
 
 # openrgb.service is Type=simple and the SDK server starts listening part-way
-# through enumeration: on e-desktop the GPU is listed at once and the board two
+# through enumeration: on e-workstation the GPU is listed at once and the board two
 # seconds later. A client that takes the first list it gets never drives the
 # late arrivals, so wait for the count the host config expects (rgb-static has
 # the same wait).

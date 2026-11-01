@@ -19,7 +19,7 @@ in
     services.deploy.enable = true;
     services.binaryCache.consume = true;
     services.bastion.enable = true;
-    # e-desktop powers off Sun and Wed at 05:00 (plus up to 2 minutes of
+    # e-workstation powers off Sun and Wed at 05:00 (plus up to 2 minutes of
     # jitter); leave the shutdown room to finish, then wake it back up.
     services.bastion.wakeCalendar = "Sun,Wed *-*-* 05:10:00";
     services.nextcloud.enable = true;
@@ -27,7 +27,7 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "*-*-* 04:30:00";
-    # Signal bot backend for the son-of-anton gateway on e-desktop (HTTP
+    # Signal bot backend for the son-of-anton gateway on e-workstation (HTTP
     # JSON-RPC mode — the interface the gateway's Signal adapter speaks).
     # Runs on x86_64; the gateway reaches it over the LAN.
     services.signal-cli = {
@@ -53,7 +53,7 @@ in
       openFirewall = true;
     };
     # Page extraction for son-of-anton's web_extract, which the gateway on
-    # e-desktop calls; DNS goes to nu (both of its resolver addresses).
+    # e-workstation calls; DNS goes to nu (both of its resolver addresses).
     services.webExtract = {
       enable = true;
       allowedClients = [ "10.0.0.4" ];

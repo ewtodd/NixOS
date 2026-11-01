@@ -23,7 +23,7 @@ in
 
   config = lib.mkIf cfg.enable {
     # SearXNG metasearch, loopback by default. Sole consumers were local;
-    # The son-of-anton gateway on e-desktop searches through it too, so the AI front
+    # The son-of-anton gateway on e-workstation searches through it too, so the AI front
     # host binds it to the LAN.
     services.searx = {
       enable = true;

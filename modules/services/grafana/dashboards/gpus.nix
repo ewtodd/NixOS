@@ -4,7 +4,7 @@
 #     the human-readable sensor names come from node_hwmon_sensor_label, joined
 #     back onto the value series. Chips are identified by PCI address (the
 #     `pci` label, extracted from the sanitized hwmon chip path).
-#   - WireView Pro II power monitor on e-desktop (moved here from fleet-health).
+#   - WireView Pro II power monitor on e-workstation (moved here from fleet-health).
 {
   annotations = {
     list = [ ];
@@ -464,7 +464,7 @@
       };
       id = 9;
       panels = [ ];
-      title = "WireView — e-desktop";
+      title = "WireView — e-workstation";
       type = "row";
     }
     {

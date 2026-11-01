@@ -40,8 +40,8 @@
     (lib.mkIf config.systemOptions.services.bastion.enable {
       # owner=mu because the wake-and-relay script runs as user `mu` (invoked
       # via ssh ProxyCommand by clients), so it needs read access to these.
-      e-desktop-luks-passphrase = {
-        file = ../../secrets/e-desktop-luks-passphrase.age;
+      e-workstation-luks-passphrase = {
+        file = ../../secrets/e-workstation-luks-passphrase.age;
         owner = "mu";
         mode = "0400";
       };

@@ -43,7 +43,7 @@ let
       ${pkgs.kitty}/bin/kitty ssh bastion exit
     fi
 
-    setsid ${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render --compress lz4 ssh e-desktop kitty
+    setsid ${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render --compress lz4 ssh e-workstation kitty
   '';
 
   open-fidget-window = pkgs.writeShellScript "open-fidget-window-firefox" "${config.programs.firefox.finalPackage}/bin/firefox --private-window \ https://monkeytype.com";

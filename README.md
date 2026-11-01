@@ -37,7 +37,7 @@ The configuration is organized into three main layers:
     └── home.nix                        # User definitions (imports profiles)
 Hosts:
 - **v-desktop, v-laptop** - AMD/Intel workstations (v-owner)
-- **e-desktop, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
+- **e-workstation, e-laptop** - NVIDIA/Intel workstations (e-owner, full services)
 - **nu** - Router, AdGuard, reverse proxy, dynamic DNS, Prometheus & Grafana
 - **mu** - SSH bastion, Nextcloud, Minecraft, Signal bot backend, and the AI front: maitred,
   SearXNG, Open WebUI (ai.ethanwtodd.com)
@@ -122,9 +122,9 @@ Edit `home-manager/packages/default.nix`.
 ### Modify Shell Aliases
 Edit `home-manager/packages/shell/default.nix` for bash aliases.
 ## Binary Cache
-**e-desktop** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source.
+**e-workstation** serves its nix store as a binary cache so other hosts can pull pre-built packages instead of compiling from source.
 This is especially useful for git-versioned packages like niri, quickshell, and Dux.
-- **Server:** `nix-serve-ng` on e-desktop, exposed via Caddy reverse proxy on nu
+- **Server:** `nix-serve-ng` on e-workstation, exposed via Caddy reverse proxy on nu
 - **Clients:** All other hosts are configured as substituters via `systemOptions.services.binaryCache.consume`
 - **URL:** `https://cache.ethanwtodd.com`
 ## AI Infrastructure
@@ -158,19 +158,19 @@ The fleet distributes inference and gateway services across dedicated hosts:
       search), `nixos` (Nix/NixOS lookups), `arxiv`, and `context7`
   - **SearXNG** metasearch, backing the searxng MCP and son-of-anton's web search
   - **Open WebUI** at `ai.ethanwtodd.com` (behind Anubis PoW; models via maitred)
-- **e-desktop** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
+- **e-workstation** runs the **son-of-anton** agent (github.com/ewtodd/son-of-anton),
   successor to temple-server: one system service per account on a shared Signal
   number, and each account's CLI shares its service's session state
 ## Deployment (Colmena)
 The fleet is deployed with [Colmena](https://github.com/zhaofengli/colmena).
 The hive (`colmena` / `colmenaHive` flake outputs) reuses each host's NixOS
 modules, so it never drifts from `nixosConfigurations`.
-**e-desktop is the build host** — it builds every closure and pushes the result,
+**e-workstation is the build host** — it builds every closure and pushes the result,
 so the servers and laptops never compile.
 ```bash
-colmena apply --on @server   # build on e-desktop, push to the 5 servers
+colmena apply --on @server   # build on e-workstation, push to the 5 servers
 colmena apply --on anton     # a single node
-nrs                          # rebuild the local workstation (e-desktop / e-laptop): nh os switch /etc/nixos
+nrs                          # rebuild the local workstation (e-workstation / e-laptop): nh os switch /etc/nixos
 ```
 - **Scope:** the 8 e-owner nodes (v-devices excluded for now).
   The headless servers and the tony kiosk are pushed over SSH; the two

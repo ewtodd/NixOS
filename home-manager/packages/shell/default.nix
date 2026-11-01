@@ -10,7 +10,7 @@ let
 
   isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable else false;
   isLaptop = if osConfig != null then osConfig.systemOptions.deviceType.laptop.enable else false;
-  isEDesktop = osConfig != null && osConfig.networking.hostName == "e-desktop";
+  isEWorkstation = osConfig != null && osConfig.networking.hostName == "e-workstation";
 in
 {
   programs.bash = {
@@ -29,8 +29,8 @@ in
       vpn = "sudo ${pkgs.openconnect}/bin/openconnect --protocol=anyconnect --authgroup=\"UMVPN-Only U-M Traffic alt\" umvpn.umnet.umich.edu";
     }
     // lib.optionalAttrs (isEOwner && isLaptop) {
-      phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh e-desktop kitty";
-      files-home = "${pkgs.sshfs}/bin/sshfs e-desktop:${config.home.homeDirectory} ${config.home.homeDirectory}/remoteHome";
+      phone-home = "${pkgs.waypipe}/bin/waypipe --remote-node /dev/dri/igpu-render ssh e-workstation kitty";
+      files-home = "${pkgs.sshfs}/bin/sshfs e-workstation:${config.home.homeDirectory} ${config.home.homeDirectory}/remoteHome";
     };
   };
 
@@ -65,10 +65,10 @@ in
         ControlPersist = "10m";
       };
 
-      "e-desktop" = {
+      "e-workstation" = {
         Hostname = "10.0.0.4";
         User = config.home.username;
-        ProxyCommand = "ssh bastion wake-and-relay-e-desktop";
+        ProxyCommand = "ssh bastion wake-and-relay-e-workstation";
       };
 
       "mu" = {
@@ -180,7 +180,7 @@ in
         User = "tony";
       };
     }
-    // lib.optionalAttrs isEDesktop {
+    // lib.optionalAttrs isEWorkstation {
       # nu over IPv6 link-local through this machine's wired port (enp14s0), for when the LAN has no IPv4
       # at all (nu's DHCP is down). `%%` is ssh_config's escape for the zone's `%`. nu-wan-ll is nu's WAN
       # port (the cloned BGW320 MAC): it answers here only if its cable has ended up on the LAN switch, as

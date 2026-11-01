@@ -53,7 +53,7 @@ with lib;
       services.ssh.enable = mkEnableOption "SSH with non-standard port";
       services.suspend-then-hibernate.enable = mkEnableOption "Suspend then hibernate";
       services.binaryCache.serve = mkEnableOption "Serve the nix store as a binary cache via nix-serve, exposed through Caddy on nu";
-      services.binaryCache.consume = mkEnableOption "Use the e-desktop binary cache as a substituter";
+      services.binaryCache.consume = mkEnableOption "Use the e-workstation binary cache as a substituter";
       services.router.enable = mkEnableOption "Act as a NAT router (WAN DHCP, LAN static, dnsmasq DHCP+DNS)";
       services.adguard.enable = mkEnableOption "AdGuard Home DNS ad-blocker (sits behind dnsmasq)";
       services.reverseProxy.enable = mkEnableOption "Caddy reverse proxy with auto-TLS";
@@ -64,15 +64,15 @@ with lib;
         default = "";
         example = "Sun,Wed *-*-* 05:10:00";
         description = ''
-          OnCalendar expression for waking and unlocking e-desktop from here.
+          OnCalendar expression for waking and unlocking e-workstation from here.
           Empty disables it.
 
-          This is the other half of e-desktop's scheduled poweroff: the
+          This is the other half of e-workstation's scheduled poweroff: the
           machine shuts down on its own schedule, and this brings it back a
           few minutes later over WoL, pushing the LUKS passphrase into its
           initrd exactly as the relay does. Together they are an unattended
           reboot for a host that cannot reboot unattended, since nothing on
-          e-desktop itself can unlock its own root volume.
+          e-workstation itself can unlock its own root volume.
         '';
       };
       services.wakeable.enable = mkEnableOption "Wake-on-LAN + initrd-SSH for remote unlock";
@@ -1160,7 +1160,7 @@ with lib;
       services.deploy.enable = mkEnableOption ''
         colmena deploy target: a key-only `deploy` user with scoped NOPASSWD sudo
         (just the activation commands) and nix trusted-user, so the build host
-        (e-desktop) can push and switch closures remotely'';
+        (e-workstation) can push and switch closures remotely'';
       services.scheduledReboot.enable = mkEnableOption "Reboot the machine on a systemd OnCalendar schedule";
       services.scheduledReboot.calendar = mkOption {
         type = types.str;
@@ -1176,7 +1176,7 @@ with lib;
         default = "reboot";
         description = ''
           What the timer does. `poweroff` is for a machine that cannot come
-          back on its own: e-desktop's root and home are both LUKS volumes
+          back on its own: e-workstation's root and home are both LUKS volumes
           unlocked from the bastion's wake-and-relay script, which only runs
           when someone connects through it. Rebooting would leave the machine
           sitting in initrd until then; powering off means the next connection

@@ -6,6 +6,8 @@
 }:
 let
   cachePort = 5000;
+  # Keeps the host's old name: the "e-desktop:" label is baked into the signing
+  # key at /etc/nix/cache-priv-key.pem and changes only with a new key pair.
   cachePublicKey = "e-desktop:35K0AY3HcDOSHVQ/lklmbvmrXjIspM/LYf7yek5lyVA=";
   cacheUrl = "https://cache.ethanwtodd.com";
 in
@@ -89,7 +91,7 @@ in
       };
     })
 
-    # Binary cache server (e-desktop). Public traffic terminates at Caddy on
+    # Binary cache server (e-workstation). Public traffic terminates at Caddy on
     # the router (nu) and is forwarded over the trusted LAN, so we
     # open the cache port on the firewall.
     (lib.mkIf (config.systemOptions.services.binaryCache.serve) {

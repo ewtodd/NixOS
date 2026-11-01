@@ -279,7 +279,7 @@
         v-laptop = {
           headless = false;
         };
-        e-desktop = {
+        e-workstation = {
           headless = false;
         };
         e-laptop = {
@@ -306,7 +306,7 @@
       };
 
       colmenaDeployments = {
-        e-desktop = {
+        e-workstation = {
           allowLocalDeployment = true;
           targetHost = null;
           tags = [ "workstation" ];

@@ -25,7 +25,7 @@ in
                 type = lib.types.int;
                 description = ''
                   Owner every access is squashed to. uids differ per host (e-play is
-                  1003 on e-desktop, and anton has no user by that number), so the
+                  1003 on e-workstation, and anton has no user by that number), so the
                   export pins one owner instead of mapping names. Root on the client
                   is squashed too, so a `sudo rsync` lands as this owner.
                 '';

@@ -23,7 +23,7 @@ in
     services.nodeExporter.enable = true;
     services.zfsMetrics.enable = true;
     services.jellyfin.enable = true;
-    # e-desktop's photo library (darktable); e-play there is uid 1003.
+    # e-workstation's photo library (darktable); e-play there is uid 1003.
     services.nfs.server = {
       enable = true;
       exports."/tank/photos" = {
@@ -36,7 +36,7 @@ in
     security.harden.enable = true;
     services.backup.server = {
       enable = true;
-      clients."e-desktop".publicKey =
+      clients."e-workstation".publicKey =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOIu7XnByPHkBJU+kEQ9EHwbgdqV7vlbHhdNQzaWFLc+ borg@e-desktop";
     };
   };

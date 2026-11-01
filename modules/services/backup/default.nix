@@ -34,7 +34,7 @@ in
       enable = lib.mkEnableOption "nightly borg backup to a repository server";
       repo = lib.mkOption {
         type = lib.types.str;
-        example = "borg@10.0.0.3:/tank/backups/e-desktop";
+        example = "borg@10.0.0.3:/tank/backups/e-workstation";
         description = "Repository to push to.";
       };
       paths = lib.mkOption {
@@ -129,6 +129,10 @@ in
           "--checkpoint-interval"
           "600"
         ];
+        # Each repo holds one host's one job, so prune every archive in it, not
+        # just this job's hostname prefix: archives made under an old hostname
+        # (e-desktop) then age out with the new ones instead of piling up.
+        prune.prefix = null;
         prune.keep = {
           daily = 7;
           weekly = 4;

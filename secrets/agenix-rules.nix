@@ -9,7 +9,7 @@ let
   val-desktop-vplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxd8dbNShz1+NhK71DgHpqQZn8fq0Acy4qL2C9kzw0s v-play@v-desktop";
   nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@nu";
   mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@mu";
-  server-e-desktop = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPftrHYU/cCgJyXdpIX5FHNpjqfnHRLkytx65JV4uHO root@e-desktop";
+  server-e-workstation = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPftrHYU/cCgJyXdpIX5FHNpjqfnHRLkytx65JV4uHO root@e-desktop";
   personal = [
     ethan-desktop-ework
     ethan-desktop-eplay
@@ -24,9 +24,9 @@ let
   ];
 in
 {
-  "onyx-ssh-config.age".publicKeys = personal ++ [ server-e-desktop ];
+  "onyx-ssh-config.age".publicKeys = personal ++ [ server-e-workstation ];
   "namecheap-ddns.age".publicKeys = personal ++ [ nu ];
-  "e-desktop-luks-passphrase.age".publicKeys = personal ++ [ mu ];
+  "e-workstation-luks-passphrase.age".publicKeys = personal ++ [ mu ];
   "bastion-initrd-unlock-key.age".publicKeys = personal ++ [ mu ];
   "nextcloud-admin-password.age".publicKeys = personal ++ [ mu ];
   "grafana-admin-password.age".publicKeys = personal ++ [ nu ];
@@ -37,30 +37,30 @@ in
     personal
     ++ val
     ++ [
-      server-e-desktop
+      server-e-workstation
       mu
     ];
-  "borg-passphrase.age".publicKeys = personal ++ [ server-e-desktop ];
+  "borg-passphrase.age".publicKeys = personal ++ [ server-e-workstation ];
   "son-of-anton-env.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "son-of-anton-work-env.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "son-of-anton-play-env.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "son-of-anton-house-env.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "son-of-anton-ricky-env.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "son-of-anton-markets-env.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "soa-ricky-github-key.age".publicKeys = personal ++ [
-    server-e-desktop
+    server-e-workstation
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
 }

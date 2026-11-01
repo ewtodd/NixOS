@@ -24,7 +24,7 @@ in
     services.reverseProxy.enable = true;
     services.prometheus.enable = true;
     services.httpTarpit.enable = true;
-    # WireView Pro II exporter on e-desktop (10.0.0.4).
+    # WireView Pro II exporter on e-workstation (10.0.0.4).
     services.prometheus.wireviewTarget = "10.0.0.4:9877";
     services.nodeExporter.enable = true;
     services.grafana.enable = true;
