@@ -316,7 +316,10 @@ in
                 output = 131072;
               };
               modalities = {
-                input = [ "text" ];
+                input = [
+                  "text"
+                  "image"
+                ];
                 output = [ "text" ];
               };
             };

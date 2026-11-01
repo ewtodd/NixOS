@@ -22,21 +22,6 @@
       url = "git+https://codeberg.org/BANanaD3V/niri-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dank-material-shell = {
-      # The repo moved from AvengeMedia/DankMaterialShell to
-      # duxlabs-dev/dux-shell; /stable still exists and is what v2.0.0 (the
-      # version nixpkgs ships as pkgs.dux-shell) is tagged from.
-      url = "github:duxlabs-dev/dux-shell/stable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    dms-plugin-registry = {
-      url = "github:duxlabs-dev/dux-plugin-registry";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    danksearch = {
-      url = "github:duxlabs-dev/dux-search";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     lifer = {
       url = "github:ewtodd/lifer";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -127,9 +112,6 @@
       mkHomeManagerModules = inputs: [
         inputs.nixvim.homeModules.nixvim
         inputs.base16.homeManagerModule
-        inputs.dank-material-shell.homeModules.dank-material-shell
-        inputs.danksearch.homeModules.dsearch
-        inputs.dms-plugin-registry.homeModules.default
         inputs.niri-nix.homeModules.default
         {
           programs.nixvim.nixpkgs.useGlobalPackages = true;

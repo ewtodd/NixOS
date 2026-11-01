@@ -7,16 +7,14 @@
   ...
 }:
 let
-  dms-idle-inhibit = pkgs.writeShellScript "dms-idle-inhibit" ''
-    dms() { ${config.programs.dank-material-shell.package}/bin/dms "$@"; }
-    i=0
-    while [ $i -lt 60 ]; do
-      if dms ipc call inhibit status 2>/dev/null | ${pkgs.gnugrep}/bin/grep -q enabled; then
+  # Retry until the shell's IPC is up; caffeine-enable only shows an OSD
+  # when it actually changes state.
+  noctalia-caffeine = pkgs.writeShellScript "noctalia-caffeine" ''
+    for _ in $(seq 60); do
+      if ${pkgs.noctalia}/bin/noctalia msg caffeine-enable >/dev/null 2>&1; then
         exit 0
       fi
-      dms ipc call inhibit enable >/dev/null 2>&1
       sleep 1
-      i=$((i + 1))
     done
     exit 1
   '';
@@ -135,20 +133,20 @@ in
           };
           Install.WantedBy = [ "graphical-session.target" ];
         };
-    systemd.user.services.dms-idle-inhibit =
+    systemd.user.services.noctalia-caffeine =
       lib.mkIf (osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.desktop.enable)
         {
           Unit = {
-            Description = "Enable DMS idle inhibit";
-            After = [ "dms.service" ];
-            PartOf = [ "dms.service" ];
+            Description = "Keep the display awake for the session";
+            After = [ "noctalia.service" ];
+            PartOf = [ "noctalia.service" ];
           };
           Service = {
             Type = "oneshot";
             RemainAfterExit = true;
-            ExecStart = "${dms-idle-inhibit}";
+            ExecStart = "${noctalia-caffeine}";
           };
-          Install.WantedBy = [ "dms.service" ];
+          Install.WantedBy = [ "noctalia.service" ];
         };
     systemd.user.services.wlinhibit =
       lib.mkIf (osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.desktop.enable)

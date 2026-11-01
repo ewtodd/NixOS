@@ -1,41 +1,19 @@
 {
   pkgs,
   lib,
-  inputs,
   config,
   ...
 }:
-let
-  inherit (inputs.niri-nix.lib) mkNiriKDL;
-  eDesktopGreeterNiriConfig = mkNiriKDL {
-    output = [
-      {
-        _args = [ "Sceptre Tech Inc Sceptre F22 Unknown" ];
-        transform = "270";
-        position._props = {
-          x = -1080;
-          y = 0;
-        };
-        mode = "1920x1080@74.973";
-      }
-    ];
-    hotkey-overlay = {
-      skip-at-startup = [ ];
-    };
-    debug = {
-      render-drm-device = "/dev/dri/igpu-render";
-    };
-  };
-in
 {
   config =
     lib.mkIf
       (config.systemOptions.deviceType.desktop.enable || config.systemOptions.deviceType.laptop.enable)
       {
-        services.displayManager.dux-greeter = {
+        services.displayManager.noctalia-greeter = {
           enable = true;
-          compositor.name = "niri";
-          compositor.customConfig = lib.optionalString config.systemOptions.owner.e.enable eDesktopGreeterNiriConfig;
+          passwordlessSyncUsers = builtins.attrNames (
+            lib.filterAttrs (_: user: user.isNormalUser) config.users.users
+          );
         };
 
         programs.niri = {

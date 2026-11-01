@@ -122,10 +122,6 @@
         serviceConfig.Type = "simple";
       };
       services.fprintd.enable = true;
-      security.pam.services.dankshell = {
-        u2fAuth = false;
-        fprintAuth = false;
-      };
     })
     (lib.mkIf (config.systemOptions.hardware.openRGB.enable) {
       environment.systemPackages = with pkgs; [ i2c-tools ];

@@ -1,7 +1,9 @@
-{ ... }:
+{
+  ...
+}:
 {
   imports = [
-    ./dms
     ./niri
+    ./noctalia
   ];
 }

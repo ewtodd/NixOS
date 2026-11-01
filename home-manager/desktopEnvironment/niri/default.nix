@@ -7,6 +7,21 @@
 }:
 let
   e = if osConfig != null then (osConfig.systemOptions.owner.e.enable or false) else false;
+  screenshot-fullscreen-clipboard = "noctalia msg screenshot-fullscreen --copy-to-clipboard --no-save-to-file";
+  screenshot-region-clipboard = "noctalia msg screenshot-region --copy-to-clipboard --no-save-to-file";
+  screenshot-fullscreen-save = "noctalia msg screenshot-fullscreen --save-to-file";
+  screenshot-region-save = "noctalia msg screenshot-region --save-to-file";
+  lock-screen = "noctalia msg session lock";
+  brightness-down = "noctalia msg brightness-down 5";
+  brightness-up = "noctalia msg brightness-up 5";
+  launcher-toggle = "noctalia msg panel-toggle launcher";
+  notification-panel-toggle = "noctalia msg panel-toggle control-center notifications";
+  notifications-clear = "noctalia msg notification-clear-active && noctalia msg notification-clear-history";
+  powermenu-toggle = "noctalia msg panel-toggle session";
+  volume-down = "noctalia msg volume-down 5";
+  volume-up = "noctalia msg volume-up 5";
+  volume-mute = "noctalia msg volume-mute";
+  shell-reload = "noctalia msg config-reload";
   colors = config.scheme;
   deviceType =
     if osConfig != null && (osConfig.systemOptions.deviceType.desktop.enable or false) then
@@ -134,42 +149,28 @@ in
 
       binds = {
         "Alt+Ctrl+3" = {
-          spawn-sh = [
-            "dms screenshot full --no-notify --no-file"
-          ];
+          spawn-sh = [ screenshot-fullscreen-clipboard ];
         };
         "Alt+Ctrl+4" = {
-          spawn-sh = [
-            "dms screenshot --no-notify --no-file"
-          ];
+          spawn-sh = [ screenshot-region-clipboard ];
         };
         "Alt+Ctrl+Shift+3" = {
-          spawn-sh = [
-            "dms screenshot full"
-          ];
+          spawn-sh = [ screenshot-fullscreen-save ];
         };
         "Alt+Ctrl+Shift+4" = {
-          spawn-sh = [
-            "dms screenshot"
-          ];
+          spawn-sh = [ screenshot-region-save ];
         };
         "Alt+Return" = lib.mkIf (e && deviceType == "laptop") {
           spawn = [ "${phone-home}/bin/phone-home" ];
         };
         "Alt+l" = {
-          spawn-sh = [
-            "dms ipc lock lock"
-          ];
+          spawn-sh = [ lock-screen ];
         };
         F7 = {
-          spawn-sh = [
-            ''dms ipc brightness decrement 5 "" ''
-          ];
+          spawn-sh = [ brightness-down ];
         };
         F8 = {
-          spawn-sh = [
-            ''dms ipc brightness increment 5 "" ''
-          ];
+          spawn-sh = [ brightness-up ];
         };
         "Mod+1" = {
           focus-monitor-next = [ ];
@@ -195,14 +196,10 @@ in
           center-window = [ ];
         };
         "Mod+Shift+c" = {
-          spawn-sh = [
-            "systemctl --user restart dms.service"
-          ];
+          spawn-sh = [ shell-reload ];
         };
         "Mod+Shift+e" = {
-          spawn-sh = [
-            "dms ipc call notifications clearAll"
-          ];
+          spawn-sh = [ notifications-clear ];
         };
         "Mod+Shift+f" = {
           fullscreen-window = [ ];
@@ -220,9 +217,7 @@ in
           move-column-right-or-to-monitor-right = [ ];
         };
         "Mod+Shift+n" = {
-          spawn-sh = [
-            "dms ipc notifications toggle"
-          ];
+          spawn-sh = [ notification-panel-toggle ];
         };
         "Mod+Shift+p" = {
           spawn-sh = [
@@ -256,9 +251,7 @@ in
           consume-or-expel-window-left = [ ];
         };
         "Mod+d" = {
-          spawn-sh = [
-            "dms ipc spotlight toggle"
-          ];
+          spawn-sh = [ launcher-toggle ];
         };
         "Mod+f" = {
           spawn-sh = [
@@ -284,7 +277,7 @@ in
           spawn = [
             "sh"
             "-c"
-            "dms ipc powermenu toggle"
+            powermenu-toggle
           ];
         };
         "Mod+o" = {
@@ -319,35 +312,35 @@ in
           spawn = [
             "sh"
             "-c"
-            "dms ipc audio decrement 5"
+            volume-down
           ];
         };
         XF86AudioMute = {
           spawn = [
             "sh"
             "-c"
-            "dms ipc audio mute"
+            volume-mute
           ];
         };
         XF86AudioRaiseVolume = {
           spawn = [
             "sh"
             "-c"
-            "dms ipc audio increment 5"
+            volume-up
           ];
         };
         XF86MonBrightnessDown = {
           spawn = [
             "sh"
             "-c"
-            ''dms ipc brightness decrement 5 "" ''
+            brightness-down
           ];
         };
         XF86MonBrightnessUp = {
           spawn = [
             "sh"
             "-c"
-            ''dms ipc brightness increment 5 "" ''
+            brightness-up
           ];
         };
         Page_Up = {
@@ -542,17 +535,36 @@ in
           };
           variable-refresh-rate = false;
         }
+        {
+          match._props = {
+            app-id = "kitty";
+          };
+          background-effect = {
+            blur = true;
+          };
+        }
       ];
       layer-rule = [
         {
           match._props = {
-            namespace = "dms:notification-popup";
+            namespace = "noctalia-bar-default";
           };
-          block-out-from = "screen-capture";
+          background-effect = {
+            blur = true;
+          };
         }
         {
           match._props = {
-            namespace = "dms:blurwallpaper";
+            namespace = "^noctalia-notification";
+          };
+          block-out-from = "screen-capture";
+          background-effect = {
+            blur = true;
+          };
+        }
+        {
+          match._props = {
+            namespace = "^noctalia-backdrop";
           };
           place-within-backdrop = true;
         }

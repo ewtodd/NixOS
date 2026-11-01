@@ -25,8 +25,8 @@ The configuration is organized into three main layers:
 │   │   ├── shell/                      # bash + starship
 │   │   └── ...                         # Other package configs
 │   ├── system-options/                 # Profile & owner options
-│   ├── desktopEnvironment/             # Niri & DMS settings
-│   │   ├── dms/                        # DMS colors, plugins, dsearch
+│   ├── desktopEnvironment/             # Niri & Noctalia settings
+│   │   ├── noctalia/                   # Noctalia shell settings
 │   │   └── niri/                       # Niri keybinds & window rules
 │   ├── theming/                        # GTK & Qt themes
 │   └── xdg/                            # XDG directories & MIME types
@@ -80,8 +80,8 @@ on it in `home-manager/packages/default.nix`:
 Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 ## Desktop Environment
 - **Compositor:** niri (scrollable tiling Wayland)
-- **Shell:** Dux (formerly DankMaterialShell/DMS; options still `programs.dank-material-shell`, binary still `dms`)
-- **Greeter:** Dux greeter (`services.displayManager.dux-greeter`)
+- **Shell:** Noctalia (`home-manager/desktopEnvironment/noctalia/`, settings via the upstream home-manager module)
+- **Greeter:** noctalia-greeter (greetd; syncs wallpaper/palette from the session)
 - **Config:** `home-manager/desktopEnvironment/`
 - **tony** is the exception: bare cage as a single-window kiosk compositor
 ## Shell & Terminal
