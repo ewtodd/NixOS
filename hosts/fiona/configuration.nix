@@ -11,6 +11,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ./environment.nix
+    ./extra-packages.nix
   ];
 
   systemOptions = {
