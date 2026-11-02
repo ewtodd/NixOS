@@ -100,7 +100,6 @@ with lib;
     boot.kernel.sysctl."kernel.unprivileged_bpf_disabled" = mkDefault true;
     boot.kernel.sysctl."kernel.yama.ptrace_scope" =
       if (config.systemOptions.deviceType.laptop.enable) then mkDefault 2 else mkForce 1;
-    boot.kernel.sysctl."kernel.ftrace_enabled" = mkDefault false;
     boot.kernel.sysctl."kernel.perf_event_paranoid" = mkDefault 3;
 
     boot.kernel.sysctl."net.core.bpf_jit_enable" = mkDefault false;
