@@ -33,7 +33,7 @@ in
       };
       wallpaper = {
         enabled = true;
-        directory = builtins.dirOf wallpaperPath;
+        directory = dirOf wallpaperPath;
         default.path = wallpaperPath;
       };
       backdrop.enabled = true;
@@ -99,11 +99,13 @@ in
       };
       bar.default = {
         position = lib.mkIf e "right";
+        reserve_space = lib.mkIf e false;
         background_opacity = opacity;
         margin_ends = 200;
         start = [ "workspaces" ];
         center = [
           "clock"
+          "spacer_0"
           "notifications"
         ];
         end = [
@@ -172,7 +174,10 @@ in
         control-center.glyph = "server-cog";
         network.show_label = false;
         clock.format = "{:%a %d %b %I:%M %p}";
-        clock.vertical_format = "{:%I\\n%M}";
+        clock.vertical_format = "{:%I\\n%M\\n—\\n%m\\n%d}";
+        clock.anchor = true;
+        spacer_0.length = 15;
+        spacer_0.type = "spacer";
         workspaces = {
           active_pill_size = 2.5;
           hide_when_empty = true;
