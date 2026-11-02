@@ -73,12 +73,12 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
-      # fiona: llama.cpp serves the title model; eklow serves Gemma 4 and the embeddings.
+      # fiona: llama.cpp serves the title model; eklow serves Ornith-1.5 (Qwen3.6) and the embeddings.
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
       };
-      gemma = {
+      eklow = {
         base_url = "http://${fiona}:8081/v1";
         timeout_secs = 1800;
         slots = 2;
@@ -199,10 +199,11 @@ let
         tier = 1;
       }
       {
-        id = "eklow/gemma-4-26b-a4b";
-        upstream = "gemma";
-        upstream_model = "gemma-4-26b-a4b";
-        display_name = "Gemma 4 26B A4B";
+        # Qwen3.6's template thinks or not (enable_thinking): eklow takes any effort but none as thinking on.
+        id = "eklow/ornith-1.5-35b-a3b";
+        upstream = "eklow";
+        upstream_model = "ornith-1.5-35b-a3b";
+        display_name = "Ornith 1.5 35B A3B";
         context_length = 262144;
         reasoning_efforts = [
           "none"

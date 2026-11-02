@@ -256,11 +256,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793156197,
-        "narHash": "sha256-r1KLo/xCXcEW2JY+vOQ8jdqTMSOKJNw2xGSaBWKQO0Y=",
+        "lastModified": 1793658840,
+        "narHash": "sha256-W6gyms62+dWJl0LvMtg8nHmViwsHVPZzpWJwcigBeoE=",
         "owner": "ewtodd",
         "repo": "eklow",
-        "rev": "76d85880a3a580b24dc6e88e1d50c059177662b2",
+        "rev": "2a99c9b5588b3971d1870200009f49b5ffc2884e",
         "type": "github"
       },
       "original": {

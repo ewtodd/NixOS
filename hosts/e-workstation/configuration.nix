@@ -357,9 +357,9 @@ in
                 "xhigh"
               ];
             };
-            # eklow on fiona's A770M; Gemma 4 thinks or not. No image input yet (eklow answers
-            # image parts with an error).
-            "eklow/gemma-4-26b-a4b" = {
+            # eklow on fiona's A770M; Ornith-1.5 (Qwen3.6) thinks or not, and takes images (Qwen3-VL's
+            # encoder).
+            "eklow/ornith-1.5-35b-a3b" = {
               reasoning_effort = "high";
               reasoning_efforts = [
                 "none"
