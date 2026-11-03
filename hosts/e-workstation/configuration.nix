@@ -143,15 +143,18 @@ in
         WEB_EXTRACT_URL = "http://${aiFront}:8890";
         SIGNAL_REACTIONS = "false";
       };
+      # Every instance's terminal sees only declared tools; these are what this
+      # repo's pre-commit hook runs when an agent commits here.
+      extraPackages = [
+        pkgs.nixfmt
+        pkgs.deadnix
+      ];
       instances = {
         work = {
           user = "e-work";
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          backend = "soa-d";
-          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
-          model = "fiona";
           settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
@@ -169,9 +172,6 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
           # Standing memory rules, encrypted (secrets/son-of-anton-play-rules.age).
           memoryRulesFile = config.age.secrets.son-of-anton-play-rules.path;
-          backend = "soa-d";
-          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
-          model = "fiona";
           settings.gateway.single_user = true;
           settings.git = {
             author_name = "son-of-anton-bot";
@@ -187,9 +187,6 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          backend = "soa-d";
-          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
-          model = "fiona";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -209,12 +206,6 @@ in
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           git.github = config.age.secrets.soa-ricky-github-key.path;
-          backend = "soa-d";
-          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
-          model = "fiona";
-          settings = {
-            model.default = "auto";
-          };
           settings.platforms.signal = {
             require_mention = true;
             history_backfill = true;
@@ -238,12 +229,6 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          backend = "soa-d";
-          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
-          model = "fiona";
-          settings = {
-            model.default = "auto";
-          };
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
             require_mention = true;
@@ -261,6 +246,8 @@ in
       };
 
       settings = {
+        # Every chat is fiona: whatever eklow serves (maitred router.extra), son-of-anton's auto when eklow is down.
+        gateway.model = "fiona";
         model = {
           # maitred's routed id: the strongest model son-of-anton is serving, kept per conversation where its
           # context is cached. "high" is each model's normal thinking (maitred maps it to xhigh on the Qwen pair).

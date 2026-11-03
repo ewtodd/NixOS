@@ -254,11 +254,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1793720658,
-        "narHash": "sha256-9xhYSvDPfpCvYHEb55m2X1rBEbEDs9RQn+StenhTGcg=",
+        "lastModified": 1793738423,
+        "narHash": "sha256-c9CgzPpSMIJXOJ+cSeVJrMwkwz1GgltMiH838R/k66Q=",
         "owner": "ewtodd",
         "repo": "eklow",
-        "rev": "39aa4df32a2a6576df5285afa73c4b665e46cb07",
+        "rev": "95d2912a61539b2a29351147088be6335d2f42ad",
         "type": "github"
       },
       "original": {
@@ -1163,11 +1163,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793733609,
-        "narHash": "sha256-naNKct/Rz/84MIDwNvch9XVXb+8ypHQWKxskN57Uvcg=",
+        "lastModified": 1793739507,
+        "narHash": "sha256-MOQ/8nkPflB/r52Sx3CsP3+8Co/6Hj/G7x++Ao9uB9k=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "21cf696a258d9d9f36a4548fda51414ede677a34",
+        "rev": "0cae0bf5b9fcc352b85a5d1c76cce2d6362d10cd",
         "type": "github"
       },
       "original": {

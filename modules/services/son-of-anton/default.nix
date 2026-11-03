@@ -48,37 +48,31 @@ in
   config = lib.mkIf cfg.enable {
     users.groups.son-of-anton = { };
 
-    services.son-of-anton.instances = lib.mapAttrs (
-      name: inst:
-      {
-        enable = true;
-        pruneUnmanagedSettings = true;
-        inherit (inst)
-          user
-          createUser
-          managedAccount
-          son-of-antonHome
-          workingDirectory
-          protectedPaths
-          git
-          memoryRulesFile
-          ;
-        group = "son-of-anton";
+    services.son-of-anton.instances = lib.mapAttrs (name: inst: {
+      enable = true;
+      pruneUnmanagedSettings = true;
+      inherit (inst)
+        user
+        createUser
+        managedAccount
+        son-of-antonHome
+        workingDirectory
+        protectedPaths
+        git
+        memoryRulesFile
+        ;
+      group = "son-of-anton";
 
-        stateDir = if inst.stateDir != "" then inst.stateDir else "/var/lib/son-of-anton-${name}";
-        addToSystemPackages = false;
+      stateDir = if inst.stateDir != "" then inst.stateDir else "/var/lib/son-of-anton-${name}";
+      addToSystemPackages = false;
 
-        environmentFiles = cfg.environmentFiles ++ inst.environmentFiles;
-        environment = cfg.environment // {
-          SIGNAL_DM_MODE = "ignore";
-        };
-        settings = settingsFor inst;
-        extraPackages = cfg.extraPackages ++ inst.extraPackages ++ nvimLspPackages;
-      }
-      # Passed only when set: a son-of-anton input older than the backend
-      # option still evaluates while every instance is on python.
-      // lib.optionalAttrs (inst.backend != "python") { inherit (inst) backend; }
-    ) cfg.instances;
+      environmentFiles = cfg.environmentFiles ++ inst.environmentFiles;
+      environment = cfg.environment // {
+        SIGNAL_DM_MODE = "ignore";
+      };
+      settings = settingsFor inst;
+      extraPackages = cfg.extraPackages ++ inst.extraPackages ++ nvimLspPackages;
+    }) cfg.instances;
     environment.systemPackages = [
       (inputs.son-of-anton.packages.${pkgs.system}.default.override { extraPackages = nvimLspPackages; })
     ];

@@ -1058,21 +1058,14 @@ with lib;
                     written in Nix.
                   '';
                 };
-                backend = mkOption {
-                  type = types.enum [
-                    "python"
-                    "soa-d"
-                  ];
-                  default = "python";
-                  description = "Which backend serves this instance: the Python gateway or the Go daemon soa-d.";
-                };
                 model = mkOption {
                   type = types.str;
                   default = "";
                   description = ''
                     Model this instance answers with over Signal, written as
-                    `gateway.model`. Empty inherits settings.model.default,
-                    which is what this account's CLI opens with.
+                    `gateway.model`. Empty inherits the shared settings'
+                    `gateway.model`, else settings.model.default, which is what
+                    this account's CLI opens with.
                   '';
                 };
                 protectedPaths = mkOption {
