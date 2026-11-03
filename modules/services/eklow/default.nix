@@ -55,6 +55,8 @@ in
       contextSize = 262144;
       slots = 2;
       kvInt8 = true;
+      prefillGroup = 8;
+      prefillGroupBusy = 4096;
     };
   };
 }
