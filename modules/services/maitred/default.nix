@@ -42,18 +42,23 @@ let
 
   settings = {
     listen = "0.0.0.0:${toString cfg.port}";
-    switch_hint = "ask the admin to switch son-of-anton to {mode} (llm-mode)";
+    # Modes live on two hosts (son-of-anton's GPUs, fiona's A770M); the messages around the hint name the host.
+    switch_hint = "ask the admin to switch to {mode} (llm-mode)";
     # "auto" leaves the model to maitred: the strongest tiered model below that is serving, fits the
     # conversation and has a free slot, keeping a conversation on the model that has it cached. Not a
     # fallback: a request naming a model still gets that model or the not-loaded error. Cron asks for it, so
     # its jobs run on whichever mode son-of-anton has up. Each decision is a JSON line in the log.
     router.decision_log = "/var/lib/maitred/routes.jsonl";
-    # "fiona" is eklow's auto: routed the same way, but only among the models eklow serves, and a 503 (never another
-    # server) when it is down, so son-of-anton's chats (fiona) fall back to "auto" themselves.
+    # "fiona" is eklow's auto: routed the same way, but only among the models eklow serves (whichever of its modes is
+    # up), and a 503 (never another server) when it is down, so son-of-anton's chats (fiona) fall back to "auto"
+    # themselves.
     router.extra = [
       {
         id = "fiona";
-        upstreams = [ "eklow" ];
+        upstreams = [
+          "eklow"
+          "eklow-gemma"
+        ];
       }
     ];
     # slots: how many requests each server runs at once (son-of-anton's maxNumSeqs; gufo's sessions).
@@ -81,13 +86,19 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
-      # fiona: llama.cpp serves the title model; eklow serves Ornith-1.5 (Qwen3.6) and the embeddings.
+      # fiona: llama.cpp serves the title model; eklow serves Ornith-1.5 (Qwen3.6) or Gemma 4 26B A4B (llm-mode, each
+      # on its own port so that the one up is the one answering) and the embeddings.
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
       };
       eklow = {
         base_url = "http://${fiona}:8081/v1";
+        timeout_secs = 1800;
+        slots = 2;
+      };
+      eklow-gemma = {
+        base_url = "http://${fiona}:8083/v1";
         timeout_secs = 1800;
         slots = 2;
       };
@@ -123,6 +134,18 @@ let
           "gufo"
         ];
       }
+      {
+        name = "ornith";
+        label = "Ornith 1.5 35B A3B";
+        host = "fiona";
+        upstreams = [ "eklow" ];
+      }
+      {
+        name = "gemma";
+        label = "Gemma 4 26B A4B";
+        host = "fiona";
+        upstreams = [ "eklow-gemma" ];
+      }
     ];
     # reasoning_efforts: what each server takes (unholy: none/low/high/max for DeepSeek-V4-Flash, low/high/max
     # for GLM-5.3-Flash, which always thinks, so none is answered with low; Radiance, as its /v1/models lists:
@@ -130,8 +153,8 @@ let
     # template has none/low/medium/xhigh; Gemma 4's template only turns thinking on or off). The Qwen pair alias
     # high to xhigh, their default, so "high" means each model's normal thinking whichever one "auto" lands on
     # (clamping would give them medium). tier: DeepSeek-V4-Flash (and GLM-5.3-Flash, never up with it), then
-    # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then Gemma 4 on fiona, which
-    # is up when son-of-anton is not.
+    # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then eklow on fiona (Ornith-1.5
+    # or Gemma 4 26B A4B, whichever llm-mode has up), which is up when son-of-anton is not.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -212,6 +235,20 @@ let
         upstream = "eklow";
         upstream_model = "ornith-1.5-35b-a3b";
         display_name = "Ornith 1.5 35B A3B";
+        context_length = 262144;
+        reasoning_efforts = [
+          "none"
+          "high"
+        ];
+        default_reasoning_effort = "high";
+        tier = 0;
+      }
+      {
+        # Gemma 4's template only turns thinking on or off. Up when fiona is in llm-mode gemma, in place of Ornith.
+        id = "eklow/gemma-4-26b-a4b";
+        upstream = "eklow-gemma";
+        upstream_model = "gemma-4-26b-a4b";
+        display_name = "Gemma 4 26B A4B";
         context_length = 262144;
         reasoning_efforts = [
           "none"

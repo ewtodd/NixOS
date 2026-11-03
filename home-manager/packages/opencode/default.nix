@@ -408,6 +408,29 @@ in
                 output = [ "text" ];
               };
             };
+            # The same card in llm-mode gemma: Gemma 4 26B A4B thinks or not; images through its own encoder.
+            "eklow/gemma-4-26b-a4b" = {
+              name = "Gemma 4 26B A4B";
+              variants = {
+                high = {
+                  reasoningEffort = "high";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 262144;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
           };
         };
       };

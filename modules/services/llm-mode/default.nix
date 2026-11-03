@@ -5,34 +5,48 @@
   ...
 }:
 
-# Which model set owns son-of-anton's GPUs: an unholy instance, a mode of its own name (`ds4`:
+# Which model set owns a host's GPUs. On son-of-anton: an unholy instance, a mode of its own name (`ds4`:
 # DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), or `qwen` (Radiance:
-# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU). The model services do not start on
-# their own; `llm-mode-boot` starts the last selected mode (or the default) and `llm-mode <mode>` switches
-# at run time, no redeploy. `llm-mode pause` stops them all and keeps the selection until `llm-mode resume`
-# or a reboot. The unholy instances and the Qwen pair also conflict in systemd, so starting one by hand
-# stops the others.
+# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU). On fiona: an eklow instance, a mode
+# of its own name (`ornith`: Ornith-1.5-35B-A3B, `gemma`: Gemma 4 26B A4B, each on the A770M). The model
+# services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default) and
+# `llm-mode <mode>` switches at run time, no redeploy. `llm-mode pause` stops them all and keeps the
+# selection until `llm-mode resume` or a reboot. The unholy instances and the Qwen pair also conflict in
+# systemd, as the eklow instances do with each other, so starting one by hand stops the others.
 let
   cfg = config.systemOptions.services.llmMode;
   svc = config.systemOptions.services;
 
-  modes = lib.mapAttrs (name: _: [ "unholy-${name}.service" ]) svc.unholy.instances // {
-    qwen = [
-      "radiance.service"
-      "gufo-strix.service"
-    ];
-  };
+  hasUnholy = svc.unholy.enable;
+  hasQwenPair = svc.radiance.enable && svc.gufoStrix.enable;
+  hasEklow = svc.eklow.enable;
+  # eklow's own module (inputs.eklow) declares the instances; modules/services/eklow sets them.
+  eklowInstances = config.services.eklow.instances;
+
+  modes =
+    lib.optionalAttrs hasUnholy (
+      lib.mapAttrs (name: _: [ "unholy-${name}.service" ]) svc.unholy.instances
+    )
+    // lib.optionalAttrs hasQwenPair {
+      qwen = [
+        "radiance.service"
+        "gufo-strix.service"
+      ];
+    }
+    // lib.optionalAttrs hasEklow (lib.mapAttrs (name: _: [ "eklow-${name}.service" ]) eklowInstances);
   allUnits = lib.unique (lib.concatLists (lib.attrValues modes));
   stateFile = "/var/lib/llm-mode/mode";
   pausedFile = "/run/llm-mode/paused";
 
   # name -> (port, model) for `llm-mode status`.
   endpoints =
-    lib.mapAttrsToList (name: inst: {
-      unit = "unholy-${name}.service";
-      inherit (inst) port;
-    }) svc.unholy.instances
-    ++ [
+    lib.optionals hasUnholy (
+      lib.mapAttrsToList (name: inst: {
+        unit = "unholy-${name}.service";
+        inherit (inst) port;
+      }) svc.unholy.instances
+    )
+    ++ lib.optionals hasQwenPair [
       {
         unit = "radiance.service";
         port = svc.radiance.port;
@@ -41,7 +55,20 @@ let
         unit = "gufo-strix.service";
         port = svc.gufoStrix.port;
       }
-    ];
+    ]
+    ++ lib.optionals hasEklow (
+      lib.mapAttrsToList (name: inst: {
+        unit = "eklow-${name}.service";
+        inherit (inst) port;
+      }) eklowInstances
+    );
+
+  # How long a switch takes until the new mode answers, for the CLI's message.
+  loadTimes = lib.concatStringsSep ", " (
+    lib.optional hasUnholy "unholy ~1-2 min"
+    ++ lib.optional hasQwenPair "radiance/gufo ~2-5 min"
+    ++ lib.optional hasEklow "eklow ~15-30 s"
+  );
 
   # Runs as root from llm-mode@MODE.service: stop the other mode's units, start this one's (without
   # blocking on their load), remember the choice for the next boot. MODE `pause` stops every unit and
@@ -107,7 +134,7 @@ let
         status ;;
       ${lib.concatStringsSep "|" (lib.attrNames modes)})
         systemctl start "llm-mode@$cmd.service" || exit $?
-        echo "switched to $cmd; models load in the background (unholy ~1-2 min, radiance/gufo ~2-5 min)"
+        echo "switched to $cmd; models load in the background (${loadTimes})"
         status ;;
       *) echo "usage: llm-mode ${lib.concatStringsSep "|" (lib.attrNames modes)}|pause|resume|status" >&2; exit 2 ;;
     esac
@@ -132,8 +159,8 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = svc.unholy.enable && svc.radiance.enable && svc.gufoStrix.enable;
-        message = "services.llmMode switches between unholy and radiance + gufoStrix; enable all three.";
+        assertion = modes != { } && svc.radiance.enable == svc.gufoStrix.enable;
+        message = "services.llmMode switches between model sets (unholy instances, radiance + gufoStrix as one, eklow instances): enable at least one, and the Qwen pair whole.";
       }
       {
         assertion = modes ? ${cfg.default};
@@ -151,12 +178,14 @@ in
       (lib.genAttrs (map (lib.removeSuffix ".service") allUnits) (_: {
         wantedBy = lib.mkForce [ ];
       }))
-      (lib.mapAttrs' (
-        name: _: lib.nameValuePair "unholy-${name}" { conflicts = modes.qwen; }
-      ) svc.unholy.instances)
+      (lib.optionalAttrs (hasUnholy && hasQwenPair) (
+        lib.mapAttrs' (
+          name: _: lib.nameValuePair "unholy-${name}" { conflicts = modes.qwen; }
+        ) svc.unholy.instances
+      ))
       {
         "llm-mode@" = {
-          description = "Switch son-of-anton's GPUs to the %i model set";
+          description = "Switch ${config.networking.hostName}'s GPUs to the %i model set";
           serviceConfig = {
             Type = "oneshot";
             ExecStart = "${switch} %i";

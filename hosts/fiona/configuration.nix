@@ -23,10 +23,16 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:30:00";
-    # Gemma 4 26B A4B and the RAG embeddings for maitred on mu, on the A770M.
+    # Ornith-1.5 or Gemma 4 26B A4B, and the RAG embeddings, for maitred on mu, on the A770M.
     services.eklow = {
       enable = true;
       lanExpose = true;
+    };
+    # The A770M holds one chat model: `llm-mode ornith|gemma` switches, the last choice starts at boot.
+    services.llmMode = {
+      enable = true;
+      default = "ornith";
+      managers = [ "fiona" ];
     };
     # Title generation for maitred, on the Iris Xe.
     services.llamaCpp = {
@@ -79,7 +85,7 @@ in
     polkit.addRule(function (action, subject) {
       if (action.id == "org.freedesktop.systemd1.manage-units" &&
           subject.user == "fiona" &&
-          /^(eklow|llama-(server-[a-z0-9-]+|embeddings))\.service$/.test(action.lookup("unit"))) {
+          /^(eklow(-[a-z0-9-]+)?|llama-(server-[a-z0-9-]+|embeddings))\.service$/.test(action.lookup("unit"))) {
         return polkit.Result.YES;
       }
     });

@@ -839,13 +839,14 @@ with lib;
       };
       services.llmMode = {
         enable = mkEnableOption ''
-          the `llm-mode <mode>|status` switch between the model sets sharing son-of-anton's GPUs: each
-          services.unholy instance (all three GPUs) is a mode of its own name, and `qwen` the Qwen pair
-          (services.radiance on the R9700s + services.gufoStrix on the iGPU), with no redeploy'';
+          the `llm-mode <mode>|status` switch between the model sets sharing a host's GPUs, with no
+          redeploy: on son-of-anton each services.unholy instance (all three GPUs) is a mode of its own
+          name, and `qwen` the Qwen pair (services.radiance on the R9700s + services.gufoStrix on the
+          iGPU); on fiona each eklow instance (the A770M) is a mode of its own name'';
         default = mkOption {
           type = types.str;
           default = "ds4";
-          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance or `qwen`.";
+          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance, `qwen` or an eklow instance.";
         };
         managers = mkOption {
           type = types.listOf types.str;
@@ -973,7 +974,7 @@ with lib;
         };
       };
       services.eklow = {
-        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Gemma 4 and EmbeddingGemma 2 on an Intel Arc A770M";
+        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Ornith-1.5 (Qwen3.6) or Gemma 4 26B A4B, switched by services.llmMode, and EmbeddingGemma 2 on an Intel Arc A770M";
         lanExpose = mkEnableOption "eklow on the LAN (0.0.0.0, ports open) for maitred";
       };
       services.maitred = {
