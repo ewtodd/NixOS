@@ -44,7 +44,7 @@ in
       };
       instances.glm = {
         model = "/scratch/models/glm53-flash-exl3-4.05bpw";
-        servedModelName = "glm53";
+        servedModelName = "glm5.3-flash";
         # Not 8300: unholy's development servers (tools/box) use it.
         port = 8250;
         kvTokens = 1048576;

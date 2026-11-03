@@ -99,6 +99,7 @@ in
       };
       bar.default = {
         position = lib.mkIf e "right";
+        monitor.HDMI-A-2.enabled = lib.mkIf e false;
         reserve_space = lib.mkIf e false;
         background_opacity = opacity;
         margin_ends = 200;
@@ -150,7 +151,11 @@ in
       lockscreen_widgets = {
         enabled = true;
         schema_version = 2;
-        widget_order = [ "lockscreen-login-box@eDP-1" ];
+        widget_order = [
+          "lockscreen-login-box@eDP-1"
+          "lockscreen-login-box@DP-3"
+          "lockscreen-login-box@HDMI-A-2"
+        ];
         grid = {
           cell_size = 16;
           major_interval = 4;
@@ -168,6 +173,32 @@ in
           placement_width = 1671.0;
           rotation = 0.0;
         };
+        widget."lockscreen-login-box@DP-3" = {
+          settings.layout = "compact";
+          type = "login_box";
+          box_height = 70.0;
+          box_width = 400.0;
+          cx = 1720.0;
+          cy = 755.0;
+          output = "DP-3";
+          placement_height = 1114.0;
+          placement_width = 3440.0;
+          rotation = 0.0;
+        };
+        widget."lockscreen-login-box@HDMI-A-2" = {
+          settings.layout = "compact";
+          type = "login_box";
+          box_height = 70.0;
+          box_width = 400.0;
+          cx = 540.0;
+          cy = 1742.0;
+          output = "HDMI-A-2";
+          placement_height = 1920.0;
+          placement_width = 1080.0;
+          rotation = 0.0;
+          enabled = false;
+        };
+
       };
       weather.unit = "imperial";
       widget = {

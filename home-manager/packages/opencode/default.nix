@@ -298,7 +298,7 @@ in
             };
 
             # unholy's llm-mode glm (EXL3 4.05). GLM-5.3-Flash always thinks: efforts low, high, max; text only.
-            "glm53" = {
+            "glm5.3-flash" = {
               name = "GLM-5.3-Flash";
               variants = {
                 max = {

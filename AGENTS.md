@@ -64,5 +64,10 @@ README.md covers layout, hosts, `systemOptions`, and Colmena deployment.
   `flake.lock`.
   Pushing son-of-anton does nothing until `nix flake update
   son-of-anton`, a commit of `flake.lock`, and `nrs` on e-workstation.
+- To see what a son-of-anton (or any input) bump changes, clone it fresh into
+  `/tmp` (`git clone https://github.com/ewtodd/son-of-anton /tmp/son-of-anton`,
+  or `git -C /tmp/son-of-anton fetch` if an earlier session left it there) and
+  diff the two revs there. Do not search for a local checkout or use one
+  you find: `/srv/<instance>` and other users' copies belong to other instances.
 - Activation restarts changed `son-of-anton-<instance>` units; an open CLI
   keeps the old code until relaunched (`son-of-anton -c` resumes the session).

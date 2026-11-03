@@ -28,6 +28,10 @@ in
         sha256 = "25a681297b42b5e5c0088d01fb1116148ce4eced2fe8dd5792bf03022eefa1a3";
       };
       alias = "ornith-1.5-35b-a3b";
+      # eklow built on its own nixpkgs (intel-llvm 7.1.1), the toolchain its checks ran on: built with the fleet's
+      # (7.2.0, 2026-11-02) the server finds 0.8 GiB less card memory free after loading, keeps 39 experts a layer
+      # on the card instead of 51 and runs 6-9% slower.
+      package = inputs.eklow.packages.${pkgs.stdenv.hostPlatform.system}.default;
       expertProfile = "${config.services.eklow.package}/share/eklow/ornith-1.5-experts.json";
       # Inco AI's DFlash 2 draft (for Qwen3.6; on Ornith it ties the Ornith-trained one at the short blocks this card
       # runs), lossless; verify blocks of 4 by default.

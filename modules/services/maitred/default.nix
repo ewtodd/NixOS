@@ -48,6 +48,14 @@ let
     # fallback: a request naming a model still gets that model or the not-loaded error. Cron asks for it, so
     # its jobs run on whichever mode son-of-anton has up. Each decision is a JSON line in the log.
     router.decision_log = "/var/lib/maitred/routes.jsonl";
+    # "fiona" is eklow's auto: routed the same way, but only among the models eklow serves, and a 503 (never another
+    # server) when it is down, so son-of-anton's chats (fiona) fall back to "auto" themselves.
+    router.extra = [
+      {
+        id = "fiona";
+        upstreams = [ "eklow" ];
+      }
+    ];
     # slots: how many requests each server runs at once (son-of-anton's maxNumSeqs; gufo's sessions).
     upstreams = {
       # A cold 1M-token prefill takes ~20 min before the first token.
@@ -146,9 +154,9 @@ let
         tier = 3;
       }
       {
-        id = "unholy/glm53";
+        id = "unholy/glm5.3-flash";
         upstream = "unholy-glm";
-        upstream_model = "glm53";
+        upstream_model = "glm5.3-flash";
         display_name = "GLM-5.3-Flash";
         context_length = 524288;
         reasoning_efforts = [
@@ -294,7 +302,7 @@ let
         env = "MAITRED_KEY_KNOLL";
         models = [
           "unholy/dsv4-flash"
-          "unholy/glm53"
+          "unholy/glm5.3-flash"
           "radiance/qwen3.8-27b"
           "gufo/qwen3.8-flash-next"
           "embed/embeddinggemma-2"

@@ -1057,6 +1057,14 @@ with lib;
                     written in Nix.
                   '';
                 };
+                backend = mkOption {
+                  type = types.enum [
+                    "python"
+                    "soa-d"
+                  ];
+                  default = "python";
+                  description = "Which backend serves this instance: the Python gateway or the Go daemon soa-d.";
+                };
                 model = mkOption {
                   type = types.str;
                   default = "";

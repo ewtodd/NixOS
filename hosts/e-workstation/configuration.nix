@@ -52,19 +52,7 @@ let
     markets = "soa-markets";
   };
 
-  soaPkg = inputs.son-of-anton.packages.${pkgs.system}.default;
   soaPhysicsPython = inputs.son-of-anton.packages.${pkgs.system}.physics-runtime;
-  bridgeEnabled = true;
-
-  bridgePath = [
-    pkgs.bashInteractive
-    pkgs.coreutils
-    pkgs.git
-    pkgs.findutils
-    pkgs.gnugrep
-    pkgs.gnused
-  ]
-  ++ projectAgentTools;
 in
 {
   imports = [
@@ -161,7 +149,9 @@ in
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
-          model = "auto";
+          backend = "soa-d";
+          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
+          model = "fiona";
           settings.gateway.single_user = true;
           settings.physics = {
             data_dirs = [ "/labdata/ANSG/YAP-Final" ];
@@ -179,18 +169,10 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
           # Standing memory rules, encrypted (secrets/son-of-anton-play-rules.age).
           memoryRulesFile = config.age.secrets.son-of-anton-play-rules.path;
-          model = "auto";
+          backend = "soa-d";
+          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
+          model = "fiona";
           settings.gateway.single_user = true;
-          settings = {
-            mcp_servers = lib.mapAttrs (name: _: {
-              command = "${pkgs.socat}/bin/socat";
-              args = [
-                "STDIO"
-                "UNIX-CONNECT:/run/soa-${name}-mcp.sock"
-              ];
-              enabled = bridgeEnabled;
-            }) projectAgents;
-          };
           settings.git = {
             author_name = "son-of-anton-bot";
             author_email = "307402699+son-of-anton-bot@users.noreply.github.com";
@@ -205,7 +187,9 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
-          model = "auto";
+          backend = "soa-d";
+          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
+          model = "fiona";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -225,7 +209,9 @@ in
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           git.github = config.age.secrets.soa-ricky-github-key.path;
-          model = "auto";
+          backend = "soa-d";
+          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
+          model = "fiona";
           settings = {
             model.default = "auto";
           };
@@ -236,14 +222,12 @@ in
           extraPackages = projectAgentTools;
           settings.gateway = {
             group_sessions_per_user = false;
-            active_hours = [
-              20
-              7
-            ];
-            inactive_message =
-              "Off the clock until 8pm - son-of-anton is doing real work!"
-              + "Your message is saved; I'll ask about it tonight.";
           };
+          # fiona's chat is always on (eklow); project work waits for the evening (son-of-anton's GPU).
+          settings.relay.worker_hours = [
+            20
+            7
+          ];
         };
 
         markets = {
@@ -254,7 +238,9 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
-          model = "auto";
+          backend = "soa-d";
+          # fiona, whatever eklow serves (maitred router.extra); son-of-anton's auto when eklow is down.
+          model = "fiona";
           settings = {
             model.default = "auto";
           };
@@ -265,14 +251,12 @@ in
           };
           settings.gateway = {
             group_sessions_per_user = false;
-            active_hours = [
-              20
-              7
-            ];
-            inactive_message =
-              "Off the clock until 8pm - son-of-anton is doing real work!"
-              + "Your message is saved; I'll ask about it tonight.";
           };
+          # fiona's chat is always on (eklow); project work waits for the evening (son-of-anton's GPU).
+          settings.relay.worker_hours = [
+            20
+            7
+          ];
         };
       };
 
@@ -298,6 +282,8 @@ in
         };
         # Sub-agents too, so they run whichever mode is up instead of failing while the Qwen pair is loaded.
         delegation.model = "auto";
+        # Old model names a stored session or job may still pin: soa-d rewrites them at start and resolves them.
+        models.renamed."unholy/glm53" = "unholy/glm5.3-flash";
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
           enabled = true;
@@ -328,7 +314,7 @@ in
               ];
             };
             # GLM-5.3-Flash always thinks: low, high, max.
-            "unholy/glm53" = {
+            "unholy/glm5.3-flash" = {
               reasoning_effort = "high";
               reasoning_efforts = [
                 "low"
@@ -439,22 +425,6 @@ in
       };
     };
   };
-  users.groups.soa-bridge = { };
-
-  systemd.sockets = lib.mapAttrs' (
-    name: _:
-    lib.nameValuePair "soa-${name}-mcp" {
-      description = "MCP bridge socket for the ${name} son-of-anton instance";
-      wantedBy = [ "sockets.target" ];
-      socketConfig = {
-        ListenStream = "/run/soa-${name}-mcp.sock";
-        SocketMode = "0660";
-        SocketGroup = "soa-bridge";
-        Accept = "yes";
-      };
-    }
-  ) projectAgents;
-
   systemd.services = lib.mkMerge [
     (lib.mapAttrs' (
       name: user:
@@ -468,40 +438,6 @@ in
         };
       }
     ) projectAgents)
-
-    (lib.mapAttrs' (
-      name: user:
-      lib.nameValuePair "soa-${name}-mcp@" {
-        description = "MCP bridge for the ${name} son-of-anton instance (connection %i)";
-        path = bridgePath;
-        environment = {
-          HOME = "/var/lib/soa-${name}";
-          SON_OF_ANTON_HOME = "/var/lib/soa-${name}/.son-of-anton";
-          NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
-        };
-        serviceConfig = {
-          User = user;
-          Group = "son-of-anton";
-          ExecStart = "${soaPkg}/bin/son-of-anton mcp serve";
-          StandardInput = "socket";
-          StandardOutput = "socket";
-          StandardError = "journal";
-          ProtectSystem = "strict";
-          ProtectHome = true;
-          PrivateTmp = true;
-          NoNewPrivileges = true;
-          UMask = "0007";
-          ReadWritePaths = [
-            "/var/lib/soa-${name}"
-            "/srv/${name}"
-          ];
-        };
-      }
-    ) projectAgents)
-
-    {
-      son-of-anton-play.serviceConfig.SupplementaryGroups = [ "soa-bridge" ];
-    }
   ];
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -526,7 +462,6 @@ in
     description = "ethan-play";
     extraGroups = [
       "nixconfig"
-      "soa-bridge"
       "networkmanager"
       "wheel"
       "dialout"

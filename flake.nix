@@ -93,7 +93,8 @@
     };
     eklow = {
       url = "github:ewtodd/eklow";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Not the fleet's nixpkgs: eklow is built and checked on its own pin (intel-llvm 7.1.1); see
+      # modules/services/eklow.
       inputs.llama-cpp.follows = "llama-cpp";
     };
     niri-utilities = {
