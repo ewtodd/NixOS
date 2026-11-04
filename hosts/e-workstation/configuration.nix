@@ -248,6 +248,14 @@ in
       settings = {
         # Every chat is fiona: whatever eklow serves (maitred router.extra), son-of-anton's auto when eklow is down.
         gateway.model = "fiona";
+        # Models fiona may not hand a worker (relay send's model): eklow is reached only through fiona's own
+        # route and auto's fallback, and the DeepSeek API is not for workers. She is offered what maitred
+        # reports as serving, less these.
+        relay.hidden_models = [
+          "fiona"
+          "eklow/"
+          "deepseek/"
+        ];
         model = {
           # maitred's routed id: the strongest model son-of-anton is serving, kept per conversation where its
           # context is cached. "high" is each model's normal thinking (maitred maps it to xhigh on the Qwen pair).
@@ -290,6 +298,9 @@ in
           # metadata only and no longer pin the picker.
           discover_models = true;
           models = {
+            # The description is what fiona reads when she picks a worker's model (relay send's model).
+            "auto".description =
+              "maitred picks; outside qwen mode it is the other model listed, except that it can fall back to eklow if that one goes down";
             # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
             "unholy/dsv4-flash" = {
               reasoning_effort = "high";
@@ -357,33 +368,12 @@ in
             };
           };
         };
+        # The physics mode (son-of-anton problem run): a worker and a manager, both on auto, with model
+        # code run in this runtime under bubblewrap. Limits are the defaults (8 work sessions, 400k tokens a
+        # session, 3M a run, 8 hours); an instance that runs problems also sets data_dirs and workspace_root.
         physics = {
           model = "auto";
-          coder_model = "auto";
-          agent_models = {
-            critic = "auto";
-          };
-          base_url = "http://${aiFront}:4002/v1";
-          api_key_env = "MAITRED_KEY_SOA";
           python = "${soaPhysicsPython}/bin/python3";
-          sandbox = "bwrap";
-          script_timeout = 900;
-          max_iterations = 20;
-          token_budget = 262144;
-          reasoning_effort = "max";
-          mcp = {
-            server = "maitred";
-            roles = {
-              manager = [
-                "arxiv-search_papers"
-                "arxiv-get_abstract"
-                "arxiv-download_paper"
-                "arxiv-read_paper"
-                "arxiv-search_paper_text"
-              ];
-              subagent = [ "context7" ];
-            };
-          };
         };
         web.backend = "searxng";
         mcp_servers.maitred = {
