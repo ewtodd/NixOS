@@ -1195,11 +1195,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793759403,
-        "narHash": "sha256-xcPyMPoJRD9kfBbZ7GvWrwxTLaH1j5RSdYJBoHYsJrg=",
+        "lastModified": 1793822744,
+        "narHash": "sha256-7JXeQvMkxZmCRxnoyuvJVSiF8NzRTAWujDuIfcddEUI=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "7c3c122f4d4f4697992d0035f517cd23159cdf87",
+        "rev": "2d9848ee65f571a2bc0ad3e8d4cfd25a15842552",
         "type": "github"
       },
       "original": {
@@ -1545,11 +1545,11 @@
         "therock-sdk": "therock-sdk_2"
       },
       "locked": {
-        "lastModified": 1793769006,
-        "narHash": "sha256-VgutJafffXFwB/0qOCnZkmIK/FpE+92UZzthN+bi44Y=",
+        "lastModified": 1793820337,
+        "narHash": "sha256-evYrOCaHq2KhhcdUt64isqeOW5rygHXNwJi0FE6+1GY=",
         "owner": "ewtodd",
         "repo": "unholy",
-        "rev": "cbda888ae6a84e63775131777f567a0e1f74c611",
+        "rev": "0284330a530cf9cb113ed863c4cd89a55171c5b6",
         "type": "github"
       },
       "original": {
