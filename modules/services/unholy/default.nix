@@ -14,8 +14,10 @@ let
   unitName = name: "unholy-${name}";
   units = map (name: "${unitName name}.service") (lib.attrNames cfg.instances);
 
+  usesDisk = inst: cfg.snapshotDir != null && inst.diskSnapshots > 0;
+
   serveArgs =
-    inst:
+    name: inst:
     [
       "--model ${inst.model}"
       "--host ${if cfg.lanExpose then "0.0.0.0" else "127.0.0.1"}"
@@ -30,6 +32,10 @@ let
     ]
     ++ lib.optionals (inst.exl3 != null) [ "--exl3 ${inst.exl3}" ]
     ++ lib.optionals (inst.profile != null) [ "--profile ${inst.profile}" ]
+    ++ lib.optionals (usesDisk inst) [
+      "--snapshot-dir ${cfg.snapshotDir}/${name}"
+      "--disk-snapshots ${toString inst.diskSnapshots}"
+    ]
     ++ inst.extraFlags;
 in
 {
@@ -45,6 +51,11 @@ in
           services.unholy uses both R9700s and the Strix Halo iGPU; run
           services.radiance / services.gufoStrix only under services.llmMode (which switches between them).
         '';
+      }
+      {
+        assertion =
+          cfg.snapshotDir != null || lib.all (inst: inst.diskSnapshots == 0) (lib.attrValues cfg.instances);
+        message = "services.unholy: diskSnapshots needs snapshotDir.";
       }
     ];
 
@@ -70,6 +81,10 @@ in
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
         conflicts = lib.remove "${unitName name}.service" units;
+        # Wants, not Requires: if the file system fails to mount, the instance still starts, and unholy
+        # serves without the disk tier because it cannot create the directory under the bare, root-owned
+        # mountpoint. Its snapshots never land on the root disk.
+        unitConfig = lib.mkIf (usesDisk inst) { WantsMountsFor = cfg.snapshotDir; };
 
         environment = {
           HIP_VISIBLE_DEVICES = cfg.devices;
@@ -78,7 +93,7 @@ in
 
         serviceConfig = {
           Type = "simple";
-          ExecStart = "${unholy}/bin/unholy serve ${lib.concatStringsSep " " (serveArgs inst)}";
+          ExecStart = "${unholy}/bin/unholy serve ${lib.concatStringsSep " " (serveArgs name inst)}";
           # A GPU fault aborts the process; come back up (loading takes ~40 s). A stop by a manager
           # (systemctl stop) is not a failure and stays stopped.
           Restart = "always";

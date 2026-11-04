@@ -32,6 +32,8 @@ in
       enable = true;
       lanExpose = true;
       managers = [ "son-of-anton" ];
+      # The SATA RAID 0, not the NVMe (/scratch).
+      snapshotDir = "/work/unholy-snapshots";
       instances.ds4 = {
         model = "/scratch/dsv4-ve";
         servedModelName = "dsv4-flash";
@@ -41,6 +43,7 @@ in
         maxNumSeqs = 8;
         specDrafts = 5;
         prefixSnapshots = 64;
+        diskSnapshots = 1024;
       };
       instances.glm = {
         model = "/scratch/models/glm53-flash-exl3-4.05bpw";
@@ -53,6 +56,7 @@ in
         maxBatchTokens = 3072;
         specDrafts = 1;
         prefixSnapshots = 64;
+        diskSnapshots = 256;
       };
     };
     services.radiance = {

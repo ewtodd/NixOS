@@ -880,6 +880,16 @@ with lib;
             rule), e.g. to free the GPUs for development runs.
           '';
         };
+        snapshotDir = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "/work/unholy-snapshots";
+          description = ''
+            Directory for the instances' disk snapshots (see diskSnapshots), each instance in a subdirectory
+            named after it (--snapshot-dir). unholy creates it; if it cannot (the file system did not mount),
+            the instance serves without the disk tier. Null turns the disk tier off.
+          '';
+        };
         instances = mkOption {
           default = { };
           description = "Model servers by name, each unholy-<name>.service; unholy serve picks the engine from the checkpoint.";
@@ -957,6 +967,17 @@ with lib;
                     iGPU's experts). A request that repeats an earlier prefix (the next chat turn, a shared
                     system prompt) resumes from the deepest saved page boundary it matches. 0 turns prefix
                     caching off.
+                  '';
+                };
+                diskSnapshots = mkOption {
+                  type = types.ints.unsigned;
+                  default = 0;
+                  description = ''
+                    Snapshots kept on disk behind the RAM ones (--disk-snapshots), in one file under
+                    snapshotDir, preallocated at start and removed at exit. When fewer than two RAM snapshots
+                    are free, the least recently used one is written to disk; a request that matches a disk
+                    snapshot waits for it to be read back (~0.1 s for GLM-5.3-Flash's 148 MB at 1.6 GB/s).
+                    Outputs are exactly as with RAM snapshots only. 0 turns the disk tier off.
                   '';
                 };
                 extraEnv = mkOption {
