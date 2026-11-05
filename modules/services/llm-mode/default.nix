@@ -20,7 +20,7 @@ let
 
   hasUnholy = svc.unholy.enable;
   hasQwenPair = svc.radiance.enable && svc.gufoStrix.enable;
-  hasDual = hasQwenPair && svc.gufoStrix.ds41.enable;
+  hasDual = hasQwenPair && svc.gufoStrix.deepseek.enable;
   hasEklow = svc.eklow.enable;
   # eklow's own module (inputs.eklow) declares the instances; modules/services/eklow sets them.
   eklowInstances = config.services.eklow.instances;
@@ -38,7 +38,7 @@ let
     // lib.optionalAttrs hasDual {
       dual = [
         "radiance.service"
-        "gufo-ds41.service"
+        "gufo-deepseek.service"
       ];
     }
     // lib.optionalAttrs hasEklow (lib.mapAttrs (name: _: [ "eklow-${name}.service" ]) eklowInstances);
@@ -66,8 +66,8 @@ let
     ]
     ++ lib.optionals hasDual [
       {
-        unit = "gufo-ds41.service";
-        port = svc.gufoStrix.ds41.port;
+        unit = "gufo-deepseek.service";
+        port = svc.gufoStrix.deepseek.port;
       }
     ]
     ++ lib.optionals hasEklow (

@@ -123,7 +123,7 @@
     "audio-cpp_2": {
       "inputs": {
         "nixpkgs": [
-          "gufo-ds41",
+          "gufo-deepseek",
           "nixpkgs"
         ]
       },
@@ -623,7 +623,7 @@
         "type": "github"
       }
     },
-    "gufo-ds41": {
+    "gufo-deepseek": {
       "inputs": {
         "audio-cpp": "audio-cpp_2",
         "nixpkgs": [
@@ -776,11 +776,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793721985,
-        "narHash": "sha256-Wt8097gGa/kXq9JqCIe8UScGGHmQhlKr40wcMYQamVw=",
+        "lastModified": 1793855187,
+        "narHash": "sha256-Y0eDEafZ1+B9NwXjNxfdjLRM4dsmWjZEX4hhPF+4wS0=",
         "owner": "ewtodd",
         "repo": "maitred",
-        "rev": "29d995988adce7aa252c73290a75c22ca9bbcc06",
+        "rev": "4fe184a08e66978958fbc2e2a45a1f2855ee5718",
         "type": "github"
       },
       "original": {
@@ -1190,7 +1190,7 @@
         "colmena": "colmena",
         "eklow": "eklow",
         "gufo": "gufo",
-        "gufo-ds41": "gufo-ds41",
+        "gufo-deepseek": "gufo-deepseek",
         "home-manager": "home-manager",
         "lifer": "lifer",
         "lisepp": "lisepp",
@@ -1255,11 +1255,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793822744,
-        "narHash": "sha256-7JXeQvMkxZmCRxnoyuvJVSiF8NzRTAWujDuIfcddEUI=",
+        "lastModified": 1793849503,
+        "narHash": "sha256-1KfHRMrx1bXWyF6qBOVtsocfoIJ3mnxF/Zq/n3erX2c=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "2d9848ee65f571a2bc0ad3e8d4cfd25a15842552",
+        "rev": "9679b04b5f0b3ce44ad040fb16e244b12f2a9008",
         "type": "github"
       },
       "original": {

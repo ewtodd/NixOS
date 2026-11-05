@@ -86,7 +86,7 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
-      gufo-ds41 = {
+      gufo-deepseek = {
         base_url = "http://${sonOfAnton}:8051/v1";
         timeout_secs = 1800;
         slots = 1;
@@ -131,21 +131,21 @@ let
         upstreams = [ "unholy-glm" ];
       }
       {
-        # Radiance is up here too, but not listed: a mode with any upstream up reads as still loading, so
-        # listing it would say that of DeepSeek-V4.1-Flash all through llm-mode qwen. First, so that with
-        # both listed modes answering, a request for a model that is not loaded is pointed at this one.
-        name = "dual";
-        label = "DeepSeek-V4.1-Flash and Qwen3.8-27B";
-        host = "son-of-anton";
-        upstreams = [ "gufo-ds41" ];
-      }
-      {
         name = "qwen";
         label = "the Qwen models";
         host = "son-of-anton";
         upstreams = [
           "radiance"
           "gufo"
+        ];
+      }
+      {
+        name = "dual";
+        label = "DeepSeek-V4.1-Flash and Qwen3.8-27B";
+        host = "son-of-anton";
+        upstreams = [
+          "radiance"
+          "gufo-deepseek"
         ];
       }
       {
@@ -214,7 +214,7 @@ let
       {
         # The fork's template turns low, high and max into a reasoning budget; xhigh would just be high.
         id = "gufo/deepseek-v4.1-flash";
-        upstream = "gufo-ds41";
+        upstream = "gufo-deepseek";
         upstream_model = "deepseek-v4.1-flash";
         display_name = "DeepSeek-V4.1-Flash";
         context_length = 262144;

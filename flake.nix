@@ -65,7 +65,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # The fork that serves DeepSeek-V4.1-Flash; `gufo` above keeps serving Qwen3.8-Flash-Next.
-    gufo-ds41 = {
+    gufo-deepseek = {
       url = "github:franzmoca/gufo";
       inputs.nixpkgs.follows = "nixpkgs";
     };

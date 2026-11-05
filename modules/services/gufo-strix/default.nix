@@ -13,8 +13,8 @@ let
   # 7.2.3) with its patched ROCr, which keeps queue memory resident during
   # host memory compaction on Strix Halo.
   gufo = inputs.gufo.packages.${pkgs.system}.default;
-  gufoDs41 = inputs.gufo-ds41.packages.${pkgs.system}.default;
-  ds41 = cfg.ds41;
+  gufoDeepseek = inputs.gufo-deepseek.packages.${pkgs.system}.default;
+  deepseek = cfg.deepseek;
 
   nativeContext = 262144;
 
@@ -61,16 +61,16 @@ let
     "--served-model-name ${s.alias}"
   ];
 
-  ds41Args =
-    baseArgs ds41
+  deepseekArgs =
+    baseArgs deepseek
     ++ [
       "--speculative dspark"
-      "--dspark-model ${ds41.dsparkModel}"
+      "--dspark-model ${deepseek.dsparkModel}"
       "--stream-experts"
-      "--expert-cache-bytes ${toString ds41.expertCacheBytes}"
+      "--expert-cache-bytes ${toString deepseek.expertCacheBytes}"
     ]
-    ++ lib.optionals (ds41.mmproj != null) [ "--mmproj ${ds41.mmproj}" ]
-    ++ ds41.extraFlags;
+    ++ lib.optionals (deepseek.mmproj != null) [ "--mmproj ${deepseek.mmproj}" ]
+    ++ deepseek.extraFlags;
 
   serverArgs =
     baseArgs cfg
@@ -141,7 +141,7 @@ in
     ];
 
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose (
-      [ cfg.port ] ++ lib.optional ds41.enable ds41.port
+      [ cfg.port ] ++ lib.optional deepseek.enable deepseek.port
     );
 
     # serve auto-creates a missing cache directory, but InitializeDirectory
@@ -155,10 +155,12 @@ in
     systemd.services = {
       gufo-strix = mkUnit "gufo Strix Halo inference server (${cfg.alias})" gufo serverArgs;
     }
-    // lib.optionalAttrs ds41.enable {
-      gufo-ds41 = mkUnit "gufo DeepSeek-V4.1-Flash server (${ds41.alias})" gufoDs41 ds41Args // {
-        conflicts = [ "gufo-strix.service" ];
-      };
+    // lib.optionalAttrs deepseek.enable {
+      gufo-deepseek =
+        mkUnit "gufo DeepSeek-V4.1-Flash server (${deepseek.alias})" gufoDeepseek deepseekArgs
+        // {
+          conflicts = [ "gufo-strix.service" ];
+        };
     };
   };
 }

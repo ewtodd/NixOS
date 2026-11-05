@@ -84,7 +84,7 @@ in
       diskCacheDir = "/scratch/gufo-cache";
       diskCacheBytes = 64 * 1024 * 1024 * 1024;
       logProgress = true;
-      ds41 = {
+      deepseek = {
         enable = true;
         model = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-GSQ-RCO-IQ1_M-00001-of-00006.gguf";
         dsparkModel = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-DSpark-draft-Q2K-Q4K.gguf";

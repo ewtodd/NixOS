@@ -736,10 +736,10 @@ with lib;
           type = types.listOf types.str;
           default = [ ];
         };
-        ds41 = {
+        deepseek = {
           enable = mkEnableOption ''
             a second server for the same iGPU: DeepSeek-V4.1-Flash through franzmoca's gufo fork
-            (gufo-ds41.service, which conflicts with gufo-strix.service), with DSpark drafting and the
+            (gufo-deepseek.service, which conflicts with gufo-strix.service), with DSpark drafting and the
             routed experts streamed from the SSD through a bounded cache'';
           model = mkOption {
             type = types.str;
@@ -896,7 +896,7 @@ with lib;
           the `llm-mode <mode>|status` switch between the model sets sharing a host's GPUs, with no
           redeploy: on son-of-anton each services.unholy instance (all three GPUs) is a mode of its own
           name, `qwen` the Qwen pair (services.radiance on the R9700s + services.gufoStrix on the iGPU) and
-          `dual` services.radiance beside services.gufoStrix.ds41; on fiona each eklow instance (the A770M)
+          `dual` services.radiance beside services.gufoStrix.deepseek; on fiona each eklow instance (the A770M)
           is a mode of its own name'';
         default = mkOption {
           type = types.str;
