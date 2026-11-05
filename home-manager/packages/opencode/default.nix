@@ -373,7 +373,7 @@ in
                 };
               };
               limit = {
-                context = 262144;
+                context = 1048576;
                 output = 65536;
               };
               modalities = {

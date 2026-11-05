@@ -217,7 +217,7 @@ let
         upstream = "gufo-deepseek";
         upstream_model = "deepseek-v4.1-flash";
         display_name = "DeepSeek-V4.1-Flash";
-        context_length = 262144;
+        context_length = 1048576;
         reasoning_efforts = [
           "none"
           "low"

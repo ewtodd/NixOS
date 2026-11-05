@@ -782,8 +782,8 @@ with lib;
           };
           context = mkOption {
             type = types.ints.positive;
-            default = 262144;
-            description = "Context tokens per session (--context); the model's native context is 1048576.";
+            default = 1048576;
+            description = "Context tokens per session (--context), by default the model's native context. It costs a little memory, not speed.";
           };
           extraFlags = mkOption {
             type = types.listOf types.str;
