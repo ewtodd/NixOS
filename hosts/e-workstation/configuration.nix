@@ -143,9 +143,8 @@ in
         WEB_EXTRACT_URL = "http://${aiFront}:8890";
         SIGNAL_REACTIONS = "false";
       };
-      # Every instance's terminal sees only declared tools; these are what this
-      # repo's pre-commit hook runs when an agent commits here.
       extraPackages = [
+        config.nix.package
         pkgs.nixfmt
         pkgs.deadnix
       ];
