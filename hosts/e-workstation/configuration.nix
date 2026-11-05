@@ -300,7 +300,7 @@ in
           models = {
             # The description is what fiona reads when she picks a worker's model (relay send's model).
             "auto".description =
-              "maitred picks; outside qwen mode it is the other model listed, except that it can fall back to eklow if that one goes down";
+              "maitred picks; outside qwen and dual mode it is the other model listed, except that it can fall back to eklow if that one goes down";
             # DSV4 efforts: none (chat mode), low, high (its default when thinking), max.
             "unholy/dsv4-flash" = {
               reasoning_effort = "high";
@@ -329,6 +329,16 @@ in
                 "low"
                 "medium"
                 "xhigh"
+              ];
+            };
+            # The gufo fork on the Strix Halo iGPU, beside the 27B in llm-mode dual: DSV4's efforts.
+            "gufo/deepseek-v4.1-flash" = {
+              reasoning_effort = "high";
+              reasoning_efforts = [
+                "none"
+                "low"
+                "high"
+                "max"
               ];
             };
             # gufo on the Strix Halo iGPU; its template's efforts.

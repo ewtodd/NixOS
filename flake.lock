@@ -120,6 +120,27 @@
         "type": "github"
       }
     },
+    "audio-cpp_2": {
+      "inputs": {
+        "nixpkgs": [
+          "gufo-ds41",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789940897,
+        "narHash": "sha256-+9tVcd+0TkDxg7JRU7M06Lvm20sXEbuerm62uhm6JKA=",
+        "owner": "0xShug0",
+        "repo": "audio.cpp",
+        "rev": "e3de8e3f3cbfac55ffa58df71426c41550a8598b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0xShug0",
+        "repo": "audio.cpp",
+        "type": "github"
+      }
+    },
     "banshee-ucm-conf": {
       "inputs": {
         "nixpkgs": [
@@ -602,6 +623,28 @@
         "type": "github"
       }
     },
+    "gufo-ds41": {
+      "inputs": {
+        "audio-cpp": "audio-cpp_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-rocm10": "nixpkgs-rocm10_2"
+      },
+      "locked": {
+        "lastModified": 1793661900,
+        "narHash": "sha256-8wFtfWVc1cPNZWL2ClDAznX4JDpYdKyKGc3VVCkonAE=",
+        "owner": "franzmoca",
+        "repo": "gufo",
+        "rev": "01fb6f4e39464003efffd97d79607005146280f0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "franzmoca",
+        "repo": "gufo",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -898,6 +941,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-rocm10_2": {
+      "locked": {
+        "lastModified": 1792804498,
+        "narHash": "sha256-yrZaTHidqCI3oJgXDAobDazn+qdeUD328pk22ZQ/YsI=",
+        "owner": "gufo-org",
+        "repo": "nixpkgs",
+        "rev": "1a6ba8bc6f744f7a843d025e46bc9911b4b6c37d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gufo-org",
+        "repo": "nixpkgs",
+        "rev": "1a6ba8bc6f744f7a843d025e46bc9911b4b6c37d",
+        "type": "github"
+      }
+    },
     "nixpkgs_10": {
       "locked": {
         "lastModified": 1785828668,
@@ -1131,6 +1190,7 @@
         "colmena": "colmena",
         "eklow": "eklow",
         "gufo": "gufo",
+        "gufo-ds41": "gufo-ds41",
         "home-manager": "home-manager",
         "lifer": "lifer",
         "lisepp": "lisepp",

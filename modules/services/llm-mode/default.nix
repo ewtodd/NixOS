@@ -6,8 +6,9 @@
 }:
 
 # Which model set owns a host's GPUs. On son-of-anton: an unholy instance, a mode of its own name (`ds4`:
-# DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), or `qwen` (Radiance:
-# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU). On fiona: an eklow instance, a mode
+# DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), `qwen` (Radiance:
+# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU) or `dual` (Radiance beside
+# DeepSeek-V4.1-Flash on the iGPU). On fiona: an eklow instance, a mode
 # of its own name (`ornith`: Ornith-1.5-35B-A3B, `gemma`: Gemma 4 26B A4B, each on the A770M). The model
 # services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default) and
 # `llm-mode <mode>` switches at run time, no redeploy. `llm-mode pause` stops them all and keeps the
@@ -19,6 +20,7 @@ let
 
   hasUnholy = svc.unholy.enable;
   hasQwenPair = svc.radiance.enable && svc.gufoStrix.enable;
+  hasDual = hasQwenPair && svc.gufoStrix.ds41.enable;
   hasEklow = svc.eklow.enable;
   # eklow's own module (inputs.eklow) declares the instances; modules/services/eklow sets them.
   eklowInstances = config.services.eklow.instances;
@@ -31,6 +33,12 @@ let
       qwen = [
         "radiance.service"
         "gufo-strix.service"
+      ];
+    }
+    // lib.optionalAttrs hasDual {
+      dual = [
+        "radiance.service"
+        "gufo-ds41.service"
       ];
     }
     // lib.optionalAttrs hasEklow (lib.mapAttrs (name: _: [ "eklow-${name}.service" ]) eklowInstances);
@@ -54,6 +62,12 @@ let
       {
         unit = "gufo-strix.service";
         port = svc.gufoStrix.port;
+      }
+    ]
+    ++ lib.optionals hasDual [
+      {
+        unit = "gufo-ds41.service";
+        port = svc.gufoStrix.ds41.port;
       }
     ]
     ++ lib.optionals hasEklow (
@@ -180,7 +194,8 @@ in
       }))
       (lib.optionalAttrs (hasUnholy && hasQwenPair) (
         lib.mapAttrs' (
-          name: _: lib.nameValuePair "unholy-${name}" { conflicts = modes.qwen; }
+          name: _:
+          lib.nameValuePair "unholy-${name}" { conflicts = lib.unique (modes.qwen ++ (modes.dual or [ ])); }
         ) svc.unholy.instances
       ))
       {

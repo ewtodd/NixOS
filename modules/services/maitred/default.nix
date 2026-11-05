@@ -86,6 +86,11 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
+      gufo-ds41 = {
+        base_url = "http://${sonOfAnton}:8051/v1";
+        timeout_secs = 1800;
+        slots = 1;
+      };
       # fiona: llama.cpp serves the title model; eklow serves Ornith-1.5 (Qwen3.6) or Gemma 4 26B A4B (llm-mode, each
       # on its own port so that the one up is the one answering) and the embeddings.
       llama = {
@@ -126,6 +131,15 @@ let
         upstreams = [ "unholy-glm" ];
       }
       {
+        # Radiance is up here too, but not listed: a mode with any upstream up reads as still loading, so
+        # listing it would say that of DeepSeek-V4.1-Flash all through llm-mode qwen. First, so that with
+        # both listed modes answering, a request for a model that is not loaded is pointed at this one.
+        name = "dual";
+        label = "DeepSeek-V4.1-Flash and Qwen3.8-27B";
+        host = "son-of-anton";
+        upstreams = [ "gufo-ds41" ];
+      }
+      {
         name = "qwen";
         label = "the Qwen models";
         host = "son-of-anton";
@@ -152,7 +166,8 @@ let
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
     # template has none/low/medium/xhigh; Gemma 4's template only turns thinking on or off). The Qwen pair alias
     # high to xhigh, their default, so "high" means each model's normal thinking whichever one "auto" lands on
-    # (clamping would give them medium). tier: DeepSeek-V4-Flash (and GLM-5.3-Flash, never up with it), then
+    # (clamping would give them medium). tier: DeepSeek-V4-Flash, GLM-5.3-Flash and DeepSeek-V4.1-Flash (no two of
+    # them up at once; V4.1 has one session, so in llm-mode dual "auto" takes the 27B once it is busy), then
     # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then eklow on fiona (Ornith-1.5
     # or Gemma 4 26B A4B, whichever llm-mode has up), which is up when son-of-anton is not.
     models = [
@@ -194,6 +209,22 @@ let
           medium = "high";
           xhigh = "max";
         };
+        tier = 3;
+      }
+      {
+        # The fork's template turns low, high and max into a reasoning budget; xhigh would just be high.
+        id = "gufo/deepseek-v4.1-flash";
+        upstream = "gufo-ds41";
+        upstream_model = "deepseek-v4.1-flash";
+        display_name = "DeepSeek-V4.1-Flash";
+        context_length = 262144;
+        reasoning_efforts = [
+          "none"
+          "low"
+          "high"
+          "max"
+        ];
+        default_reasoning_effort = "high";
         tier = 3;
       }
       {
@@ -342,6 +373,7 @@ let
           "unholy/glm5.3-flash"
           "radiance/qwen3.8-27b"
           "gufo/qwen3.8-flash-next"
+          "gufo/deepseek-v4.1-flash"
           "embed/embeddinggemma-2"
         ];
       }

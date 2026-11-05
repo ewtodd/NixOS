@@ -355,6 +355,35 @@ in
                 output = [ "text" ];
               };
             };
+            # llm-mode dual: the gufo fork on the iGPU, beside the 27B; efforts none, low, high, max.
+            "deepseek-v4.1-flash" = {
+              name = "DeepSeek-V4.1-Flash";
+              variants = {
+                max = {
+                  reasoningEffort = "max";
+                };
+                high = {
+                  reasoningEffort = "high";
+                };
+                low = {
+                  reasoningEffort = "low";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 262144;
+                output = 65536;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
             # gufo on the Strix Halo iGPU; same effort vocabulary (its template's).
             "qwen3.8-flash-next" = {
               name = "Qwen3.8-Flash-Next";

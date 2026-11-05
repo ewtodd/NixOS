@@ -84,6 +84,14 @@ in
       diskCacheDir = "/scratch/gufo-cache";
       diskCacheBytes = 64 * 1024 * 1024 * 1024;
       logProgress = true;
+      ds41 = {
+        enable = true;
+        model = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-GSQ-RCO-IQ1_M-00001-of-00006.gguf";
+        dsparkModel = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-DSpark-draft-Q2K-Q4K.gguf";
+        mmproj = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/mmproj-DeepSeek-V4.1-Flash-1017-BF16.gguf";
+        # Beside Radiance: resident experts leave under 1 GiB of the RAM free, this leaves about 10.
+        expertCacheBytes = 88 * 1024 * 1024 * 1024;
+      };
     };
     services.llmMode = {
       enable = true;

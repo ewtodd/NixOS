@@ -736,6 +736,60 @@ with lib;
           type = types.listOf types.str;
           default = [ ];
         };
+        ds41 = {
+          enable = mkEnableOption ''
+            a second server for the same iGPU: DeepSeek-V4.1-Flash through franzmoca's gufo fork
+            (gufo-ds41.service, which conflicts with gufo-strix.service), with DSpark drafting and the
+            routed experts streamed from the SSD through a bounded cache'';
+          model = mkOption {
+            type = types.str;
+            example = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-GSQ-RCO-IQ1_M-00001-of-00006.gguf";
+            description = "First shard of the backbone; gufo opens the other shards and the Engram tables beside it.";
+          };
+          dsparkModel = mkOption {
+            type = types.str;
+            example = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-DSpark-draft-Q2K-Q4K.gguf";
+            description = "DSpark drafter GGUF (--dspark-model).";
+          };
+          mmproj = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "Vision projector GGUF (--mmproj). Null serves text only.";
+          };
+          expertCacheBytes = mkOption {
+            type = types.ints.positive;
+            description = ''
+              Streamed expert cache (--expert-cache-bytes). No default on purpose: gufo's automatic size
+              follows the memory free at start, and with the page pool holding memory it picked 4.8 GiB
+              (225-278 tok/s prefill, 4-6 tok/s decode). The backbone's experts are about 107 GiB; the
+              built-in ranking caches the most used first, so a smaller cache costs little (80 GiB against
+              96: about 5% of prefill and 7% of decode) and leaves the rest of the RAM to what runs beside it.
+            '';
+          };
+          alias = mkOption {
+            type = types.str;
+            default = "deepseek-v4.1-flash";
+            description = "Model name reported on /v1/models (--served-model-name).";
+          };
+          port = mkOption {
+            type = types.port;
+            default = 8051;
+          };
+          sessions = mkOption {
+            type = types.ints.positive;
+            default = 1;
+            description = "Preallocated GPU request sessions (--sessions).";
+          };
+          context = mkOption {
+            type = types.ints.positive;
+            default = 262144;
+            description = "Context tokens per session (--context); the model's native context is 1048576.";
+          };
+          extraFlags = mkOption {
+            type = types.listOf types.str;
+            default = [ ];
+          };
+        };
       };
       services.radiance = {
         enable = mkEnableOption "Radiance inference server (C++/HIP, built from source by radiance-nix) on the R9700s";
@@ -841,12 +895,13 @@ with lib;
         enable = mkEnableOption ''
           the `llm-mode <mode>|status` switch between the model sets sharing a host's GPUs, with no
           redeploy: on son-of-anton each services.unholy instance (all three GPUs) is a mode of its own
-          name, and `qwen` the Qwen pair (services.radiance on the R9700s + services.gufoStrix on the
-          iGPU); on fiona each eklow instance (the A770M) is a mode of its own name'';
+          name, `qwen` the Qwen pair (services.radiance on the R9700s + services.gufoStrix on the iGPU) and
+          `dual` services.radiance beside services.gufoStrix.ds41; on fiona each eklow instance (the A770M)
+          is a mode of its own name'';
         default = mkOption {
           type = types.str;
           default = "ds4";
-          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance, `qwen` or an eklow instance.";
+          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance, `qwen`, `dual` or an eklow instance.";
         };
         managers = mkOption {
           type = types.listOf types.str;

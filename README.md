@@ -45,8 +45,8 @@ Hosts:
   zfs-metrics, Jellyfin media server (Intel QSV transcoding, LAN only)
 - **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
-- **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy), or
-  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo)
+- **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy),
+  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), or Radiance + DeepSeek-V4.1-Flash (gufo fork)
 - **fiona** - small-model inference on an Arc A770M (16 GB) and its Iris Xe iGPU: llama.cpp
   (Vulkan) for title generation, EmbeddingGemma 2 embeddings and Gemma 4 12B chat, behind maitred
 ```
@@ -130,7 +130,7 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
 - **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU) serves one mode at a time;
-  `llm-mode ds4|qwen|status` switches between them without a redeploy:
+  `llm-mode ds4|glm|qwen|dual|status` switches between them without a redeploy:
   - **ds4** — **unholy** (:8200, github.com/ewtodd/unholy): DeepSeek-V4-Flash across both
     R9700s and the iGPU, 512k context, a 1.5M-token bf16 KV pool shared by up to 8 requests,
     DSpark speculative decoding, prefix-cache snapshots

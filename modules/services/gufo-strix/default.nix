@@ -13,6 +13,8 @@ let
   # 7.2.3) with its patched ROCr, which keeps queue memory resident during
   # host memory compaction on Strix Halo.
   gufo = inputs.gufo.packages.${pkgs.system}.default;
+  gufoDs41 = inputs.gufo-ds41.packages.${pkgs.system}.default;
+  ds41 = cfg.ds41;
 
   nativeContext = 262144;
 
@@ -48,35 +50,82 @@ let
     ${pkgs.gnugrep}/bin/grep -E "^(MemAvailable|GPUReclaim)" /proc/meminfo
   '';
 
-  serverArgs = [
+  # The arguments every server here starts with; s holds port, sessions, model, context and alias.
+  baseArgs = s: [
     "--host ${if cfg.lanExpose then "0.0.0.0" else "127.0.0.1"}"
-    "--port ${toString cfg.port}"
-    "--sessions ${toString cfg.sessions}"
+    "--port ${toString s.port}"
+    "--sessions ${toString s.sessions}"
     "llm"
-    "--model ${cfg.model}"
-    "--context ${toString cfg.context}"
-    "--served-model-name ${cfg.alias}"
-  ]
-  ++ lib.optionals (cfg.context > nativeContext) [ "--enable-yarn" ]
-  ++ lib.optionals (cfg.think != null) [ "--think ${cfg.think}" ]
-  ++ lib.optionals (cfg.mtpModel != null) [
-    "--speculative mtp"
-    "--mtp-model ${cfg.mtpModel}"
-    "--draft-tokens ${toString cfg.draftTokens}"
-  ]
-  ++ lib.optionals (cfg.mmproj != null) [ "--mmproj ${cfg.mmproj}" ]
-  ++ lib.optionals (cfg.diskCacheDir != null) (
-    [ "--cache-disk ${cfg.diskCacheDir}" ]
-    ++ lib.optionals (cfg.diskCacheBytes != null) [
-      "--cache-disk-bytes ${toString cfg.diskCacheBytes}"
+    "--model ${s.model}"
+    "--context ${toString s.context}"
+    "--served-model-name ${s.alias}"
+  ];
+
+  ds41Args =
+    baseArgs ds41
+    ++ [
+      "--speculative dspark"
+      "--dspark-model ${ds41.dsparkModel}"
+      "--stream-experts"
+      "--expert-cache-bytes ${toString ds41.expertCacheBytes}"
     ]
-  )
-  ++ lib.optionals (cfg.cacheRamBytes != null) [
-    "--cache-ram-bytes ${toString cfg.cacheRamBytes}"
-  ]
-  ++ lib.optionals cfg.logProgress [ "--log-progress" ]
-  ++ lib.optionals (cfg.logLevel != null) [ "--log-level ${cfg.logLevel}" ]
-  ++ cfg.extraFlags;
+    ++ lib.optionals (ds41.mmproj != null) [ "--mmproj ${ds41.mmproj}" ]
+    ++ ds41.extraFlags;
+
+  serverArgs =
+    baseArgs cfg
+    ++ lib.optionals (cfg.context > nativeContext) [ "--enable-yarn" ]
+    ++ lib.optionals (cfg.think != null) [ "--think ${cfg.think}" ]
+    ++ lib.optionals (cfg.mtpModel != null) [
+      "--speculative mtp"
+      "--mtp-model ${cfg.mtpModel}"
+      "--draft-tokens ${toString cfg.draftTokens}"
+    ]
+    ++ lib.optionals (cfg.mmproj != null) [ "--mmproj ${cfg.mmproj}" ]
+    ++ lib.optionals (cfg.diskCacheDir != null) (
+      [ "--cache-disk ${cfg.diskCacheDir}" ]
+      ++ lib.optionals (cfg.diskCacheBytes != null) [
+        "--cache-disk-bytes ${toString cfg.diskCacheBytes}"
+      ]
+    )
+    ++ lib.optionals (cfg.cacheRamBytes != null) [
+      "--cache-ram-bytes ${toString cfg.cacheRamBytes}"
+    ]
+    ++ lib.optionals cfg.logProgress [ "--log-progress" ]
+    ++ lib.optionals (cfg.logLevel != null) [ "--log-level ${cfg.logLevel}" ]
+    ++ cfg.extraFlags;
+
+  # A systemd service for gufo serve on the iGPU, from its description, the gufo package and its arguments.
+  mkUnit = description: package: args: {
+    inherit description;
+    after = [ "network.target" ] ++ lib.optionals (cardServer != null) [ "${cardServer.name}.service" ];
+    wantedBy = [ "multi-user.target" ];
+
+    environment = {
+      HIP_VISIBLE_DEVICES = cfg.devices;
+    }
+    // cfg.extraEnv;
+
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${package}/bin/gufo serve ${lib.concatStringsSep " " args}";
+      # The card server first (it allocates first), then release the page pool as root ("+") so gufo's RAM
+      # budget sees what is really free.
+      ExecStartPre =
+        lib.optionals (cardServer != null) [ "${cardServerWait}" ]
+        ++ lib.optionals cfg.releaseGpuPagePool [ "+${releasePagePool}" ];
+      Restart = "on-failure";
+      RestartSec = 10;
+      TimeoutStartSec = "30min";
+      User = cfg.user;
+      SupplementaryGroups = [
+        "video"
+        "render"
+        "llama-cache"
+      ];
+      LimitMEMLOCK = "infinity";
+    };
+  };
 in
 {
   config = lib.mkIf cfg.enable {
@@ -91,7 +140,9 @@ in
       }
     ];
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose [ cfg.port ];
+    networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose (
+      [ cfg.port ] ++ lib.optional ds41.enable ds41.port
+    );
 
     # serve auto-creates a missing cache directory, but InitializeDirectory
     # refuses one it does not own (st_uid == geteuid, then chmod 0700),
@@ -101,34 +152,12 @@ in
       "d ${cfg.diskCacheDir} 2770 ${cfg.user} llama-cache - -"
     ];
 
-    systemd.services.gufo-strix = {
-      description = "gufo Strix Halo inference server (${cfg.alias})";
-      after = [ "network.target" ] ++ lib.optionals (cardServer != null) [ "${cardServer.name}.service" ];
-      wantedBy = [ "multi-user.target" ];
-
-      environment = {
-        HIP_VISIBLE_DEVICES = cfg.devices;
-      }
-      // cfg.extraEnv;
-
-      serviceConfig = {
-        Type = "simple";
-        ExecStart = "${gufo}/bin/gufo serve ${lib.concatStringsSep " " serverArgs}";
-        # The card server first (it allocates first), then release the page pool as root ("+") so gufo's RAM
-        # budget sees what is really free.
-        ExecStartPre =
-          lib.optionals (cardServer != null) [ "${cardServerWait}" ]
-          ++ lib.optionals cfg.releaseGpuPagePool [ "+${releasePagePool}" ];
-        Restart = "on-failure";
-        RestartSec = 10;
-        TimeoutStartSec = "30min";
-        User = cfg.user;
-        SupplementaryGroups = [
-          "video"
-          "render"
-          "llama-cache"
-        ];
-        LimitMEMLOCK = "infinity";
+    systemd.services = {
+      gufo-strix = mkUnit "gufo Strix Halo inference server (${cfg.alias})" gufo serverArgs;
+    }
+    // lib.optionalAttrs ds41.enable {
+      gufo-ds41 = mkUnit "gufo DeepSeek-V4.1-Flash server (${ds41.alias})" gufoDs41 ds41Args // {
+        conflicts = [ "gufo-strix.service" ];
       };
     };
   };
