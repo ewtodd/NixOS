@@ -145,6 +145,7 @@ in
       };
       extraPackages = [
         config.nix.package
+        pkgs.libnotify
         pkgs.nixfmt
         pkgs.deadnix
       ];
