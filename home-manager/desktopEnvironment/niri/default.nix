@@ -280,9 +280,6 @@ in
             powermenu-toggle
           ];
         };
-        "Mod+o" = {
-          spawn-sh = [ "${pkgs.kitty}/bin/kitty nvim ${homeDir}/org" ];
-        };
         "Mod+p" = {
           spawn = [
             "sh"
