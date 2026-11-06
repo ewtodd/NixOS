@@ -51,7 +51,6 @@ let
   open-private-window = "${config.programs.firefox.finalPackage}/bin/firefox --private-window";
   notificationColor = if (colors.base08 != colors.base0E) then colors.base08 else "F84F31";
   gaps = if e then "12" else "8";
-  homeDir = config.home.homeDirectory;
 in
 {
   imports = [
