@@ -143,12 +143,9 @@ in
         WEB_EXTRACT_URL = "http://${aiFront}:8890";
         SIGNAL_REACTIONS = "false";
       };
-      extraPackages = [
-        config.nix.package
-        pkgs.libnotify
-        pkgs.nixfmt
-        pkgs.deadnix
-      ];
+      # libnotify, nixfmt, deadnix and nix are module defaults now
+      # (son-of-anton nixosModules.defaultExtras, 2026-11-06); extraPackages
+      # stays for per-instance additions.
       instances = {
         work = {
           user = "e-work";
