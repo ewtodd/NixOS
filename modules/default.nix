@@ -1408,10 +1408,15 @@ with lib;
           enable = true;
           # --keep-since: gcroots younger than this survive, so colmena
           # `--keep-result` roots for other hosts are not swept by the weekly
-          # clean.
+          # clean. It also keeps every system generation in that window, so
+          # the preStart below caps those by count instead.
           extraArgs = "--keep 3 --keep-since 30d";
         };
       };
+
+      systemd.services.nh-clean.preStart = ''
+        ${config.nix.package}/bin/nix-env -p /nix/var/nix/profiles/system --delete-generations +10
+      '';
 
       security.polkit.enable = true;
 
