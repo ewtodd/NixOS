@@ -23,12 +23,13 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:30:00";
-    # Sage-A1.5 or Gemma 4 26B A4B, and the RAG embeddings, for maitred on mu, on the A770M.
+    # Sage-A1.5 and the RAG embeddings, for maitred on mu, on the A770M.
     services.eklow = {
       enable = true;
       lanExpose = true;
     };
-    # The A770M holds one chat model: `llm-mode ornith|gemma` switches, the last choice starts at boot.
+    # The A770M holds one chat model, an llm-mode for each eklow instance (one today, `ornith`); the last choice
+    # starts at boot, and `llm-mode pause` frees the card for a window.
     services.llmMode = {
       enable = true;
       default = "ornith";

@@ -50,15 +50,12 @@ let
     # its jobs run on whichever mode son-of-anton has up. Each decision is a JSON line in the log.
     router.decision_log = "/var/lib/maitred/routes.jsonl";
     # "fiona" is eklow's auto: routed the same way, but only among the models eklow serves (whichever of its modes is
-    # up), and a 503 (never another server) when it is down, so son-of-anton's chats (fiona) fall back to "auto"
-    # themselves.
+    # up; one today), and a 503 (never another server) when it is down, so son-of-anton's chats (fiona) fall back to
+    # "auto" themselves.
     router.extra = [
       {
         id = "fiona";
-        upstreams = [
-          "eklow"
-          "eklow-gemma"
-        ];
+        upstreams = [ "eklow" ];
       }
     ];
     # slots: how many requests each server runs at once (son-of-anton's maxNumSeqs; gufo's sessions).
@@ -91,19 +88,14 @@ let
         timeout_secs = 1800;
         slots = 1;
       };
-      # fiona: llama.cpp serves the title model; eklow serves Sage-A1.5 (Qwen3.6) or Gemma 4 26B A4B (llm-mode, each
-      # on its own port so that the one up is the one answering) and the embeddings.
+      # fiona: llama.cpp serves the title model; eklow serves Sage-A1.5 (Qwen3.6) and the embeddings (another eklow
+      # instance, an llm-mode of its own, would get its own port so that the one up is the one answering).
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
       };
       eklow = {
         base_url = "http://${fiona}:8081/v1";
-        timeout_secs = 1800;
-        slots = 2;
-      };
-      eklow-gemma = {
-        base_url = "http://${fiona}:8083/v1";
         timeout_secs = 1800;
         slots = 2;
       };
@@ -154,22 +146,15 @@ let
         host = "fiona";
         upstreams = [ "eklow" ];
       }
-      {
-        name = "gemma";
-        label = "Gemma 4 26B A4B";
-        host = "fiona";
-        upstreams = [ "eklow-gemma" ];
-      }
     ];
     # reasoning_efforts: what each server takes (unholy: none/low/high/max for DeepSeek-V4-Flash, low/high/max
     # for GLM-5.3-Flash, which always thinks, so none is answered with low; Radiance, as its /v1/models lists:
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
-    # template has none/low/medium/xhigh; Gemma 4's template only turns thinking on or off). The Qwen pair alias
-    # high to xhigh, their default, so "high" means each model's normal thinking whichever one "auto" lands on
-    # (clamping would give them medium). tier: DeepSeek-V4-Flash, GLM-5.3-Flash and DeepSeek-V4.1-Flash (no two of
-    # them up at once; V4.1 has one session, so in llm-mode dual "auto" takes the 27B once it is busy), then
-    # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then eklow on fiona (Sage-A1.5
-    # or Gemma 4 26B A4B, whichever llm-mode has up), which is up when son-of-anton is not.
+    # template has none/low/medium/xhigh). The Qwen pair alias high to xhigh, their default, so "high" means each
+    # model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier: DeepSeek-V4-Flash,
+    # GLM-5.3-Flash and DeepSeek-V4.1-Flash (no two of them up at once; V4.1 has one session, so in llm-mode dual "auto"
+    # takes the 27B once it is busy), then Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or
+    # down, then eklow on fiona (Sage-A1.5), which is up when son-of-anton is not.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -266,20 +251,6 @@ let
         upstream = "eklow";
         upstream_model = "sage-a1.5";
         display_name = "Sage A1.5 35B A3B";
-        context_length = 262144;
-        reasoning_efforts = [
-          "none"
-          "high"
-        ];
-        default_reasoning_effort = "high";
-        tier = 0;
-      }
-      {
-        # Gemma 4's template only turns thinking on or off. Up when fiona is in llm-mode gemma, in place of Ornith.
-        id = "eklow/gemma-4-26b-a4b";
-        upstream = "eklow-gemma";
-        upstream_model = "gemma-4-26b-a4b";
-        display_name = "Gemma 4 26B A4B";
         context_length = 262144;
         reasoning_efforts = [
           "none"

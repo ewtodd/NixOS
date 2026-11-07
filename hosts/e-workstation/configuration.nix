@@ -357,14 +357,6 @@ in
                 "high"
               ];
             };
-            # The same card in llm-mode gemma: Gemma 4 26B A4B thinks or not, and takes images.
-            "eklow/gemma-4-26b-a4b" = {
-              reasoning_effort = "high";
-              reasoning_efforts = [
-                "none"
-                "high"
-              ];
-            };
             "deepseek/deepseek-flash" = {
               reasoning_effort = "max";
               reasoning_efforts = [
