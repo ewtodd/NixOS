@@ -7,8 +7,8 @@
 }:
 
 # eklow (github.com/ewtodd/eklow, ~/Software/eklow) on the Arc A770M: one engine, two chat models as instances, each with
-# EmbeddingGemma 2 beside it. `ornith` (eklow-ornith.service) serves Ornith-1.5-35B-A3B (a Qwen3.6-35B-A3B finetune)
-# with DFlash 2 speculative decoding on the port maitred's eklow upstream names (8081); `gemma` (eklow-gemma.service)
+# EmbeddingGemma 2 beside it. `ornith` (eklow-ornith.service; the name kept from the model it served until 2026-11-07)
+# serves InternScience's Sage-A1.5 (a Qwen3.6-35B-A3B finetune) with DFlash 2 speculative decoding on the port maitred's eklow upstream names (8081); `gemma` (eklow-gemma.service)
 # serves Gemma 4 26B A4B on eklow-gemma's (8083). Both serve the embeddings on embed's (8082). The card holds one at a
 # time: `llm-mode ornith|gemma` switches (modules/services/llm-mode). The service is eklow's own NixOS module; this
 # sets the models, the house's window and exposure.
@@ -35,36 +35,43 @@ in
       };
 
       instances.ornith = {
-        # Hugging Face's linked ETag for a file is its sha256. eklow's own mix (routed experts Q4_K, everything else
-        # Q8_0, head Q6_K; DECISIONS 2026-10-31), with Ornith's own chat template, which the server recognizes.
+        # Sage-A1.5 in place of Ornith-1.5 since 2026-11-07 (eklow DECISIONS "Sage-A1.5 on eklow": on fiona's replay it never
+        # thought itself into the token cap where Ornith did 6 times in 18, and writes about a third of the tokens).
+        # Hugging Face's linked ETag for a file is its sha256. eklow's own mix (routed experts Q4_K, everything else Q8_0,
+        # head Q6_K), made from InternScience's Q8_0, with Sage's own chat template, which the server recognizes.
         model = pkgs.fetchurl {
-          name = "Ornith-1.5-35B-A3B-Q4_K-Q8_0.gguf";
-          url = "https://huggingface.co/ethanwtodd/Ornith-1.5-35B-A3B-Q4_K-Q8_0-GGUF/resolve/a89886e005b293b16039dc56b6cf525112d69340/Ornith-1.5-35B-A3B-Q4_K-Q8_0.gguf";
-          sha256 = "25a681297b42b5e5c0088d01fb1116148ce4eced2fe8dd5792bf03022eefa1a3";
+          name = "Sage-A1.5-Q4_K-Q8_0.gguf";
+          url = "https://huggingface.co/ethanwtodd/Sage-A1.5-Q4_K-Q8_0-GGUF/resolve/b89cbc0fc18eb0f848586962f7105e99042804f5/Sage-A1.5-Q4_K-Q8_0.gguf";
+          sha256 = "d50f428ba1627d32d675746e14844a24b3d7c9f6fdd9b442b0917099578ced52";
         };
-        alias = "ornith-1.5-35b-a3b";
+        alias = "sage-a1.5";
         port = 8081;
-        expertProfile = "${config.services.eklow.package}/share/eklow/ornith-1.5-experts.json";
-        # Inco AI's DFlash 2 draft (for Qwen3.6; on Ornith it ties the Ornith-trained one at the short blocks this card
-        # runs), lossless; verify blocks of 4 by default.
+        # Sage has no routing profile of its own; stock Qwen3.6's, which it was finetuned from.
+        expertProfile = "${config.services.eklow.package}/share/eklow/qwen36-experts.json";
+        # Sage's verification protocol on for conversations with a system message (a request may send its own).
+        verification = true;
+        # Inco AI's DFlash 2 draft (for Qwen3.6), lossless; verify blocks of 4 by default. On Sage it accepts 11-30% more
+        # than Sage's own MTP head (eklow DECISIONS 2026-11-07).
         draft = pkgs.fetchurl {
           name = "Qwen3.6-35B-A3B-DFlash2-Q8_0.gguf";
           url = "https://huggingface.co/ethanwtodd/Qwen3.6-35B-A3B-DFlash2-Q8_0-GGUF/resolve/65aaab9513e9c6608ada7c7d16e6532c198a2296/Qwen3.6-35B-A3B-DFlash2-Q8_0.gguf";
           sha256 = "986b8f24ac3469ed122946fb5be5b1fbe186467f2573f84e48bdbf7db278b327";
         };
         # Qwen3-VL's vision encoder for image parts in chat (bartowski's projector, tensor-identical to eklow's own
-        # conversion; stock Qwen3.6's tower is the same): 267 MiB on the card while it encodes, up to 1024 rows an image.
+        # conversion; stock Qwen3.6's tower is the same, and so is Sage's, within F16 rounding): 267 MiB on the card while it encodes, up to 1024 rows an image.
         mmproj = pkgs.fetchurl {
           name = "mmproj-Ornith-1.5-35B-A3B-bf16.gguf";
           url = "https://huggingface.co/bartowski/Ornith-1.5-35B-A3B-GGUF/resolve/64b0493d34a5ca4c1b4ad67bb99b41d74b4f07d6/mmproj-Ornith-1.5-35B-A3B-bf16.gguf";
           sha256 = "eef27583f74f2990b7a3d97119a0b67c05aeb48c92dde9466f050e30bf1a3595";
         };
-        # maitred lists eklow/ornith-1.5-35b-a3b with this window and two slots. The 10 attention layers' K/V take
-        # 5.8 GiB at 2 x 262k, so beside the draft and the two image encoders each layer keeps its 48 busiest of 256
-        # experts on the card by the routing profile (51 without the prefill groups); the rest run on the CPU (~13 GiB
-        # pinned) or stream in for prefill.
+        # maitred lists eklow/sage-a1.5 with this window and two slots. The two slots share one pool of 262k positions'
+        # K/V (3.0 GiB instead of 5.8 for 2 x 262k; each slot may still hold 262k, and when the pool runs out an idle
+        # slot gives its pages back and re-prefills later): beside the draft and the two image encoders each layer keeps
+        # its 91 busiest of 256 experts on the card instead of 48, decode +22% at 8k; the rest run on the CPU or stream
+        # in for prefill.
         contextSize = 262144;
         slots = 2;
+        kvPool = 262144;
         kvInt8 = true;
         snapshotMiB = 4096;
         prefillGroup = 8;

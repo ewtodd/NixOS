@@ -348,9 +348,9 @@ in
                 "xhigh"
               ];
             };
-            # eklow on fiona's A770M; Ornith-1.5 (Qwen3.6) thinks or not, and takes images (Qwen3-VL's
+            # eklow on fiona's A770M; Sage-A1.5 (Qwen3.6) thinks or not, and takes images (Qwen3-VL's
             # encoder).
-            "eklow/ornith-1.5-35b-a3b" = {
+            "eklow/sage-a1.5" = {
               reasoning_effort = "high";
               reasoning_efforts = [
                 "none"

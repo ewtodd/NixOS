@@ -413,10 +413,10 @@ in
                 output = [ "text" ];
               };
             };
-            # eklow on fiona's A770M, two slots of 262k; Ornith-1.5 (Qwen3.6) thinks or not (efforts none and high).
+            # eklow on fiona's A770M, two slots of 262k; Sage-A1.5 (Qwen3.6) thinks or not (efforts none and high).
             # Full id, as maitred lists it. Images as data URLs (Qwen3-VL's encoder).
-            "eklow/ornith-1.5-35b-a3b" = {
-              name = "Ornith 1.5 35B A3B";
+            "eklow/sage-a1.5" = {
+              name = "Sage A1.5 35B A3B";
               variants = {
                 high = {
                   reasoningEffort = "high";

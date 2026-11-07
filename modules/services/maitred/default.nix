@@ -91,7 +91,7 @@ let
         timeout_secs = 1800;
         slots = 1;
       };
-      # fiona: llama.cpp serves the title model; eklow serves Ornith-1.5 (Qwen3.6) or Gemma 4 26B A4B (llm-mode, each
+      # fiona: llama.cpp serves the title model; eklow serves Sage-A1.5 (Qwen3.6) or Gemma 4 26B A4B (llm-mode, each
       # on its own port so that the one up is the one answering) and the embeddings.
       llama = {
         base_url = "http://${fiona}:8080/v1";
@@ -150,7 +150,7 @@ let
       }
       {
         name = "ornith";
-        label = "Ornith 1.5 35B A3B";
+        label = "Sage A1.5 35B A3B";
         host = "fiona";
         upstreams = [ "eklow" ];
       }
@@ -168,7 +168,7 @@ let
     # high to xhigh, their default, so "high" means each model's normal thinking whichever one "auto" lands on
     # (clamping would give them medium). tier: DeepSeek-V4-Flash, GLM-5.3-Flash and DeepSeek-V4.1-Flash (no two of
     # them up at once; V4.1 has one session, so in llm-mode dual "auto" takes the 27B once it is busy), then
-    # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then eklow on fiona (Ornith-1.5
+    # Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or down, then eklow on fiona (Sage-A1.5
     # or Gemma 4 26B A4B, whichever llm-mode has up), which is up when son-of-anton is not.
     models = [
       {
@@ -262,10 +262,10 @@ let
       }
       {
         # Qwen3.6's template thinks or not (enable_thinking): eklow takes any effort but none as thinking on.
-        id = "eklow/ornith-1.5-35b-a3b";
+        id = "eklow/sage-a1.5";
         upstream = "eklow";
-        upstream_model = "ornith-1.5-35b-a3b";
-        display_name = "Ornith 1.5 35B A3B";
+        upstream_model = "sage-a1.5";
+        display_name = "Sage A1.5 35B A3B";
         context_length = 262144;
         reasoning_efforts = [
           "none"

@@ -23,7 +23,7 @@ in
     services.nodeExporter.enable = true;
     services.scheduledReboot.enable = true;
     services.scheduledReboot.calendar = "Sun *-*-* 05:30:00";
-    # Ornith-1.5 or Gemma 4 26B A4B, and the RAG embeddings, for maitred on mu, on the A770M.
+    # Sage-A1.5 or Gemma 4 26B A4B, and the RAG embeddings, for maitred on mu, on the A770M.
     services.eklow = {
       enable = true;
       lanExpose = true;

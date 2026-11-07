@@ -1050,7 +1050,7 @@ with lib;
         };
       };
       services.eklow = {
-        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Ornith-1.5 (Qwen3.6) or Gemma 4 26B A4B, switched by services.llmMode, and EmbeddingGemma 2 on an Intel Arc A770M";
+        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Sage-A1.5 (Qwen3.6) or Gemma 4 26B A4B, switched by services.llmMode, and EmbeddingGemma 2 on an Intel Arc A770M";
         lanExpose = mkEnableOption "eklow on the LAN (0.0.0.0, ports open) for maitred";
       };
       services.maitred = {
