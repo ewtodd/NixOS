@@ -41,8 +41,8 @@ in
         # head Q6_K), made from InternScience's Q8_0, with Sage's own chat template, which the server recognizes.
         model = pkgs.fetchurl {
           name = "Sage-A1.5-Q4_K-Q8_0.gguf";
-          url = "https://huggingface.co/ethanwtodd/Sage-A1.5-Q4_K-Q8_0-GGUF/resolve/b89cbc0fc18eb0f848586962f7105e99042804f5/Sage-A1.5-Q4_K-Q8_0.gguf";
-          sha256 = "d50f428ba1627d32d675746e14844a24b3d7c9f6fdd9b442b0917099578ced52";
+          url = "https://huggingface.co/ethanwtodd/Sage-A1.5-Q4_K-Q8_0-GGUF/resolve/d89116d892ff239ae008ce3a3022ae2e9d9d561c/Sage-A1.5-Q4_K-Q8_0.gguf";
+          sha256 = "6d25f1417713e555aa5b731ab1cac37fe08a66bd1d0ed028476a7df3e8a46f0e";
         };
         alias = "sage-a1.5";
         port = 8081;
