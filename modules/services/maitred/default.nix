@@ -141,7 +141,7 @@ let
         ];
       }
       {
-        name = "ornith";
+        name = "sage";
         label = "Sage A1.5 35B A3B";
         host = "fiona";
         upstreams = [ "eklow" ];

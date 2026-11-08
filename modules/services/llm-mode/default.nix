@@ -9,8 +9,9 @@
 # DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), `qwen` (Radiance:
 # Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU) or `dual` (Radiance beside
 # DeepSeek-V4.1-Flash on the iGPU). On fiona: an eklow instance, a mode
-# of its own name (one today, `ornith`: Sage-A1.5 since 2026-11-07, the name kept from Ornith-1.5; on the A770M). The model
-# services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default) and
+# of its own name (one today, `sage`: Sage-A1.5 on the A770M). The model
+# services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default, also when a
+# redeploy has removed or renamed the recorded one) and
 # `llm-mode <mode>` switches at run time, no redeploy. `llm-mode pause` stops them all and keeps the
 # selection until `llm-mode resume` or a reboot. The unholy instances and the Qwen pair also conflict in
 # systemd, as the eklow instances do with each other, so starting one by hand stops the others.
@@ -215,7 +216,12 @@ in
             Type = "oneshot";
             ExecStart = pkgs.writeShellScript "llm-mode-boot" ''
               mode=$(cat ${stateFile} 2>/dev/null || true)
-              exec ${switch} "''${mode:-${cfg.default}}"
+              # A mode recorded before a redeploy removed or renamed it (or none): the default.
+              case "$mode" in
+                ${lib.concatStringsSep "|" (lib.attrNames modes)}) ;;
+                *) mode=${cfg.default} ;;
+              esac
+              exec ${switch} "$mode"
             '';
           };
         };

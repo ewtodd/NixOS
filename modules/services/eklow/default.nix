@@ -7,9 +7,9 @@
 }:
 
 # eklow (github.com/ewtodd/eklow, ~/Software/eklow) on the Arc A770M: one engine, its chat models as instances, each with
-# EmbeddingGemma 2 beside it on embed's port (8082). One instance today: `ornith` (eklow-ornith.service; the name kept
-# from the model it served until 2026-11-07) serves InternScience's Sage-A1.5 (a Qwen3.6-35B-A3B finetune) with DFlash 2
-# speculative decoding on the port maitred's eklow upstream names (8081). Another instance (a Qwen3.6 finetune, on a
+# EmbeddingGemma 2 beside it on embed's port (8082). One instance today: `sage` (eklow-sage.service; `ornith` until
+# 2026-11-07) serves InternScience's Sage-A1.5 (a Qwen3.6-35B-A3B finetune) with DFlash 2 speculative decoding on the
+# port maitred's eklow upstream names (8081). Another instance (a Qwen3.6 finetune, on a
 # port of its own) becomes an `llm-mode` of its name (modules/services/llm-mode); the card holds one at a time. Gemma 4
 # 26B A4B was the second until 2026-11-07, when eklow dropped it. The service is eklow's own NixOS module; this sets
 # the models, the house's window and exposure.
@@ -35,7 +35,7 @@ in
         sha256 = "c4a8a52691ecef40618438928bdf9e68379b854e24166f292592353db0aab64f";
       };
 
-      instances.ornith = {
+      instances.sage = {
         # Sage-A1.5 in place of Ornith-1.5 since 2026-11-07 (eklow DECISIONS "Sage-A1.5 on eklow": on fiona's replay it never
         # thought itself into the token cap where Ornith did 6 times in 18, and writes about a third of the tokens).
         # Hugging Face's linked ETag for a file is its sha256. eklow's own mix (routed experts Q4_K, everything else Q8_0,

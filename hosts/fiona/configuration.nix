@@ -28,11 +28,11 @@ in
       enable = true;
       lanExpose = true;
     };
-    # The A770M holds one chat model, an llm-mode for each eklow instance (one today, `ornith`); the last choice
+    # The A770M holds one chat model, an llm-mode for each eklow instance (one today, `sage`); the last choice
     # starts at boot, and `llm-mode pause` frees the card for a window.
     services.llmMode = {
       enable = true;
-      default = "ornith";
+      default = "sage";
       managers = [ "fiona" ];
     };
     # Title generation for maitred, on the Iris Xe.
