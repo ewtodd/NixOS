@@ -53,6 +53,57 @@ let
   };
 
   soaPhysicsPython = inputs.son-of-anton.packages.${pkgs.system}.physics-runtime;
+
+  # Mirrors niri's eOutputs (home-manager/desktopEnvironment/niri/settings/desktop.nix),
+  # shifted right by 1080 so the leftmost x is 0. The greeter matches outputs by
+  # connector or EDID make/model/serial; the rotated F22 has no serial, so its
+  # make/model also matches the F22 on DP-2 and it needs its connector, which
+  # changes between boots. Synced output settings are off for the same reason:
+  # Sync records connector names from whichever boot ran it.
+  greeterOutputsTemplate = (pkgs.formats.toml { }).generate "greeter.toml" {
+    output = {
+      use_synced_settings = false;
+      layout = "@vertical@:0,0; Sceptre Tech Inc Sceptre O34:1080,0; Sceptre Tech Inc Sceptre F22 0x01010101:4520,0";
+      transforms = "@vertical@:270";
+    };
+  };
+  # Writes greeterOutputsTemplate to the greeter's greeter.toml with @vertical@
+  # replaced by the rotated F22's current connector. If that monitor is not
+  # connected within 5 s, it writes the template unchanged; the greeter skips
+  # entries that match no output, and the other two still apply.
+  greeterOutputsWriter = pkgs.writeShellScript "noctalia-greeter-outputs" ''
+    PATH=${
+      lib.makeBinPath [
+        pkgs.coreutils
+        pkgs.gnugrep
+        pkgs.gnused
+      ]
+    }
+    vertical=""
+    for _ in $(seq 10); do
+      for edid in /sys/class/drm/card*-*/edid; do
+        dir=''${edid%/edid}
+        [ "$(cat "$dir/status")" = connected ] || continue
+        grep -qa 'Sceptre F22' "$edid" || continue
+        # EDID bytes 12-15: the numeric serial, set only on the DP-2 F22.
+        [ "$(od -An -tx1 -j12 -N4 "$edid" | tr -d ' \n')" = 00000000 ] || continue
+        name=''${dir##*/}
+        vertical=''${name#card*-}
+      done
+      [ -n "$vertical" ] && break
+      sleep 0.5
+    done
+
+    target=/var/lib/noctalia-greeter/greeter.toml
+    if [ -n "$vertical" ]; then
+      sed "s/@vertical@/$vertical/g" ${greeterOutputsTemplate} > "$target.tmp"
+    else
+      echo "rotated Sceptre F22 not connected; greeter.toml leaves it unplaced" >&2
+      cp ${greeterOutputsTemplate} "$target.tmp"
+    fi
+    chmod 0644 "$target.tmp"
+    mv -f "$target.tmp" "$target"
+  '';
 in
 {
   imports = [
@@ -422,6 +473,18 @@ in
         };
       }
     ) projectAgents)
+    {
+      noctalia-greeter-outputs = {
+        description = "Write the noctalia greeter's display layout for the current connectors";
+        wantedBy = [ "graphical.target" ];
+        before = [ "greetd.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = greeterOutputsWriter;
+        };
+      };
+    }
   ];
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
