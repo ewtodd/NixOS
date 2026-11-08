@@ -22,7 +22,7 @@ let
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
 
-  # Opens btop and then llmtop on c-sysmon (the vertical panel), btop on top. llmtop shows the
+  # Opens btop and then llmtop on c-sysmon (the vertical panel), llmtop on top. llmtop shows the
   # engines, the GPUs and hosts behind them, and maitred's callers. The stacking is niri-tile-to-n's:
   # it consumes the new window on that panel into the column to its left. The script waits for
   # llmtop to join btop's column, then gives llmtop the larger share. If the tiler is not running,
@@ -52,10 +52,11 @@ let
       done
       return 1
     }
-    ${pkgs.kitty}/bin/kitty --class sysmon-btop btop &
-    btop=$(window_id sysmon-btop) || exit 1
+
     ${pkgs.kitty}/bin/kitty --class sysmon-llmtop llmtop &
     llmtop=$(window_id sysmon-llmtop) || exit 1
+    ${pkgs.kitty}/bin/kitty --class sysmon-btop btop &
+    btop=$(window_id sysmon-btop) || exit 1
     await_stacked "$llmtop" "$btop" && niri msg action set-window-height --id "$btop" 40%
   '';
 
