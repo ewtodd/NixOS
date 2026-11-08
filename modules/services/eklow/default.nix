@@ -51,6 +51,10 @@ in
         expertProfile = "${config.services.eklow.package}/share/eklow/qwen36-experts.json";
         # Sage's verification protocol on for conversations with a system message (a request may send its own).
         verification = true;
+        # Keep earlier turns' reasoning in the prompt, as Ornith's template always did. Sage's (stock's) template drops it at
+        # every new user message, so the whole agentic turn before it is prefilled again (~1,050 tok/s at 190k on fiona;
+        # eklow DECISIONS 2026-11-08). A request may send its own preserve_thinking.
+        preserveThinking = true;
         # Inco AI's DFlash 2 draft (for Qwen3.6), lossless; verify blocks of 4 by default. On Sage it accepts 11-30% more
         # than Sage's own MTP head (eklow DECISIONS 2026-11-07).
         draft = pkgs.fetchurl {
