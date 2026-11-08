@@ -295,11 +295,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1794110920,
-        "narHash": "sha256-0loDKjU1QF8r/0r/qx/p5cdf5/fh1x7WoiLiZKdb9eY=",
+        "lastModified": 1794147893,
+        "narHash": "sha256-HQ/KUwtx5pGkbvcc7DGKIn7dFSSuoUb+fU7tJs01ZWs=",
         "owner": "ewtodd",
         "repo": "eklow",
-        "rev": "9920bd77e3c4bf22e8148ac2df53c5fe43412131",
+        "rev": "4b4bc40e2e01da3d1bd78d86d11c0151c985e33d",
         "type": "github"
       },
       "original": {
@@ -776,17 +776,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1791410087,
-        "narHash": "sha256-AflcdNTUTDXtYAE47G5BSCCD4H08JuWYr5MxCTjobhY=",
-        "ref": "refs/heads/main",
-        "rev": "fd4f02a59235fef4ad9bcb2e0e85076a4a7c9841",
-        "revCount": 10,
-        "type": "git",
-        "url": "ssh://git@github.com/ewtodd/llmtop"
+        "lastModified": 1794149231,
+        "narHash": "sha256-TB2I5TQR7MZYahRCQWqmI5ckW3opUY8C8YkeMDLrMPY=",
+        "owner": "ewtodd",
+        "repo": "llmtop",
+        "rev": "177a00f124c192591e65bd9acca9ddaf318c60f2",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/ewtodd/llmtop"
+        "owner": "ewtodd",
+        "repo": "llmtop",
+        "type": "github"
       }
     },
     "maitred": {
@@ -796,11 +796,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793855187,
-        "narHash": "sha256-Y0eDEafZ1+B9NwXjNxfdjLRM4dsmWjZEX4hhPF+4wS0=",
+        "lastModified": 1794149577,
+        "narHash": "sha256-UQ9Csy+Q8owvox4KqYANSR8JfPtjQ6b6I7V/c1sDF/U=",
         "owner": "ewtodd",
         "repo": "maitred",
-        "rev": "4fe184a08e66978958fbc2e2a45a1f2855ee5718",
+        "rev": "7e0e964e14bc9723014670424b3d997148e179db",
         "type": "github"
       },
       "original": {
@@ -1276,11 +1276,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794119259,
-        "narHash": "sha256-kq1CSqcM/8ZgvI1SpUVC6Qfs3Ris7XWmmT7nFj52wwY=",
+        "lastModified": 1794150307,
+        "narHash": "sha256-6zJ4N/0YFJPnszrxSJ0RQCWviJG1bKvQx3OZbYS6X9c=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "4f88994781e5d3edec92c8580d9a6e22f9641f86",
+        "rev": "76a8e39dbae721e17f3954e5e0f7fd3758d7a9e7",
         "type": "github"
       },
       "original": {
@@ -1626,11 +1626,11 @@
         "therock-sdk": "therock-sdk_2"
       },
       "locked": {
-        "lastModified": 1793820337,
-        "narHash": "sha256-evYrOCaHq2KhhcdUt64isqeOW5rygHXNwJi0FE6+1GY=",
+        "lastModified": 1794121527,
+        "narHash": "sha256-N+TfTZVh6QnEgzb2iDJd6NhtE49pMaeP4vNzx+wpe3w=",
         "owner": "ewtodd",
         "repo": "unholy",
-        "rev": "0284330a530cf9cb113ed863c4cd89a55171c5b6",
+        "rev": "4a7c475e4b4403114d0df81924e0e590d3730219",
         "type": "github"
       },
       "original": {
