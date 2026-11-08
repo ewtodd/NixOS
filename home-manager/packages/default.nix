@@ -35,6 +35,7 @@ in
     ./firefox
     ./git
     ./kitty
+    ./llmtop
     ./nixvim
     ./opencode
     ./shell

@@ -22,20 +22,6 @@ let
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
 
-  llmtop = inputs.llmtop.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  llmtopArgs = lib.escapeShellArgs [
-    "--maitred"
-    "http://${osConfig.systemOptions.aiFrontAddress}:4002"
-    "--gpu-name"
-    "son-of-anton/0000:c7:00.0=R9700 c7"
-    "--gpu-name"
-    "son-of-anton/0000:cc:00.0=R9700 cc"
-    "--gpu-name"
-    "son-of-anton/0000:d0:00.0=8060S"
-    "--gpu-name"
-    "fiona/0000:03:00.0=A770M"
-  ];
-
   # Opens btop and then llmtop on c-sysmon (the vertical panel), btop on top. llmtop shows the
   # engines, the GPUs and hosts behind them, and maitred's callers. The stacking is niri-tile-to-n's:
   # it consumes the new window on that panel into the column to its left. The script waits for
@@ -68,7 +54,7 @@ let
     }
     ${pkgs.kitty}/bin/kitty --class sysmon-btop btop &
     btop=$(window_id sysmon-btop) || exit 1
-    ${pkgs.kitty}/bin/kitty --class sysmon-llmtop ${lib.getExe llmtop} ${llmtopArgs} &
+    ${pkgs.kitty}/bin/kitty --class sysmon-llmtop llmtop &
     llmtop=$(window_id sysmon-llmtop) || exit 1
     await_stacked "$llmtop" "$btop" && niri msg action set-window-height --id "$btop" 40%
   '';
