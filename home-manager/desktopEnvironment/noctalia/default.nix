@@ -100,7 +100,7 @@ in
       bar.default = {
         position = lib.mkIf e "right";
         monitor.HDMI-A-2.enabled = lib.mkIf e false;
-        reserve_space = lib.mkIf e false;
+        reserve_space = true;
         background_opacity = opacity;
         margin_ends = 200;
         start = [ "workspaces" ];
