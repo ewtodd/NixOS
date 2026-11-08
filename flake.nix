@@ -73,6 +73,12 @@
       url = "github:ewtodd/maitred";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Private repository: github: fetches go through GitHub's unauthenticated API, which answers 404 for it;
+    # git+ssh uses the deploying user's key.
+    llmtop = {
+      url = "git+ssh://git@github.com/ewtodd/llmtop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     radiance-nix = {
       url = "github:ewtodd/radiance-nix";
       inputs.nixpkgs.follows = "nixpkgs";

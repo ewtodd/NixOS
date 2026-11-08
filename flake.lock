@@ -769,6 +769,26 @@
         "type": "github"
       }
     },
+    "llmtop": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791410087,
+        "narHash": "sha256-AflcdNTUTDXtYAE47G5BSCCD4H08JuWYr5MxCTjobhY=",
+        "ref": "refs/heads/main",
+        "rev": "fd4f02a59235fef4ad9bcb2e0e85076a4a7c9841",
+        "revCount": 10,
+        "type": "git",
+        "url": "ssh://git@github.com/ewtodd/llmtop"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/ewtodd/llmtop"
+      }
+    },
     "maitred": {
       "inputs": {
         "nixpkgs": [
@@ -1196,6 +1216,7 @@
         "lisepp": "lisepp",
         "llama-cpp": "llama-cpp",
         "llm-agents": "llm-agents",
+        "llmtop": "llmtop",
         "maitred": "maitred",
         "niri-nix": "niri-nix",
         "niri-utilities": "niri-utilities",

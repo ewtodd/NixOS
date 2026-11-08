@@ -22,23 +22,25 @@ let
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
 
-  # Takes an ssh host and runs nvtop there, reconnecting every 5 s while ssh itself
-  # fails (exit 255: the host or the bastion is not up yet at login, or the link
-  # dropped). Any other exit (quitting nvtop) returns and closes the window.
-  remoteNvtop = pkgs.writeShellScript "remote-nvtop" ''
-    while :; do
-      ssh -t "$1" nvtop
-      [ $? -eq 255 ] || exit
-      sleep 5
-    done
-  '';
+  llmtop = inputs.llmtop.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  llmtopArgs = lib.escapeShellArgs [
+    "--maitred"
+    "http://${osConfig.systemOptions.aiFrontAddress}:4002"
+    "--gpu-name"
+    "son-of-anton/0000:c7:00.0=R9700 c7"
+    "--gpu-name"
+    "son-of-anton/0000:cc:00.0=R9700 cc"
+    "--gpu-name"
+    "son-of-anton/0000:d0:00.0=8060S"
+    "--gpu-name"
+    "fiona/0000:03:00.0=A770M"
+  ];
 
-  # Opens btop, nvtop on son-of-anton, and nvtop on fiona on c-sysmon (the
-  # vertical panel), top to bottom, with btop taller. The stacking is niri-tile-to-n's:
-  # it consumes each new window on that panel into the column to its left. The
-  # script waits for each window to join btop's column before opening the next, so
-  # the order holds. If the tiler is not running, the windows stay in separate
-  # columns and btop keeps its height.
+  # Opens btop and then llmtop on c-sysmon (the vertical panel), btop on top. llmtop shows the
+  # engines, the GPUs and hosts behind them, and maitred's callers. The stacking is niri-tile-to-n's:
+  # it consumes the new window on that panel into the column to its left. The script waits for
+  # llmtop to join btop's column, then gives llmtop the larger share. If the tiler is not running,
+  # the windows stay in separate columns.
   sysmonLayout = pkgs.writeShellScript "sysmon-layout" ''
     niri() { ${osConfig.programs.niri.package}/bin/niri "$@"; }
     jq() { ${pkgs.jq}/bin/jq "$@"; }
@@ -66,12 +68,9 @@ let
     }
     ${pkgs.kitty}/bin/kitty --class sysmon-btop btop &
     btop=$(window_id sysmon-btop) || exit 1
-    ${pkgs.kitty}/bin/kitty --class sysmon-son-of-anton ${remoteNvtop} son-of-anton &
-    soa=$(window_id sysmon-son-of-anton) || exit 1
-    await_stacked "$soa" "$btop"
-    ${pkgs.kitty}/bin/kitty --class sysmon-fiona ${remoteNvtop} fiona &
-    fiona=$(window_id sysmon-fiona) || exit 1
-    await_stacked "$fiona" "$btop" && niri msg action set-window-height --id "$btop" 48%
+    ${pkgs.kitty}/bin/kitty --class sysmon-llmtop ${lib.getExe llmtop} ${llmtopArgs} &
+    llmtop=$(window_id sysmon-llmtop) || exit 1
+    await_stacked "$llmtop" "$btop" && niri msg action set-window-height --id "$btop" 40%
   '';
 
   sysmonDesktop = {
