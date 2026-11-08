@@ -19,6 +19,10 @@ let
           lib.escapeShellArgs [
             "--maitred"
             "http://${osConfig.systemOptions.aiFrontAddress}:4002"
+            "--pin"
+            "son-of-anton"
+            "--pin"
+            "fiona"
             "--gpu-name"
             "son-of-anton/0000:c7:00.0=R9700 c7"
             "--gpu-name"
