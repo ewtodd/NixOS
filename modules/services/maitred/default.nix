@@ -52,10 +52,24 @@ let
     # "fiona" is eklow's auto: routed the same way, but only among the models eklow serves (whichever of its modes is
     # up; one today), and a 503 (never another server) when it is down, so son-of-anton's chats (fiona) fall back to
     # "auto" themselves.
+    # "workers" is son-of-anton's own auto: routed the same way among son-of-anton's servers only, never eklow, and a 503
+    # when none is up. fiona's relay workers start on it (son-of-anton relay.default_model). On 2026-11-07 a worker on "auto"
+    # moved to eklow while GLM restarted after a crash (36 s) and stayed there for hours, as long conversations do: two long
+    # conversations on fiona's card cost every turn of hers ~100 s of re-prefill.
     router.extra = [
       {
         id = "fiona";
         upstreams = [ "eklow" ];
+      }
+      {
+        id = "workers";
+        upstreams = [
+          "unholy"
+          "unholy-glm"
+          "radiance"
+          "gufo"
+          "gufo-deepseek"
+        ];
       }
     ];
     # slots: how many requests each server runs at once (son-of-anton's maxNumSeqs; gufo's sessions).
