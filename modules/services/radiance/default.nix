@@ -11,7 +11,12 @@ let
 
   # Built from source by radiance-nix against the TheRock ROCm 10.1 SDK unholy pins (the flake input follows
   # it), so both engines share one SDK in the store.
-  radiance = inputs.radiance-nix.lib.${pkgs.stdenv.hostPlatform.system}.mkRadiance { inherit pkgs; };
+  radianceLib = inputs.radiance-nix.lib.${pkgs.stdenv.hostPlatform.system};
+  spill = cfg.checkpointDir != null && cfg.diskCheckpoints > 0;
+  radiance = radianceLib.mkRadiance {
+    inherit pkgs;
+    patches = lib.optional spill radianceLib.patches.checkpointSpill;
+  };
 
   serveArgs = [
     "--model ${cfg.model}"
@@ -36,15 +41,32 @@ let
   ++ lib.optionals (cfg.checkpointSlots != null) [
     "--checkpoint-slots ${toString cfg.checkpointSlots}"
   ]
+  ++ lib.optionals spill [
+    "--checkpoint-dir ${cfg.checkpointDir}"
+    "--disk-checkpoints ${toString cfg.diskCheckpoints}"
+  ]
   ++ cfg.extraFlags;
 in
 {
   config = lib.mkIf cfg.enable {
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose [ cfg.port ];
 
+    assertions = [
+      {
+        assertion = (cfg.checkpointDir != null) == (cfg.diskCheckpoints > 0);
+        message = "services.radiance: checkpointDir and diskCheckpoints go together";
+      }
+    ];
+
+    # The spill file lives on /work (the SATA array); the service user owns the directory.
+    systemd.tmpfiles.rules = lib.optionals spill [
+      "d ${cfg.checkpointDir} 0750 ${cfg.user} users - -"
+    ];
+
     systemd.services.radiance = {
       description = "Radiance inference server (${cfg.servedModelName})";
       after = [ "network.target" ];
+      unitConfig = lib.mkIf spill { RequiresMountsFor = [ cfg.checkpointDir ]; };
       wantedBy = [ "multi-user.target" ];
 
       environment = {

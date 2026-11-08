@@ -872,6 +872,23 @@ with lib;
             layers from zero), N fixes the total.
           '';
         };
+        checkpointDir = mkOption {
+          type = types.nullOr types.path;
+          default = null;
+          description = ''
+            Directory of the checkpoint disk tier (--checkpoint-dir): one
+            preallocated file of `diskCheckpoints` slots, O_DIRECT, on a
+            filesystem that is not the NVMe. Setting it builds radiance with
+            radiance-nix's checkpoint-spill patch (not upstream); a snapshot
+            the RAM store would evict is written there first and read back,
+            while its request waits, on a prefix hit. Needs diskCheckpoints.
+          '';
+        };
+        diskCheckpoints = mkOption {
+          type = types.ints.unsigned;
+          default = 0;
+          description = "Slots of the checkpoint disk tier (--disk-checkpoints), 153 MiB each on the Qwen3.8-27B.";
+        };
         devices = mkOption {
           type = types.str;
           default = "0,1";

@@ -73,7 +73,12 @@ in
       maxNumSeqs = 8;
       kvCacheDtype = "bf16";
       prefixCacheMib = 0;
-      checkpointSlots = 8;
+      # Host RAM is for the APU engine: the embedding table stays in VRAM and no
+      # snapshots are pinned; all 64 live on /work (9.6 GiB).
+      extraFlags = [ "--embedding-placement vram" ];
+      checkpointSlots = 0;
+      checkpointDir = "/work/radiance-checkpoints";
+      diskCheckpoints = 64;
     };
     services.gufoStrix = {
       enable = true;

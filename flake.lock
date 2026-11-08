@@ -1152,11 +1152,11 @@
         "therock-sdk": "therock-sdk"
       },
       "locked": {
-        "lastModified": 1793405388,
-        "narHash": "sha256-VqHrn3iSez+/4BnxH3eTV1caUK0pIllN1vRkbtZWHqg=",
+        "lastModified": 1794179105,
+        "narHash": "sha256-rsGBvu1zYYVjpfDH0yX8CS4Fmpn5LLB3Wo4fz1gXKZk=",
         "owner": "ewtodd",
         "repo": "radiance-nix",
-        "rev": "c6a1aefc3cfb6fc2e9037c17dad070c80294b1e7",
+        "rev": "69bf68109bd0ed3895d8091c9ba7473364d70b9f",
         "type": "github"
       },
       "original": {
@@ -1168,15 +1168,15 @@
     "radiance-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1793394061,
-        "narHash": "sha256-SFKyQQYnuu+sGrS1nNnh2dfpsPsw/5CFW2tGBA+CqFw=",
-        "rev": "9ed3ef7a7b1b0580201e40682a464ed555bed8ff",
+        "lastModified": 1793815018,
+        "narHash": "sha256-D3FLOs38Rbxy2PDhfBJI94M+/oEG/Xx1ff8Xp2xuYJw=",
+        "rev": "19d4e8fe0e18071b9b6300f15fc4ccf38dc4fa3d",
         "type": "tarball",
-        "url": "https://codeberg.org/api/v1/repos/StillDeadcode/radiance/archive/9ed3ef7a7b1b0580201e40682a464ed555bed8ff.tar.gz"
+        "url": "https://codeberg.org/api/v1/repos/StillDeadcode/radiance/archive/19d4e8fe0e18071b9b6300f15fc4ccf38dc4fa3d.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://codeberg.org/StillDeadcode/radiance/archive/9ed3ef7a7b1b0580201e40682a464ed555bed8ff.tar.gz"
+        "url": "https://codeberg.org/StillDeadcode/radiance/archive/19d4e8fe0e18071b9b6300f15fc4ccf38dc4fa3d.tar.gz"
       }
     },
     "remarkable": {
