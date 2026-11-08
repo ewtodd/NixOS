@@ -22,7 +22,7 @@ let
     builtins.readFile ./scripts/niri_tile_to_n.py
   );
   # The tiler resolves niri's full output name to the current connector itself.
-  # The model alone ("Sceptre F22") also names the sysmon panel on DP-2.
+  # The model alone ("Sceptre F22") also names the F22 on DP-2.
   niri-tile-to-n-daemon = pkgs.writeShellScript "niri-tile-to-n-daemon" ''
     sleep 2
     exec ${niri-tile-to-n}/bin/niri-tile-to-n -n 3 --output 'Sceptre Tech Inc Sceptre F22 Unknown'

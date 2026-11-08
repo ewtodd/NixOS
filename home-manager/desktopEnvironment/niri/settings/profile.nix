@@ -17,7 +17,7 @@ let
     if deviceType == "desktop" then "Sceptre Tech Inc Sceptre O34 Unknown" else "eDP-1";
   secondaryMonitor =
     if deviceType == "desktop" then
-      "Sceptre Tech Inc Sceptre F22 Unknown"
+      "Sceptre Tech Inc Sceptre F22 0x01010101"
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
   alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
@@ -33,17 +33,19 @@ let
     done
   '';
 
-  # Opens btop, nvtop on son-of-anton, and nvtop on fiona on c-sysmon, then
-  # stacks fiona under son-of-anton. The order relies on niri opening each window
-  # right of the workspace's active column and making it the active column; a
-  # startup spawn carries no activation token, so this happens without moving
-  # focus off the ultrawide. The script waits for each window before opening the next.
+  # Opens btop, nvtop on son-of-anton, and nvtop on fiona on c-sysmon (the
+  # vertical panel), top to bottom, with btop taller. The stacking is niri-tile-to-n's:
+  # it consumes each new window on that panel into the column to its left. The
+  # script waits for each window to join btop's column before opening the next, so
+  # the order holds. If the tiler is not running, the windows stay in separate
+  # columns and btop keeps its height.
   sysmonLayout = pkgs.writeShellScript "sysmon-layout" ''
     niri() { ${osConfig.programs.niri.package}/bin/niri "$@"; }
+    jq() { ${pkgs.jq}/bin/jq "$@"; }
+    # Prints the id of the first window with app-id $1; waits up to 30 s.
     window_id() {
       for _ in $(seq 150); do
-        id=$(niri msg --json windows \
-          | ${pkgs.jq}/bin/jq -r --arg app "$1" 'first(.[] | select(.app_id == $app) | .id) // empty')
+        id=$(niri msg --json windows | jq -r --arg app "$1" 'first(.[] | select(.app_id == $app) | .id) // empty')
         if [ -n "$id" ]; then
           echo "$id"
           return 0
@@ -52,20 +54,31 @@ let
       done
       return 1
     }
+    # Succeeds once windows $1 and $2 share a column; gives up after 10 s.
+    await_stacked() {
+      for _ in $(seq 50); do
+        stacked=$(niri msg --json windows | jq --argjson a "$1" --argjson b "$2" \
+          '[.[] | select(.id == $a or .id == $b) | .layout.pos_in_scrolling_layout[0]] | length == 2 and (unique | length == 1)')
+        [ "$stacked" = true ] && return 0
+        sleep 0.2
+      done
+      return 1
+    }
     ${pkgs.kitty}/bin/kitty --class sysmon-btop btop &
-    window_id sysmon-btop >/dev/null || exit 1
+    btop=$(window_id sysmon-btop) || exit 1
     ${pkgs.kitty}/bin/kitty --class sysmon-son-of-anton ${remoteNvtop} son-of-anton &
-    window_id sysmon-son-of-anton >/dev/null || exit 1
+    soa=$(window_id sysmon-son-of-anton) || exit 1
+    await_stacked "$soa" "$btop"
     ${pkgs.kitty}/bin/kitty --class sysmon-fiona ${remoteNvtop} fiona &
     fiona=$(window_id sysmon-fiona) || exit 1
-    niri msg action consume-or-expel-window-left --id "$fiona"
+    await_stacked "$fiona" "$btop" && niri msg action set-window-height --id "$btop" 48%
   '';
 
   sysmonDesktop = {
     workspace = [
       {
         _args = [ "c-sysmon" ];
-        open-on-output = "Sceptre Tech Inc Sceptre F22 0x01010101";
+        open-on-output = "Sceptre Tech Inc Sceptre F22 Unknown";
       }
     ];
     window-rule = [
@@ -74,9 +87,6 @@ let
           app-id = "^sysmon-";
         };
         open-on-workspace = "c-sysmon";
-        default-column-width = {
-          proportion = 0.5;
-        };
       }
     ];
     spawn-sh-at-startup = [ [ "sleep 5 && ${sysmonLayout}" ] ];

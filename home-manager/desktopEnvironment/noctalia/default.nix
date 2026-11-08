@@ -101,8 +101,8 @@ in
         position = lib.mkIf e "right";
         monitor.HDMI-A-2.enabled = lib.mkIf e false;
         # A selector matches a connector name or a whole token of make/model/serial.
-        # The sysmon F22 is the only panel that reports a serial; its twin (HDMI-A-2)
-        # reports none, so only a connector selects that one.
+        # The F22 on DP-2 is the only panel that reports a serial; its twin
+        # (HDMI-A-2) reports none, so only a connector selects that one.
         monitor."0x01010101".enabled = lib.mkIf e false;
         reserve_space = true;
         background_opacity = opacity;
