@@ -22,11 +22,11 @@ let
   niri-tile-to-n = pkgs.writers.writePython3Bin "niri-tile-to-n" { doCheck = false; } (
     builtins.readFile ./scripts/niri_tile_to_n.py
   );
-  # The tiler takes a model string (resolved to the current connector inside the
-  # script) so it keeps working no matter which DP-* connector niri probes.
+  # The tiler resolves niri's full output name to the current connector itself.
+  # The model alone ("Sceptre F22") also names the sysmon panel on DP-2.
   niri-tile-to-n-daemon = pkgs.writeShellScript "niri-tile-to-n-daemon" ''
     sleep 2
-    exec ${niri-tile-to-n}/bin/niri-tile-to-n -n 3 --output 'Sceptre F22'
+    exec ${niri-tile-to-n}/bin/niri-tile-to-n -n 3 --output 'Sceptre Tech Inc Sceptre F22 Unknown'
   '';
   # The centering daemon compares against the IPC connector name, which can
   # change between boots (DP-5 / DP-3 / DP-1). Resolve the current connector

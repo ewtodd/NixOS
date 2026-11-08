@@ -43,6 +43,15 @@ let
         };
       };
     }
+    {
+      _args = [ "Sceptre Tech Inc Sceptre F22 0x01010101" ];
+      transform = "normal";
+      position._props = {
+        x = 3440;
+        y = 0;
+      };
+      mode = "1920x1080@144.002";
+    }
   ];
 
   vOutputs = [

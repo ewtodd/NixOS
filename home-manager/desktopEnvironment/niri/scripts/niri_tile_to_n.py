@@ -416,12 +416,14 @@ if not is_outputs_ok:
 output_full_info = {out_key: out_dict["logical"] for out_key, out_dict in outputs_resp["Outputs"].items()}
 output_width_lut = {out_key: out_info["width"] for out_key, out_info in output_full_info.items() if out_info is not None}
 
-# If --output was given as a monitor model string (e.g. "Sceptre F22"), resolve
-# it to the current connector name, since niri may probe the same monitor under
-# different connectors across boots (e.g. DP-5 / DP-3 / DP-1).
+# If --output was given as a monitor model (e.g. "Sceptre O34") or as niri's full
+# output name ("make model serial", each "Unknown" when missing, as `niri msg outputs`
+# prints it), resolve it to the current connector name, since niri may probe the same
+# monitor under different connectors across boots (e.g. DP-5 / DP-3 / DP-1). A model
+# shared by two connected monitors resolves to whichever niri lists first.
 if TARGET_OUTPUT is not None:
     for out_name, out_dict in outputs_resp["Outputs"].items():
-        full_name = " ".join(filter(None, [out_dict.get("make"), out_dict.get("model"), out_dict.get("serial")]))
+        full_name = " ".join(out_dict.get(k) or "Unknown" for k in ("make", "model", "serial"))
         if out_dict.get("model") == TARGET_OUTPUT or full_name == TARGET_OUTPUT:
             TARGET_OUTPUT = out_name
             break
