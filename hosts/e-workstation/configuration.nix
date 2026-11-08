@@ -235,6 +235,7 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
+          viewerGroup = "soa-viewers";
           extraPackages = [
             md2pdf
             pkgs.pandoc
@@ -253,6 +254,7 @@ in
           son-of-antonHome = "/var/lib/soa-ricky/.son-of-anton";
           workingDirectory = "/srv/ricky";
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
+          viewerGroup = "soa-viewers";
           git.github = config.age.secrets.soa-ricky-github-key.path;
           settings.platforms.signal = {
             require_mention = true;
@@ -277,6 +279,7 @@ in
           son-of-antonHome = "/var/lib/soa-markets/.son-of-anton";
           workingDirectory = "/srv/markets";
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
+          viewerGroup = "soa-viewers";
           extraPackages = projectAgentTools;
           settings.platforms.signal = {
             require_mention = true;
@@ -521,6 +524,7 @@ in
       "video"
       "lp"
       "son-of-anton"
+      "soa-viewers"
       "docker"
       "i2c"
     ];

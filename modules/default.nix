@@ -1171,6 +1171,16 @@ with lib;
                     rules themselves: this repo is public.
                   '';
                 };
+                viewerGroup = mkOption {
+                  type = types.nullOr types.str;
+                  default = null;
+                  description = ''
+                    A group whose members can watch THIS instance's sessions
+                    read-only (`son-of-anton view <name>`) and do nothing else.
+                    The daemon listens on /run/son-of-anton-<name>/view.sock
+                    for them. null: no view socket.
+                  '';
+                };
                 settings = mkOption {
                   type = types.attrs;
                   default = { };

@@ -60,6 +60,7 @@ in
         protectedPaths
         git
         memoryRulesFile
+        viewerGroup
         ;
       group = "son-of-anton";
 
@@ -83,15 +84,21 @@ in
         serviceConfig = {
           ReadWritePaths = [ "/etc/nixos" ];
 
+          # /run/son-of-anton-<name> is where the son-of-anton module puts an
+          # instance's view socket. play and work run as accounts that may be
+          # in a viewer group, so a sibling's is hidden like the rest of it.
           InaccessiblePaths = map (p: "-${p}") (
-            lib.concatMap (
-              other:
-              [
-                other.workingDirectory
-                other.son-of-antonHome
-              ]
-              ++ lib.optional (other.stateDir != "") other.stateDir
-            ) (lib.attrValues (lib.filterAttrs (n: _: n != name) cfg.instances))
+            lib.concatLists (
+              lib.mapAttrsToList (
+                otherName: other:
+                [
+                  other.workingDirectory
+                  other.son-of-antonHome
+                ]
+                ++ lib.optional (other.stateDir != "") other.stateDir
+                ++ lib.optional (other.viewerGroup != null) "/run/son-of-anton-${otherName}"
+              ) (lib.filterAttrs (n: _: n != name) cfg.instances)
+            )
           );
         };
       }
