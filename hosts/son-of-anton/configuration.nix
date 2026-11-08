@@ -32,6 +32,10 @@ in
       enable = true;
       lanExpose = true;
       managers = [ "son-of-anton" ];
+      # Card 1 (layers 23-44, the head, the drafter) draws 50-75% more than card 0, so it goes to c7:00.0, the
+      # better-cooled R9700. cc:00.0 runs ~9 C hotter at equal power and had every card-1 fault (bit 44 of an
+      # address cleared: 10-20, 10-24, 11-07).
+      devices = "1,0,2";
       # The SATA RAID 0, not the NVMe (/scratch).
       snapshotDir = "/work/unholy-snapshots";
       instances.ds4 = {
