@@ -297,13 +297,19 @@ in
         # Every chat is fiona: whatever eklow serves (maitred router.extra), son-of-anton's auto when eklow is down.
         gateway.model = "fiona";
         # Models fiona may not hand a worker (relay send's model): eklow is reached only through fiona's own
-        # route and auto's fallback, and the DeepSeek API is not for workers. She is offered what maitred
-        # reports as serving, less these.
+        # route, auto (which falls back to eklow) is not for workers, and the DeepSeek API is not for workers.
+        # She is offered what maitred reports as serving, less these.
         relay.hidden_models = [
           "fiona"
+          "auto"
           "eklow/"
           "deepseek/"
         ];
+        # A worker fiona starts without naming a model, or with "default", runs on maitred's "workers" route:
+        # son-of-anton's servers only, never eklow. On 2026-11-07 a worker on "auto" moved to eklow while GLM's
+        # server was down for 36 s and stayed there for hours; two long conversations on fiona's card cost every
+        # turn of hers ~100 s of re-prefill. The send fails clearly when no son-of-anton model is up.
+        relay.default_model = "workers";
         model = {
           # maitred's routed id: the strongest model son-of-anton is serving, kept per conversation where its
           # context is cached. "high" is each model's normal thinking (maitred maps it to xhigh on the Qwen pair).
@@ -323,8 +329,8 @@ in
           model = "auto";
           model_provider = "custom";
         };
-        # Sub-agents too, so they run whichever mode is up instead of failing while the Qwen pair is loaded.
-        delegation.model = "auto";
+        # Sub-agents run whichever son-of-anton mode is up (maitred's "workers" route), never on fiona's eklow.
+        delegation.model = "workers";
         # Old model names a stored session or job may still pin: soa-d rewrites them at start and resolves them.
         models.renamed."unholy/glm53" = "unholy/glm5.3-flash";
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];

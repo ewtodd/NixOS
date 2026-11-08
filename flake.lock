@@ -1255,11 +1255,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794108116,
-        "narHash": "sha256-ooSIM7ayn8EtkcIQXjbv8UABJEDOlHfykb5kzdxUtJQ=",
+        "lastModified": 1794119259,
+        "narHash": "sha256-kq1CSqcM/8ZgvI1SpUVC6Qfs3Ris7XWmmT7nFj52wwY=",
         "owner": "ewtodd",
         "repo": "son-of-anton",
-        "rev": "ec0730a542bcd5eca6cc3010f3db84bb1805e492",
+        "rev": "4f88994781e5d3edec92c8580d9a6e22f9641f86",
         "type": "github"
       },
       "original": {
