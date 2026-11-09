@@ -32,10 +32,12 @@ in
       enable = true;
       lanExpose = true;
       managers = [ "son-of-anton" ];
-      # Card 1 (layers 23-44, the head, the drafter) draws 50-75% more than card 0, so it goes to c7:00.0, the
-      # better-cooled R9700. cc:00.0 runs ~9 C hotter at equal power and had every card-1 fault (bit 44 of an
-      # address cleared: 10-20, 10-24, 11-07).
-      devices = "1,0,2";
+      # Card 1 (layers 23-44, the head, the drafter) draws 50-75% more than card 0, so it goes to the
+      # better-cooled R9700, the ASRock Creator. Since 2026-11-09 it sits on the switch's second port (cc:00.0,
+      # HIP device 1) and the Gigabyte on the first (c7:00.0); the Gigabyte had every card-1 fault (bit 44 of
+      # an address cleared: 10-20, 10-24, 11-07) and runs a 20 C hotspot gap vs 14 at equal power. If the
+      # cards move between ports, this order has to follow the ASRock.
+      devices = "0,1,2";
       # The SATA RAID 0, not the NVMe (/scratch).
       snapshotDir = "/work/unholy-snapshots";
       instances.ds4 = {
