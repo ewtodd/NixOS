@@ -772,11 +772,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794154232,
-        "narHash": "sha256-pu2FVvfQ+0wlLrZMKrDlZWWwOsypygQ0Os/XcgwXzrA=",
+        "lastModified": 1794259475,
+        "narHash": "sha256-3QjJBVQ9koZmjX+yf5Zbx6PlVrChlD9wV1rVYI03aTg=",
         "owner": "ewtodd",
         "repo": "llmtop",
-        "rev": "c68117bde353ccbd4b294a7e646dba1612fd0f45",
+        "rev": "06a2451eb9c042f68a06a6cef1c930f01f338959",
         "type": "github"
       },
       "original": {
