@@ -134,8 +134,8 @@
         }
       ];
 
-      # Fixes for the open-webui closure (first needed on oracle's aarch64
-      # builder), applied to every host's package set.
+      # Python package fixes, first for the open-webui closure on oracle's
+      # aarch64 builder, applied to every host's package set.
       openWebUIOverlays = [
         (_: prev: {
           python314 = prev.python314.override {
@@ -168,6 +168,34 @@
                     meta = (old.meta or { }) // {
                       broken = false;
                     };
+                  });
+                  # shapely 2.2's meson build writes _version.py from git, which
+                  # the GitHub tarball lacks, so it reports 0+unknown and
+                  # pyogrio/geopandas take their pre-2.0 paths (geopandas'
+                  # checks fail). meson.build installs a root _version.py when
+                  # one exists, as the PyPI sdist ships. Broken since nixpkgs
+                  # e51bacdd4c.
+                  shapely = pythonPkgs.shapely.overridePythonAttrs (old: {
+                    postPatch = (old.postPatch or "") + ''
+                      printf '__version__ = "%s"\n__git_version__ = "None"\n' ${old.version} > _version.py
+                    '';
+                  });
+                  # nixpkgs 44cddf92c4 makes cargoSetupHook link system libraries
+                  # instead of the crates' vendored copies; these backport
+                  # b9eb668f72 and 00434ec423, which supply them. Drop both
+                  # once nixos-unstable carries those commits.
+                  primp = pythonPkgs.primp.overridePythonAttrs (old: {
+                    nativeBuildInputs = old.nativeBuildInputs ++ [ prev.pkg-config ];
+                    buildInputs = (old.buildInputs or [ ]) ++ [
+                      prev.aws-lc
+                      prev.zstd
+                    ];
+                  });
+                  chromadb = pythonPkgs.chromadb.overridePythonAttrs (old: {
+                    buildInputs = old.buildInputs ++ [
+                      prev.sqlite
+                      prev.rust-jemalloc-sys
+                    ];
                   });
                 })
               ];
