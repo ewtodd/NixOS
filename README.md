@@ -46,7 +46,7 @@ Hosts:
 - **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy),
-  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), or Radiance + DeepSeek-V4.1-Flash (gufo fork)
+  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), or Radiance + DeepSeek-V4.1-Flash (gufo + ds41 extension)
 - **fiona** - small-model inference on an Arc A770M (16 GB) and its Iris Xe iGPU: llama.cpp
   (Vulkan) for title generation, EmbeddingGemma 2 embeddings and Gemma 4 12B chat, behind maitred
 ```

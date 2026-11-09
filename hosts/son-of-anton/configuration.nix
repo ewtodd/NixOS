@@ -95,11 +95,16 @@ in
       logProgress = true;
       deepseek = {
         enable = true;
-        model = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-GSQ-RCO-IQ1_M-00001-of-00006.gguf";
-        dsparkModel = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-DSpark-draft-Q2K-Q4K.gguf";
-        mmproj = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/mmproj-DeepSeek-V4.1-Flash-1017-BF16.gguf";
-        # Beside Radiance: resident experts leave under 1 GiB of the RAM free, this leaves about 10.
-        expertCacheBytes = 88 * 1024 * 1024 * 1024;
+        # Shard 6 is Unsloth's engram/ IQ4_NL table stamped as shard 6 of 6 (their set_split.py), not the
+        # Q5_K table the build ships with: the extension's maintainer measures UD-IQ2_XXS with IQ4_NL, and
+        # Engram precision moved no score.
+        model = "/scratch/models/dsv41-flash-1017/UD-IQ2_XXS/DeepSeek-V4.1-Flash-1017-UD-IQ2_XXS-00001-of-00006.gguf";
+        # Lucebox's, the extension's recommended drafter: same acceptance as Unsloth's Q8_0, 2.7 GiB smaller.
+        dsparkModel = "/scratch/models/dsv41-flash-1017/DeepSeek-V4.1-Flash-1017-DSpark-draft-Q2K-Q4K.gguf";
+        mmproj = "/scratch/models/dsv41-flash-1017/mmproj-BF16.gguf";
+        # Estimated 3-5 GiB of RAM left free beside Radiance, which pins no host RAM since 4cbf5058.
+        # Without a cap the cache leaves 2 GiB. 92 GiB holds about 63% of the 146 GiB of experts, most used first.
+        expertCacheBytes = 92 * 1024 * 1024 * 1024;
       };
     };
     services.llmMode = {

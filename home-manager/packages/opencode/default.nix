@@ -355,7 +355,7 @@ in
                 output = [ "text" ];
               };
             };
-            # llm-mode dual: the gufo fork on the iGPU, beside the 27B; efforts none, low, high, max.
+            # llm-mode dual: gufo with the ds41 extension on the iGPU, beside the 27B; efforts none, low, high, max.
             "deepseek-v4.1-flash" = {
               name = "DeepSeek-V4.1-Flash";
               variants = {

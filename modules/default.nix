@@ -738,13 +738,16 @@ with lib;
         };
         deepseek = {
           enable = mkEnableOption ''
-            a second server for the same iGPU: DeepSeek-V4.1-Flash through franzmoca's gufo fork
+            a second server for the same iGPU: DeepSeek-V4.1-Flash through franzmoca's ds41-gufo-extension
             (gufo-deepseek.service, which conflicts with gufo-strix.service), with DSpark drafting and the
             routed experts streamed from the SSD through a bounded cache'';
           model = mkOption {
             type = types.str;
             example = "/scratch/models/dsv41-flash-1017-gsq-rco-gguf/DeepSeek-V4.1-Flash-1017-GSQ-RCO-IQ1_M-00001-of-00006.gguf";
-            description = "First shard of the backbone; gufo opens the other shards and the Engram tables beside it.";
+            description = ''
+              First shard of the backbone; gufo opens the other shards. The last shard is the Engram table (for
+              ISTA's builds, a link to their separate Engram file named as that shard).
+            '';
           };
           dsparkModel = mkOption {
             type = types.str;

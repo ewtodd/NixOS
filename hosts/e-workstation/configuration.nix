@@ -388,7 +388,7 @@ in
                 "xhigh"
               ];
             };
-            # The gufo fork on the Strix Halo iGPU, beside the 27B in llm-mode dual: DSV4's efforts.
+            # gufo with the ds41 extension on the Strix Halo iGPU, beside the 27B in llm-mode dual: DSV4's efforts.
             "gufo/deepseek-v4.1-flash" = {
               reasoning_effort = "high";
               reasoning_efforts = [

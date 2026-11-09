@@ -2,7 +2,7 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     wireview-linux = {
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,8 +24,6 @@
     };
     lifer = {
       url = "github:ewtodd/lifer";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
     website = {
       url = "github:ewtodd/website";
@@ -64,10 +62,10 @@
       url = "github:gufo-org/gufo";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # The fork that serves DeepSeek-V4.1-Flash; `gufo` above keeps serving Qwen3.8-Flash-Next.
-    gufo-deepseek = {
-      url = "github:franzmoca/gufo";
-      inputs.nixpkgs.follows = "nixpkgs";
+    # DeepSeek-V4.1-Flash as a gufo source extension, compiled into the `gufo` pinned above.
+    ds41-gufo-extension = {
+      url = "github:franzmoca/ds41-gufo-extension";
+      inputs.gufo.follows = "gufo";
     };
     maitred = {
       url = "github:ewtodd/maitred";
