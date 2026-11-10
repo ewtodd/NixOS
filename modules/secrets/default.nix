@@ -38,16 +38,17 @@
       };
     })
     (lib.mkIf config.systemOptions.services.bastion.enable {
-      # owner=mu because the wake-and-relay script runs as user `mu` (invoked
-      # via ssh ProxyCommand by clients), so it needs read access to these.
+      # Owned by e-unlock, the account wake-e-workstation.service runs as, not
+      # by mu: the personal keys log in as mu from the Internet, and mu only
+      # needs to start the unlock, not read what it sends.
       e-workstation-luks-passphrase = {
         file = ../../secrets/e-workstation-luks-passphrase.age;
-        owner = "mu";
+        owner = "e-unlock";
         mode = "0400";
       };
       bastion-initrd-unlock-key = {
         file = ../../secrets/bastion-initrd-unlock-key.age;
-        owner = "mu";
+        owner = "e-unlock";
         mode = "0400";
       };
     })

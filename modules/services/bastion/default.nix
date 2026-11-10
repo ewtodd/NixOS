@@ -83,12 +83,14 @@ let
 
   # ProxyCommand target for reaching e-workstation from outside: the same wake and
   # unlock, then hand over the socket. Everything it prints goes to stderr so
-  # stdout stays clean for the ssh client on the far end.
+  # stdout stays clean for the ssh client on the far end. It runs as mu, which
+  # cannot read the unlock secrets, so it starts the unit that can (allowed by
+  # the polkit rule below); systemctl start returns once the oneshot finishes.
   wakeAndRelay = pkgs.writeShellApplication {
     name = "wake-and-relay-e-workstation";
     runtimeInputs = [
       pkgs.netcat-openbsd
-      wakeAndUnlock
+      config.systemd.package
     ];
     text = ''
       set -u
@@ -97,7 +99,8 @@ let
       SSH_PORT=${toString innerSshPort}
 
       if ! nc -z -w 1 "$EIP" "$SSH_PORT" 2>/dev/null; then
-        wake-and-unlock-e-workstation >&2 || exit 1
+        echo "waking and unlocking e-workstation (a few minutes)..." >&2
+        systemctl start wake-e-workstation.service >&2 || exit 1
       fi
 
       exec nc "$EIP" "$SSH_PORT"
@@ -140,19 +143,57 @@ in
     environment.systemPackages = [
       pkgs.wakeonlan
       wakeAndRelay
-      wakeAndUnlock
     ];
-    # The return half of e-workstation's scheduled poweroff: it shuts down on its own timer, this wakes it a few
-    # minutes later -- together an unattended reboot for a machine that cannot reboot unattended.
-    # Not Persistent: waking e-workstation hours late serves nobody, and the next relay connection wakes it anyway.
-    systemd.services.wake-e-workstation = lib.mkIf (cfg.wakeCalendar != "") {
+
+    users.users.e-unlock = {
+      isSystemUser = true;
+      group = "e-unlock";
+      description = "e-workstation wake and unlock";
+    };
+    users.groups.e-unlock = { };
+
+    systemd.services.wake-e-workstation = {
       description = "Wake and unlock e-workstation";
       serviceConfig = {
         Type = "oneshot";
         ExecStart = lib.getExe wakeAndUnlock;
+        User = "e-unlock";
+        Group = "e-unlock";
+        # The script's own loops give up after at most about nine minutes.
+        TimeoutStartSec = "15min";
+        NoNewPrivileges = true;
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        PrivateDevices = true;
+        CapabilityBoundingSet = "";
+        RestrictAddressFamilies = [
+          "AF_INET"
+          "AF_INET6"
+          "AF_UNIX"
+        ];
+        ProtectKernelTunables = true;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        RestrictSUIDSGID = true;
+        LockPersonality = true;
       };
     };
 
+    security.polkit.extraConfig = ''
+      polkit.addRule(function (action, subject) {
+        if (action.id == "org.freedesktop.systemd1.manage-units" &&
+            action.lookup("unit") == "wake-e-workstation.service" &&
+            action.lookup("verb") == "start" &&
+            subject.user == "mu") {
+          return polkit.Result.YES;
+        }
+      });
+    '';
+
+    # The return half of e-workstation's scheduled poweroff: it shuts down on its own timer, this wakes it a few
+    # minutes later -- together an unattended reboot for a machine that cannot reboot unattended.
+    # Not Persistent: waking e-workstation hours late serves nobody, and the next relay connection wakes it anyway.
     systemd.timers.wake-e-workstation = lib.mkIf (cfg.wakeCalendar != "") {
       description = "Timer for waking e-workstation after its scheduled poweroff";
       wantedBy = [ "timers.target" ];
