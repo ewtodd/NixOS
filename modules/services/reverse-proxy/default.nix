@@ -46,10 +46,23 @@ in
     services.caddy = {
       enable = true;
 
+      # `?` writes a header only when the backend did not send one, so apps that
+      # set their own (Nextcloud's HSTS) keep theirs. No includeSubDomains: it
+      # would bind every future subdomain to HTTPS for a year.
+      extraConfig = ''
+        (security-headers) {
+          header {
+            ?Strict-Transport-Security "max-age=31536000"
+            ?X-Content-Type-Options "nosniff"
+          }
+        }
+      '';
+
       # The apex: a static hugo site, served straight out of the store like the
       # documentation. Its root-absolute asset paths are correct here because it
       # is served at / rather than under a prefix.
       virtualHosts."ethanwtodd.com".extraConfig = ''
+        import security-headers
         encode zstd gzip
         root * ${inputs.website.packages.${system}.default}
         file_server
@@ -58,45 +71,53 @@ in
       # One canonical hostname, so links and search results do not split across
       # the two. Needs its own Namecheap record; see the dyndns subdomain list.
       virtualHosts."www.ethanwtodd.com".extraConfig = ''
+        import security-headers
         redir https://ethanwtodd.com{uri} permanent
       '';
 
       virtualHosts."cache.ethanwtodd.com".extraConfig = ''
+        import security-headers
         reverse_proxy http://10.0.0.4:5000
       '';
       virtualHosts."cloud.ethanwtodd.com".extraConfig = ''
+        import security-headers
         reverse_proxy http://10.0.0.2:80
       '';
       virtualHosts."office.ethanwtodd.com".extraConfig = ''
+        import security-headers
         reverse_proxy http://10.0.0.2:9980
       '';
       # Static generated docs -- no backend, caddy serves the store path itself. The website flake assembles
       # the tree (index at /, each project's doxygen output under its own prefix; doxygen emits only relative
       # links). A project joins by gaining a `docs` URL in its front matter there; nothing here changes.
       virtualHosts."docs.ethanwtodd.com".extraConfig = ''
+        import security-headers
         encode zstd gzip
         root * ${inputs.website.packages.${system}.docs}
         file_server
       '';
 
       virtualHosts."status.ethanwtodd.com".extraConfig = ''
+        import security-headers
         reverse_proxy http://${anubisStatus} {
           header_up X-Real-IP {remote_host}
         }
       '';
 
       virtualHosts."ai.ethanwtodd.com".extraConfig = ''
+        import security-headers
         reverse_proxy http://${anubisAi} {
           header_up X-Real-IP {remote_host}
         }
       '';
 
       # Gateway hostname (maitred :4002).
-      virtualHosts."llm.ethanwtodd.com".extraConfig = llmRoutes;
+      virtualHosts."llm.ethanwtodd.com".extraConfig = "import security-headers\n" + llmRoutes;
 
       # Pure honeypot: nothing legitimate uses this name, so every request is
       # a bot. No Anubis; straight into the tarpit.
       virtualHosts."admin.ethanwtodd.com".extraConfig = ''
+        import security-headers
         reverse_proxy http://127.0.0.1:9005
       '';
     };
