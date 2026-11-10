@@ -202,6 +202,7 @@ in
           user = "e-work";
           son-of-antonHome = "/home/e-work/.son-of-anton";
           workingDirectory = "/home/e-work";
+          protectedPaths = [ "/home/e-work/.ssh/deploy-sockets" ];
           environmentFiles = [ config.age.secrets.son-of-anton-work-env.path ];
           settings.gateway.single_user = true;
           settings.physics = {
@@ -217,6 +218,7 @@ in
           user = "e-play";
           son-of-antonHome = "/home/e-play/.son-of-anton";
           workingDirectory = "/home/e-play";
+          protectedPaths = [ "/home/e-play/.ssh/deploy-sockets" ];
           environmentFiles = [ config.age.secrets.son-of-anton-play-env.path ];
           # Standing memory rules, encrypted (secrets/son-of-anton-play-rules.age).
           memoryRulesFile = config.age.secrets.son-of-anton-play-rules.path;
@@ -579,6 +581,14 @@ in
   # system pkgs (useGlobalPkgs), so provide it here.
   nixpkgs.overlays = [
     (_: _: { lifer = inputs.lifer.packages.${pkgs.stdenv.hostPlatform.system}.default; })
+  ];
+
+  # The deploy masters' socket directories (home-manager shell deployHost) exist
+  # from early boot, so the agents' protectedPaths entries never find them
+  # missing and get skipped.
+  systemd.tmpfiles.rules = [
+    "d /home/e-work/.ssh/deploy-sockets 0700 e-work users -"
+    "d /home/e-play/.ssh/deploy-sockets 0700 e-play users -"
   ];
 
   time.timeZone = "America/Chicago";

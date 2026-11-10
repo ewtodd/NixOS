@@ -11,6 +11,28 @@ let
   isEOwner = if osConfig != null then osConfig.systemOptions.owner.e.enable else false;
   isLaptop = if osConfig != null then osConfig.systemOptions.deviceType.laptop.enable else false;
   isEWorkstation = osConfig != null && osConfig.networking.hostName == "e-workstation";
+
+  # Takes a host's LAN address; returns its Colmena alias's ssh settings. Only
+  # the YubiKey handles are offered, signed directly: the GNOME keyring agent
+  # loads them from ~/.ssh but refuses to sign with security keys, and ssh does
+  # not fall back to the file. The master socket's directory must stay in the
+  # son-of-anton units' protectedPaths (e-workstation): an open master is a
+  # root shell that needs no touch.
+  deployHost = address: {
+    Hostname = address;
+    Port = 2222;
+    User = "deploy";
+    ProxyJump = "bastion";
+    IdentityFile = [
+      "${config.home.homeDirectory}/.ssh/id_ed25519_sk_deploy1"
+      "${config.home.homeDirectory}/.ssh/id_ed25519_sk_deploy2"
+    ];
+    IdentitiesOnly = true;
+    IdentityAgent = "none";
+    ControlMaster = "auto";
+    ControlPath = "${config.home.homeDirectory}/.ssh/deploy-sockets/%h";
+    ControlPersist = "60s";
+  };
 in
 {
   programs.bash = {
@@ -37,6 +59,12 @@ in
   home.activation.createDir = lib.mkIf (isEOwner && isLaptop) (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p $HOME/remoteHome
+    ''
+  );
+
+  home.activation.deploySockets = lib.mkIf isEOwner (
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mkdir -p -m 700 $HOME/.ssh/deploy-sockets
     ''
   );
 
@@ -104,42 +132,12 @@ in
       # Colmena deploy targets: same inner hosts as the *-admin shells, as the key-only `deploy` user.
       # flake colmenaDeployments.*.targetHost points at these aliases -- closures push through the bastion,
       # working on- or off-LAN (split-horizon DNS resolves the bastion to its LAN address at home).
-      "deploy-mu" = {
-        Hostname = "10.0.0.2";
-        Port = 2222;
-        User = "deploy";
-        ProxyJump = "bastion";
-      };
-      "deploy-nu" = {
-        Hostname = "10.0.0.7";
-        Port = 2222;
-        User = "deploy";
-        ProxyJump = "bastion";
-      };
-      "deploy-anton" = {
-        Hostname = "10.0.0.3";
-        Port = 2222;
-        User = "deploy";
-        ProxyJump = "bastion";
-      };
-      "deploy-son-of-anton" = {
-        Hostname = "10.0.0.5";
-        Port = 2222;
-        User = "deploy";
-        ProxyJump = "bastion";
-      };
-      "deploy-fiona" = {
-        Hostname = "10.0.0.6";
-        Port = 2222;
-        User = "deploy";
-        ProxyJump = "bastion";
-      };
-      "deploy-tony" = {
-        Hostname = "10.0.0.8";
-        Port = 2222;
-        User = "deploy";
-        ProxyJump = "bastion";
-      };
+      "deploy-mu" = deployHost "10.0.0.2";
+      "deploy-nu" = deployHost "10.0.0.7";
+      "deploy-anton" = deployHost "10.0.0.3";
+      "deploy-son-of-anton" = deployHost "10.0.0.5";
+      "deploy-fiona" = deployHost "10.0.0.6";
+      "deploy-tony" = deployHost "10.0.0.8";
       "tony" = {
         Hostname = "10.0.0.8";
         Port = 2222;

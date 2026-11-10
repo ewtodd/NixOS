@@ -5,11 +5,11 @@
 }:
 let
   cfg = config.systemOptions.services.deploy;
+  # The two YubiKeys (one a spare); every login needs a touch. Not the personal
+  # keys: deploy is root-equivalent, and those sit unencrypted where agents run.
   deployerKeys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlbs+h9OqZMIAC6b3i4tUcXC4PidfBFEQNdwrLS8g9G ethan-desktop-ework"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOF2AcBcmt8acbIs5DwedIDZ0C02uKkMti5HJ1Mul/DH ethan-desktop-eplay"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPvp7uwfajl11rFuFbS9TaWGVQ1de5vaaKATv7z76nsi ethan-laptop-ework"
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
+    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJ0M0GXDN+hVWHaMg2DkFQtBg6u9MJ2PIuN+pK5DmQqJAAAABHNzaDo= deploy-yubikey-1"
+    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIGMM4VEeZY7h9GKmtfW79HAr1PWK78Y72JW1ID0BNlQ8AAAABHNzaDo= deploy-yubikey-2"
   ];
 
   activationRules = [
