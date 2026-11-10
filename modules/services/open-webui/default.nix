@@ -9,8 +9,9 @@
 let
   cfg = config.systemOptions.services.openWebUI;
   # Sources the agenix maitred-keys secret and re-exports the Open WebUI
-  # virtual key as OPENAI_API_KEYS (what its OpenAI connection seeds from) and
-  # RAG_OPENAI_API_KEY (embeddings) -- the key stays out of the nix store.
+  # virtual key as OPENAI_API_KEYS (what its OpenAI connection seeds from),
+  # RAG_OPENAI_API_KEY (embeddings) and RAG_EXTERNAL_RERANKER_API_KEY
+  # (reranking) -- the key stays out of the nix store.
   # Secret must be group-readable.
   openWebUIWrapped = pkgs.writeShellScriptBin "open-webui" ''
     if [ -r /run/agenix/maitred-keys ]; then
@@ -19,6 +20,7 @@ let
       set +a
       export OPENAI_API_KEYS="$MAITRED_KEY_OPENWEBUI"
       export RAG_OPENAI_API_KEY="$MAITRED_KEY_OPENWEBUI"
+      export RAG_EXTERNAL_RERANKER_API_KEY="$MAITRED_KEY_OPENWEBUI"
     fi
     exec ${lib.getExe pkgs.open-webui} "$@"
   '';
@@ -90,6 +92,12 @@ in
           # every start, not seeded into the DB.
           "RAG_EMBEDDING_QUERY_PREFIX=task: search result | query: "
           "RAG_EMBEDDING_CONTENT_PREFIX=title: none | text: "
+          # Reranking runs only inside hybrid search (BM25 + vectors). The URL is the full endpoint: Open WebUI posts
+          # to it as given. Same first-run seeding caveat: on an initialized install, set these in Settings > Documents.
+          "ENABLE_RAG_HYBRID_SEARCH=true"
+          "RAG_RERANKING_ENGINE=external"
+          "RAG_RERANKING_MODEL=rerank/qwen3-reranker-0.6b"
+          "RAG_EXTERNAL_RERANKER_URL=http://127.0.0.1:4002/v1/rerank"
           # Built-in web search backed by the SearXNG instance on this host
           # (modules/services/searxng binds 127.0.0.1:8888). The provider appends
           # q= and format=json itself, so only the bare endpoint is needed.
