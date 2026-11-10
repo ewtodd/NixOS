@@ -102,8 +102,8 @@ let
         timeout_secs = 1800;
         slots = 1;
       };
-      # fiona: llama.cpp serves the title model; eklow serves Sage-A1.5 (Qwen3.6) and the embeddings (another eklow
-      # instance, an llm-mode of its own, would get its own port so that the one up is the one answering).
+      # fiona: llama.cpp serves the title model and the reranker; eklow serves Sage-A1.5 (Qwen3.6) and the embeddings
+      # (another eklow instance, an llm-mode of its own, would get its own port so that the one up is the one answering).
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
@@ -115,6 +115,10 @@ let
       };
       embed = {
         base_url = "http://${fiona}:8082/v1";
+        timeout_secs = 120;
+      };
+      rerank = {
+        base_url = "http://${fiona}:8083/v1";
         timeout_secs = 120;
       };
       deepseek = {
@@ -316,6 +320,15 @@ let
         display_name = "EmbeddingGemma 2";
         context_length = 8192;
         # Embeddings only; every consumer names it outright.
+        hidden = true;
+      }
+      {
+        # /v1/rerank only (Cohere/Jina shape); context_length is the longest query-document pair.
+        id = "rerank/qwen3-reranker-0.6b";
+        upstream = "rerank";
+        upstream_model = "qwen3-reranker-0.6b";
+        display_name = "Qwen3-Reranker-0.6B";
+        context_length = 4096;
         hidden = true;
       }
       {
