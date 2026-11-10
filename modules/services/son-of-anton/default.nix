@@ -75,7 +75,9 @@ in
       extraPackages = cfg.extraPackages ++ inst.extraPackages ++ nvimLspPackages;
     }) cfg.instances;
     environment.systemPackages = [
-      (inputs.son-of-anton.packages.${pkgs.system}.default.override { extraPackages = nvimLspPackages; })
+      (inputs.son-of-anton.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+        extraPackages = nvimLspPackages;
+      })
     ];
 
     systemd.services = lib.mapAttrs' (

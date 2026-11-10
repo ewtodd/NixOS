@@ -52,7 +52,7 @@ let
     markets = "soa-markets";
   };
 
-  soaPhysicsPython = inputs.son-of-anton.packages.${pkgs.system}.physics-runtime;
+  soaPhysicsPython = inputs.son-of-anton.packages.${pkgs.stdenv.hostPlatform.system}.physics-runtime;
 
   # Mirrors niri's eOutputs (home-manager/desktopEnvironment/niri/settings/desktop.nix),
   # shifted right by 1080 so the leftmost x is 0. The greeter matches outputs by

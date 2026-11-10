@@ -12,10 +12,10 @@ let
   # Upstream's package as is: the toolchain gufo qualifies (GCC 15.3, ROCm
   # 7.2.3) with its patched ROCr, which keeps queue memory resident during
   # host memory compaction on Strix Halo.
-  gufo = inputs.gufo.packages.${pkgs.system}.default;
+  gufo = inputs.gufo.packages.${pkgs.stdenv.hostPlatform.system}.default;
   # The same gufo rebuilt with the DeepSeek-V4.1 extension compiled in
   # (its flake overrides `extensions` on the `gufo` input it follows).
-  gufoDeepseek = inputs.ds41-gufo-extension.packages.${pkgs.system}.default;
+  gufoDeepseek = inputs.ds41-gufo-extension.packages.${pkgs.stdenv.hostPlatform.system}.default;
   deepseek = cfg.deepseek;
 
   nativeContext = 262144;

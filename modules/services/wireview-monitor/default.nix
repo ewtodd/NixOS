@@ -19,7 +19,9 @@
       serviceConfig = {
         Type = "simple";
         ExecStart =
-          "${inputs.wireview-linux.packages.${pkgs.system}."wireview-monitor"}/bin/wireview-monitor --listen "
+          "${
+            inputs.wireview-linux.packages.${pkgs.stdenv.hostPlatform.system}."wireview-monitor"
+          }/bin/wireview-monitor --listen "
           + config.systemOptions.services.wireview-monitor.listenAddress
           + ":${toString config.systemOptions.services.wireview-monitor.port}";
         Restart = "always";
