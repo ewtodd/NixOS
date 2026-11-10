@@ -39,6 +39,14 @@ README.md covers layout, hosts, `systemOptions`, and Colmena deployment.
   subject line; don't copy them.
 - Agent commits: `--author="son-of-anton-bot <307402699+son-of-anton-bot@users.noreply.github.com>"`.
   Don't change the repo's git config. Do not add co-authored trailers.
+- End an agent commit's body with a `Model:` trailer naming the model that
+  wrote it: son-of-anton instances use `$SOA_MODEL` (e.g.
+  `Model: radiance/qwen3.8-27b`); other agents give their own model ID
+  (e.g. `Model: claude-opus-5-5`).
+- The pre-commit hook (`.githooks/pre-commit`) runs nixfmt on each staged
+  `.nix` file and re-adds the whole file, so a hunk left unstaged with
+  `git add -p` is committed anyway. Split a file across commits by putting
+  only the first commit's hunks in the working tree.
 <!---->
 ## Son of Anton instances (e-workstation)
 - Settings live in `hosts/e-workstation/configuration.nix` under
