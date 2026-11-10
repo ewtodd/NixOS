@@ -145,6 +145,12 @@ in
     services.nodeExporter.enable = true;
     services.wireview-monitor.enable = true;
     services.wireview-safety.enable = true;
+    services.flakeBump = {
+      enable = true;
+      user = "e-play";
+      calendar = "Sat *-*-* 01:00:00";
+      reviewHome = "/home/e-play/.son-of-anton";
+    };
     security.harden.enable = true;
     owner.e.enable = true;
     services.backup.client = {

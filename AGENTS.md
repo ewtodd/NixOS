@@ -79,3 +79,10 @@ README.md covers layout, hosts, `systemOptions`, and Colmena deployment.
   you find: `/srv/<instance>` and other users' copies belong to other instances.
 - Activation restarts changed `son-of-anton-<instance>` units; an open CLI
   keeps the old code until relaunched (`son-of-anton -c` resumes the session).
+- Servers need a YubiKey touch per host to deploy (`deploy` accepts only the
+  two hardware keys), so a `colmena apply` cannot run unattended.
+- `flake-bump.service` (e-workstation, Saturdays 01:00, as e-play) updates every
+  input on a `flake-bump/<date>` branch in `/var/lib/flake-bump/worktree`,
+  builds every host, and leaves a report that the son-of-anton play instance's
+  review job sends on. Each run deletes the previous `flake-bump/*` branches, so
+  don't build on them; they merge into main with `--ff-only`.

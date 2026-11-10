@@ -19,6 +19,7 @@ in
     ./deploy
     ./dyndns
     ./eklow
+    ./flake-bump
     ./grafana
     ./http-tarpit
     ./jellyfin
