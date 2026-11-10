@@ -80,7 +80,9 @@ README.md covers layout, hosts, `systemOptions`, and Colmena deployment.
 - Activation restarts changed `son-of-anton-<instance>` units; an open CLI
   keeps the old code until relaunched (`son-of-anton -c` resumes the session).
 - Servers need a YubiKey touch per host to deploy (`deploy` accepts only the
-  two hardware keys), so a `colmena apply` cannot run unattended.
+  two hardware keys), so a `colmena apply` cannot run unattended. A deploy run
+  in a session reached with `ssh e-workstation` from e-laptop signs through
+  the forwarded agent, so the touch is on the laptop's key.
 - `flake-bump.service` (e-workstation, Saturdays 01:00, as e-play) updates every
   input on a `flake-bump/<date>` branch in `/var/lib/flake-bump/worktree`,
   builds every host, and leaves a report that the son-of-anton play instance's

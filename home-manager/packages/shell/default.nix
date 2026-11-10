@@ -13,11 +13,11 @@ let
   isEWorkstation = osConfig != null && osConfig.networking.hostName == "e-workstation";
 
   # Takes a host's LAN address; returns its Colmena alias's ssh settings. Only
-  # the YubiKey handles are offered, signed directly: the GNOME keyring agent
-  # loads them from ~/.ssh but refuses to sign with security keys, and ssh does
-  # not fall back to the file. The master socket's directory must stay in the
-  # son-of-anton units' protectedPaths (e-workstation): an open master is a
-  # root shell that needs no touch.
+  # the YubiKey handles are offered, and ssh signs through whichever agent
+  # SSH_AUTH_SOCK names, so in a session reached with ssh -A from e-laptop the
+  # touch happens on the laptop's YubiKey. The master socket's directory must
+  # stay in the son-of-anton units' protectedPaths (e-workstation): an open
+  # master is a root shell that needs no touch.
   deployHost = address: {
     Hostname = address;
     Port = 2222;
@@ -28,7 +28,6 @@ let
       "${config.home.homeDirectory}/.ssh/id_ed25519_sk_deploy2"
     ];
     IdentitiesOnly = true;
-    IdentityAgent = "none";
     ControlMaster = "auto";
     ControlPath = "${config.home.homeDirectory}/.ssh/deploy-sockets/%h";
     ControlPersist = "60s";
@@ -68,6 +67,32 @@ in
     ''
   );
 
+  # A forwarded agent is asked for keys it already holds, so the YubiKey
+  # handles are added at login instead of on first use (AddKeysToAgent would
+  # add them only after a local signature, which needs the key plugged in
+  # here). Adding a handle needs no touch; only signing does.
+  systemd.user.services.ssh-add-deploy-keys = lib.mkIf isEOwner {
+    Unit = {
+      Description = "Load the YubiKey deploy-key handles into ssh-agent";
+      Wants = [ "ssh-agent.service" ];
+      After = [ "ssh-agent.service" ];
+    };
+    Service = {
+      Type = "oneshot";
+      Environment = "SSH_AUTH_SOCK=%t/ssh-agent";
+      ExecStart = toString (
+        pkgs.writeShellScript "ssh-add-deploy-keys" ''
+          for k in "$HOME"/.ssh/id_ed25519_sk_deploy1 "$HOME"/.ssh/id_ed25519_sk_deploy2; do
+            if [ -e "$k" ]; then
+              ${pkgs.openssh}/bin/ssh-add "$k" </dev/null || true
+            fi
+          done
+        ''
+      );
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   home.activation.removeDir = lib.mkIf isEOwner (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       rm -rf $HOME/Thunderbird
@@ -93,10 +118,14 @@ in
         ControlPersist = "10m";
       };
 
+      # The agent goes along so deploys started there can sign with this
+      # machine's YubiKey. It holds only the deploy-key handles (loaded by
+      # ssh-add-deploy-keys), each use of which needs a touch here.
       "e-workstation" = {
         Hostname = "10.0.0.4";
         User = config.home.username;
         ProxyCommand = "ssh bastion wake-and-relay-e-workstation";
+        ForwardAgent = true;
       };
 
       "mu" = {

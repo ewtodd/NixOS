@@ -1546,5 +1546,19 @@ with lib;
         };
       }
     )
+
+    # OpenSSH's agent instead of GNOME keyring's (gcr), which refuses to sign
+    # with security keys: the deploy keys are YubiKeys, and a deploy run over
+    # ssh -A from e-laptop signs through the laptop's agent and its YubiKey.
+    # The keyring itself stays, for passwords.
+    (mkIf config.systemOptions.owner.e.enable {
+      services.gnome.gcr-ssh-agent.enable = false;
+      programs.ssh.startAgent = true;
+      # gcr put its socket in the user manager's environment, which is where
+      # the niri session and its terminals get SSH_AUTH_SOCK; the OpenSSH unit
+      # only sets it for login shells.
+      systemd.user.services.ssh-agent.serviceConfig.ExecStartPost =
+        "${config.systemd.package}/bin/systemctl --user set-environment SSH_AUTH_SOCK=%t/ssh-agent";
+    })
   ];
 }
