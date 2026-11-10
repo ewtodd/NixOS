@@ -28,7 +28,7 @@
           online-mode = true;
           level-seed = "712262452098460";
           white-list = true;
-          enforce-whitelist = false;
+          enforce-whitelist = true;
           difficulty = "normal";
           view-distance = 20;
         };
