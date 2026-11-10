@@ -49,7 +49,9 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose [ cfg.port ];
+    systemOptions.firewall.allowFrom = lib.mkIf cfg.lanExpose {
+      ${toString cfg.port} = config.systemOptions.llmServerClients;
+    };
 
     assertions = [
       {

@@ -108,6 +108,6 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ cfg.port ];
+    systemOptions.firewall.allowFrom.${toString cfg.port} = [ "10.0.0.7" ];
   };
 }

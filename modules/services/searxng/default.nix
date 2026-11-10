@@ -13,11 +13,12 @@ in
     listenAddress = lib.mkOption {
       type = lib.types.str;
       default = "127.0.0.1";
-      description = "Bind address. Loopback by default; set 0.0.0.0 + openFirewall when other hosts (e.g. the son-of-anton gateway) search through it.";
+      description = "Bind address. Loopback by default; set 0.0.0.0 + allowedClients when other hosts (e.g. the son-of-anton gateway) search through it.";
     };
-    openFirewall = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
+    allowedClients = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "LAN addresses allowed through the firewall to port 8888.";
     };
   };
 
@@ -107,6 +108,8 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ 8888 ];
+    systemOptions.firewall.allowFrom = lib.mkIf (cfg.allowedClients != [ ]) {
+      "8888" = cfg.allowedClients;
+    };
   };
 }

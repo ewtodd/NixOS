@@ -89,9 +89,9 @@
       '';
     };
 
-    networking.firewall.allowedTCPPorts = [
-      80
-      9980
-    ];
+    systemOptions.firewall.allowFrom = {
+      "80" = [ "10.0.0.7" ];
+      "9980" = [ "10.0.0.7" ];
+    };
   };
 }

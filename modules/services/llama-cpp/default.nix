@@ -281,8 +281,10 @@ in
       "d ${cfg.cacheDir} 2770 root llama-cache - -"
     ];
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose (
-      map (name: cfg.models.${name}.port) modelNames ++ lib.optional (embedding != null) embedding.port
+    systemOptions.firewall.allowFrom = lib.mkIf cfg.lanExpose (
+      lib.genAttrs (map toString (
+        map (name: cfg.models.${name}.port) modelNames ++ lib.optional (embedding != null) embedding.port
+      )) (_: config.systemOptions.llmServerClients)
     );
 
     systemd.services = lib.mkMerge [

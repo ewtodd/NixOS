@@ -59,8 +59,10 @@ in
       }
     ];
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose (
-      lib.mapAttrsToList (_: inst: inst.port) cfg.instances
+    systemOptions.firewall.allowFrom = lib.mkIf cfg.lanExpose (
+      lib.genAttrs (lib.mapAttrsToList (_: inst: toString inst.port) cfg.instances) (
+        _: config.systemOptions.llmServerClients
+      )
     );
 
     # Development runs need the GPUs: let the listed users stop and start the instances.

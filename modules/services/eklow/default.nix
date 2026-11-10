@@ -23,7 +23,6 @@ in
     services.eklow = {
       enable = true;
       host = if cfg.lanExpose then "0.0.0.0" else "127.0.0.1";
-      openFirewall = cfg.lanExpose;
       # eklow built on its own nixpkgs (intel-llvm 7.1.1), the toolchain its checks ran on: built with the fleet's
       # (7.2.0, 2026-11-02) the server finds 0.8 GiB less card memory free after loading, keeps 39 experts a layer
       # on the card instead of 51 and runs 6-9% slower.
@@ -83,5 +82,16 @@ in
         prefillGroupBusy = 4096;
       };
     };
+
+    systemOptions.firewall.allowFrom =
+      let
+        eklow = config.services.eklow;
+      in
+      lib.mkIf cfg.lanExpose (
+        lib.genAttrs (map toString (
+          lib.mapAttrsToList (_: inst: inst.port) eklow.instances
+          ++ lib.optional (eklow.embedModel != null) eklow.embedPort
+        )) (_: config.systemOptions.llmServerClients)
+      );
   };
 }

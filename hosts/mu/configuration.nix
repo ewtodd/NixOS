@@ -34,7 +34,7 @@ in
       enable = true;
       environmentFile = config.age.secrets.signal-cli-env.path;
       socketAddr = "0.0.0.0:7583";
-      openFirewall = true;
+      allowedClients = [ "10.0.0.4" ];
     };
 
     # The AI front, moved here from oracle (systemOptions.aiFrontAddress points the clients and nu's
@@ -50,7 +50,7 @@ in
     services.searxng = {
       enable = true;
       listenAddress = "0.0.0.0";
-      openFirewall = true;
+      allowedClients = [ "10.0.0.4" ];
     };
     # Page extraction for son-of-anton's web_extract, which the gateway on
     # e-workstation calls; DNS goes to nu (both of its resolver addresses).

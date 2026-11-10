@@ -44,6 +44,18 @@ with lib;
           decommissioned.
         '';
       };
+      llmServerClients = mkOption {
+        type = types.listOf types.str;
+        default = [
+          config.systemOptions.aiFrontAddress
+          "10.0.0.4"
+        ];
+        description = ''
+          Addresses the firewall lets reach a lanExpose'd LLM server: maitred's host, and
+          e-workstation, where llmtop scrapes each engine's /metrics directly (the engine
+          list comes from maitred, the readings do not).
+        '';
+      };
 
       apps.zoom.enable = mkEnableOption "Zoom";
       apps.remarkable.enable = mkEnableOption "Remarkable from wrapWine flake";
@@ -148,7 +160,7 @@ with lib;
 
       services.llamaCpp.lanExpose = mkEnableOption ''
         expose the llama.cpp servers on the LAN (bind 0.0.0.0 + open the
-        firewall). Off (the default) binds 127.0.0.1 only — correct for hosts
+        firewall to llmServerClients). Off (the default) binds 127.0.0.1 only — correct for hosts
         where the sole consumer is local (e.g. maitred on the same box). Enable
         it on hosts another machine must reach directly.'';
       services.llamaCpp.backend = mkOption {
@@ -578,7 +590,7 @@ with lib;
       };
       services.gufoStrix = {
         enable = mkEnableOption "gufo Strix Halo inference server on the gfx1151 iGPU";
-        lanExpose = mkEnableOption "expose the gufo-strix server on the LAN (bind 0.0.0.0 + open firewall)";
+        lanExpose = mkEnableOption "expose the gufo-strix server on the LAN (bind 0.0.0.0 + open the firewall to llmServerClients)";
         model = mkOption {
           type = types.str;
           example = "/scratch/models/gufo/qwen3.8-flash-next/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf";
@@ -796,7 +808,7 @@ with lib;
       };
       services.radiance = {
         enable = mkEnableOption "Radiance inference server (C++/HIP, built from source by radiance-nix) on the R9700s";
-        lanExpose = mkEnableOption "expose Radiance on the LAN (bind 0.0.0.0 + open firewall)";
+        lanExpose = mkEnableOption "expose Radiance on the LAN (bind 0.0.0.0 + open the firewall to llmServerClients)";
         model = mkOption {
           type = types.str;
           example = "/scratch/models/rad/qwen3.8-27b-fp8/qwen3.8-27b-fp8.rad";
@@ -936,7 +948,7 @@ with lib;
           iGPU, one unholy-<name>.service per instance. Each needs all three GPUs, so the instances conflict
           with each other and cannot run alongside services.radiance or services.gufoStrix unless
           services.llmMode switches between them'';
-        lanExpose = mkEnableOption "expose the unholy instances on the LAN (bind 0.0.0.0 + open their ports)";
+        lanExpose = mkEnableOption "expose the unholy instances on the LAN (bind 0.0.0.0 + open their ports to llmServerClients)";
         devices = mkOption {
           type = types.str;
           default = "0,1,2";
@@ -1071,7 +1083,7 @@ with lib;
       };
       services.eklow = {
         enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Sage-A1.5 (Qwen3.6; each eklow instance a services.llmMode mode) and EmbeddingGemma 2 on an Intel Arc A770M";
-        lanExpose = mkEnableOption "eklow on the LAN (0.0.0.0, ports open) for maitred";
+        lanExpose = mkEnableOption "eklow on the LAN (0.0.0.0, ports open to llmServerClients) for maitred and llmtop";
       };
       services.maitred = {
         enable = mkEnableOption "maitred (github.com/ewtodd/maitred): the /v1 front for the LLM servers and the /mcp gateway";
@@ -1270,10 +1282,10 @@ with lib;
         default = "/var/lib/signal-cli";
         description = "State directory: keys, registration data.";
       };
-      services.signal-cli.openFirewall = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Open the JSON-RPC HTTP port in the firewall (needed when the gateway runs on a different host).";
+      services.signal-cli.allowedClients = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = "LAN addresses allowed through the firewall to the JSON-RPC HTTP port (the gateway's host, when it runs elsewhere).";
       };
 
       services.deploy.enable = mkEnableOption ''

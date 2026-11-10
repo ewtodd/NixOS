@@ -66,6 +66,8 @@ in
       });
     };
 
-    networking.firewall.allowedTCPPorts = lib.optional cfg.openFirewall (lib.toInt port);
+    systemOptions.firewall.allowFrom = lib.mkIf (cfg.allowedClients != [ ]) {
+      ${port} = cfg.allowedClients;
+    };
   };
 }

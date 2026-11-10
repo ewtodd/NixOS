@@ -142,8 +142,10 @@ in
       }
     ];
 
-    networking.firewall.allowedTCPPorts = lib.mkIf cfg.lanExpose (
-      [ cfg.port ] ++ lib.optional deepseek.enable deepseek.port
+    systemOptions.firewall.allowFrom = lib.mkIf cfg.lanExpose (
+      lib.genAttrs (map toString ([ cfg.port ] ++ lib.optional deepseek.enable deepseek.port)) (
+        _: config.systemOptions.llmServerClients
+      )
     );
 
     # serve auto-creates a missing cache directory, but InitializeDirectory

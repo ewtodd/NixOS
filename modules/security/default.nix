@@ -5,6 +5,8 @@
 }:
 with lib;
 {
+  imports = [ ./allow-from.nix ];
+
   config = mkIf (config.systemOptions.security.harden.enable) {
     security = {
       sudo.enable = mkForce false;
@@ -84,10 +86,7 @@ with lib;
         wifi.macAddress = "stable-ssid";
       };
 
-      firewall = {
-        enable = true;
-        allowedTCPPorts = [ 2222 ];
-      };
+      firewall.enable = true;
     };
 
     boot.kernelParams = [
