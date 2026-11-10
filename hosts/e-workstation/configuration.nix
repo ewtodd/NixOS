@@ -360,6 +360,10 @@ in
           rerank_model = "rerank/qwen3-reranker-0.6b";
           rerank_candidates = 8;
           rerank_timeout_seconds = 2;
+          # The reranker's score is its "yes" probability: relevant facts reached by an indirect question scored as
+          # low as 0.015, unrelated ones 0.002 or under (2026-11-10). son-of-anton 71b51d03's default of 0.5 dropped
+          # 9 of 17 relevant facts; b6b5ad65 makes 0.01 the default.
+          rerank_min_score = 0.01;
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
