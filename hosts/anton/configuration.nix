@@ -38,6 +38,8 @@ in
       enable = true;
       clients."e-workstation".publicKey =
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOIu7XnByPHkBJU+kEQ9EHwbgdqV7vlbHhdNQzaWFLc+ borg@e-desktop";
+      clients."mu".publicKey =
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIue6UfZwPa7BtrClGRmACDaOcm+0tncZPF2YFAtWhmW borg@mu";
     };
   };
 
