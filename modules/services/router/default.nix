@@ -57,7 +57,16 @@ in
 
     networking.firewall.allowedTCPPorts = [ 2222 ];
 
-    networking.firewall.trustedInterfaces = [ lan ];
+    # Global openings (22, 80, 443, 2222) cover the rest; UDP 443 keeps HTTP/3
+    # working for LAN clients, which the WAN side has never been offered.
+    networking.firewall.interfaces.${lan} = {
+      allowedTCPPorts = [ 53 ];
+      allowedUDPPorts = [
+        53
+        67
+        443
+      ];
+    };
 
     services.dnsmasq = {
       enable = true;
