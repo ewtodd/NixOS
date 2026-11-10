@@ -350,9 +350,16 @@ in
           model = "embed/embeddinggemma-2";
           api_key_env = "MAITRED_KEY_SOA";
           top_k = 5;
-          # No per-refresh cap: eklow embeds ~20k tok/s, so a full rebuild (a model or prompt change) takes minutes
-          # instead of ~40 hours at the default 200 chunks per 15-minute refresh.
-          max_chunks_per_refresh = 0;
+          # The cosine floor for the reranker's candidates, not lowered for it: EmbeddingGemma 2 scored relevant
+          # facts 0.67-0.83 and unrelated ones up to 0.72 (2026-11-10), so 0.65 kept every relevant fact with ~1
+          # unrelated one a query, where 0.6 let in ~5 and slowed every turn's reranking to match. Unrelated
+          # messages (best match <= 0.6) skip the reranker.
+          min_score = 0.65;
+          # fiona's reranker on the Iris Xe takes ~140 ms a candidate for a short message (2026-11-10), and recall
+          # runs before every turn: at most 8 candidates, and cosine order after 2 s.
+          rerank_model = "rerank/qwen3-reranker-0.6b";
+          rerank_candidates = 8;
+          rerank_timeout_seconds = 2;
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
