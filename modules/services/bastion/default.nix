@@ -12,6 +12,13 @@ let
   innerSshPort = 2222;
   initrdSshPort = 2223;
 
+  # Public half of e-workstation's /etc/secrets/initrd/ssh_host_ed25519_key
+  # (systemOptions.services.wakeable.initrdHostKeyPath). Regenerating that key
+  # means replacing this line, or the unlock refuses to send the passphrase.
+  initrdKnownHosts = pkgs.writeText "e-workstation-initrd-known-hosts" ''
+    e-workstation-initrd ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEUVx2UU/jPxlelg7k94CVl6Cq7VJjB3RW+pJpZtm3CX
+  '';
+
   # Wake e-workstation and unlock it, with no relay attached. Both of its LUKS
   # volumes take a passphrase that exists only here, so this host is the only
   # thing on the network that can bring that machine up at all.
@@ -48,8 +55,10 @@ let
         if nc -z -w 1 "$EIP" "$INITRD_PORT" 2>/dev/null; then
           echo "initrd ssh up, sending LUKS passphrase..." >&2
           ssh -i "$INITRD_KEY" \
-              -o StrictHostKeyChecking=no \
-              -o UserKnownHostsFile=/dev/null \
+              -o StrictHostKeyChecking=yes \
+              -o HostKeyAlias=e-workstation-initrd \
+              -o UserKnownHostsFile=${initrdKnownHosts} \
+              -o GlobalKnownHostsFile=/dev/null \
               -o LogLevel=ERROR \
               -p "$INITRD_PORT" \
               "root@$EIP" \
