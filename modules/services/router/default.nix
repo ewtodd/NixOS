@@ -13,6 +13,18 @@ let
   wifi = "${lan}.20";
   wifiAddress = "10.0.20.1";
   adguardDnsPort = 5353;
+  forwardPorts = [
+    {
+      sourcePort = 2222;
+      proto = "tcp";
+      destination = "10.0.0.2:2222";
+    }
+    {
+      sourcePort = 25565;
+      proto = "tcp";
+      destination = "10.0.0.2:25565";
+    }
+  ];
 in
 {
   config = lib.mkIf config.systemOptions.services.router.enable {
@@ -63,18 +75,7 @@ in
         lan
         wifi
       ];
-      forwardPorts = [
-        {
-          sourcePort = 2222;
-          proto = "tcp";
-          destination = "10.0.0.2:2222";
-        }
-        {
-          sourcePort = 25565;
-          proto = "tcp";
-          destination = "10.0.0.2:25565";
-        }
-      ];
+      inherit forwardPorts;
     };
 
     networking.firewall.allowedTCPPorts = [ 2222 ];
@@ -92,12 +93,21 @@ in
 
     # The iptables firewall filters only what is addressed to nu; forwarded
     # traffic passes by default, so nu would route Wi-Fi straight onto the LAN.
-    # Wi-Fi may answer connections the LAN opened and reach the Internet, and
-    # nothing private. The jump is deleted before it is inserted so a firewall
-    # reload does not stack copies.
+    # Wi-Fi may answer connections the LAN opened, reach the Internet, and reach
+    # what the port-forwards already expose to the Internet (the bastion, so
+    # e-laptop on Wi-Fi works as it does away from home): those names resolve
+    # to their LAN address for every client. Nothing else private. The jump is
+    # deleted before it is inserted so a firewall reload does not stack copies.
     networking.firewall.extraCommands = ''
       iptables -w -N nixos-wifi-fwd 2>/dev/null || iptables -w -F nixos-wifi-fwd
       iptables -w -A nixos-wifi-fwd -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN
+      ${lib.concatMapStrings (
+        fp:
+        let
+          to = lib.splitString ":" fp.destination;
+        in
+        "iptables -w -A nixos-wifi-fwd -p ${fp.proto} -d ${lib.head to} --dport ${lib.last to} -j RETURN\n"
+      ) forwardPorts}
       iptables -w -A nixos-wifi-fwd -d 10.0.0.0/8 -j DROP
       iptables -w -A nixos-wifi-fwd -d 172.16.0.0/12 -j DROP
       iptables -w -A nixos-wifi-fwd -d 192.168.0.0/16 -j DROP
