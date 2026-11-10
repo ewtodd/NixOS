@@ -37,6 +37,7 @@ in
           admin_user = "ewtodd";
           admin_password = "$__file{${config.age.secrets.grafana-admin-password.path}}";
           secret_key = "$__file{${config.age.secrets.grafana-secret-key.path}}";
+          cookie_secure = true;
         };
 
         "auth.anonymous".enabled = false;
