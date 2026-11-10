@@ -40,7 +40,8 @@ in
       server-e-workstation
       mu
     ];
-  "borg-passphrase.age".publicKeys = personal ++ [ server-e-workstation ];
+  "borg-passphrase-e-workstation.age".publicKeys = personal ++ [ server-e-workstation ];
+  "borg-passphrase-mu.age".publicKeys = personal ++ [ mu ];
   "son-of-anton-env.age".publicKeys = personal ++ [
     server-e-workstation
   ];

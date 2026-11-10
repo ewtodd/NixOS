@@ -26,8 +26,9 @@
     })
     (lib.mkIf config.systemOptions.services.backup.client.enable {
       # Borg passphrase; client-side encryption, so the server stores ciphertext.
+      # One per host, so a compromised client cannot read another's repository.
       borg-passphrase = {
-        file = ../../secrets/borg-passphrase.age;
+        file = ../../secrets + "/borg-passphrase-${config.networking.hostName}.age";
         mode = "0400";
       };
     })

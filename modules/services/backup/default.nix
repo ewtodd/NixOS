@@ -141,8 +141,22 @@ in
         persistentTimer = true;
       };
 
+      # The key the repository server must list (server.clients.<name>.publicKey);
+      # made once, on the host, so the private half never leaves it.
+      systemd.services.borg-ssh-key = {
+        description = "Create the borg client SSH key";
+        wantedBy = [ "multi-user.target" ];
+        unitConfig.ConditionPathExists = "!${cfg.client.sshKey}";
+        serviceConfig.Type = "oneshot";
+        script = ''
+          ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -N "" -C "borg@${config.networking.hostName}" -f ${lib.escapeShellArg cfg.client.sshKey}
+        '';
+      };
+
       # Fail loudly rather than archive an empty mountpoint.
       systemd.services."borgbackup-job-system" = {
+        wants = [ "borg-ssh-key.service" ];
+        after = [ "borg-ssh-key.service" ];
         unitConfig.RequiresMountsFor = cfg.client.requiresMounts;
         serviceConfig.ExecStartPre = map (
           m: "${pkgs.util-linux}/bin/mountpoint -q ${lib.escapeShellArg m}"

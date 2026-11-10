@@ -64,6 +64,31 @@ in
     };
     services.openWebUI.enable = true;
     security.harden.enable = true;
+    services.backup.client = {
+      enable = true;
+      repo = "ssh://borg@10.0.0.3:2222/tank/backups/mu";
+      passphraseFile = config.age.secrets.borg-passphrase.path;
+      # /var/lib/postgresql is copied as postgresqlBackup's dump instead: the
+      # live files of a running database do not restore.
+      paths = [
+        "/var/lib"
+        "/var/backup"
+        "/srv/minecraft"
+      ];
+      exclude = [
+        "/var/lib/postgresql"
+        "/var/lib/redis-nextcloud"
+        "/var/lib/systemd/coredump"
+        "/var/lib/private/web-extract"
+      ];
+    };
+  };
+
+  # Dumped just before the 03:00 borg run, so the dump and Nextcloud's files
+  # are from nearly the same moment.
+  services.postgresqlBackup = {
+    enable = true;
+    startAt = "*-*-* 02:45:00";
   };
 
   users.users.mu = {
