@@ -45,8 +45,10 @@ in
         }
         FAILED=0
         for HOST in ${lib.concatStringsSep " " subdomains}; do
-          if ! RESP=$(${pkgs.curl}/bin/curl -fsS \
-            "https://dynamicdns.park-your-domain.com/update?host=$HOST&domain=${domain}&password=$PW"); then
+          # The URL carries the password, so it goes to curl on stdin (printf is a
+          # builtin) rather than in argv, where /proc/<pid>/cmdline would show it.
+          if ! RESP=$(printf 'url = "https://dynamicdns.park-your-domain.com/update?host=%s&domain=${domain}&password=%s"\n' \
+            "$HOST" "$PW" | ${pkgs.curl}/bin/curl -fsS --config -); then
             echo "Namecheap DDNS request failed (network or HTTP) for $HOST.${domain}" >&2
             FAILED=1
             continue
