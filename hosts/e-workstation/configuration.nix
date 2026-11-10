@@ -145,7 +145,6 @@ in
     services.nodeExporter.enable = true;
     services.wireview-monitor.enable = true;
     services.wireview-safety.enable = true;
-    apps.docker.enable = true;
     security.harden.enable = true;
     owner.e.enable = true;
     services.backup.client = {
@@ -527,7 +526,6 @@ in
       "lp"
       "son-of-anton"
       "soa-viewers"
-      "docker"
       "i2c"
     ];
     openssh.authorizedKeys.keys = personalKeys;
@@ -545,7 +543,6 @@ in
       "video"
       "lp"
       "son-of-anton"
-      "docker"
       "i2c"
     ];
     openssh.authorizedKeys.keys = personalKeys;
