@@ -55,13 +55,9 @@ in
         enable = true;
         ports = [ 2222 ];
         settings = {
-          PasswordAuthentication = true;
-          KbdInteractiveAuthentication = true;
-          # Default behavior (no AuthenticationMethods set) is "any one method
-          # works" — both publickey and password are accepted. ProxyJump from
-          # outside needs publickey to succeed non-interactively; password
-          # stays as a fallback for recovery. The bastion module overrides
-          # this with mkForce "publickey" on mu.
+          PasswordAuthentication = false;
+          KbdInteractiveAuthentication = false;
+          PermitRootLogin = "no";
           AllowUsers = [
             "e-work"
             "e-play"
