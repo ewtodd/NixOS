@@ -8,6 +8,10 @@ let
   lan = "lan0";
   lanAddress = "10.0.0.7";
   lanPrefix = 24;
+  # Wi-Fi: the AP (OpenWrt) tags every SSID's traffic with VLAN 20 on its
+  # uplink, so Wi-Fi clients reach nu only through this interface.
+  wifi = "${lan}.20";
+  wifiAddress = "10.0.20.1";
   adguardDnsPort = 5353;
 in
 {
@@ -37,10 +41,28 @@ in
       ];
     };
 
+    networking.vlans.${wifi} = {
+      id = 20;
+      interface = lan;
+    };
+
+    networking.interfaces.${wifi} = {
+      useDHCP = false;
+      ipv4.addresses = [
+        {
+          address = wifiAddress;
+          prefixLength = 24;
+        }
+      ];
+    };
+
     networking.nat = {
       enable = true;
       externalInterface = wan;
-      internalInterfaces = [ lan ];
+      internalInterfaces = [
+        lan
+        wifi
+      ];
       forwardPorts = [
         {
           sourcePort = 2222;
@@ -59,20 +81,44 @@ in
 
     # Global openings (22, 80, 443, 2222) cover the rest; UDP 443 keeps HTTP/3
     # working for LAN clients, which the WAN side has never been offered.
-    networking.firewall.interfaces.${lan} = {
+    networking.firewall.interfaces = lib.genAttrs [ lan wifi ] (_: {
       allowedTCPPorts = [ 53 ];
       allowedUDPPorts = [
         53
         67
         443
       ];
-    };
+    });
+
+    # The iptables firewall filters only what is addressed to nu; forwarded
+    # traffic passes by default, so nu would route Wi-Fi straight onto the LAN.
+    # Wi-Fi may answer connections the LAN opened and reach the Internet, and
+    # nothing private. The jump is deleted before it is inserted so a firewall
+    # reload does not stack copies.
+    networking.firewall.extraCommands = ''
+      iptables -w -N nixos-wifi-fwd 2>/dev/null || iptables -w -F nixos-wifi-fwd
+      iptables -w -A nixos-wifi-fwd -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN
+      iptables -w -A nixos-wifi-fwd -d 10.0.0.0/8 -j DROP
+      iptables -w -A nixos-wifi-fwd -d 172.16.0.0/12 -j DROP
+      iptables -w -A nixos-wifi-fwd -d 192.168.0.0/16 -j DROP
+      iptables -w -A nixos-wifi-fwd -d 100.64.0.0/10 -j DROP
+      iptables -w -D FORWARD -i ${wifi} -j nixos-wifi-fwd 2>/dev/null || true
+      iptables -w -I FORWARD -i ${wifi} -j nixos-wifi-fwd
+    '';
+    networking.firewall.extraStopCommands = ''
+      iptables -w -D FORWARD -i ${wifi} -j nixos-wifi-fwd 2>/dev/null || true
+      iptables -w -F nixos-wifi-fwd 2>/dev/null || true
+      iptables -w -X nixos-wifi-fwd 2>/dev/null || true
+    '';
 
     services.dnsmasq = {
       enable = true;
       resolveLocalQueries = false;
       settings = {
-        interface = lan;
+        interface = [
+          lan
+          wifi
+        ];
         bind-dynamic = true;
         no-resolv = true;
         server = [ "127.0.0.1#${toString adguardDnsPort}" ];
@@ -86,10 +132,12 @@ in
         ];
 
         dhcp-authoritative = true;
-        dhcp-range = [ "10.0.0.100,10.0.0.250,24h" ];
-        dhcp-option = [
-          "option:router,${lanAddress}"
-          "option:dns-server,${lanAddress}"
+        # No router or DNS options: dnsmasq gives each client its own address
+        # on the interface the request came in on (10.0.0.7 or 10.0.20.1) for
+        # both, which a single explicit option could not.
+        dhcp-range = [
+          "10.0.0.100,10.0.0.250,24h"
+          "10.0.20.100,10.0.20.250,12h"
         ];
         dhcp-host = [
           "a6:d2:27:76:f4:c1,mu,10.0.0.2"
