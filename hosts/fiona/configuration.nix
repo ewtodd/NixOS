@@ -61,6 +61,27 @@ in
             {%- if add_generation_prompt -%}{{- "<|im_start|>assistant\n" -}}{%- endif -%}
           '';
         };
+        # Reranking for maitred, on the Iris Xe beside the titles: eklow sizes its experts to the A770M's free
+        # memory, so anything else on that card costs Sage decode speed.
+        "qwen3-reranker" = {
+          # ggml-org's conversion carries the classifier head (cls.output) and rerank template that llama.cpp's rank
+          # pooling needs; a GGUF converted as the plain causal LM has neither and scores nonsense.
+          path = "${pkgs.fetchurl {
+            name = "qwen3-reranker-0.6b-q8_0.gguf";
+            url = "https://huggingface.co/ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF/resolve/a02f48bb4f057028298c21fa033da2b30d7742d5/qwen3-reranker-0.6b-q8_0.gguf";
+            sha256 = "22c9979ce4fbcdc5acdc310c6641c32797eff1aa980b8f7a2db8a8ea23429a48";
+          }}";
+          port = 8083;
+          device = "Vulkan0";
+          parallel = 2;
+          ctxSize = 8192;
+          # A query-document pair is scored in one ubatch (rank pooling cannot split one), so a slot's 4,096
+          # positions are also the longest pair.
+          batchSize = 4096;
+          ubatchSize = 4096;
+          specType = "none";
+          extraFlags = [ "--reranking" ];
+        };
       };
     };
     security.harden.enable = true;
