@@ -37,7 +37,10 @@ git -C "$repo" worktree add -q -b "$branch" "$wt" "$base"
 cd "$wt"
 
 attr() { printf '.#nixosConfigurations.%s.config.system.build.toplevel' "$1"; }
-mapfile -t hosts < <(nix eval --json .#nixosConfigurations --apply builtins.attrNames | jq -r '.[]')
+# Evaluated outside the process substitution, whose failure would not stop
+# the run and would leave an empty host list.
+host_names=$(nix eval --json .#nixosConfigurations --apply builtins.attrNames)
+mapfile -t hosts < <(jq -r '.[]' <<<"$host_names")
 
 # The closures main builds, where they are already in the store; a host
 # without one gets no version diff rather than a full rebuild of the old.
@@ -69,10 +72,14 @@ for h in "${!new[@]}"; do
   fi
 done
 
-# vulnix exits 2 when it finds anything, so only its output counts.
+# vulnix exits 2 when it finds anything, so only its output counts; output
+# it could not produce (empty or not JSON) reads as no CVEs, and its stderr
+# file says why.
 high() {
-  jq -r '.[] | . as $p | (.cvssv3_basescore // {}) | to_entries[]
-    | select(.value >= 7) | "\(.key) \(.value) \($p.pname) \($p.version)"' "$1" 2>/dev/null | sort -u
+  {
+    jq -r '.[] | . as $p | (.cvssv3_basescore // {}) | to_entries[]
+      | select(.value >= 7) | "\(.key) \(.value) \($p.pname) \($p.version)"' "$1" 2>/dev/null || true
+  } | sort -u
 }
 for h in "${public_hosts[@]}"; do
   [ -n "${new[$h]:-}" ] || continue
