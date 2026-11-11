@@ -151,6 +151,11 @@
         group = "son-of-anton";
         mode = "0440";
       };
+      # ricky's standing memory rules (memoryRulesFile), as play's: only activation (root) reads it.
+      son-of-anton-ricky-rules = {
+        file = ../../secrets/son-of-anton-ricky-rules.age;
+        mode = "0400";
+      };
       # GitHub SSH *private* deploy key for the ricky instance (the public
       # half goes on GitHub). Encrypted because the repo is public; recipients
       # mirror the instance envs: the human devices plus the server that must

@@ -263,6 +263,8 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-ricky-env.path ];
           viewerGroup = "soa-viewers";
           git.github = config.age.secrets.soa-ricky-github-key.path;
+          # Standing memory rules, encrypted (secrets/son-of-anton-ricky-rules.age).
+          memoryRulesFile = config.age.secrets.son-of-anton-ricky-rules.path;
           settings.platforms.signal = {
             require_mention = true;
             history_backfill = true;
