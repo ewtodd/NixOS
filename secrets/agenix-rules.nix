@@ -9,6 +9,7 @@ let
   val-desktop-vplay = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxd8dbNShz1+NhK71DgHpqQZn8fq0Acy4qL2C9kzw0s v-play@v-desktop";
   nu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKwq6hEiSfrNBtsyxxvq0fUuxBV0kGRjnbHkcXL5XLmf root@nu";
   mu = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMgHFqHi44REF+1/ikdJpoOuSbeSZ5DH6KAWYuXMP1rk root@mu";
+  fiona = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAIjPBnPOrYhw8k+V/SWD61jlejTC7cGcldkkU1tds54 root@fiona";
   server-e-workstation = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJPftrHYU/cCgJyXdpIX5FHNpjqfnHRLkytx65JV4uHO root@e-desktop";
   personal = [
     ethan-desktop-ework
@@ -67,4 +68,8 @@ in
     server-e-workstation
   ];
   "signal-cli-env.age".publicKeys = personal ++ [ mu ];
+  # The end-of-turn checker's fitted laya policy (one folder, three files). It is fitted on private chats.
+  "eklow-checker-heads.age".publicKeys = personal ++ [ fiona ];
+  "eklow-checker-calibration.age".publicKeys = personal ++ [ fiona ];
+  "eklow-checker-manifest.age".publicKeys = personal ++ [ fiona ];
 }
