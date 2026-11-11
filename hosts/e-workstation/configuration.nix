@@ -346,7 +346,11 @@ in
         # Sub-agents run whichever son-of-anton mode is up (maitred's "workers" route), never on fiona's eklow.
         delegation.model = "workers";
         # Old model names a stored session or job may still pin: soa-d rewrites them at start and resolves them.
-        models.renamed."unholy/glm53" = "unholy/glm5.3-flash";
+        models.renamed = {
+          "unholy/glm53" = "unholy/glm5.3-flash";
+          # Sage left eklow on 2026-11-11; a chat or job /model pinned to it follows fiona's model.
+          "eklow/sage-a1.5" = "eklow/nemotron-3.5-bolt-e4b";
+        };
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
           enabled = true;
@@ -443,15 +447,8 @@ in
                 "xhigh"
               ];
             };
-            # eklow on fiona's A770M; Bolt-E4B (Gemma 4) and Sage-A1.5 (Qwen3.6) think or not, and take images.
+            # eklow on fiona's A770M; Bolt-E4B (Gemma 4) thinks or not, and takes images.
             "eklow/nemotron-3.5-bolt-e4b" = {
-              reasoning_effort = "high";
-              reasoning_efforts = [
-                "none"
-                "high"
-              ];
-            };
-            "eklow/sage-a1.5" = {
               reasoning_effort = "high";
               reasoning_efforts = [
                 "none"

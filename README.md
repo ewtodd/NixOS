@@ -141,11 +141,11 @@ The fleet distributes inference and gateway services across dedicated hosts:
     TheRock ROCm 10.1 SDK unholy pins. Beside it **[gufo](https://github.com/gufo-org/gufo)**
     (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL with Q5 down-projection and bf16 n-gram overlays)
     on the Strix Halo iGPU, with the MTP draft and vision projector, 262k context
-- **fiona** (Arc A770M 16GB) runs **[eklow](https://github.com/ewtodd/eklow)**, one SYCL engine with
-  an `llm-mode` per chat model: Nemotron-3.5-Bolt-E4B (:8081, the default; fiona's chat model, two
-  64k slots, and maitred's lowest tier, so "auto" lands there when son-of-anton is off or full) or
-  Sage-A1.5 (:8086). Either serves beside it EmbeddingGemma 2 (:8082, son-of-anton's memory RAG
-  and Open WebUI), son-of-anton's end-of-turn checker (:8084) and Qwen3-Reranker (:8085).
+- **fiona** (Arc A770M 16GB) runs **[eklow](https://github.com/ewtodd/eklow)**, one SYCL engine
+  serving Nemotron-3.5-Bolt-E4B (:8081, `llm-mode bolt`; fiona's chat model, two 64k slots, and
+  maitred's lowest tier, so "auto" lands there when son-of-anton is off or full), and beside it
+  EmbeddingGemma 2 (:8082, son-of-anton's memory RAG and Open WebUI), son-of-anton's end-of-turn
+  checker (:8084) and Qwen3-Reranker (:8085).
   llama.cpp on the Iris Xe iGPU serves Little-Titles Q8_0 (:8080, title generation for the
   son-of-anton accounts and Open WebUI)
 - **mu** hosts the AI front. `systemOptions.aiFrontAddress` names that host; nu's Caddy and

@@ -437,29 +437,6 @@ in
                 output = [ "text" ];
               };
             };
-            # The same for Sage-A1.5 (Qwen3.6), two slots of 262k (Qwen3-VL's encoder), in its llm-mode.
-            "eklow/sage-a1.5" = {
-              name = "Sage A1.5 35B A3B";
-              variants = {
-                high = {
-                  reasoningEffort = "high";
-                };
-                none = {
-                  reasoningEffort = "none";
-                };
-              };
-              limit = {
-                context = 262144;
-                output = 65536;
-              };
-              modalities = {
-                input = [
-                  "text"
-                  "image"
-                ];
-                output = [ "text" ];
-              };
-            };
           };
         };
       };
