@@ -368,14 +368,19 @@ in
         # The end-of-turn checker for chats on Bolt (soa 2b104daf): eklow's laya System One on fiona, reached
         # directly, since maitred routes by model id and /systemone carries none. The cut-offs belong to the fitted
         # policy in secrets/eklow-checker-*.age (each question's best F1 on held-out rows, 2026-11-10) and change
-        # with it; offtopic's sits inside the 0.39-0.46 band its answers fall in, so it flags noisily.
+        # with it.
         checker = {
           base_url = "http://10.0.0.6:8084/v1";
           models = [ "eklow/nemotron-3.5-bolt-e4b" ];
+          # offtopic is off (soa ae92ede4): its answers sit in 0.39-0.46, around its cut-off, and on 2026-11-10 a
+          # 0.4407 helped send back a correct reply to a check-in. Back on after a refit with more stale-topic rows.
+          questions = [
+            "claim"
+            "unchecked"
+          ];
           cutoffs = {
             claim = 0.7342;
             unchecked = 0.4858;
-            offtopic = 0.4399;
           };
         };
         custom_providers.custom = {
