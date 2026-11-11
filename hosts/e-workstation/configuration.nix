@@ -374,16 +374,11 @@ in
         checker = {
           base_url = "http://10.0.0.6:8084/v1";
           models = [ "eklow/nemotron-3.5-bolt-e4b" ];
-          # offtopic is off (soa ae92ede4): its answers sit in 0.39-0.46, around its cut-off, and on 2026-11-10 a
-          # 0.4407 helped send back a correct reply to a check-in. Back on after a refit with more stale-topic rows.
-          questions = [
-            "claim"
-            "unchecked"
-          ];
-          cutoffs = {
-            claim = 0.7342;
-            unchecked = 0.4858;
-          };
+          # claim only. offtopic's answers sit in 0.39-0.46, around its cut-off. unchecked flagged all three
+          # replies it sent back on 2026-11-10 wrongly (0.91-0.95 on chit-chat and a logged message), and each
+          # time Bolt answered the checker's note instead of the user. Both wait for a refit on real chats.
+          questions = [ "claim" ];
+          cutoffs.claim = 0.7342;
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
