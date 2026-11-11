@@ -413,8 +413,31 @@ in
                 output = [ "text" ];
               };
             };
-            # eklow on fiona's A770M, two slots of 262k; Sage-A1.5 (Qwen3.6) thinks or not (efforts none and high).
-            # Full id, as maitred lists it. Images as data URLs (Qwen3-VL's encoder).
+            # eklow on fiona's A770M, two slots of 64k; Bolt-E4B (Gemma 4) thinks or not (efforts none and high).
+            # Full id, as maitred lists it. Images as data URLs (Gemma 4's encoder).
+            "eklow/nemotron-3.5-bolt-e4b" = {
+              name = "Nemotron 3.5 Bolt E4B";
+              variants = {
+                high = {
+                  reasoningEffort = "high";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 65536;
+                output = 16384;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
+            # The same for Sage-A1.5 (Qwen3.6), two slots of 262k (Qwen3-VL's encoder), in its llm-mode.
             "eklow/sage-a1.5" = {
               name = "Sage A1.5 35B A3B";
               variants = {

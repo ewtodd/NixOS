@@ -50,7 +50,7 @@ let
     # its jobs run on whichever mode son-of-anton has up. Each decision is a JSON line in the log.
     router.decision_log = "/var/lib/maitred/routes.jsonl";
     # "fiona" is eklow's auto: routed the same way, but only among the models eklow serves (whichever of its modes is
-    # up; one today), and a 503 (never another server) when it is down, so son-of-anton's chats (fiona) fall back to
+    # up: bolt or sage), and a 503 (never another server) when it is down, so son-of-anton's chats (fiona) fall back to
     # "auto" themselves.
     # "workers" is son-of-anton's own auto: routed the same way among son-of-anton's servers only, never eklow, and a 503
     # when none is up. fiona's relay workers start on it (son-of-anton relay.default_model). On 2026-11-07 a worker on "auto"
@@ -59,7 +59,10 @@ let
     router.extra = [
       {
         id = "fiona";
-        upstreams = [ "eklow" ];
+        upstreams = [
+          "eklow"
+          "eklow-sage"
+        ];
       }
       {
         id = "workers";
@@ -102,8 +105,9 @@ let
         timeout_secs = 1800;
         slots = 1;
       };
-      # fiona: llama.cpp serves the title model and the reranker; eklow serves Sage-A1.5 (Qwen3.6) and the embeddings
-      # (another eklow instance, an llm-mode of its own, would get its own port so that the one up is the one answering).
+      # fiona: llama.cpp serves the title model on the Iris Xe; eklow serves the chat model, the embeddings and the
+      # reranker on the A770M. Each eklow instance, an llm-mode of its own, has its own port, so the one up is the one
+      # answering: Nemotron-3.5-Bolt-E4B on eklow, Sage-A1.5 on eklow-sage.
       llama = {
         base_url = "http://${fiona}:8080/v1";
         timeout_secs = 1800;
@@ -113,12 +117,17 @@ let
         timeout_secs = 1800;
         slots = 2;
       };
+      eklow-sage = {
+        base_url = "http://${fiona}:8086/v1";
+        timeout_secs = 1800;
+        slots = 2;
+      };
       embed = {
         base_url = "http://${fiona}:8082/v1";
         timeout_secs = 120;
       };
       rerank = {
-        base_url = "http://${fiona}:8083/v1";
+        base_url = "http://${fiona}:8085/v1";
         timeout_secs = 120;
       };
       deepseek = {
@@ -159,10 +168,16 @@ let
         ];
       }
       {
+        name = "bolt";
+        label = "Nemotron 3.5 Bolt E4B";
+        host = "fiona";
+        upstreams = [ "eklow" ];
+      }
+      {
         name = "sage";
         label = "Sage A1.5 35B A3B";
         host = "fiona";
-        upstreams = [ "eklow" ];
+        upstreams = [ "eklow-sage" ];
       }
     ];
     # reasoning_efforts: what each server takes (unholy: none/low/high/max for DeepSeek-V4-Flash, low/high/max
@@ -172,7 +187,7 @@ let
     # model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier: DeepSeek-V4-Flash,
     # GLM-5.3-Flash and DeepSeek-V4.1-Flash (no two of them up at once; V4.1 has one session, so in llm-mode dual "auto"
     # takes the 27B once it is busy), then Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or
-    # down, then eklow on fiona (Sage-A1.5), which is up when son-of-anton is not.
+    # down, then eklow on fiona (Bolt-E4B, or Sage-A1.5 in its mode), which is up when son-of-anton is not.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -264,9 +279,23 @@ let
         tier = 1;
       }
       {
+        # Gemma 4's template thinks or not, as Qwen3.6's does: eklow takes any effort but none as thinking on.
+        id = "eklow/nemotron-3.5-bolt-e4b";
+        upstream = "eklow";
+        upstream_model = "nemotron-3.5-bolt-e4b";
+        display_name = "Nemotron 3.5 Bolt E4B";
+        context_length = 65536;
+        reasoning_efforts = [
+          "none"
+          "high"
+        ];
+        default_reasoning_effort = "high";
+        tier = 0;
+      }
+      {
         # Qwen3.6's template thinks or not (enable_thinking): eklow takes any effort but none as thinking on.
         id = "eklow/sage-a1.5";
-        upstream = "eklow";
+        upstream = "eklow-sage";
         upstream_model = "sage-a1.5";
         display_name = "Sage A1.5 35B A3B";
         context_length = 262144;

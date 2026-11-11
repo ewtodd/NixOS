@@ -355,8 +355,8 @@ in
           # unrelated one a query, where 0.6 let in ~5 and slowed every turn's reranking to match. Unrelated
           # messages (best match <= 0.6) skip the reranker.
           min_score = 0.65;
-          # fiona's reranker on the Iris Xe takes ~140 ms a candidate for a short message (2026-11-10), and recall
-          # runs before every turn: at most 8 candidates, and cosine order after 2 s.
+          # Recall runs before every turn: at most 8 candidates, and cosine order after 2 s. eklow's reranker on fiona
+          # takes ~100 ms for 8 (2026-11-11; ~140 ms a candidate on the Iris Xe before).
           rerank_model = "rerank/qwen3-reranker-0.6b";
           rerank_candidates = 8;
           rerank_timeout_seconds = 2;
@@ -364,6 +364,19 @@ in
           # low as 0.015, unrelated ones 0.002 or under (2026-11-10). son-of-anton 71b51d03's default of 0.5 dropped
           # 9 of 17 relevant facts; b6b5ad65 makes 0.01 the default.
           rerank_min_score = 0.01;
+        };
+        # The end-of-turn checker for chats on Bolt (soa 2b104daf): eklow's laya System One on fiona, reached
+        # directly, since maitred routes by model id and /systemone carries none. The cut-offs belong to the fitted
+        # policy in secrets/eklow-checker-*.age (each question's best F1 on held-out rows, 2026-11-10) and change
+        # with it; offtopic's sits inside the 0.39-0.46 band its answers fall in, so it flags noisily.
+        checker = {
+          base_url = "http://10.0.0.6:8084/v1";
+          models = [ "eklow/nemotron-3.5-bolt-e4b" ];
+          cutoffs = {
+            claim = 0.7342;
+            unchecked = 0.4858;
+            offtopic = 0.4399;
+          };
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
@@ -426,8 +439,14 @@ in
                 "xhigh"
               ];
             };
-            # eklow on fiona's A770M; Sage-A1.5 (Qwen3.6) thinks or not, and takes images (Qwen3-VL's
-            # encoder).
+            # eklow on fiona's A770M; Bolt-E4B (Gemma 4) and Sage-A1.5 (Qwen3.6) think or not, and take images.
+            "eklow/nemotron-3.5-bolt-e4b" = {
+              reasoning_effort = "high";
+              reasoning_efforts = [
+                "none"
+                "high"
+              ];
+            };
             "eklow/sage-a1.5" = {
               reasoning_effort = "high";
               reasoning_efforts = [
