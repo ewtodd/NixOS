@@ -380,11 +380,17 @@ in
         checker = {
           base_url = "http://10.0.0.6:8084/v1";
           models = [ "eklow/nemotron-3.5-bolt-e4b" ];
-          # claim only. offtopic's answers sit in 0.39-0.46, around its cut-off. unchecked flagged all three
-          # replies it sent back on 2026-11-10 wrongly (0.91-0.95 on chit-chat and a logged message), and each
-          # time Bolt answered the checker's note instead of the user. Both wait for a refit on real chats.
-          questions = [ "claim" ];
-          cutoffs.claim = 0.7342;
+          # Log only, every question, every check recorded to <home>/checker/checks.jsonl: on the first day of
+          # real chats all seven replies it sent back were wrong (unchecked on chit-chat, offtopic in its noisy
+          # band, claim on a reply whose write_file had just run), and each time Bolt answered the note. The
+          # records are the data to label and fit a better checker on; until then the cut-offs only mark flags.
+          log_only = true;
+          record = true;
+          cutoffs = {
+            claim = 0.7342;
+            unchecked = 0.4858;
+            offtopic = 0.4399;
+          };
         };
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
