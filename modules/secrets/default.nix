@@ -143,6 +143,11 @@
         group = "son-of-anton";
         mode = "0440";
       };
+      # house's standing memory rules (memoryRulesFile), as play's: only activation (root) reads it.
+      son-of-anton-house-rules = {
+        file = ../../secrets/son-of-anton-house-rules.age;
+        mode = "0400";
+      };
       # The two project instances, one friend each. Same shape as house: own group id plus a
       # SIGNAL_ALLOWED_USERS of owner + that one friend, scoped by file order -- no friend is ever authorized
       # on work, play, house, or each other's instance.

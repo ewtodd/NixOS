@@ -242,6 +242,8 @@ in
           son-of-antonHome = "/var/lib/soa-house/.son-of-anton";
           workingDirectory = "/srv/household";
           environmentFiles = [ config.age.secrets.son-of-anton-house-env.path ];
+          # Standing memory rules, encrypted (secrets/son-of-anton-house-rules.age).
+          memoryRulesFile = config.age.secrets.son-of-anton-house-rules.path;
           viewerGroup = "soa-viewers";
           extraPackages = [
             md2pdf
