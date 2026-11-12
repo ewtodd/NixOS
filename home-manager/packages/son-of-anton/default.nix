@@ -5,10 +5,13 @@
   ...
 }:
 let
-  # TUI-only trial for v's laptop: package + config + the maitred key, no
-  # gateway service and no messaging platforms. Drop the deviceType check to give
-  # the other v devices the same interactive agent.
-  enable = osConfig.systemOptions.owner.v.enable && osConfig.systemOptions.deviceType.laptop.enable;
+  # TUI-only on the laptops (v's and e's): package + config + the maitred key,
+  # no gateway service and no messaging platforms. e-workstation is left out
+  # because its son-of-anton instances (modules/services/son-of-anton) already
+  # write each account's config.toml and prune keys they do not declare.
+  enable =
+    (osConfig.systemOptions.owner.v.enable || osConfig.systemOptions.owner.e.enable)
+    && osConfig.systemOptions.deviceType.laptop.enable;
 
   # Laptops are off-LAN, so both routes go through the Caddy front on nu
   # to maitred; /v1 bypasses anubis and is key-protected by maitred.
