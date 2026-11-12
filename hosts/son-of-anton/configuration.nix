@@ -75,10 +75,11 @@ in
       maxNumSeqs = 8;
       kvCacheDtype = "bf16";
       prefixCacheMib = 0;
-      # Host RAM is for the APU engine: the embedding table stays in VRAM and no
-      # snapshots are pinned; all 64 live on /work (9.6 GiB).
+      # Host RAM is for the APU engine: the embedding table stays in VRAM and only
+      # 8 snapshots (1.2 GiB) are pinned; what they evict spills to /work. Not 0:
+      # the disk tier only takes RAM's evictions, so 0 slots means no prefix hits.
       extraFlags = [ "--embedding-placement vram" ];
-      checkpointSlots = 0;
+      checkpointSlots = 8;
       checkpointDir = "/work/radiance-checkpoints";
       diskCheckpoints = 64;
     };
