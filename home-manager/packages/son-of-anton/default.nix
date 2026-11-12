@@ -42,13 +42,16 @@ in
       environmentFiles = [ "/run/agenix/maitred-keys" ];
       settings = {
         model = {
-          default = "dsv4-flash";
+          # maitred's routed id: the strongest model being served.
+          default = "auto";
           provider = "custom";
           reasoning_effort = "high";
         };
         custom_providers.custom = {
           base_url = gatewayBase;
           key_env = gatewayKeyEnv;
+          # /model lists maitred's live catalog (auto included); models is per-model metadata only.
+          discover_models = true;
           models = gatewayModels;
         };
         auxiliary = {
@@ -64,7 +67,9 @@ in
           compaction = {
             base_url = gatewayBase;
             key_env = gatewayKeyEnv;
-            model = "dsv4-flash";
+            # For an auxiliary task "auto" is the session's own model, so compaction never
+            # waits on a mode that is not loaded.
+            model = "auto";
             provider = "custom";
             reasoning_effort = "none";
             timeout = 300;

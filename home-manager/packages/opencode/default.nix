@@ -2,9 +2,13 @@
   lib,
   pkgs,
   inputs,
+  osConfig,
   ...
 }:
 let
+  # e's laptop runs son-of-anton's TUI instead (../son-of-anton).
+  enable =
+    !(osConfig.systemOptions.owner.e.enable && osConfig.systemOptions.deviceType.laptop.enable);
   opencodeWrapped = pkgs.writeShellScriptBin "opencode" ''
     if [ -r /run/agenix/maitred-keys ]; then
       set -a
@@ -33,7 +37,7 @@ let
   };
 in
 {
-  programs.opencode = {
+  programs.opencode = lib.mkIf enable {
     enable = true;
     package = opencodeWrapped;
     tui.theme = "system";
