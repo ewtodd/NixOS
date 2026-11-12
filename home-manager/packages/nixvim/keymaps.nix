@@ -352,29 +352,5 @@
       action = "<cmd>UndotreeToggle<cr>";
       mode = "n";
     }
-    {
-      action.__raw = "function() require('opencode').ask('@this: ') end";
-      key = "<leader>oa";
-      mode = [
-        "n"
-        "v"
-      ];
-      options = {
-        desc = "Ask OpenCode...";
-        silent = true;
-      };
-    }
-    {
-      action.__raw = "function() require('opencode').select() end";
-      key = "<leader>oc";
-      mode = [
-        "n"
-        "v"
-      ];
-      options = {
-        desc = "Select OpenCode...";
-        silent = true;
-      };
-    }
   ];
 }
