@@ -273,6 +273,19 @@
           providers = {
             snippets = {
               score_offset = 10;
+              # In TeX, hides snippets while the cursor is inside a brace
+              # argument still open on this line (\ref{fig…, \cite{…,
+              # \label{…), where friendly-snippets' figure, figure:ref, table
+              # and sec would otherwise outrank texlab's labels and keys.
+              should_show_items.__raw = ''
+                function(ctx)
+                  local ft = vim.bo[ctx.bufnr].filetype
+                  if ft ~= "tex" and ft ~= "plaintex" then
+                    return true
+                  end
+                  return ctx.line:sub(1, ctx.cursor[2]):find("{[^{}]*$") == nil
+                end
+              '';
             };
             buffer = {
               score_offset = -7;
@@ -321,6 +334,14 @@
           accept = {
             auto_brackets = {
               enabled = true;
+              # texlab sends figure/table labels as Method and every command,
+              # with or without arguments, as Function, so blink would append
+              # {} to both: \ref{fig:x{}}, \centering{}.
+              blocked_filetypes = [
+                "tex"
+                "plaintex"
+                "bib"
+              ];
               semantic_token_resolution = {
                 enabled = false;
               };
