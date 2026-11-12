@@ -1643,11 +1643,11 @@
         "therock-sdk": "therock-sdk_2"
       },
       "locked": {
-        "lastModified": 1794121527,
-        "narHash": "sha256-N+TfTZVh6QnEgzb2iDJd6NhtE49pMaeP4vNzx+wpe3w=",
+        "lastModified": 1794519512,
+        "narHash": "sha256-6/ClwxR1bUo7eYHfJiKWEkliaxVkLjo+UKlJiN4wTEk=",
         "owner": "ewtodd",
         "repo": "unholy",
-        "rev": "4a7c475e4b4403114d0df81924e0e590d3730219",
+        "rev": "929dcda0ddfcde3ed1e38c6441ba52dd2ccdb64a",
         "type": "github"
       },
       "original": {
