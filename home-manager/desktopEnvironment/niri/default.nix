@@ -118,13 +118,20 @@ in
         border = {
           width = 3;
           inactive-color = "#${colors.base03}";
-          active-gradient._props = {
-            angle = 180;
-            from = "#${colors.base0D}";
-            relative-to = "window";
-            to = "#${colors.base0E}";
-          };
-        };
+        }
+        // (
+          if e then
+            { active-color = "#${colors.base09}"; }
+          else
+            {
+              active-gradient._props = {
+                angle = 180;
+                from = "#${colors.base0D}";
+                relative-to = "window";
+                to = "#${colors.base0E}";
+              };
+            }
+        );
         background-color = "transparent";
         default-column-width = {
           proportion = 0.5;
@@ -245,6 +252,14 @@ in
         };
         "Mod+Tab" = {
           toggle-overview = [ ];
+        };
+        "Mod+WheelScrollDown" = {
+          _props.cooldown-ms = 150;
+          focus-workspace-down = [ ];
+        };
+        "Mod+WheelScrollUp" = {
+          _props.cooldown-ms = 150;
+          focus-workspace-up = [ ];
         };
         "Mod+c" = {
           consume-or-expel-window-left = [ ];
