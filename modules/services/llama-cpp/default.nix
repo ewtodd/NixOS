@@ -20,9 +20,11 @@ let
 
   versionedLlama =
     pkg:
-    pkg.override {
-      llamaVersion = llamaCppVersion;
-    };
+    import ./without-webui.nix (
+      pkg.override {
+        llamaVersion = llamaCppVersion;
+      }
+    );
 
   stampedLlama =
     pkg:
