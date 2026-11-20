@@ -45,15 +45,7 @@ in
         # fp16 K/V, set rather than left to the server's per-model default so a change there cannot make it int8: the
         # two 64K slots take 2.2 GiB, and all of this instance's models fit in 12.7 of the card's 16 GiB.
         kvInt8 = false;
-        # eklow's own bolt-e4b-dflash quantizes with llama.cpp's default package, web UI included, which no longer
-        # builds (../llama-cpp/without-webui.nix); the same recipe with a build without it. Q8_0 is the same bytes.
-        draft =
-          (pkgs.callPackage "${inputs.eklow}/nix/models.nix" {
-            llama-cpp-src = inputs.llama-cpp;
-            llama-cpp =
-              import ../llama-cpp/without-webui.nix
-                inputs.llama-cpp.packages.${pkgs.stdenv.hostPlatform.system}.default;
-          }).bolt-e4b-dflash;
+        draft = eklowPkgs.bolt-e4b-dflash;
         mmproj = eklowPkgs.bolt-e4b-mmproj;
         # Bolt's template drops earlier turns' reasoning, so the user message after a tool loop prefilled the loop again:
         # 0.4-15 s to the first token on fiona's chats, 0.2-1.3 s with this (eklow DECISIONS 2026-11-11). The window then

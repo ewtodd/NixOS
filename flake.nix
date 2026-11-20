@@ -100,9 +100,10 @@
     };
     eklow = {
       url = "github:ewtodd/eklow";
-      # Not the fleet's nixpkgs: eklow is built and checked on its own pin (intel-llvm 7.1.1); see
-      # modules/services/eklow.
-      inputs.llama-cpp.follows = "llama-cpp";
+      # Neither the fleet's nixpkgs nor its llama.cpp: eklow is built and checked on its own pins
+      # (intel-llvm 7.1.1; see modules/services/eklow), and its llama.cpp's converter makes the
+      # GGUFs eklow loads. llama.cpp 18486280 fuses qwen35's attn_qkv/attn_gate and
+      # ssm_beta/ssm_alpha tensors, which eklow's loader does not read.
     };
     niri-utilities = {
       url = "github:ewtodd/niri-utilities";
