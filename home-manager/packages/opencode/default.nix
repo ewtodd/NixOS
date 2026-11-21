@@ -328,6 +328,30 @@ in
               };
             };
 
+            # unholy's llm-mode hy4 (NVFP4 experts, DFly2 drafts). Hy4 flash's efforts: high or none; text and images.
+            "hy4-flash" = {
+              name = "Hy4 flash";
+              variants = {
+                high = {
+                  reasoningEffort = "high";
+                };
+                none = {
+                  reasoningEffort = "none";
+                };
+              };
+              limit = {
+                context = 1048576;
+                output = 131072;
+              };
+              modalities = {
+                input = [
+                  "text"
+                  "image"
+                ];
+                output = [ "text" ];
+              };
+            };
+
             # The other llm-mode on son-of-anton (llm-mode qwen). maitred answers a request for a model of the
             # mode that is not loaded with what to use instead.
             # Radiance, both R9700s; efforts none/minimal/low/medium/xhigh (high/max are clamped to medium/xhigh).

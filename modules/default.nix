@@ -988,7 +988,8 @@ with lib;
                   example = "/scratch/dsv4-ve";
                   description = ''
                     Checkpoint directory: native DeepSeek-V4-Flash (config, tokenizer, dense and MXFP4 expert
-                    weights) or a GLM-5.3-Flash EXL3 quant.
+                    weights), a GLM-5.3-Flash EXL3 quant or Hy4 flash's FP8 release (its Engram pack in the
+                    sibling directory hy4-flash-engram).
                   '';
                 };
                 exl3 = mkOption {
@@ -1041,8 +1042,8 @@ with lib;
                   description = ''
                     Speculative decoding (--spec-drafts; 0 turns it off): DeepSeek-V4-Flash drafts this many
                     tokens per step with its DSpark drafter (~10 GB of experts in the iGPU's share of RAM),
-                    GLM-5.3-Flash one with its MTP layer for any value above 0. Outputs are exactly what the
-                    model would produce without it.
+                    GLM-5.3-Flash one with its MTP layer for any value above 0, Hy4 flash up to 5 with its
+                    DFly2 drafter (on card 1). Outputs are exactly what the model would produce without it.
                   '';
                 };
                 prefixSnapshots = mkOption {

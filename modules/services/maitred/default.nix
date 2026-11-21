@@ -66,6 +66,7 @@ let
         upstreams = [
           "unholy"
           "unholy-glm"
+          "unholy-hy4"
           "radiance"
           "gufo"
           "gufo-deepseek"
@@ -83,6 +84,12 @@ let
       };
       unholy-glm = {
         base_url = "http://${sonOfAnton}:8250/v1";
+        timeout_secs = 3600;
+        idle_timeout_secs = 3600;
+        slots = 8;
+      };
+      unholy-hy4 = {
+        base_url = "http://${sonOfAnton}:8270/v1";
         timeout_secs = 3600;
         idle_timeout_secs = 3600;
         slots = 8;
@@ -142,6 +149,12 @@ let
         upstreams = [ "unholy-glm" ];
       }
       {
+        name = "hy4";
+        label = "Hy4 flash";
+        host = "son-of-anton";
+        upstreams = [ "unholy-hy4" ];
+      }
+      {
         name = "qwen";
         label = "the Qwen models";
         host = "son-of-anton";
@@ -167,11 +180,11 @@ let
       }
     ];
     # reasoning_efforts: what each server takes (unholy: none/low/high/max for DeepSeek-V4-Flash, low/high/max
-    # for GLM-5.3-Flash, which always thinks, so none is answered with low; Radiance, as its /v1/models lists:
+    # for GLM-5.3-Flash, which always thinks, so none is answered with low; none/high for Hy4 flash; Radiance, as its /v1/models lists:
     # none/minimal/low/medium/xhigh, answering high and max with a 400; gufo takes everything, but its
     # template has none/low/medium/xhigh). The Qwen pair alias high to xhigh, their default, so "high" means each
     # model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier: DeepSeek-V4-Flash,
-    # GLM-5.3-Flash and DeepSeek-V4.1-Flash (no two of them up at once; V4.1 has one session, so in llm-mode dual "auto"
+    # GLM-5.3-Flash, Hy4 flash and DeepSeek-V4.1-Flash (no two of them up at once; V4.1 has one session, so in llm-mode dual "auto"
     # takes the 27B once it is busy), then Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or
     # down, then eklow on fiona (Bolt-E4B), which is up when son-of-anton is not.
     models = [
@@ -212,6 +225,27 @@ let
           minimal = "low";
           medium = "high";
           xhigh = "max";
+        };
+        tier = 3;
+      }
+      {
+        # Hy4 flash's template knows two efforts: no thinking (none, its no_think) and high.
+        id = "unholy/hy4-flash";
+        upstream = "unholy-hy4";
+        upstream_model = "hy4-flash";
+        display_name = "Hy4 flash";
+        context_length = 1048576;
+        reasoning_efforts = [
+          "none"
+          "high"
+        ];
+        default_reasoning_effort = "high";
+        effort_aliases = {
+          minimal = "high";
+          low = "high";
+          medium = "high";
+          xhigh = "high";
+          max = "high";
         };
         tier = 3;
       }
@@ -370,6 +404,7 @@ let
         models = [
           "unholy/dsv4-flash"
           "unholy/glm5.3-flash"
+          "unholy/hy4-flash"
           "radiance/qwen3.8-27b"
           "gufo/qwen3.8-flash-next"
           "gufo/deepseek-v4.1-flash"

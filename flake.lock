@@ -1710,11 +1710,11 @@
         "therock-sdk": "therock-sdk_2"
       },
       "locked": {
-        "lastModified": 1794519512,
-        "narHash": "sha256-6/ClwxR1bUo7eYHfJiKWEkliaxVkLjo+UKlJiN4wTEk=",
+        "lastModified": 1795219498,
+        "narHash": "sha256-YYfUMdBjvF1jN8G2L9UTomaWzAemy7ZjdLQN/ylQB4I=",
         "owner": "ewtodd",
         "repo": "unholy",
-        "rev": "929dcda0ddfcde3ed1e38c6441ba52dd2ccdb64a",
+        "rev": "1643e375a1728f3056999a763e2f966f2c044404",
         "type": "github"
       },
       "original": {

@@ -6,7 +6,7 @@
 }:
 
 # Which model set owns a host's GPUs. On son-of-anton: an unholy instance, a mode of its own name (`ds4`:
-# DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, each on both R9700s + the iGPU), `qwen` (Radiance:
+# DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, `hy4`: Hy4 flash, each on both R9700s + the iGPU), `qwen` (Radiance:
 # Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU) or `dual` (Radiance beside
 # DeepSeek-V4.1-Flash on the iGPU). On fiona: an eklow instance, a mode
 # of its own name (one today, `bolt`: Nemotron-3.5-Bolt-E4B on the A770M). The model

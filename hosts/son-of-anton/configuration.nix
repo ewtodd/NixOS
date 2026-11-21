@@ -64,6 +64,23 @@ in
         prefixSnapshots = 64;
         diskSnapshots = 256;
       };
+      # Hy4 flash (Tencent, 2026-11): the FP8 release's dense weights, its Engram pack beside it
+      # (/scratch/models/hy4-flash-engram), the routed experts in NVFP4 from AngelSlim's SPARK-4Bit GGUF
+      # (84 GB instead of 149). 5 drafts per step from the checkpoint's DFly2 drafter; images (vision tower on
+      # the iGPU). Served single stream 2026-11-20: 22-28 tok/s decode on code and prose, 26.6 at 131k context.
+      instances.hy4 = {
+        model = "/scratch/models/hy4-flash-fp8";
+        servedModelName = "hy4-flash";
+        port = 8270;
+        kvTokens = 1048576;
+        maxModelLen = 1048576;
+        maxNumSeqs = 8;
+        maxBatchTokens = 2048;
+        specDrafts = 5;
+        prefixSnapshots = 64;
+        diskSnapshots = 256;
+        extraFlags = [ "--experts-gguf /scratch/models/hy4-flash-angelslim/Hy4-flash-SPARK-4Bit.gguf" ];
+      };
     };
     services.radiance = {
       enable = true;

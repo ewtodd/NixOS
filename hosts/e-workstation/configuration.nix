@@ -422,6 +422,14 @@ in
                 "max"
               ];
             };
+            # Hy4 flash: no thinking (none) or high.
+            "unholy/hy4-flash" = {
+              reasoning_effort = "high";
+              reasoning_efforts = [
+                "none"
+                "high"
+              ];
+            };
             # Radiance's R9700 pair; its template's efforts (high/max clamp to medium/xhigh).
             "radiance/qwen3.8-27b" = {
               reasoning_effort = "xhigh";
