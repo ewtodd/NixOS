@@ -20,7 +20,7 @@ let
       "Sceptre Tech Inc Sceptre F22 0x01010101"
     else
       (if deviceType == "laptop" then "HDMI-A-2" else "DP-5");
-  alt-proportion = if deviceType == "desktop" then 0.5 else 0.75;
+  alt-proportion = 0.75;
 
   # Opens btop and then llmtop on c-sysmon (the vertical panel), llmtop on top. llmtop shows the
   # engines, the GPUs and hosts behind them, and maitred's callers. The stacking is niri-tile-to-n's:
@@ -82,7 +82,7 @@ let
     workspace = [
       {
         _args = [ "a-chat" ];
-        open-on-output = primaryMonitor;
+        open-on-output = secondaryMonitor;
       }
     ];
     window-rule = [
@@ -165,6 +165,10 @@ let
   playConfigBase = {
     workspace = [
       {
+        _args = [ "a-chat" ];
+        open-on-output = secondaryMonitor;
+      }
+      {
         _args = [ "b-aux" ];
         open-on-output = secondaryMonitor;
       }
@@ -174,7 +178,23 @@ let
         match._props = {
           app-id = "signal";
         };
-        open-on-workspace = "b-aux";
+        open-on-workspace = "a-chat";
+        default-column-width = {
+          proportion = 1.0;
+        };
+      }
+      {
+        match._props = {
+          app-id = "Spotify";
+        };
+        default-column-width = {
+          proportion = 1.0;
+        };
+      }
+      {
+        match._props = {
+          app-id = "spotify";
+        };
         default-column-width = {
           proportion = 1.0;
         };
@@ -191,7 +211,7 @@ let
     };
     workspace = [
       {
-        _args = [ "a-media" ];
+        _args = [ "a-steam" ];
         open-on-output = primaryMonitor;
       }
     ]
@@ -201,34 +221,28 @@ let
         match._props = {
           app-id = "steam";
         };
-        open-on-workspace = "a-media";
+        open-on-workspace = "a-steam";
         default-column-width = {
-          proportion = alt-proportion;
+          proportion = 2.0 / 3.0;
         };
       }
       {
         match._props = {
           app-id = "Spotify";
         };
-        open-on-workspace = "a-media";
-        default-column-width = {
-          proportion = alt-proportion;
-        };
+        open-on-workspace = "b-aux";
       }
       {
         match._props = {
           app-id = "spotify";
         };
-        open-on-workspace = "a-media";
-        default-column-width = {
-          proportion = alt-proportion;
-        };
+        open-on-workspace = "b-aux";
       }
     ]
     ++ sysmonDesktop.window-rule;
     spawn-sh-at-startup = [
-      [ "sleep 2 && ${pkgs.steam}/bin/steam && niri msg action move-column-left" ]
-      [ "sleep 2 && ${pkgs.spotify}/bin/spotify && niri msg action move-column-right" ]
+      [ "sleep 2 && ${pkgs.steam}/bin/steam" ]
+      [ "sleep 2 && ${pkgs.spotify}/bin/spotify" ]
     ]
     ++ sysmonDesktop.spawn-sh-at-startup;
   };
