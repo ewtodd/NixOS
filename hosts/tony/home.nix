@@ -52,16 +52,17 @@
               _args = [ "HDMI-A-2" ];
               # change to @ 60 when get new cable
               mode = "3840x2160@30";
-              scale = 1;
+              scale = 1.5;
             }
           ];
 
-          # 240 is 10x the 24px default, which is invisible at 4K from a sofa.
-          # Bibata ships large bitmaps, so it stays sharp instead of scaling a
-          # 48px source into mush.
+          # The size is in logical pixels: 160 at scale 1.5 is 240 on screen,
+          # 10x the 24px default, which is invisible at 4K from a sofa. Bibata
+          # ships large bitmaps, so it stays sharp instead of scaling a 48px
+          # source into mush.
           cursor = {
             xcursor-theme = "Bibata-Modern-Classic";
-            xcursor-size = 240;
+            xcursor-size = 160;
             hide-after-inactive-ms = 3000;
           };
 
@@ -232,8 +233,7 @@
             "privacy.userContext.enabled" = true;
             "privacy.userContext.ui.enabled" = true;
 
-            # A string pref: Firefox ignores it if written as a number.
-            "layout.css.devPixelsPerPx" = "1.3";
+            "widget.wayland.fractional-scale.enabled" = true;
 
             "media.av1.enabled" = false;
 
