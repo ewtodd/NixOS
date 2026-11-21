@@ -61,7 +61,7 @@ in
     before = [ "graphical.target" ];
     wantedBy = [ "graphical.target" ];
     conflicts = [ "getty@tty1.service" ];
-    # A deploy must not cut off a film; the 04:00 restart picks up the change.
+    # A deploy must not cut off a film; the 04:00 reboot picks up the change.
     restartIfChanged = false;
     unitConfig = {
       ConditionPathExists = "/dev/tty1";
@@ -132,17 +132,16 @@ in
   systemd.defaultUnit = "graphical.target";
 
   # Session cookies only die when the browser process does, and a kiosk browser
-  # never exits on its own -- so nothing above would ever take effect. A nightly
-  # restart is what actually clears YouTube, and it doubles as cheap hygiene for
-  # a long-running compositor. 04:00 so it is never mid-film.
-  systemd.services.tony-nightly-restart = {
-    description = "Restart the kiosk session (drops YouTube session cookies)";
+  # never exits on its own. A nightly reboot is what actually clears YouTube,
+  # and it boots whatever was last deployed. 04:00 so it is never mid-film.
+  systemd.services.tony-nightly-reboot = {
+    description = "Reboot tony (drops YouTube session cookies)";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl restart kiosk.service";
+      ExecStart = "${pkgs.systemd}/bin/systemctl reboot";
     };
   };
-  systemd.timers.tony-nightly-restart = {
+  systemd.timers.tony-nightly-reboot = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "*-*-* 04:00:00";

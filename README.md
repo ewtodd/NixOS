@@ -44,7 +44,7 @@ Hosts:
 - **anton** - headless server (no inference role): raidz2 tank with borg backup server,
   zfs-metrics, Jellyfin media server (Intel QSV transcoding, LAN only)
 - **tony** - living room kiosk: niri + Firefox kiosk on 4K 30 Hz, landing page of
-  stream/site tiles, nightly 04:00 session restart to drop stale cookies
+  stream/site tiles, nightly 04:00 reboot to drop stale cookies
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy),
   Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), or Radiance + DeepSeek-V4.1-Flash (gufo + ds41 extension)
 - **fiona** - small-model inference on an Arc A770M (16 GB) and its Iris Xe iGPU: eklow for fiona's

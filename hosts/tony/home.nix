@@ -195,7 +195,7 @@
               "https://www.hulu.com"
             ];
             # AllowSession, not Block: blocked outright, YouTube shows its consent interstitial every load and
-            # forgets quality/volume. Session cookies behave normally and die on exit -- the 04:00 restart does that.
+            # forgets quality/volume. Session cookies behave normally and die on exit -- the 04:00 reboot does that.
             AllowSession = [ "https://www.youtube.com" ];
             # Sportsurge gets nothing: no login, no settings worth keeping, and
             # aggregator sites are exactly what you do not want persisting. Its tile
