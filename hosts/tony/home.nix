@@ -43,6 +43,7 @@
               repeat-delay = 280;
               repeat-rate = 30;
             };
+            mouse.natural-scroll = [ ];
             disable-power-key-handling = [ ];
           };
 
