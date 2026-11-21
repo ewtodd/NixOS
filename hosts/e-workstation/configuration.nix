@@ -228,6 +228,8 @@ in
           # Standing memory rules, encrypted (secrets/son-of-anton-play-rules.age).
           memoryRulesFile = config.age.secrets.son-of-anton-play-rules.path;
           settings.gateway.single_user = true;
+          # The household folder house keeps too: fiona's file tools reach it beside her notes (son-of-anton 1e3b702d).
+          settings.gateway.shared_folders = [ "/srv/household" ];
           settings.git = {
             author_name = "son-of-anton-bot";
             author_email = "307402699+son-of-anton-bot@users.noreply.github.com";
@@ -252,6 +254,9 @@ in
           ];
           settings.gateway = {
             group_sessions_per_user = false;
+            # fiona's file tools, and her Signal jobs' (the workout ones read workouts/), reach the household
+            # folder beside her notes; play shares it (son-of-anton 1e3b702d).
+            shared_folders = [ "/srv/household" ];
           };
         };
 
