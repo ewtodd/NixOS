@@ -79,7 +79,12 @@ in
         specDrafts = 5;
         prefixSnapshots = 64;
         diskSnapshots = 256;
-        extraFlags = [ "--experts-gguf /scratch/models/hy4-flash-angelslim/Hy4-flash-SPARK-4Bit.gguf" ];
+        # --routing-log: the experts each run picks, kept beside its disk snapshots; half of the next start's
+        # placement of hot experts on the cards (the other half the package's profile).
+        extraFlags = [
+          "--experts-gguf /scratch/models/hy4-flash-angelslim/Hy4-flash-SPARK-4Bit.gguf"
+          "--routing-log /work/unholy-snapshots/hy4/routing-log.txt"
+        ];
       };
     };
     services.radiance = {
