@@ -77,6 +77,7 @@
             Allow = [
               "https://play.max.com"
               "https://www.amazon.com"
+              "https://www.hulu.com"
             ];
             # AllowSession, not Block: blocked outright, YouTube shows its consent interstitial every load and
             # forgets quality/volume. Session cookies behave normally and die on exit -- the 04:00 restart does that.
