@@ -232,6 +232,9 @@
             "privacy.userContext.enabled" = true;
             "privacy.userContext.ui.enabled" = true;
 
+            # A string pref: Firefox ignores it if written as a number.
+            "layout.css.devPixelsPerPx" = "1.3";
+
             "media.av1.enabled" = false;
 
             "media.ffmpeg.vaapi.enabled" = true;
