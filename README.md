@@ -43,7 +43,7 @@ Hosts:
   SearXNG, Open WebUI (ai.ethanwtodd.com)
 - **anton** - headless server (no inference role): raidz2 tank with borg backup server,
   zfs-metrics, Jellyfin media server (Intel QSV transcoding, LAN only)
-- **tony** - living room kiosk: cage + Firefox kiosk on 4K 30 Hz, landing page of
+- **tony** - living room kiosk: niri + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 session restart to drop stale cookies
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy),
   Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), or Radiance + DeepSeek-V4.1-Flash (gufo + ds41 extension)
@@ -84,7 +84,7 @@ Set this option per-user in `hosts/{hostname}/home.nix` via profile import.
 - **Shell:** Noctalia (`home-manager/desktopEnvironment/noctalia/`, settings via the upstream home-manager module)
 - **Greeter:** noctalia-greeter (greetd; syncs wallpaper/palette from the session)
 - **Config:** `home-manager/desktopEnvironment/`
-- **tony** is the exception: bare cage as a single-window kiosk compositor
+- **tony** is the exception: niri with a minimal kiosk config (no shell, no greeter), started on tty1 by `kiosk.service`
 ## Shell & Terminal
 - **Shell:** bash
 - **Prompt:** Starship

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  utils,
   ...
 }:
 let
@@ -12,34 +13,7 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4aIpszmO9PkX2gIoyAoJbOTgodqCrSw54W9IgmKINA ethan-laptop-eplay"
   ];
 
-  # change to @ 60 when get new cable
-  outputName = "HDMI-A-2";
-  outputMode = "3840x2160@30";
-
-  firefox = config.home-manager.users.tony.programs.firefox.finalPackage;
-
-  kiosk = pkgs.writeShellApplication {
-    name = "tony-kiosk";
-    runtimeInputs = [
-      firefox
-      pkgs.wlr-randr
-    ];
-    text = ''
-      export MOZ_ENABLE_WAYLAND=1
-            export MOZ_DISABLE_RDD_SANDBOX=1
-      export LIBVA_DRIVER_NAME=iHD
-
-            runtime="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-      for _ in $(seq 1 300); do
-        if [ -S "$runtime/pulse/native" ]; then break; fi
-        sleep 0.1
-      done
-
-            wlr-randr --output ${outputName} --mode ${outputMode} || true
-
-            exec ${lib.getExe firefox} --kiosk
-    '';
-  };
+  niri = config.home-manager.users.tony.wayland.windowManager.niri.package;
 in
 {
   imports = [
@@ -73,25 +47,89 @@ in
 
   services.openssh.settings.AllowUsers = [ "tony" ];
 
-  services.cage = {
-    enable = true;
-    user = "tony";
-    program = lib.getExe kiosk;
-    # The compositor draws the cursor, so this must be cage's own environment -- exporting it in the kiosk
-    # wrapper would be too late. 240 is 10x the 24px default (invisible at 4K from a sofa); Bibata ships
-    # large bitmaps, so it stays sharp instead of scaling a 48px source into mush.
-    environment = {
-      XCURSOR_THEME = "Bibata-Modern-Classic";
-      XCURSOR_SIZE = "240";
+  systemd.services.kiosk = {
+    description = "niri kiosk session on tty1";
+    after = [
+      "systemd-user-sessions.service"
+      "systemd-logind.service"
+      "getty@tty1.service"
+    ];
+    wants = [
+      "dbus.socket"
+      "systemd-logind.service"
+    ];
+    before = [ "graphical.target" ];
+    wantedBy = [ "graphical.target" ];
+    conflicts = [ "getty@tty1.service" ];
+    # A deploy must not cut off a film; the 04:00 restart picks up the change.
+    restartIfChanged = false;
+    unitConfig = {
+      ConditionPathExists = "/dev/tty1";
+      StartLimitIntervalSec = 0;
+    };
+    serviceConfig = {
+      ExecStart = lib.getExe niri;
+      User = "tony";
+      PAMName = "kiosk";
+      UtmpIdentifier = "%n";
+      UtmpMode = "user";
+      TTYPath = "/dev/tty1";
+      TTYReset = "yes";
+      TTYVHangup = "yes";
+      TTYVTDisallocate = "yes";
+      StandardInput = "tty-fail";
+      StandardOutput = "journal";
+      StandardError = "journal";
+      Restart = "on-failure";
+      RestartSec = "10s";
     };
   };
 
-  systemd.services.cage-tty1.serviceConfig = {
-    Restart = "on-failure";
-    RestartSec = "10s";
+  # The stack nixpkgs' cage module used. systemd's PAMName never runs auth, so
+  # what matters is the session part: pam_env for environment.sessionVariables
+  # (XCURSOR_PATH, LIBVA_DRIVER_NAME) and pam_systemd for the logind seat
+  # session niri opens the GPU and input devices through.
+  security.pam.services.kiosk = {
+    useDefaultRules = false;
+    rules = {
+      auth = utils.pam.autoOrderRules [
+        {
+          name = "unix";
+          control = "required";
+          modulePath = config.security.pam.pam_unixModulePath;
+          settings.nullok = true;
+        }
+      ];
+      account = utils.pam.autoOrderRules [
+        {
+          name = "unix";
+          control = "required";
+          modulePath = config.security.pam.pam_unixModulePath;
+        }
+      ];
+      session = utils.pam.autoOrderRules [
+        {
+          name = "unix";
+          control = "required";
+          modulePath = config.security.pam.pam_unixModulePath;
+        }
+        {
+          name = "env";
+          control = "required";
+          modulePath = "${config.security.pam.package}/lib/security/pam_env.so";
+          settings.conffile = "/etc/pam/environment";
+          settings.readenv = 0;
+        }
+        {
+          name = "systemd";
+          control = "required";
+          modulePath = "${config.systemd.package}/lib/security/pam_systemd.so";
+        }
+      ];
+    };
   };
 
-  systemd.services.cage-tty1.unitConfig.StartLimitIntervalSec = 0;
+  systemd.defaultUnit = "graphical.target";
 
   # Session cookies only die when the browser process does, and a kiosk browser
   # never exits on its own -- so nothing above would ever take effect. A nightly
@@ -101,7 +139,7 @@ in
     description = "Restart the kiosk session (drops YouTube session cookies)";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl restart cage-tty1.service";
+      ExecStart = "${pkgs.systemd}/bin/systemctl restart kiosk.service";
     };
   };
   systemd.timers.tony-nightly-restart = {

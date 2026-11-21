@@ -1,8 +1,31 @@
 {
   "tony" =
-    { pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       landing = "file://${./landing}/index.html";
+      wpctl = "${pkgs.wireplumber}/bin/wpctl";
+
+      kiosk = pkgs.writeShellApplication {
+        name = "tony-kiosk";
+        text = ''
+          export MOZ_ENABLE_WAYLAND=1
+          export MOZ_DISABLE_RDD_SANDBOX=1
+          export LIBVA_DRIVER_NAME=iHD
+
+          runtime="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+          for _ in $(seq 1 300); do
+            if [ -S "$runtime/pulse/native" ]; then break; fi
+            sleep 0.1
+          done
+
+          exec ${lib.getExe config.programs.firefox.finalPackage} --kiosk "$@"
+        '';
+      };
     in
     {
       home.username = "tony";
@@ -10,6 +33,98 @@
       home.stateVersion = "25.11";
 
       imports = [ ../../home-manager/profiles/server.nix ];
+
+      wayland.windowManager.niri = {
+        enable = true;
+        settings = {
+          input = {
+            keyboard = {
+              xkb.layout = "us";
+              repeat-delay = 280;
+              repeat-rate = 30;
+            };
+            disable-power-key-handling = [ ];
+          };
+
+          output = [
+            {
+              _args = [ "HDMI-A-2" ];
+              # change to @ 60 when get new cable
+              mode = "3840x2160@30";
+              scale = 1;
+            }
+          ];
+
+          # 240 is 10x the 24px default, which is invisible at 4K from a sofa.
+          # Bibata ships large bitmaps, so it stays sharp instead of scaling a
+          # 48px source into mush.
+          cursor = {
+            xcursor-theme = "Bibata-Modern-Classic";
+            xcursor-size = 240;
+            hide-after-inactive-ms = 3000;
+          };
+
+          prefer-no-csd = [ ];
+          hotkey-overlay.skip-at-startup = [ ];
+          gestures.hot-corners.off = [ ];
+          recent-windows.off = [ ];
+
+          layout = {
+            gaps = 0;
+            background-color = "#170c22";
+            default-column-width.proportion = 1.0;
+            focus-ring.off = [ ];
+            empty-workspace-above-first = [ ];
+          };
+
+          binds = {
+            "Mod+f".spawn = [ (lib.getExe kiosk) ];
+            "Mod+Shift+p".spawn = [
+              (lib.getExe kiosk)
+              "--private-window"
+            ];
+            "Mod+h".focus-column-or-monitor-left = [ ];
+            "Mod+j".focus-window-or-workspace-down = [ ];
+            "Mod+k".focus-window-or-workspace-up = [ ];
+            "Mod+l".focus-column-or-monitor-right = [ ];
+            "Mod+Shift+h".move-column-left-or-to-monitor-left = [ ];
+            "Mod+Shift+j".move-window-down-or-to-workspace-down = [ ];
+            "Mod+Shift+k".move-window-up-or-to-workspace-up = [ ];
+            "Mod+Shift+l".move-column-right-or-to-monitor-right = [ ];
+            "Mod+Tab".toggle-overview = [ ];
+            "Mod+WheelScrollDown" = {
+              _props.cooldown-ms = 150;
+              focus-workspace-down = [ ];
+            };
+            "Mod+WheelScrollUp" = {
+              _props.cooldown-ms = 150;
+              focus-workspace-up = [ ];
+            };
+            XF86AudioRaiseVolume.spawn = [
+              wpctl
+              "set-volume"
+              "-l"
+              "1"
+              "@DEFAULT_AUDIO_SINK@"
+              "5%+"
+            ];
+            XF86AudioLowerVolume.spawn = [
+              wpctl
+              "set-volume"
+              "@DEFAULT_AUDIO_SINK@"
+              "5%-"
+            ];
+            XF86AudioMute.spawn = [
+              wpctl
+              "set-mute"
+              "@DEFAULT_AUDIO_SINK@"
+              "toggle"
+            ];
+          };
+
+          spawn-at-startup = [ [ (lib.getExe kiosk) ] ];
+        };
+      };
 
       programs.firefox = {
         enable = true;
@@ -41,7 +156,7 @@
               installation_mode = "force_installed";
               private_browsing = true;
             };
-            # Per-site cookie jars in one window (private windows would need a second toplevel cage cannot manage).
+            # Per-site cookie jars in one window, so no site needs a private window of its own.
             # NOTE: site->container mapping lives in the extension's own storage, not prefs/policy -- assign
             # play.max.com and www.amazon.com to named containers once in the browser; the cookie rules below
             # isolate until then.
@@ -69,7 +184,7 @@
           };
 
           # Three different lifetimes, one per site. Firefox's cookie permission governs DOM storage too, so a
-          # Blocked origin gets no localStorage/sessionStorage either -- most of a private window's value, no cage.
+          # Blocked origin gets no localStorage/sessionStorage either -- most of a private window's value, in the one window.
           Cookies = {
             # Prime Video (US) lives on amazon.com: the storefront, the login and the
             # playback session cookies all sit under www.amazon.com, so that is the
