@@ -491,6 +491,7 @@ in
                 "none"
                 "high"
               ];
+              prefill_only = true;
             };
             "deepseek/deepseek-flash" = {
               reasoning_effort = "max";
