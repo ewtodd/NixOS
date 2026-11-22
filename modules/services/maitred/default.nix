@@ -99,6 +99,16 @@ let
         timeout_secs = 1800;
         slots = 8;
       };
+      radiance-heretic = {
+        base_url = "http://${sonOfAnton}:8110/v1";
+        timeout_secs = 1800;
+        slots = 8;
+      };
+      radiance-image = {
+        base_url = "http://${sonOfAnton}:8120/v1";
+        timeout_secs = 600;
+        slots = 1;
+      };
       gufo = {
         base_url = "http://${sonOfAnton}:8050/v1";
         timeout_secs = 1800;
@@ -170,6 +180,24 @@ let
         upstreams = [
           "radiance"
           "gufo-deepseek"
+        ];
+      }
+      {
+        name = "heretic";
+        label = "Gemma 4 31B heretic-ara";
+        host = "son-of-anton";
+        upstreams = [
+          "radiance-heretic"
+          "gufo"
+        ];
+      }
+      {
+        name = "image";
+        label = "Qwen-Image 2.1 Turbo";
+        host = "son-of-anton";
+        upstreams = [
+          "radiance-image"
+          "gufo"
         ];
       }
       {
@@ -283,6 +311,20 @@ let
         tier = 2;
       }
       {
+        # Untiered, so "auto" never lands on it: only a request that names it. Gemma 4's template takes any
+        # effort word; Radiance turns thinking off for none and minimal.
+        id = "radiance/gemma4-31b-heretic";
+        upstream = "radiance-heretic";
+        upstream_model = "gemma4-31b-heretic";
+        display_name = "Gemma 4 31B heretic";
+        context_length = 65536;
+        reasoning_efforts = [
+          "none"
+          "high"
+        ];
+        default_reasoning_effort = "high";
+      }
+      {
         id = "gufo/qwen3.8-flash-next";
         upstream = "gufo";
         upstream_model = "qwen3.8-flash-next";
@@ -347,6 +389,15 @@ let
             };
           };
         };
+      }
+      {
+        # /v1/images/generations only: /v1/images/edits is multipart, which maitred does not route, so edits
+        # go to son-of-anton:8120 directly.
+        id = "radiance/qwen-image-2.1-turbo";
+        upstream = "radiance-image";
+        upstream_model = "qwen-image-2.1-turbo";
+        display_name = "Qwen-Image 2.1 Turbo";
+        hidden = true;
       }
       {
         id = "embed/embeddinggemma-2";
