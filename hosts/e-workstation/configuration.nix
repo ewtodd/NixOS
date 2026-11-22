@@ -272,10 +272,7 @@ in
           git.github = config.age.secrets.soa-ricky-github-key.path;
           # Standing memory rules, encrypted (secrets/son-of-anton-ricky-rules.age).
           memoryRulesFile = config.age.secrets.son-of-anton-ricky-rules.path;
-          settings.platforms.signal = {
-            require_mention = true;
-            history_backfill = true;
-          };
+          settings.platforms.signal.require_mention = true;
           extraPackages = projectAgentTools;
           settings.gateway = {
             group_sessions_per_user = false;
@@ -297,10 +294,7 @@ in
           environmentFiles = [ config.age.secrets.son-of-anton-markets-env.path ];
           viewerGroup = "soa-viewers";
           extraPackages = projectAgentTools;
-          settings.platforms.signal = {
-            require_mention = true;
-            history_backfill = true;
-          };
+          settings.platforms.signal.require_mention = true;
           settings.gateway = {
             group_sessions_per_user = false;
           };
@@ -309,6 +303,19 @@ in
             20
             7
           ];
+        };
+
+        parents = {
+          user = "soa-parents";
+          createUser = true;
+          managedAccount = false;
+          stateDir = "/var/lib/soa-parents";
+          son-of-antonHome = "/var/lib/soa-parents/.son-of-anton";
+          workingDirectory = "/srv/parents";
+          environmentFiles = [ config.age.secrets.son-of-anton-parents-env.path ];
+          viewerGroup = "soa-viewers";
+          settings.platforms.signal.require_mention = true;
+          settings.gateway.group_sessions_per_user = false;
         };
       };
 

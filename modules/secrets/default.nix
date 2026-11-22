@@ -178,6 +178,12 @@
         group = "son-of-anton";
         mode = "0440";
       };
+      # Same shape as house: the group's id plus a SIGNAL_ALLOWED_USERS of its members.
+      son-of-anton-parents-env = {
+        file = ../../secrets/son-of-anton-parents-env.age;
+        group = "son-of-anton";
+        mode = "0440";
+      };
     })
     (lib.mkIf config.systemOptions.owner.e.enable {
       # Per-consumer maitred keys; opencode, the son-of-anton instances and the

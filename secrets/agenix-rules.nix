@@ -70,6 +70,9 @@ in
   "son-of-anton-markets-env.age".publicKeys = personal ++ [
     server-e-workstation
   ];
+  "son-of-anton-parents-env.age".publicKeys = personal ++ [
+    server-e-workstation
+  ];
   "soa-ricky-github-key.age".publicKeys = personal ++ [
     server-e-workstation
   ];
