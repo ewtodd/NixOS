@@ -10,8 +10,9 @@ let
   cfg = config.systemOptions.services.openWebUI;
   # Sources the agenix maitred-keys secret and re-exports the Open WebUI
   # virtual key as OPENAI_API_KEYS (what its OpenAI connection seeds from),
-  # RAG_OPENAI_API_KEY (embeddings) and RAG_EXTERNAL_RERANKER_API_KEY
-  # (reranking) -- the key stays out of the nix store.
+  # RAG_OPENAI_API_KEY (embeddings), RAG_EXTERNAL_RERANKER_API_KEY
+  # (reranking) and IMAGES_OPENAI_API_KEY (image generation) -- the key stays
+  # out of the nix store.
   # Secret must be group-readable.
   openWebUIWrapped = pkgs.writeShellScriptBin "open-webui" ''
     if [ -r /run/agenix/maitred-keys ]; then
@@ -21,6 +22,7 @@ let
       export OPENAI_API_KEYS="$MAITRED_KEY_OPENWEBUI"
       export RAG_OPENAI_API_KEY="$MAITRED_KEY_OPENWEBUI"
       export RAG_EXTERNAL_RERANKER_API_KEY="$MAITRED_KEY_OPENWEBUI"
+      export IMAGES_OPENAI_API_KEY="$MAITRED_KEY_OPENWEBUI"
     fi
     exec ${lib.getExe pkgs.open-webui} "$@"
   '';
@@ -104,6 +106,21 @@ in
           "ENABLE_WEB_SEARCH=true"
           "WEB_SEARCH_ENGINE=searxng"
           "SEARXNG_QUERY_URL=http://127.0.0.1:8888/search"
+          # Pictures from son-of-anton's llm-mode image (Radiance, Qwen-Image 2.1 Turbo). Same first-run seeding
+          # caveat: on an initialized install, set these in Settings > Images. Prompt generation is off because the
+          # task model is little-titles-json, which answers only {"title": ...}.
+          "ENABLE_IMAGE_GENERATION=true"
+          "IMAGE_GENERATION_ENGINE=openai"
+          "IMAGES_OPENAI_API_BASE_URL=http://127.0.0.1:4002/v1"
+          "IMAGE_GENERATION_MODEL=radiance/qwen-image-2.1-turbo"
+          "IMAGE_SIZE=1024x1024"
+          "ENABLE_IMAGE_PROMPT_GENERATION=false"
+          # Edits post multipart, which maitred does not route, so they go to Radiance on son-of-anton directly,
+          # under its own served name; it takes no key.
+          "ENABLE_IMAGE_EDIT=true"
+          "IMAGE_EDIT_ENGINE=openai"
+          "IMAGES_EDIT_OPENAI_API_BASE_URL=http://10.0.0.5:8120/v1"
+          "IMAGE_EDIT_MODEL=qwen-image-2.1-turbo"
         ];
 
         NoNewPrivileges = true;
