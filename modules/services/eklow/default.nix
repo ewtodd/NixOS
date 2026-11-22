@@ -65,15 +65,25 @@ in
         };
       };
       reranker.model = eklowPkgs.qwen3-reranker;
+
+      # A chat whose slot went to another one is read back from fiona's NVMe instead of prefilled again: 20k
+      # positions restore in 0.13 s, where their prefill takes 6 s (eklow DECISIONS 2026-11-22). Its prefill-only
+      # requests let son-of-anton prefill a quiet chat before it is tagged.
+      prefixCache = {
+        enable = true;
+        keyFile = config.age.secrets.eklow-prefix-cache-key.path;
+      };
     };
 
-    # Fitted on private chats, so kept encrypted (secrets/agenix-rules.nix).
+    # The checker's policy was fitted on private chats and the cache's pages are chats, so both are kept encrypted
+    # (secrets/agenix-rules.nix).
     age.secrets =
       lib.genAttrs
         [
           "eklow-checker-heads"
           "eklow-checker-calibration"
           "eklow-checker-manifest"
+          "eklow-prefix-cache-key"
         ]
         (name: {
           file = ../../../secrets + "/${name}.age";

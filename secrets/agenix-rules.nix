@@ -81,4 +81,5 @@ in
   "eklow-checker-heads.age".publicKeys = personal ++ [ fiona ];
   "eklow-checker-calibration.age".publicKeys = personal ++ [ fiona ];
   "eklow-checker-manifest.age".publicKeys = personal ++ [ fiona ];
+  "eklow-prefix-cache-key.age".publicKeys = personal ++ [ fiona ];
 }
