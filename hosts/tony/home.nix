@@ -187,8 +187,8 @@
             Locked = true;
           };
 
-          # Three different lifetimes, one per site. Firefox's cookie permission governs DOM storage too, so a
-          # Blocked origin gets no localStorage/sessionStorage either -- most of a private window's value, in the one window.
+          # Firefox's cookie permission governs DOM storage too, so an AllowSession origin's
+          # localStorage dies with its cookies -- most of a private window's value, in the one window.
           Cookies = {
             # Prime Video (US) lives on amazon.com: the storefront, the login and the
             # playback session cookies all sit under www.amazon.com, so that is the
@@ -199,13 +199,13 @@
               "https://www.hulu.com"
             ];
             # AllowSession, not Block: blocked outright, YouTube shows its consent interstitial every load and
-            # forgets quality/volume. Session cookies behave normally and die on exit -- the 04:00 reboot does that.
-            AllowSession = [ "https://www.youtube.com" ];
-            # Sportsurge gets nothing: no login, no settings worth keeping, and
-            # aggregator sites are exactly what you do not want persisting. Its tile
-            # is off the landing page for now (Prime took the slot); the rule stays
-            # so bringing it back is only the tile.
-            Block = [ "https://sportsurge.net" ];
+            # forgets quality/volume, and Sportsurge never gets past Cloudflare's challenge, which needs a
+            # cookie and otherwise sits on "Enable JavaScript and cookies to continue". Session cookies behave
+            # normally and die on exit -- the 04:00 reboot does that.
+            AllowSession = [
+              "https://www.youtube.com"
+              "https://sportsurge.net"
+            ];
             Locked = true;
           };
 
