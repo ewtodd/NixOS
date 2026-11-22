@@ -12,12 +12,8 @@ in
     enable = lib.mkEnableOption "Jellyfin media server";
     mediaDir = lib.mkOption {
       type = lib.types.str;
-      default = "/archive/video";
-      description = ''
-        Where the library lives. Defaults to the archive pool's video dataset,
-        which does not exist until the 14 TB drive is installed -- Jellyfin
-        starts fine without it and simply has no libraries configured.
-      '';
+      default = "/tank/media";
+      description = "Where the library lives: anton's tank/media dataset.";
     };
     port = lib.mkOption {
       type = lib.types.port;
