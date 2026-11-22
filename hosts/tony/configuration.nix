@@ -23,6 +23,7 @@ in
 
   systemOptions = {
     graphics.intel.enable = true;
+    services.jellyfinClient.enable = true;
     services.ssh.enable = true;
     services.deploy.enable = true;
     services.nodeExporter.enable = true;

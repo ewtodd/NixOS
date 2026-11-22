@@ -23,6 +23,7 @@ in
     ./grafana
     ./http-tarpit
     ./jellyfin
+    ./jellyfin-client
     ./llama-cpp
     ./gufo-strix
     ./maitred

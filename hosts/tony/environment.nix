@@ -36,4 +36,22 @@
     alsa.enable = true;
     pulse.enable = true;
   };
+
+  # The HDMI codec advertises 7.1 and lossless formats, but ACP ranks plain
+  # stereo far above them, so the default profile never lets mpv negotiate a
+  # bitstream. Prefer 7.1 for this card and keep the stereo profiles as fallback.
+  services.pipewire.wireplumber.extraConfig."99-tony-hdmi-profile" = {
+    "device.profile.priority.rules" = [
+      {
+        matches = [ { "device.name" = "alsa_card.pci-0000_00_1f.3"; } ];
+        actions = {
+          "update-props".priorities = [
+            "output:hdmi-surround71"
+            "output:hdmi-surround"
+            "output:hdmi-stereo"
+          ];
+        };
+      }
+    ];
+  };
 }

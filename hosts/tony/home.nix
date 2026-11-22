@@ -9,6 +9,7 @@
     let
       landing = "file://${./landing}/index.html";
       wpctl = "${pkgs.wireplumber}/bin/wpctl";
+      jellyfinClient = lib.getExe pkgs.jellyfin-mpv-shim;
 
       kiosk = pkgs.writeShellApplication {
         name = "tony-kiosk";
@@ -49,7 +50,7 @@
 
           output = [
             {
-              _args = [ "HDMI-A-2" ];
+              _args = [ "HDMI-A-1" ];
               # change to @ 60 when get new cable
               mode = "3840x2160@30";
               scale = 1.5;
@@ -81,6 +82,7 @@
 
           binds = {
             "Mod+f".spawn = [ (lib.getExe kiosk) ];
+            "Mod+m".spawn = [ jellyfinClient ];
             "Mod+Shift+p".spawn = [
               (lib.getExe kiosk)
               "--private-window"
@@ -254,6 +256,20 @@
           };
         };
       };
+
+      xdg.configFile."jellyfin-mpv-shim/conf.json".text = builtins.toJSON {
+        fullscreen = true;
+        mpv_log_level = "info";
+      };
+
+      xdg.configFile."jellyfin-mpv-shim/mpv.conf".text = ''
+        ao=pipewire
+        audio-exclusive=yes
+        audio-spdif=ac3,eac3,dts,dts-hd,truehd
+        audio-channels=5.1,stereo
+        hwdec=vaapi
+        vo=gpu-next
+      '';
     };
 
   "root" =
