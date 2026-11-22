@@ -46,7 +46,8 @@ Hosts:
 - **tony** - living room kiosk: niri + Firefox kiosk on 4K 30 Hz, landing page of
   stream/site tiles, nightly 04:00 reboot to drop stale cookies
 - **son-of-anton** - LLM inference, one `llm-mode` at a time: DeepSeek-V4-Flash (unholy),
-  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), or Radiance + DeepSeek-V4.1-Flash (gufo + ds41 extension)
+  Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), Radiance + DeepSeek-V4.1-Flash (gufo + ds41 extension),
+  or Radiance serving Gemma 4 31B heretic-ara or Qwen-Image 2.1 Turbo beside Flash-Next
 - **fiona** - small-model inference on an Arc A770M (16 GB) and its Iris Xe iGPU: eklow for fiona's
   chat model, EmbeddingGemma 2 embeddings, son-of-anton's end-of-turn checker and reranking, and
   llama.cpp (Vulkan) for title generation, behind maitred
@@ -131,7 +132,7 @@ This is especially useful for git-versioned packages like niri, quickshell, and 
 ## AI Infrastructure
 The fleet distributes inference and gateway services across dedicated hosts:
 - **son-of-anton** (2x AMD R9700 Pro 32GB + Strix Halo iGPU) serves one mode at a time;
-  `llm-mode ds4|glm|qwen|dual|status` switches between them without a redeploy:
+  `llm-mode ds4|glm|hy4|qwen|dual|heretic|image|status` switches between them without a redeploy:
   - **ds4** — **unholy** (:8200, github.com/ewtodd/unholy): DeepSeek-V4-Flash across both
     R9700s and the iGPU, 512k context, a 1.5M-token bf16 KV pool shared by up to 8 requests,
     DSpark speculative decoding, prefix-cache snapshots
@@ -141,6 +142,9 @@ The fleet distributes inference and gateway services across dedicated hosts:
     TheRock ROCm 10.1 SDK unholy pins. Beside it **[gufo](https://github.com/gufo-org/gufo)**
     (:8050): Qwen3.8-Flash-Next (UD-Q4_K_XL with Q5 down-projection and bf16 n-gram overlays)
     on the Strix Halo iGPU, with the MTP draft and vision projector, 262k context
+  - **heretic**, **image** — Radiance variants on the R9700s beside gufo's Flash-Next: Gemma 4
+    31B heretic-ara (:8110; int8, refusals removed, 64k context, MTP, vision) and Qwen-Image 2.1
+    Turbo (:8120; OpenAI's images API, behind Open WebUI's image generation and edits)
 - **fiona** (Arc A770M 16GB) runs **[eklow](https://github.com/ewtodd/eklow)**, one SYCL engine
   serving Nemotron-3.5-Bolt-E4B (:8081, `llm-mode bolt`; fiona's chat model, two 64k slots, and
   maitred's lowest tier, so "auto" lands there when son-of-anton is off or full), and beside it

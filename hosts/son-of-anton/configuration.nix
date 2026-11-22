@@ -104,6 +104,35 @@ in
       checkpointSlots = 8;
       checkpointDir = "/work/radiance-checkpoints";
       diskCheckpoints = 64;
+      # Flags from Radiance's deploy/compose files for each container.
+      variants = {
+        # Gemma 4 31B-it with its refusals removed by Heretic's ARA, int8 trunk (keptn/gemma4-31b-heretic-ara-i8g).
+        # The full 262144 context needs --max-num-seqs 2.
+        heretic = {
+          model = "/scratch/models/rad/gemma4-31b-heretic-ara-i8g/gemma4-31b-heretic-ara-i8g.rad";
+          servedModelName = "gemma4-31b-heretic";
+          port = 8110;
+          extraFlags = [
+            "--max-num-seqs 8"
+            "--max-model-len 65536"
+            "--kv-cache-dtype fp8"
+            "--num-speculative-tokens 3"
+            "--max-num-batched-tokens 2048"
+            "--vision-tower-placement ram"
+            "--temp 1.0"
+            "--top-p 0.95"
+            "--top-k 64"
+          ];
+        };
+        # Qwen-Image 2.1 Turbo (StillDeadcode/radiance-qwen-image-2.1-turbo-fp8): OpenAI's images API,
+        # /v1/images/generations and /v1/images/edits.
+        image = {
+          model = "/scratch/models/rad/qwen-image-2.1-turbo-fp8/qwen-image-2.1-turbo-fp8.rad";
+          servedModelName = "qwen-image-2.1-turbo";
+          port = 8120;
+          extraFlags = [ "--tp-wire wht6" ];
+        };
+      };
     };
     services.gufoStrix = {
       enable = true;

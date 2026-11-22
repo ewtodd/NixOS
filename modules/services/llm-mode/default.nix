@@ -7,8 +7,9 @@
 
 # Which model set owns a host's GPUs. On son-of-anton: an unholy instance, a mode of its own name (`ds4`:
 # DeepSeek-V4-Flash, `glm`: GLM-5.3-Flash, `hy4`: Hy4 flash, each on both R9700s + the iGPU), `qwen` (Radiance:
-# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU) or `dual` (Radiance beside
-# DeepSeek-V4.1-Flash on the iGPU). On fiona: an eklow instance, a mode
+# Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU), `dual` (Radiance beside
+# DeepSeek-V4.1-Flash on the iGPU) or a Radiance variant, a mode of its own name (`heretic`, `image`: that
+# server on the R9700s, gufo's Flash-Next on the iGPU). On fiona: an eklow instance, a mode
 # of its own name (one today, `bolt`: Nemotron-3.5-Bolt-E4B on the A770M). The model
 # services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default, also when a
 # redeploy has removed or renamed the recorded one) and
@@ -26,22 +27,31 @@ let
   # eklow's own module (inputs.eklow) declares the instances; modules/services/eklow sets them.
   eklowInstances = config.services.eklow.instances;
 
-  modes =
-    lib.optionalAttrs hasUnholy (
-      lib.mapAttrs (name: _: [ "unholy-${name}.service" ]) svc.unholy.instances
-    )
-    // lib.optionalAttrs hasQwenPair {
-      qwen = [
-        "radiance.service"
+  radianceModes =
+    lib.optionalAttrs hasQwenPair (
+      {
+        qwen = [
+          "radiance.service"
+          "gufo-strix.service"
+        ];
+      }
+      // lib.mapAttrs (name: _: [
+        "radiance-${name}.service"
         "gufo-strix.service"
-      ];
-    }
+      ]) svc.radiance.variants
+    )
     // lib.optionalAttrs hasDual {
       dual = [
         "radiance.service"
         "gufo-deepseek.service"
       ];
-    }
+    };
+
+  modes =
+    lib.optionalAttrs hasUnholy (
+      lib.mapAttrs (name: _: [ "unholy-${name}.service" ]) svc.unholy.instances
+    )
+    // radianceModes
     // lib.optionalAttrs hasEklow (lib.mapAttrs (name: _: [ "eklow-${name}.service" ]) eklowInstances);
   allUnits = lib.unique (lib.concatLists (lib.attrValues modes));
   stateFile = "/var/lib/llm-mode/mode";
@@ -65,6 +75,12 @@ let
         port = svc.gufoStrix.port;
       }
     ]
+    ++ lib.optionals hasQwenPair (
+      lib.mapAttrsToList (name: v: {
+        unit = "radiance-${name}.service";
+        inherit (v) port;
+      }) svc.radiance.variants
+    )
     ++ lib.optionals hasDual [
       {
         unit = "gufo-deepseek.service";
@@ -178,6 +194,21 @@ in
         message = "services.llmMode switches between model sets (unholy instances, radiance + gufoStrix as one, eklow instances): enable at least one, and the Qwen pair whole.";
       }
       {
+        assertion =
+          let
+            taken = [
+              "qwen"
+              "dual"
+              "pause"
+              "resume"
+              "status"
+            ]
+            ++ lib.attrNames (lib.optionalAttrs hasUnholy svc.unholy.instances);
+          in
+          lib.all (n: !lib.elem n taken) (lib.attrNames svc.radiance.variants);
+        message = "services.radiance.variants: a variant's name is its llm-mode; it cannot be qwen, dual, pause, resume, status or an unholy instance's name.";
+      }
+      {
         assertion = modes ? ${cfg.default};
         message = "services.llmMode.default '${cfg.default}' is not a mode (${lib.concatStringsSep ", " (lib.attrNames modes)}).";
       }
@@ -196,7 +227,9 @@ in
       (lib.optionalAttrs (hasUnholy && hasQwenPair) (
         lib.mapAttrs' (
           name: _:
-          lib.nameValuePair "unholy-${name}" { conflicts = lib.unique (modes.qwen ++ (modes.dual or [ ])); }
+          lib.nameValuePair "unholy-${name}" {
+            conflicts = lib.unique (lib.concatLists (lib.attrValues radianceModes));
+          }
         ) svc.unholy.instances
       ))
       {

@@ -922,18 +922,58 @@ with lib;
           type = types.listOf types.str;
           default = [ ];
         };
+        variants = mkOption {
+          default = { };
+          description = ''
+            Other models served on the same cards, each radiance-<name>.service with the package, devices,
+            user and lanExpose above. They conflict with radiance.service and with each other; under
+            services.llmMode each is a mode of its own name beside services.gufoStrix.
+          '';
+          type = types.attrsOf (
+            types.submodule {
+              options = {
+                model = mkOption {
+                  type = types.str;
+                  description = "A .rad container (rad-convert) or a checkpoint at its own precision.";
+                };
+                servedModelName = mkOption {
+                  type = types.str;
+                };
+                port = mkOption {
+                  type = types.port;
+                };
+                tp = mkOption {
+                  type = types.ints.positive;
+                  default = 2;
+                  description = "Tensor-parallel ranks (--tp), one per visible card.";
+                };
+                extraEnv = mkOption {
+                  type = types.attrsOf types.str;
+                  default = { };
+                  description = "Extra environment for this server; merged last.";
+                };
+                extraFlags = mkOption {
+                  type = types.listOf types.str;
+                  default = [ ];
+                  description = "Everything after --model/--host/--port/--served-model-name/--tp.";
+                };
+              };
+            }
+          );
+        };
       };
       services.llmMode = {
         enable = mkEnableOption ''
           the `llm-mode <mode>|status` switch between the model sets sharing a host's GPUs, with no
           redeploy: on son-of-anton each services.unholy instance (all three GPUs) is a mode of its own
-          name, `qwen` the Qwen pair (services.radiance on the R9700s + services.gufoStrix on the iGPU) and
-          `dual` services.radiance beside services.gufoStrix.deepseek; on fiona each eklow instance (the A770M)
-          is a mode of its own name'';
+          name, `qwen` the Qwen pair (services.radiance on the R9700s + services.gufoStrix on the iGPU),
+          `dual` services.radiance beside services.gufoStrix.deepseek, and each services.radiance variant a
+          mode of its own name beside services.gufoStrix; on fiona each eklow instance (the A770M) is a mode
+          of its own name'';
         default = mkOption {
           type = types.str;
           default = "ds4";
-          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance, `qwen`, `dual` or an eklow instance.";
+          description = "Mode started at boot until `llm-mode` has recorded a choice: an unholy instance, `qwen`, `dual`, a radiance variant or an eklow instance.";
         };
         managers = mkOption {
           type = types.listOf types.str;
