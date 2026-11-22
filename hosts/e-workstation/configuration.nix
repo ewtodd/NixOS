@@ -341,6 +341,8 @@ in
           # summary. auto image_input_mode reads this key.
           supports_vision = true;
         };
+        # generate_image through maitred: pictures only in llm-mode image, else maitred's not-loaded error names it.
+        images.model = "radiance/qwen-image-2.1-turbo";
         cron = {
           model_drift_guard = false;
           # maitred's routed id: jobs run on ds4 or qwen, whichever mode is up, instead of failing when a
