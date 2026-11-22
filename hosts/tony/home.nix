@@ -24,7 +24,7 @@
             sleep 0.1
           done
 
-          exec ${lib.getExe config.programs.firefox.finalPackage} --kiosk "$@"
+          exec ${lib.getExe config.programs.firefox.finalPackage} "$@"
         '';
       };
     in
@@ -82,6 +82,7 @@
 
           binds = {
             "Mod+f".spawn = [ (lib.getExe kiosk) ];
+            "Mod+Shift+f".fullscreen-window = [ ];
             "Mod+m".spawn = [ jellyfinClient ];
             "Mod+Shift+p".spawn = [
               (lib.getExe kiosk)

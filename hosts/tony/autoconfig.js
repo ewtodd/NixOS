@@ -4,10 +4,10 @@
 // policy replaced it; AboutNewTab.newTabURL is the only switch left, and it has to be
 // set from privileged code like this.
 //
-// Kiosk mode hides every toolbar, so getting back to the tiles took a Home key (Alt+Home,
-// or a remote that sends XF86HomePage). The Home button below fades in when the air mouse
-// moves and out after a few idle seconds, so it never sits over a film. It hides on the
-// landing page itself, and under DOM fullscreen the player covers it.
+// Browser windows start fullscreen, which hides the toolbars, so getting back to the tiles
+// took a Home key (Alt+Home, or a remote that sends XF86HomePage). The Home button below
+// fades in when the air mouse moves and out after a few idle seconds, so it never sits over
+// a film. It hides on the landing page itself, and under DOM fullscreen the player covers it.
 
 const LANDING = "@landing@";
 const IDLE_MS = 3000;
@@ -85,6 +85,16 @@ function addHomeButton(win) {
   );
 }
 
+// Puts a browser window into Firefox's own fullscreen, the one thing --kiosk did that is
+// still wanted. Kiosk mode itself is off because it keeps the toolbars hidden even after
+// niri takes the window out of fullscreen. Popups (read-only URL bar) stay windowed, as
+// kiosk mode leaves them.
+function startFullscreen(win) {
+  if (win.gURLBar && !win.gURLBar.readOnly) {
+    win.fullScreen = true;
+  }
+}
+
 try {
   ChromeUtils.importESModule(
     "resource:///modules/AboutNewTab.sys.mjs"
@@ -94,6 +104,11 @@ try {
 }
 
 Services.obs.addObserver(win => {
+  try {
+    startFullscreen(win);
+  } catch (e) {
+    log(e);
+  }
   try {
     addHomeButton(win);
   } catch (e) {
