@@ -39,6 +39,7 @@ in
       backdrop.enabled = true;
       shell = {
         avatar_path = wallpaperPath;
+        circular_avatar = false;
         screen_time_enabled = true;
         session.actions = [
           {
@@ -126,7 +127,6 @@ in
         font_family = "Ubuntu Nerd Font";
       };
       control_center = {
-        circular_avatar = false;
         hidden_tabs = [
           "media"
           "monitor"
