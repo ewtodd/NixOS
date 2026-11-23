@@ -198,6 +198,7 @@
               "https://play.max.com"
               "https://www.amazon.com"
               "https://www.hulu.com"
+              "https://www.peacocktv.com"
             ];
             # AllowSession, not Block: blocked outright, YouTube shows its consent interstitial every load and
             # forgets quality/volume, and Sportsurge never gets past Cloudflare's challenge, which needs a
