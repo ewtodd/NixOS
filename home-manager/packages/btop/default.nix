@@ -42,6 +42,7 @@ in
       io_mode = true;
       update_ms = 1000;
       base_10_sizes = true;
+      show_gpu_info = "Off";
       shown_boxes =
         if (deviceType != null) then
           (
