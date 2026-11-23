@@ -12,6 +12,26 @@ inputs:
   ];
   extraConfigLua = ''
                 
+    -- split.nvim takes only Lua patterns, which cannot exclude a "." after an
+    -- abbreviation. Wrap its match finder (algorithm.lua calls it through the
+    -- module table) to drop matches whose "." ends a listed word. Case-sensitive,
+    -- so "No." and "etc." stay out: both often end a sentence.
+    local split_utils = require('split.utils')
+    local gfind = split_utils.gfind
+    local abbreviations = {}
+    for _, a in ipairs({
+      "Dr", "Prof", "Mr", "Mrs", "Ms", "St", "Jr", "Sr",
+      "e.g", "i.e", "cf", "vs", "al", "approx", "U.S",
+      "Fig", "Figs", "Eq", "Eqs", "Sec", "Secs", "Ref", "Refs",
+      "Tab", "Ch", "Vol", "pp",
+    }) do abbreviations[a] = true end
+    split_utils.gfind = function(x, pattern, plain)
+      return vim.tbl_filter(function(pos)
+        return x:sub(pos[1], pos[1]) ~= "."
+          or not abbreviations[x:sub(1, pos[1] - 1):match("[%a%.]+$")]
+      end, gfind(x, pattern, plain))
+    end
+
     require('split').setup({
       keymaps = {
         ["gs"] = {
