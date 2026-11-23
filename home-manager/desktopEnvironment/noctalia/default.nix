@@ -133,7 +133,6 @@ in
           "system"
           "power"
           "network"
-          "bluetooth"
           "notifications"
         ];
       };
