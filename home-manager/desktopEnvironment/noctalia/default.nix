@@ -101,6 +101,7 @@ in
       bar.default = {
         position = lib.mkIf e "right";
         monitor.HDMI-A-2.enabled = lib.mkIf e false;
+        monitor.HDMI-A-1.enabled = lib.mkIf e false;
         # A selector matches a connector name or a whole token of make/model/serial.
         # The F22 on DP-2 is the only panel that reports a serial; its twin
         # (HDMI-A-2) reports none, so only a connector selects that one.
