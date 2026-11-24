@@ -2,7 +2,7 @@
   description = "Managing all the devices!";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     wireview-linux = {
       url = "github:ewtodd/wireview-linux";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -179,6 +179,15 @@
                   shapely = pythonPkgs.shapely.overridePythonAttrs (old: {
                     postPatch = (old.postPatch or "") + ''
                       printf '__version__ = "%s"\n__git_version__ = "None"\n' ${old.version} > _version.py
+                    '';
+                  });
+                  # PyMuPDF 1.28.2 calls PyString_FromString, which SWIG 4.5 no
+                  # longer defines. Upstream fixed src/extra.i in d2ddf9032d6;
+                  # no pinned nixpkgs branch carries it yet (nixpkgs PR 592243).
+                  pymupdf = pythonPkgs.pymupdf.overridePythonAttrs (old: {
+                    postPatch = (old.postPatch or "") + ''
+                      substituteInPlace src/extra.i \
+                        --replace "PyString_FromString(text)" "PyUnicode_FromString(text)"
                     '';
                   });
                   # nixpkgs 44cddf92c4 makes cargoSetupHook link system libraries
