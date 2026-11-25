@@ -292,11 +292,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1795385355,
-        "narHash": "sha256-jP6zGEkhmvA/NC9gUyv9AGENE0KCvZcKFxG2LttneSE=",
+        "lastModified": 1795603700,
+        "narHash": "sha256-iBfDeBoJMjbLbAA44c4jClibVPDRtWRNWk1remn0Awc=",
         "owner": "ewtodd",
         "repo": "eklow",
-        "rev": "cf7d533635aba7c62a0545e68a98a5100a290266",
+        "rev": "27d6cea9c26d7e017c03afece6059cc67401ad83",
         "type": "github"
       },
       "original": {
