@@ -371,8 +371,10 @@ in
         # Old model names a stored session or job may still pin: soa-d rewrites them at start and resolves them.
         models.renamed = {
           "unholy/glm53" = "unholy/glm5.3-flash";
-          # Sage left eklow on 2026-11-11; a chat or job /model pinned to it follows fiona's model.
-          "eklow/sage-a1.5" = "eklow/nemotron-3.5-bolt-e4b";
+          # Sage left eklow on 2026-11-11 and Bolt on 2026-11-24; a chat or job /model pinned to either follows fiona's
+          # model.
+          "eklow/sage-a1.5" = "eklow/inkling-2-mini";
+          "eklow/nemotron-3.5-bolt-e4b" = "eklow/inkling-2-mini";
         };
         security.sensitive_path_exceptions = [ "/etc/nixos/" ];
         memory.rag = {
@@ -396,13 +398,14 @@ in
           # 9 of 17 relevant facts; b6b5ad65 makes 0.01 the default.
           rerank_min_score = 0.01;
         };
-        # The end-of-turn checker for chats on Bolt (soa 2b104daf): eklow's laya System One on fiona, reached
+        # The end-of-turn checker for chats on fiona's eklow model (soa 2b104daf; fitted on Bolt's, now recording
+        # Inkling's): eklow's laya System One on fiona, reached
         # directly, since maitred routes by model id and /systemone carries none. The cut-offs belong to the fitted
         # policy in secrets/eklow-checker-*.age (each question's best F1 on held-out rows, 2026-11-10) and change
         # with it.
         checker = {
           base_url = "http://10.0.0.6:8084/v1";
-          models = [ "eklow/nemotron-3.5-bolt-e4b" ];
+          models = [ "eklow/inkling-2-mini" ];
           # Log only, every question, every check recorded to <home>/checker/checks.jsonl: on the first day of
           # real chats all seven replies it sent back were wrong (unchecked on chit-chat, offtopic in its noisy
           # band, claim on a reply whose write_file had just run), and each time Bolt answered the note. The
@@ -484,12 +487,18 @@ in
                 "xhigh"
               ];
             };
-            # eklow on fiona's A770M; Bolt-E4B (Gemma 4) thinks or not, and takes images.
-            "eklow/nemotron-3.5-bolt-e4b" = {
+            # eklow on fiona's A770M: Inkling 2 Mini, thinking effort none to max (its template's levels; high is its
+            # default); text only until eklow ports its vision.
+            "eklow/inkling-2-mini" = {
               reasoning_effort = "high";
               reasoning_efforts = [
                 "none"
+                "minimal"
+                "low"
+                "medium"
                 "high"
+                "xhigh"
+                "max"
               ];
               prefill_only = true;
             };

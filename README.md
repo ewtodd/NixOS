@@ -146,7 +146,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
     31B heretic-ara (:8110; int8, refusals removed, 64k context, MTP, vision) and Qwen-Image 2.1
     Turbo (:8120; OpenAI's images API, behind Open WebUI's image generation and edits)
 - **fiona** (Arc A770M 16GB) runs **[eklow](https://github.com/ewtodd/eklow)**, one SYCL engine
-  serving Nemotron-3.5-Bolt-E4B (:8081, `llm-mode bolt`; fiona's chat model, two 64k slots, and
+  serving Inkling 2 Mini (:8081, `llm-mode inkling`; fiona's chat model, two 64k slots, and
   maitred's lowest tier, so "auto" lands there when son-of-anton is off or full), and beside it
   EmbeddingGemma 2 (:8082, son-of-anton's memory RAG and Open WebUI), son-of-anton's end-of-turn
   checker (:8084) and Qwen3-Reranker (:8085).

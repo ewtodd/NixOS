@@ -1123,7 +1123,7 @@ with lib;
         };
       };
       services.eklow = {
-        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Nemotron-3.5-Bolt-E4B (each eklow instance a services.llmMode mode), EmbeddingGemma 2, son-of-anton's end-of-turn checker and Qwen3-Reranker on an Intel Arc A770M";
+        enable = mkEnableOption "eklow (github.com/ewtodd/eklow): Inkling 2 Mini (each eklow instance a services.llmMode mode), EmbeddingGemma 2, son-of-anton's end-of-turn checker and Qwen3-Reranker on an Intel Arc A770M";
         lanExpose = mkEnableOption "eklow on the LAN (0.0.0.0, ports open to llmServerClients) for maitred and llmtop";
       };
       services.maitred = {

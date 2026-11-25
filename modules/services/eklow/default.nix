@@ -6,11 +6,11 @@
   ...
 }:
 
-# eklow (github.com/ewtodd/eklow, ~/Software/eklow) on the Arc A770M: one engine serving fiona's chat model, NVIDIA's
-# Nemotron-3.5-Bolt-E4B (`bolt`, eklow-bolt.service, an `llm-mode` of its name in modules/services/llm-mode), on the
-# port maitred's eklow upstream names (8081), and beside it EmbeddingGemma 2 (embed's port, 8082), son-of-anton's
-# end-of-turn checker (8084) and Qwen3-Reranker (8085). Sage-A1.5 (Qwen3.6-35B-A3B) was fiona's model until
-# 2026-11-11; eklow dropped the Qwen chat path then. The service is eklow's own NixOS module; this sets the models,
+# eklow (github.com/ewtodd/eklow, ~/Software/eklow) on the Arc A770M: one engine serving fiona's chat model, Thinking
+# Machines' Inkling 2 Mini (`inkling`, eklow-inkling.service, an `llm-mode` of its name in modules/services/llm-mode), on
+# the port maitred's eklow upstream names (8081), and beside it EmbeddingGemma 2 (embed's port, 8082), son-of-anton's
+# end-of-turn checker (8084) and Qwen3-Reranker (8085). NVIDIA's Nemotron-3.5-Bolt-E4B was fiona's model from 2026-11-10
+# until the owner stopped it on 2026-11-24; Sage-A1.5 (Qwen3.6-35B-A3B) before it, until 2026-11-11. The service is eklow's own NixOS module; this sets the models,
 # the house's window and exposure.
 let
   cfg = config.systemOptions.services.eklow;
@@ -33,24 +33,17 @@ in
         sha256 = "c4a8a52691ecef40618438928bdf9e68379b854e24166f292592353db0aab64f";
       };
 
-      instances.bolt = {
-        # eklow's derivations pin each file (eklow nix/models.nix): NVIDIA's Q4_K_M, Gemma 4 E4B's projector (Bolt's vision
-        # tower is Google's, tensor for tensor) and NVIDIA's DFlash draft quantized to Q8_0 at build time. On fiona's replay
-        # it scores 30-31 of 54 against llama.cpp's 32 with the same sampler (eklow DECISIONS 2026-11-11).
-        model = eklowPkgs.bolt-e4b;
-        alias = "nemotron-3.5-bolt-e4b";
+      instances.inkling = {
+        # Unsloth's UD-Q4_K_M (eklow nix/models.nix), the file fiona's sandboxed replay scored 110 of 126 on llama.cpp
+        # (Bolt: 16 of 48); through eklow 40 of 41 where llama.cpp passed 41 of 42 on the same moments (eklow DECISIONS
+        # 2026-11-24, "Inkling M4"). 15.5 GiB: the experts the card has no room for run on fiona's CPU, chosen by the
+        # routing profile the package ships. Decode ~10.5 tok/s, prefill ~365 tok/s; text only until eklow ports its vision.
+        model = eklowPkgs.inkling-2-mini;
+        alias = "inkling-2-mini";
+        expertProfile = "${eklowPkgs.default}/share/eklow/inkling-2-mini-experts.json";
         port = 8081;
         slots = 2;
         contextSize = 65536;
-        # fp16 K/V, set rather than left to the server's per-model default so a change there cannot make it int8: the
-        # two 64K slots take 2.2 GiB, and all of this instance's models fit in 12.7 of the card's 16 GiB.
-        kvInt8 = false;
-        draft = eklowPkgs.bolt-e4b-dflash;
-        mmproj = eklowPkgs.bolt-e4b-mmproj;
-        # Bolt's template drops earlier turns' reasoning, so the user message after a tool loop prefilled the loop again:
-        # 0.4-15 s to the first token on fiona's chats, 0.2-1.3 s with this (eklow DECISIONS 2026-11-11). The window then
-        # fills 1.2-1.7x faster; whether answers change is not measured yet.
-        preserveThinking = true;
       };
 
       # son-of-anton's end-of-turn checker for fiona's chats (its [checker]): laya's System One over vega's Qwen3.5-0.8B
@@ -66,11 +59,11 @@ in
       };
       reranker.model = eklowPkgs.qwen3-reranker;
 
-      # A chat whose slot went to another one is read back from fiona's NVMe instead of prefilled again: 20k
-      # positions restore in 0.13 s, where their prefill takes 6 s (eklow DECISIONS 2026-11-22). Its prefill-only
-      # requests let son-of-anton prefill a quiet chat before it is tagged.
+      # Bolt's disk prefix cache (eklow DECISIONS 2026-11-22): Inkling keeps none (its sliding rings and convolution states
+      # are rewound from checkpoints in host memory), and eklow-server refuses the flag for it. Bolt's pages stay in
+      # /var/lib/private/eklow-bolt until deleted.
       prefixCache = {
-        enable = true;
+        enable = false;
         keyFile = config.age.secrets.eklow-prefix-cache-key.path;
       };
     };

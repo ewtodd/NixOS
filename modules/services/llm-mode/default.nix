@@ -10,7 +10,7 @@
 # Qwen3.8-27B on the R9700s, gufo: Qwen3.8-Flash-Next on the iGPU), `dual` (Radiance beside
 # DeepSeek-V4.1-Flash on the iGPU) or a Radiance variant, a mode of its own name (`heretic`, `image`: that
 # server on the R9700s, gufo's Flash-Next on the iGPU). On fiona: an eklow instance, a mode
-# of its own name (one today, `bolt`: Nemotron-3.5-Bolt-E4B on the A770M). The model
+# of its own name (one today, `inkling`: Inkling 2 Mini on the A770M). The model
 # services do not start on their own; `llm-mode-boot` starts the last selected mode (or the default, also when a
 # redeploy has removed or renamed the recorded one) and
 # `llm-mode <mode>` switches at run time, no redeploy. `llm-mode pause` stops them all and keeps the

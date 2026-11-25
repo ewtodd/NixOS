@@ -119,7 +119,7 @@ let
         timeout_secs = 1800;
         slots = 1;
       };
-      # fiona: llama.cpp serves the title model on the Iris Xe; eklow serves the chat model (Nemotron-3.5-Bolt-E4B), the
+      # fiona: llama.cpp serves the title model on the Iris Xe; eklow serves the chat model (Inkling 2 Mini), the
       # embeddings and the reranker on the A770M. Another eklow instance, an llm-mode of its own, would get its own
       # port, so that the one up is the one answering.
       llama = {
@@ -201,8 +201,8 @@ let
         ];
       }
       {
-        name = "bolt";
-        label = "Nemotron 3.5 Bolt E4B";
+        name = "inkling";
+        label = "Inkling 2 Mini";
         host = "fiona";
         upstreams = [ "eklow" ];
       }
@@ -214,7 +214,7 @@ let
     # model's normal thinking whichever one "auto" lands on (clamping would give them medium). tier: DeepSeek-V4-Flash,
     # GLM-5.3-Flash, Hy4 flash and DeepSeek-V4.1-Flash (no two of them up at once; V4.1 has one session, so in llm-mode dual "auto"
     # takes the 27B once it is busy), then Qwen3.8-27B, then Flash-Next, which "auto" takes when Radiance is full or
-    # down, then eklow on fiona (Bolt-E4B), which is up when son-of-anton is not.
+    # down, then eklow on fiona (Inkling 2 Mini), which is up when son-of-anton is not.
     models = [
       {
         id = "unholy/dsv4-flash";
@@ -341,15 +341,21 @@ let
         tier = 1;
       }
       {
-        # Gemma 4's template thinks or not: eklow takes any effort but none as thinking on.
-        id = "eklow/nemotron-3.5-bolt-e4b";
+        # Inkling's template takes a thinking effort level from 0 to 0.99, by these names (none 0, minimal 0.1, low 0.2,
+        # medium 0.7, high 0.9, its default, xhigh and max 0.99).
+        id = "eklow/inkling-2-mini";
         upstream = "eklow";
-        upstream_model = "nemotron-3.5-bolt-e4b";
-        display_name = "Nemotron 3.5 Bolt E4B";
+        upstream_model = "inkling-2-mini";
+        display_name = "Inkling 2 Mini";
         context_length = 65536;
         reasoning_efforts = [
           "none"
+          "minimal"
+          "low"
+          "medium"
           "high"
+          "xhigh"
+          "max"
         ];
         default_reasoning_effort = "high";
         tier = 0;
