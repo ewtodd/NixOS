@@ -49,7 +49,7 @@ Hosts:
   Qwen3.8-27B (Radiance) + Qwen3.8-Flash-Next (gufo), Radiance + DeepSeek-V4.1-Flash (gufo + ds41 extension),
   or Radiance serving Gemma 4 31B heretic-ara or Qwen-Image 2.1 Turbo beside Flash-Next
 - **fiona** - small-model inference on an Arc A770M (16 GB) and its Iris Xe iGPU: eklow for fiona's
-  chat model, EmbeddingGemma 2 embeddings, son-of-anton's end-of-turn checker and reranking, and
+  chat model, EmbeddingGemma 2 embeddings and reranking, and
   llama.cpp (Vulkan) for title generation, behind maitred
 ```
 ## Important Notes
@@ -148,8 +148,7 @@ The fleet distributes inference and gateway services across dedicated hosts:
 - **fiona** (Arc A770M 16GB) runs **[eklow](https://github.com/ewtodd/eklow)**, one SYCL engine
   serving Inkling 2 Mini (:8081, `llm-mode inkling`; fiona's chat model, two 64k slots, and
   maitred's lowest tier, so "auto" lands there when son-of-anton is off or full), and beside it
-  EmbeddingGemma 2 (:8082, son-of-anton's memory RAG and Open WebUI), son-of-anton's end-of-turn
-  checker (:8084) and Qwen3-Reranker (:8085).
+  EmbeddingGemma 2 (:8082, son-of-anton's memory RAG and Open WebUI) and Qwen3-Reranker (:8085).
   llama.cpp on the Iris Xe iGPU serves Little-Titles Q8_0 (:8080, title generation for the
   son-of-anton accounts and Open WebUI)
 - **mu** hosts the AI front. `systemOptions.aiFrontAddress` names that host; nu's Caddy and

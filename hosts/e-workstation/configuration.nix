@@ -398,26 +398,8 @@ in
           # 9 of 17 relevant facts; b6b5ad65 makes 0.01 the default.
           rerank_min_score = 0.01;
         };
-        # The end-of-turn checker for chats on fiona's eklow model (soa 2b104daf; fitted on Bolt's, now recording
-        # Inkling's): eklow's laya System One on fiona, reached
-        # directly, since maitred routes by model id and /systemone carries none. The cut-offs belong to the fitted
-        # policy in secrets/eklow-checker-*.age (each question's best F1 on held-out rows, 2026-11-10) and change
-        # with it.
-        checker = {
-          base_url = "http://10.0.0.6:8084/v1";
-          models = [ "eklow/inkling-2-mini" ];
-          # Log only, every question, every check recorded to <home>/checker/checks.jsonl: on the first day of
-          # real chats all seven replies it sent back were wrong (unchecked on chit-chat, offtopic in its noisy
-          # band, claim on a reply whose write_file had just run), and each time Bolt answered the note. The
-          # records are the data to label and fit a better checker on; until then the cut-offs only mark flags.
-          log_only = true;
-          record = true;
-          cutoffs = {
-            claim = 0.7342;
-            unchecked = 0.4858;
-            offtopic = 0.4399;
-          };
-        };
+        # No end-of-turn checker since 2026-11-24 (the owner's decision): eklow on fiona stopped serving vega's System
+        # One, whose card memory now holds Inkling's experts. Its fitted policy stays in secrets/eklow-checker-*.age.
         custom_providers.custom = {
           base_url = "http://${aiFront}:4002/v1";
           key_env = "MAITRED_KEY_SOA";

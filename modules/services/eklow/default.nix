@@ -8,8 +8,8 @@
 
 # eklow (github.com/ewtodd/eklow, ~/Software/eklow) on the Arc A770M: one engine serving fiona's chat model, Thinking
 # Machines' Inkling 2 Mini (`inkling`, eklow-inkling.service, an `llm-mode` of its name in modules/services/llm-mode), on
-# the port maitred's eklow upstream names (8081), and beside it EmbeddingGemma 2 (embed's port, 8082), son-of-anton's
-# end-of-turn checker (8084) and Qwen3-Reranker (8085). NVIDIA's Nemotron-3.5-Bolt-E4B was fiona's model from 2026-11-10
+# the port maitred's eklow upstream names (8081), and beside it EmbeddingGemma 2 (embed's port, 8082) and Qwen3-Reranker
+# (8085). NVIDIA's Nemotron-3.5-Bolt-E4B was fiona's model from 2026-11-10
 # until the owner stopped it on 2026-11-24; Sage-A1.5 (Qwen3.6-35B-A3B) before it, until 2026-11-11. The service is eklow's own NixOS module; this sets the models,
 # the house's window and exposure.
 let
@@ -46,17 +46,8 @@ in
         contextSize = 65536;
       };
 
-      # son-of-anton's end-of-turn checker for fiona's chats (its [checker]): laya's System One over vega's Qwen3.5-0.8B
-      # reader, with the heads fitted on fiona's replay. eklow copies the policy into the unit's runtime folder at start
-      # (systemd refuses a credential over 1 MiB; heads.npz is 6.4 MB).
-      checker = {
-        reader = eklowPkgs.vega-reader;
-        policyFiles = {
-          heads = config.age.secrets.eklow-checker-heads.path;
-          calibration = config.age.secrets.eklow-checker-calibration.path;
-          manifest = config.age.secrets.eklow-checker-manifest.path;
-        };
-      };
+      # No end-of-turn checker (vega's System One, until 2026-11-24): unused, and its 1.2 GiB on the card hold ~300 of
+      # Inkling's experts (eklow DECISIONS 2026-11-24: decode +3%, prefill +4%). Its policy stays in secrets/.
       reranker.model = eklowPkgs.qwen3-reranker;
 
       # Bolt's disk prefix cache (eklow DECISIONS 2026-11-22): Inkling keeps none (its sliding rings and convolution states
@@ -68,14 +59,10 @@ in
       };
     };
 
-    # The checker's policy was fitted on private chats and the cache's pages are chats, so both are kept encrypted
-    # (secrets/agenix-rules.nix).
+    # The cache's pages are chats, so its key is kept encrypted (secrets/agenix-rules.nix).
     age.secrets =
       lib.genAttrs
         [
-          "eklow-checker-heads"
-          "eklow-checker-calibration"
-          "eklow-checker-manifest"
           "eklow-prefix-cache-key"
         ]
         (name: {
