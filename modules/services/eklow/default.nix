@@ -37,8 +37,12 @@ in
         # Unsloth's UD-Q4_K_M (eklow nix/models.nix), the file fiona's sandboxed replay scored 110 of 126 on llama.cpp
         # (Bolt: 16 of 48); through eklow 40 of 41 where llama.cpp passed 41 of 42 on the same moments (eklow DECISIONS
         # 2026-11-24, "Inkling M4"). 15.5 GiB: the experts the card has no room for run on fiona's CPU, chosen by the
-        # routing profile the package ships. Decode ~10.5 tok/s, prefill ~365 tok/s; text only until eklow ports its vision.
+        # routing profile the package ships. Decode ~22 tok/s, prefill ~1,050 tok/s (eklow DECISIONS 2026-11-25).
         model = eklowPkgs.inkling-2-mini;
+        # Its vision tower, for image_url parts (eklow DECISIONS 2026-11-25, "Inkling M5"): its weights stay in host
+        # memory and it runs in the engine's idle step buffers, so the experts keep the card; images of up to 1,024
+        # tokens (~1,280 x 1,280 pixels), larger ones resized down.
+        mmproj = eklowPkgs.inkling-2-mini-mmproj;
         alias = "inkling-2-mini";
         expertProfile = "${eklowPkgs.default}/share/eklow/inkling-2-mini-experts.json";
         port = 8081;

@@ -470,7 +470,7 @@ in
               ];
             };
             # eklow on fiona's A770M: Inkling 2 Mini, thinking effort none to max (its template's levels; high is its
-            # default); text only until eklow ports its vision.
+            # default); images too, since eklow's M5.
             "eklow/inkling-2-mini" = {
               reasoning_effort = "high";
               reasoning_efforts = [
