@@ -12,6 +12,7 @@ let
     bot-defense = import ./dashboards/bot-defense.nix;
     fleet-health = import ./dashboards/fleet-health.nix;
     gpus = import ./dashboards/gpus.nix;
+    llm-usage = import ./dashboards/llm-usage.nix;
   };
   dashboardDir = pkgs.linkFarm "grafana-dashboards" (
     lib.mapAttrsToList (name: dashboard: {

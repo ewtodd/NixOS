@@ -88,6 +88,16 @@
             }
           ];
         }
+        {
+          # maitred's requests and tokens per key, model and upstream.
+          job_name = "maitred";
+          static_configs = [
+            {
+              targets = [ "${config.systemOptions.aiFrontAddress}:4002" ];
+              labels.instance = "mu";
+            }
+          ];
+        }
       ]
       # WireView Pro II GPU power monitor; the exporter runs on e-workstation
       # and the target is configured per host (see
