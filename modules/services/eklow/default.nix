@@ -44,6 +44,10 @@ in
         # memory and it runs in the engine's idle step buffers, so the experts keep the card; images of up to 1,024
         # tokens (~1,280 x 1,280 pixels), larger ones resized down.
         mmproj = eklowPkgs.inkling-2-mini-mmproj;
+        # Inco's DFlash 2 draft (eklow DECISIONS 2026-11-26, "Inkling M6"), lossless: through the server ~1.4-1.8x decode at
+        # temperature 1 and ~1.5x greedy, in blocks of 6; a request sends "speculative": false to decode plain. Its 714 MiB of
+        # the card would hold experts: plain decode is ~5% slower beside it.
+        draft = eklowPkgs.inkling-2-mini-dflash2;
         alias = "inkling-2-mini";
         expertProfile = "${eklowPkgs.default}/share/eklow/inkling-2-mini-experts.json";
         port = 8081;
